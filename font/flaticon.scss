@@ -1,0 +1,261 @@
+$flaticon-font: "flaticon";
+
+@font-face {
+    font-family: $flaticon-font;
+    src: url("./flaticon.ttf?a5de18c0d03d402a642eab44967fbb60") format("truetype"),
+url("./flaticon.woff?a5de18c0d03d402a642eab44967fbb60") format("woff"),
+url("./flaticon.woff2?a5de18c0d03d402a642eab44967fbb60") format("woff2"),
+url("./flaticon.eot?a5de18c0d03d402a642eab44967fbb60#iefix") format("embedded-opentype"),
+url("./flaticon.svg?a5de18c0d03d402a642eab44967fbb60#flaticon") format("svg");
+}
+
+i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
+    font-family: flaticon !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+$flaticon-map: (
+    "planning": "\f101",
+    "project": "\f102",
+    "play-button": "\f103",
+    "chat": "\f104",
+    "down-arrow": "\f105",
+    "email": "\f106",
+    "facebook": "\f107",
+    "stock-market": "\f108",
+    "idea": "\f109",
+    "instagram": "\f10a",
+    "linkedin": "\f10b",
+    "magnifier": "\f10c",
+    "next": "\f10d",
+    "next-1": "\f10e",
+    "left-arrow": "\f10f",
+    "previous": "\f110",
+    "open-24-hours": "\f111",
+    "phone-call": "\f112",
+    "pin": "\f113",
+    "pinterest": "\f114",
+    "quote": "\f115",
+    "select": "\f116",
+    "technical-support": "\f117",
+    "twitter": "\f118",
+    "up-arrow": "\f119",
+    "up-arrow-1": "\f11a",
+    "plus": "\f11b",
+    "remove": "\f11c",
+    "loupe": "\f11d",
+    "portfolio": "\f11e",
+    "save-money": "\f11f",
+    "growth": "\f120",
+    "international-business": "\f121",
+    "presentation": "\f122",
+    "money": "\f123",
+    "darts": "\f124",
+    "stats": "\f125",
+    "salary": "\f126",
+    "checked": "\f127",
+    "star": "\f128",
+    "star-1": "\f129",
+    "play": "\f12a",
+    "analytics": "\f12b",
+    "review": "\f12c",
+    "certificate": "\f12d",
+    "experience": "\f12e",
+    "like": "\f12f",
+    "conversation": "\f130",
+    "share": "\f131",
+    "phone-call-1": "\f132",
+    "right-quotation-mark": "\f133",
+    "quote-left": "\f134",
+    "technology": "\f135",
+    "plane": "\f136",
+    "promotion": "\f137",
+    "safe": "\f138",
+    "insurance": "\f139",
+    "share-1": "\f13a",
+    "investment": "\f13b",
+);
+
+.flaticon-planning:before {
+    content: map-get($flaticon-map, "planning");
+}
+.flaticon-project:before {
+    content: map-get($flaticon-map, "project");
+}
+.flaticon-play-button:before {
+    content: map-get($flaticon-map, "play-button");
+}
+.flaticon-chat:before {
+    content: map-get($flaticon-map, "chat");
+}
+.flaticon-down-arrow:before {
+    content: map-get($flaticon-map, "down-arrow");
+}
+.flaticon-email:before {
+    content: map-get($flaticon-map, "email");
+}
+.flaticon-facebook:before {
+    content: map-get($flaticon-map, "facebook");
+}
+.flaticon-stock-market:before {
+    content: map-get($flaticon-map, "stock-market");
+}
+.flaticon-idea:before {
+    content: map-get($flaticon-map, "idea");
+}
+.flaticon-instagram:before {
+    content: map-get($flaticon-map, "instagram");
+}
+.flaticon-linkedin:before {
+    content: map-get($flaticon-map, "linkedin");
+}
+.flaticon-magnifier:before {
+    content: map-get($flaticon-map, "magnifier");
+}
+.flaticon-next:before {
+    content: map-get($flaticon-map, "next");
+}
+.flaticon-next-1:before {
+    content: map-get($flaticon-map, "next-1");
+}
+.flaticon-left-arrow:before {
+    content: map-get($flaticon-map, "left-arrow");
+}
+.flaticon-previous:before {
+    content: map-get($flaticon-map, "previous");
+}
+.flaticon-open-24-hours:before {
+    content: map-get($flaticon-map, "open-24-hours");
+}
+.flaticon-phone-call:before {
+    content: map-get($flaticon-map, "phone-call");
+}
+.flaticon-pin:before {
+    content: map-get($flaticon-map, "pin");
+}
+.flaticon-pinterest:before {
+    content: map-get($flaticon-map, "pinterest");
+}
+.flaticon-quote:before {
+    content: map-get($flaticon-map, "quote");
+}
+.flaticon-select:before {
+    content: map-get($flaticon-map, "select");
+}
+.flaticon-technical-support:before {
+    content: map-get($flaticon-map, "technical-support");
+}
+.flaticon-twitter:before {
+    content: map-get($flaticon-map, "twitter");
+}
+.flaticon-up-arrow:before {
+    content: map-get($flaticon-map, "up-arrow");
+}
+.flaticon-up-arrow-1:before {
+    content: map-get($flaticon-map, "up-arrow-1");
+}
+.flaticon-plus:before {
+    content: map-get($flaticon-map, "plus");
+}
+.flaticon-remove:before {
+    content: map-get($flaticon-map, "remove");
+}
+.flaticon-loupe:before {
+    content: map-get($flaticon-map, "loupe");
+}
+.flaticon-portfolio:before {
+    content: map-get($flaticon-map, "portfolio");
+}
+.flaticon-save-money:before {
+    content: map-get($flaticon-map, "save-money");
+}
+.flaticon-growth:before {
+    content: map-get($flaticon-map, "growth");
+}
+.flaticon-international-business:before {
+    content: map-get($flaticon-map, "international-business");
+}
+.flaticon-presentation:before {
+    content: map-get($flaticon-map, "presentation");
+}
+.flaticon-money:before {
+    content: map-get($flaticon-map, "money");
+}
+.flaticon-darts:before {
+    content: map-get($flaticon-map, "darts");
+}
+.flaticon-stats:before {
+    content: map-get($flaticon-map, "stats");
+}
+.flaticon-salary:before {
+    content: map-get($flaticon-map, "salary");
+}
+.flaticon-checked:before {
+    content: map-get($flaticon-map, "checked");
+}
+.flaticon-star:before {
+    content: map-get($flaticon-map, "star");
+}
+.flaticon-star-1:before {
+    content: map-get($flaticon-map, "star-1");
+}
+.flaticon-play:before {
+    content: map-get($flaticon-map, "play");
+}
+.flaticon-analytics:before {
+    content: map-get($flaticon-map, "analytics");
+}
+.flaticon-review:before {
+    content: map-get($flaticon-map, "review");
+}
+.flaticon-certificate:before {
+    content: map-get($flaticon-map, "certificate");
+}
+.flaticon-experience:before {
+    content: map-get($flaticon-map, "experience");
+}
+.flaticon-like:before {
+    content: map-get($flaticon-map, "like");
+}
+.flaticon-conversation:before {
+    content: map-get($flaticon-map, "conversation");
+}
+.flaticon-share:before {
+    content: map-get($flaticon-map, "share");
+}
+.flaticon-phone-call-1:before {
+    content: map-get($flaticon-map, "phone-call-1");
+}
+.flaticon-right-quotation-mark:before {
+    content: map-get($flaticon-map, "right-quotation-mark");
+}
+.flaticon-quote-left:before {
+    content: map-get($flaticon-map, "quote-left");
+}
+.flaticon-technology:before {
+    content: map-get($flaticon-map, "technology");
+}
+.flaticon-plane:before {
+    content: map-get($flaticon-map, "plane");
+}
+.flaticon-promotion:before {
+    content: map-get($flaticon-map, "promotion");
+}
+.flaticon-safe:before {
+    content: map-get($flaticon-map, "safe");
+}
+.flaticon-insurance:before {
+    content: map-get($flaticon-map, "insurance");
+}
+.flaticon-share-1:before {
+    content: map-get($flaticon-map, "share-1");
+}
+.flaticon-investment:before {
+    content: map-get($flaticon-map, "investment");
+}
