@@ -1,0 +1,147 @@
+/* -------------------------------------
+20. Error 404 
+--------------------------------------- */
+
+.shop-header {
+    margin-bottom: 45px;
+    p {
+        float: left;
+    }
+    select {
+        float: right;
+        padding: 8px;
+        border: 1px solid $border-color;
+        position: relative;
+        outline: 0 none;
+        option {
+            background-color: $brand-blue;
+            font-size: 15px;
+            padding: 5px;
+            position: absolute;
+            background-color: $brand-white;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 99;
+        }
+    }
+}
+
+.product {
+    position: relative;
+    border: 1px solid $border-color;
+    @include border-radius(10px);
+    padding: 20px 20px 30px;
+    margin-bottom: 30px;
+    @include transition();
+    .product-img {
+        position: relative;
+        display: block;
+        margin-bottom: 15px;
+        .add_to_cart_button {
+            position: absolute;
+            width: 51px;
+            height: 51px;
+            right: 25px;
+            bottom: -20px;
+            text-align: center;
+            line-height: 51px;
+            text-align: center;
+            background-color: $theme-color;
+            @include border-radius(5px);
+        }
+        .onsale {
+            position: absolute;
+            background-color: $theme-color;
+            color: #fff;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            left: 20px;
+            top: 15px;
+            @include border-radius(5px);
+            padding: 3px 15px;
+        }
+    }
+    .product-summery {
+        padding-top: 30px;
+        h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            @include notebook{
+                font-size: 20px;
+            }
+            a {
+                color: $brand-blue;
+            }
+        }
+        .product-meta {
+            margin: 0px 0 10px;
+            a {
+                color: #626f74;
+                &:hover {
+                    color: $theme-color;
+                }
+            }
+        }
+        .price {
+            color: $theme-color;
+            font-weight: 600;
+            font-size: 20px;
+        }
+    }
+    &:hover {
+        @extend .shadow;
+        border: 1px solid transparent;
+        transform: translateY(-7px);
+    }
+    &:hover .product-summery h2 a {
+            color: $theme-color
+        }
+}
+
+
+.pager {
+    margin: 30px 0 15px;
+}
+
+.pager a,
+.pager span {
+    margin: 0 10px;
+    display: inline-table;
+    color: #999999;
+    font-weight: 500;
+    text-align: center;
+    font-size: 20px;
+    &:hover {
+        color: $theme-color;
+    }
+}
+
+.pager a.next-btn,
+.pager a.prev-btn,
+.pager span.next-btn,
+.pager span.prev-btn {
+    border: 1px solid $border-color;
+    width: 40px;
+    height: 33px;
+    line-height: 33px;
+    border-radius: 50%;
+    display: inline-block;
+    @include border-radius(5px);
+    &:hover{
+        background: $theme-color;
+        border: 1px solid $theme-color;
+        i::before{
+            color: $brand-white;
+        }
+    }
+}
+
+.pager a.next-btn i::before,
+.pager a.prev-btn i::before,
+.pager span.next-btn i::before,
+.pager span.prev-btn i::before {
+    font-size: 14px;
+    color: #999999;
+}

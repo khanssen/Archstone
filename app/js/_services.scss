@@ -1,0 +1,888 @@
+/* -------------------------------------
+6. Services
+--------------------------------------- */
+.capabilities {
+    background: $theme-color;
+    padding: 45px 0px;
+
+    .brand {
+        max-width: 85%;
+        margin: 0 auto;
+    }
+}
+
+.services-section {
+    padding-bottom: 25px;
+    @extend .overly;
+
+    &::before {
+        background: url('../images/service-bg.png')no-repeat center top;
+        top: 6%;
+
+        @include tablet {
+            background-size: contain;
+            background-position: center center;
+        }
+    }
+
+    .section-title {
+        margin: 90px auto 50px;
+        @extend .line-bg;
+
+        @include mobile {
+            max-width: 85%;
+        }
+    }
+
+    .service-footer {
+        max-width: 75%;
+        margin: 90px auto 0;
+        text-align: center;
+
+        @include mobile {
+            max-width: 100%;
+            margin: 70px auto 0;
+        }
+
+        p {
+            margin: 30px 0 50px;
+            font-size: 18px;
+            line-height: 27px;
+        }
+    }
+
+    .capabilities .owl-nav {
+        display: none
+    }
+}
+
+.service-inner {
+    @extend .round10;
+    overflow: hidden;
+
+    .service-card {
+        padding: 60px 50px;
+        background: #FFF;
+        @extend .overly;
+        transition: background .4s ease;
+        cursor: pointer;
+
+        &::before {
+            width: 1px;
+            left: -1px;
+            z-index: -1;
+            height: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #dadada;
+        }
+
+        h3 {
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        p,
+        h3 {
+            @include transition();
+        }
+
+    }
+
+    >div:first-child .service-card,
+    .service-card:hover {
+        background: $theme-color;
+        z-index: 2;
+
+        h3,
+        p {
+            color: $brand-white;
+        }
+
+        &::before {
+            display: none;
+        }
+    }
+
+    @include notebook {
+        .service-card {
+            h3 {
+                font-size: 24px;
+            }
+        }
+    }
+
+    @include tablet {
+        .service-card {
+            padding: 40px 20px 20px;
+
+            h3 {
+                font-size: 20px;
+            }
+        }
+    }
+
+
+}
+
+.service-card {
+    position: relative;
+    @include transition;
+    cursor: pointer;
+    z-index: 2;
+
+
+    .sc-wrap {
+        padding-top: 150px;
+    }
+
+    .card-inner {
+        position: relative;
+        z-index: 1;
+        width: 88%;
+        margin-left: auto;
+        margin-right: 0px;
+        @extend .shadow;
+        @include transition();
+
+        img {
+            width: 100%;
+        }
+    }
+
+    .card-hover {
+        position: absolute;
+        left: -1px;
+        padding: 30px 0 0;
+        background: $theme-color;
+        height: 359px;
+        width: 100%;
+        z-index: 0;
+        transform: translateY(-130px);
+        text-align: center;
+        @include transition;
+
+        &::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            content: "";
+            background: url('../images/sc-bg.png')no-repeat;
+            background-position: left top;
+            width: 100%;
+            height: 100%;
+            @include transition;
+            z-index: -1;
+        }
+
+        span.card-icon {
+            font-size: 71px;
+            display: block;
+            color: $brand-white;
+
+            @include tablet {
+                font-size: 45px;
+            }
+        }
+
+        .readmore {
+            position: absolute;
+            bottom: 40px;
+            @include heading-4;
+            left: 50%;
+            transform: translateX(-50%);
+            color: $brand-white;
+            z-index: 1;
+
+            i {
+                position: relative;
+                top: 4px;
+                left: 5px;
+            }
+        }
+    }
+
+    .card-txt {
+        text-align: center;
+        padding: 30px 20px 20px;
+        background-color: $brand-white;
+
+        @include tablet {
+            padding: 20px 9px 15px;
+        }
+
+        h3 {
+            margin-bottom: 5px;
+            color: $theme-color;
+        }
+
+        p {
+            @include heading-6;
+            font-weight: 600;
+        }
+    }
+
+    &:hover .card-inner,
+    &.active .card-inner {
+        transform: translateY(-130px);
+    }
+
+    &:hover .card-hover,
+    &.active .card-hover {
+        transform: translateY(0px);
+        backface-visibility: visible;
+    }
+
+    &:hover .card-hover::before,
+    &.active .card-hover::before {
+        background-position: 0 120%;
+        left: auto;
+        right: 0
+    }
+    @include mobile {
+        margin-bottom: 45px;
+        .card-hover{
+            height: 340px;
+        }
+    }
+    
+    @include wide_mobile {
+        margin: 0 auto 30px;
+        .card-hover{
+            height: 465px;
+        }
+        h3 {
+            font-size: 25px;
+        }
+    }
+}
+
+.service-2 {
+    @extend .overly;
+    overflow: hidden;
+
+    &::before {
+        background: url('../images/round-shape.png')no-repeat left top / contain;
+        top: 14%;
+        left: -35%;
+    }
+
+    h2 {
+        @extend .line-bg;
+    }
+}
+
+.business-card {
+    position: relative;
+    margin-bottom: 30px;
+
+    .bs-shape {
+        width: 190px;
+        height: 190px;
+        bottom: -13%;
+        text-align: center;
+        right: -12%;
+        position: absolute;
+        background: $theme-color;
+        display: inline-table;
+        @include border-radius(50%);
+
+        i {
+            display: table-cell;
+            vertical-align: middle;
+            color: $brand-white;
+            font-size: 60px;
+            position: relative;
+            top: -14px;
+            left: -12px;
+        }
+    }
+
+    .card-thumb {
+        position: relative;
+        overflow: hidden;
+        @include border-radius(10px);
+
+    }
+
+    .card-hover {
+        position: absolute;
+        left: 0;
+        top: 0px;
+        background: $brand-white;
+        width: 100%;
+        height: 100%;
+        @extend .shadow;
+        text-align: center;
+        padding: 30px;
+        display: table;
+        @include border-radius(10px);
+        overflow: hidden;
+        @include opacity(0);
+        @include transition();
+
+        .bs-shape {
+            position: relative;
+            left: 0;
+            margin-top: -95px;
+            margin-bottom: 19px;
+
+            i {
+                padding-top: 30px;
+                left: 0;
+                top: 7px;
+            }
+        }
+
+        .card-inner {
+            display: table-cell;
+            vertical-align: middle;
+
+            h3 {
+                font-size: 22px;
+                padding-top: 20px;
+            }
+
+            p {
+                line-height: 23px;
+                font-size: 16px;
+                color: $brand-blue;
+                margin: 15px 0 25px;
+            }
+
+            a.readmore {
+                width: 53px;
+                height: 53px;
+                line-height: 63px;
+                background-color: $theme-color;
+                @include border-radius(50%);
+                color: $brand-white;
+                display: inline-block;
+                font-size: 26px;
+            }
+        }
+    }
+
+    &:hover .card-hover {
+        @include opacity(1);
+    }
+
+    @include notebook {
+        .card-hover {
+            padding: 20px 14px;
+
+            .bs-shape {
+                margin-top: -70px;
+                margin-bottom: 0px;
+
+            }
+
+            .card-inner {
+                h3 {
+                    padding-top: 10px;
+                    margin-bottom: 10px;
+                }
+            }
+        }
+
+        .bs-shape {
+            width: 145px;
+            height: 145px;
+            bottom: -9%;
+
+        }
+
+    }
+
+    @include tablet {
+        .card-hover {
+            .bs-shape {
+                margin-top: -95px;
+                margin-bottom: 0;
+                width: 180px;
+                height: 180px;
+            }
+        }
+    }
+
+    @include wide_mobile {
+        max-width: 71%;
+        margin: 0 auto 30px;
+    }
+}
+
+.service-3 {
+    @extend .overly;
+
+    &::before {
+        background: url('../images/service2-bg.png')no-repeat left top / contain;
+        width: 45%;
+
+    }
+
+    .service-card {
+        margin-bottom: 45px;
+        max-width: 325px;
+        @include tablet {
+            margin-bottom: 45px;
+            h3{
+                font-size: 22px;
+            }
+        }
+        @include mobile {
+            margin-bottom: 45px;
+            h3{
+                font-size: 22px;
+            }
+        }
+        .read-btn {
+            font-weight: 700;
+            font-size: 18px;
+
+            i {
+                top: 3px;
+                position: relative;
+            }
+
+            &:hover {
+                color: $theme-color;
+            }
+        }
+    }
+
+    .service-pormo {
+        &::before {
+            background: url('../images/sfranme1.png')no-repeat top right;
+            animation: jumping 5s ease-in-out 2s infinite alternate;
+        }
+
+        &::after {
+            background: url('../images/sframe2.png')no-repeat left center;
+            animation: jumping 6s ease-in-out 2s infinite alternate;
+        }
+    }
+
+
+    .capabilities {
+        background: $background-bg;
+
+        @include mobile {
+            .owl-nav {
+                display: none;
+            }
+        }
+    }
+}
+
+.about-service {
+    @include mobile {
+        margin-top: 50px;
+    }
+
+    @include tablet {
+        .section-title {
+            font-size: 32px;
+        }
+    }
+
+}
+.service-counter {
+    @extend .overly;
+    margin: 45px 0;
+
+    &::before {
+        background: #dddddd;
+        width: 1px;
+        left: 38%;
+        height: 83%;
+        transform: translateY(-50%);
+        top: 43%;
+    }
+
+    .s-count {
+        width: 50%;
+        float: left;
+
+        h3 {
+            color: $theme-color;
+            font-size: 70px;
+            font-family: $font;
+            line-height: 1
+        }
+
+        p {
+            @include heading-4;
+        }
+
+        @include tablet {
+            h3 {
+                font-size: 50px;
+            }
+
+            p {
+                font-size: 15px
+            }
+        }
+
+        @include mobile {
+            h3 {
+                font-size: 50px;
+            }
+
+            p {
+                font-size: 15px
+            }
+        }
+
+        @include wide_mobile {
+            h3 {
+                font-size: 60px;
+            }
+
+            p {
+                font-size: 18px
+            }
+        }
+    }
+
+}
+
+.business-section {
+    @extend .overly;
+
+    &::before {
+        background: url('../images/business-promo.png')no-repeat center right / contain;
+        height: 500px;
+    }
+
+    .about-business {
+        max-width: 88%;
+        @include tablet{
+            max-width: 100%;
+        }
+        h2 {
+            margin-bottom: 30px;
+        }
+
+        ul {
+            margin: 30px 0;
+            list-style: none;
+            padding-left: 25px;
+
+            li {
+                @extend .overly;
+                margin-bottom: 15px;
+                font-size: 17px;
+
+                &::before {
+                    content: "\f127";
+                    left: -28px;
+                    font-family: flaticon;
+                    background: none;
+                    color: $theme-color;
+                }
+            }
+        }
+
+        @include notebook {
+            max-width: 95%;
+        }
+
+        @include mobile {
+            max-width: 100%;
+        }
+    }
+
+    .business-pormo {
+        img {
+            @include border-radius(15px);
+            margin-bottom: 15px;
+            cursor: pointer;
+            @include transition;
+            overflow: hidden;
+
+            &:nth-child(even) {
+                margin-right: 15px;
+            }
+
+            &.sm-img {
+                width: 48%;
+                float: left;
+                height: 240px;
+
+                @include tablet {
+                    width: 45.5%;
+                    margin-bottom: 60px;
+                }
+
+                @include mobile {
+                    margin-bottom: 60px;
+                    &:nth-child(even){
+                        margin-right: 12px;
+                    }
+                }
+            }
+
+            &:hover {
+                opacity: .8;
+            }
+        }
+
+    }
+}
+.business-4{
+    padding-bottom: 100px;
+}
+.growth-section {
+    position: relative;
+}
+
+.growth-card {
+    position: relative;
+    @include transition;
+    @include border-radius(15px);
+    overflow: hidden;
+    margin-bottom: 40px;
+    min-height: 350px;
+    background-size: cover;
+
+    .growth-img {
+        @include border-radius(20px);
+        overflow: hidden;
+
+        img {
+            transform: scale(1);
+            transition: .5s ease-in-out;
+            @include border-radius(20px);
+        }
+    }
+
+    .growth-txt {
+        position: absolute;
+        bottom: 0px;
+        background: rgb(0, 65, 93);
+        background: linear-gradient(0deg, rgba(0, 65, 93, 1) 0%, rgba(255, 255, 255, 0.02) 80%, rgba(0, 0, 0, .0) 100%);
+        padding: 165px 60px 20px;
+        height: 350px;
+        @include transition();
+
+        p {
+            max-width: 80%;
+            color: $brand-white
+        }
+
+        h3 {
+            font-size: 30px;
+            margin-bottom: 20px;
+
+            a {
+                color: $brand-white;
+                transition: color .4s ease-in-out;
+                &:hover{
+                    color: $theme-color;
+                }
+            }
+        }
+
+        >a {
+            color: $theme-color;
+            font-size: 30px;
+
+            i {
+                transition: margin-left .4s ease-in-out;
+            }
+        }
+    }
+
+    &:hover {
+        i {
+            margin-left: 20px;
+        }
+        .growth-img img {
+            transform: scale(1.05);
+        }
+    }
+
+    &.lg-card {
+        max-width: 97.4%;
+        margin-bottom: 0;
+        min-height: 741px;
+        background-size: cover;
+
+        @include notebook {
+            min-height: 650px;
+        }
+
+        @include tablet {
+            max-width: 100%;
+            min-height: 530px;
+        }
+
+        @include mobile {
+            min-height: 350px;
+            max-width: 100%;
+            margin-bottom: 30px;
+        }
+    }
+
+    @include notebook {
+        min-height: 300px;
+
+        .growth-txt {
+            padding-top: 150px;
+        }
+    }
+
+    @include tablet {
+        min-height: 250px;
+        margin-bottom: 30px;
+
+        .growth-txt {
+            padding: 40px 30px 30px;
+            height: 230px;
+        }
+    }
+
+    @include mobile {
+        margin-bottom: 30px;
+
+        .growth-txt {
+            padding: 145px 30px 20px;
+        }
+    }
+}
+
+
+.service-entry {
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 2px solid #e4e4e4;
+    @extend .round10;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    @include transition();
+
+    .service-bg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-color: #6666cc;
+        background-blend-mode: multiply;
+        background-position: center center;
+        @include opacity(0);
+        @include transition();
+    }
+
+    span {
+        width: 116px;
+        height: 116px;
+        background-color: $theme-color;
+        text-align: center;
+        display: table;
+        margin: 0 auto 30px;
+        @include border-radius(50%);
+        @include transition();
+        @extend .overly;
+
+        &::before {
+            background: url('../images/service-icon-bg.png')no-repeat center center;
+            background-size: contain;
+            width: 125%;
+            height: 125%;
+            top: -35px;
+            left: -15px;
+            @include transition();
+            @include opacity(0);
+        }
+
+        i {
+            display: table-cell;
+            vertical-align: middle;
+            font-size: 45px;
+            color: $brand-white;
+            @include transition();
+        }
+    }
+
+    h3 {
+        margin-bottom: 20px;
+
+        a {
+            color: $brand-blue;
+        }
+    }
+
+    p {
+        @include transition();
+    }
+
+    a.readmore {
+        width: 53px;
+        height: 53px;
+        line-height: 63px;
+        background-color: #365A5C;
+        @include border-radius(50%);
+        text-align: center;
+        color: #fff;
+        display: inline-block;
+        font-size: 26px;
+        margin-top: 15px;
+    }
+
+    &:hover {
+        border: 2px solid transparent;
+        transform: translateY(-5px);
+
+        .service-bg {
+            @include opacity(1);
+        }
+
+        h3 a,
+        p {
+            color: $brand-white;
+        }
+
+        span {
+            background: $brand-white;
+
+            &::before {
+                @include opacity(1);
+                top: -15px;
+            }
+
+            i {
+                color: $theme-color;
+            }
+        }
+    }
+}
+
+/*
+    Service Details
+*/
+article.service-content {
+    h1 {
+        font-size: 36px;
+        margin-bottom: 30px;
+        line-height: 48px;
+
+        @include mobile {
+            font-size: 28px;
+            line-height: 1.2;
+        }
+    }
+
+    p {
+        color: #999999;
+        font-size: 18px;
+        line-height: 30px;
+        margin: 40px 0 0;
+    }
+}

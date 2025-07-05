@@ -1,0 +1,198 @@
+/* -------------------------------------
+7. Consultation
+--------------------------------------- */
+.consult-section {
+    background: #FFF;
+    overflow: hidden;
+    @extend .overly;
+    padding-bottom: 180px;
+
+    h2 {
+        font-size: 45px;
+        margin-bottom: 30px;
+        @include notebook {
+            font-size: 34px;
+        }
+    }
+
+    &::before {
+        background: url('../images/tp1.png')no-repeat left top;
+        width: 20%;
+    }
+
+    &::after {
+        background: url('../images/tp2.png')no-repeat right bottom;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        content: "";
+        width: 20%;
+        height: 100%;
+        z-index: -1;
+        background-size: contain;
+
+    }
+
+    .consult-txt {
+        max-width: 85%;
+        margin: 0 auto;
+
+        p {
+            font-size: 18px;
+            line-height: 27px;
+        }
+
+        .custom-btn {
+            margin-top: 30px;
+        }
+    }
+
+    @include tablet {
+        padding: 70px 0;
+
+        .consult-txt {
+            h2 {
+                font-size: 28px;
+            }
+        }
+    }
+
+    @include mobile {
+        padding-bottom: 70px;
+
+        .consult-txt {
+            margin: 140px auto 0;
+            max-width: 100%;
+
+            h2 {
+                font-size: 28px;
+            }
+        }
+    }
+}
+
+.consult-img {
+    position: relative;
+    z-index: 1;
+
+    img {
+        @include border-radius(10px);
+    }
+
+    .img-meta {
+        position: absolute;
+        right: 0;
+        background: $theme-color;
+        color: $brand-white;
+        padding: 35px 70px 10px;
+        bottom: -95px;
+        text-align: center;
+        border-radius: 10px;
+        z-index: -1;
+        @include wide_mobile{
+            right: 50px;
+        }
+        span,
+        p {
+            @include heading;
+            color: $brand-white;
+            font-weight: 600;
+        }
+
+        span {
+            font-size: 40px;
+        }
+    }
+
+    @include desktop {
+        margin-right: 57px;
+    }
+
+    @include tablet {
+        .img-meta {
+            padding: 35px 20px 10px;
+        }
+    }
+
+    @include mobile {
+        .img-meta {
+            padding: 35px 20px 10px;
+        }
+    }
+}
+
+.talk-section {
+    position: relative;
+
+    .talk-bg {
+        min-height: 500px;
+        background-size: cover;
+        background-attachment: fixed;
+
+        .video-block {
+            position: absolute;
+            left: 50%;
+            top: 27%;
+            transform: translate(-50%, -50%);
+
+            .waves {
+                right: -57px;
+                bottom: -60px;
+            }
+        }
+    }
+
+    .talk-txt {
+        padding: 60px;
+        @extend .shadow;
+        position: relative;
+        z-index: 1;
+        background: $brand-white;
+        margin-top: -90px;
+        @extend .round10;
+
+        .section-title {
+            font-size: 36px;
+        }
+
+        p {
+            max-width: 85%;
+            margin: 0 auto 44px;
+            line-height: 28px;
+            font-size: 18px;
+        }
+    }
+
+    @include tablet {
+        .talk-bg {
+           min-height: 400px;
+           background-position: center;
+        }
+        .talk-txt {
+            .section-title {
+                font-size: 32px;
+            }
+
+            p {
+                max-width: 90%;
+                font-size: 17px;
+            }
+        }
+
+    }
+
+    @include mobile {
+        .talk-txt {
+            padding: 45px 20px;
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            p {
+                max-width: 100%;
+                font-size: 17px;
+            }
+        }
+    }
+}

@@ -1,0 +1,75 @@
+/* =======================================================
+
+Template Name: Consulpro - Business Consulting Template
+Author Name: theme-village
+Code By: Tariqul Islam
+Author Url: metariqul91@gmail.com
+Description: A Bootstrap 5 Full and Final HTML Template for Consulting, Business Agency
+Version: 1.0
+License: GPL v2 or later
+License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+Tags: consultation, template, business, bootstrap 5, agency
+
+============================================================*/
+
+
+/* Table of content
+--------------------------------------------
+1. General
+2. Common CSS
+3. Header
+4. Footer
+5. Banner
+6. Services
+7. Consultation
+8. Review
+9. FAQ
+10. Blog
+11. Offer
+12. benefit
+13. About
+14. Team
+15. Testimonial
+16. Portfolio
+17. Sidebar
+18. Contact
+19. Error 404 
+20. Shop
+20.1 Shop Sidebar
+21. Single Product
+22. Cart
+23. Checkout
+24. Form
+
+
+------------------------------------------*/
+
+// File Import
+@import 'mixins';
+@import 'variable';
+@import 'typography';
+@import 'theme';
+@import 'header';
+@import 'footer';
+@import 'banner';
+@import 'services';
+@import 'consult';
+@import 'review';
+@import 'faq';
+@import 'blog';
+@import 'offer';
+@import 'benefit';
+@import 'about';
+@import 'team';
+@import 'testimonial';
+@import 'portfolio';
+@import 'sidebar';
+@import 'contact';
+@import '404';
+@import 'shop';
+@import 'single-product';
+@import 'shop-sidebar';
+@import 'cart';
+@import 'checkout';
+@import 'form';
+@import 'case-study';

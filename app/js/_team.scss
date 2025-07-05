@@ -1,0 +1,577 @@
+/* -------------------------------------
+14. Team
+--------------------------------------- */
+.team-card {
+    text-align: center;
+
+    .team-img {
+        overflow: hidden;
+        max-height: 385px;
+        position: relative;
+
+        img {
+            @include transition();
+        }
+    }
+
+    .team-info {
+        padding: 30px 0 20px;
+        @extend .overly;
+
+        &::before {
+            width: 1px;
+            background: #e6e6e6;
+            left: -1px;
+            height: 60%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        h3 {
+            margin-bottom: 5px;
+            font-size: 24px;
+
+            a {
+                color: $brand-blue;
+            }
+
+        }
+
+        p {
+            color: #9f9f9f;
+        }
+    }
+
+    @include wide_mobile {
+        .team-info {
+            h3 {
+                font-size: 20px;
+            }
+        }
+    }
+
+    &:hover h3 a {
+        color: $theme-color;
+    }
+}
+
+.member-social {
+    position: absolute;
+    text-align: center;
+    top: 100%;
+    width: 100%;
+    z-index: 1;
+    @include opacity(0);
+    @include transition();
+
+    span {
+        width: 40px;
+        height: 40px;
+        background: $theme-color;
+        display: inline-table;
+        @include border-radius(5px);
+        margin: 0 5px;
+        transition: all 0.35s;
+        text-align: center;
+
+        a {
+            display: table-cell;
+            vertical-align: middle;
+            color: $brand-white;
+            padding-top: 3px;
+        }
+    }
+}
+
+.team-index.team {
+    padding-bottom: 40px;
+
+    &::before {
+        display: none;
+    }
+
+    .capabilities {
+        background: #FFF;
+    }
+
+    .team-card {
+        margin-bottom: 60px;
+        float: left;
+        width: 33.33%;
+        background: #fff;
+
+        &:hover .member-social {
+            top: 80%;
+            @include opacity(1);
+        }
+    }
+
+    .row:nth-child(3) div:nth-child(3n-2).team-card .team-info::before {
+        display: none;
+    }
+
+    @include mobile {
+        .team-card {
+            margin-bottom: 30px;
+            width: 100%;
+        }
+    }
+
+    @include wide_mobile {
+        .team-card {
+            margin-bottom: 30px;
+            width: 50%;
+        }
+    }
+}
+
+.team-bg {
+    @extend .overly;
+
+    &::before {
+        background: url('../images/team-bg.png')no-repeat top left / contain;
+    }
+}
+
+.team {
+    padding-bottom: 100px;
+
+    .team-wrap {
+        box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, .10);
+        margin-top: 80px;
+    }
+}
+
+/*
+    Team Details CSS
+*/
+
+.member-info {
+    display: flex;
+
+    >div {
+        width: 45%;
+        padding: 15px 30px;
+        display: table;
+    }
+
+    .m-experience {
+        background-color: $theme-color;
+
+        h3 {
+            font-size: 30px;
+            font-family: $font;
+            font-weight: 600;
+            color: $brand-white;
+            padding-top: 15px;
+            line-height: 38px;
+
+            span {
+                font-size: 40px;
+                width: 48px;
+                display: inline-block;
+            }
+        }
+    }
+
+    .m-contact {
+        width: 55%;
+        background-color: $brand-blue;
+        padding-top: 24px;
+
+        p,
+        a {
+            color: $brand-white;
+            margin-bottom: 5px;
+
+            i {
+                position: relative;
+                top: 3px;
+                margin-right: 2px;
+            }
+        }
+
+    }
+
+    @include notebook {
+        >div {
+            padding: 15px;
+        }
+
+        .m-experience {
+            h3 {
+                font-size: 28px;
+            }
+        }
+
+        .m-contact {
+            p {
+                font-size: 16px;
+            }
+        }
+    }
+
+    @include mobile {
+        margin-bottom: 30px;
+
+        .m-experience {
+            display: none;
+        }
+
+        .m-contact {
+            width: 100%;
+        }
+    }
+
+    @include wide_mobile {
+        margin-bottom: 30px;
+
+        .m-experience {
+            display: block;
+        }
+
+        .m-contact {
+            width: 55%;
+        }
+    }
+}
+
+.team.team-member {
+    .member-cover {
+        padding-right: 20px;
+
+        @include tablet {
+            max-width: 84%;
+            margin-bottom: 30px;
+        }
+
+        @include mobile {
+            padding-right: 0;
+        }
+    }
+}
+
+.team-details {
+    .member-social {
+        @include opacity(1);
+        position: relative;
+        text-align: left;
+    }
+
+    .team-d-head {
+        margin-bottom: 45px;
+    }
+
+    .member-bio {
+        p {
+            margin: 0 0 25px;
+        }
+
+        ul {
+            @include list-clear;
+
+            li {
+                @extend .overly;
+                padding-left: 20px;
+
+                &::before {
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: $theme-color
+                }
+            }
+        }
+
+
+    }
+
+    .member-experience {
+        margin-top: 30px;
+
+        h3 {
+            @extend .overly;
+            padding-left: 20px;
+            font-size: 30px;
+            margin-bottom: 40px;
+            font-family: $font;
+            font-weight: 600;
+
+            &::before {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                top: 50%;
+                transform: translateY(-50%);
+                background: $theme-color;
+            }
+        }
+    }
+}
+
+.skill {
+    padding: 50px 0;
+    overflow: hidden;
+
+    .progress {
+        border: 0 none;
+        box-shadow: none;
+        height: 7px;
+        margin-bottom: 60px;
+        overflow: visible;
+        position: relative;
+        border-radius: 0px;
+        display: block;
+        background-color: #fff;
+        position: relative;
+        z-index: 1;
+
+        &:last-child {
+            margin-bottom: 0px;
+        }
+
+        .meta {
+            font-size: 18px;
+            left: 0;
+            position: absolute;
+            top: -28px;
+            font-weight: 600;
+            color: $brand-blue;
+        }
+
+        .progress-bar {
+            display: block;
+            background: $theme-color;
+            float: left;
+            height: 8px;
+            @extend .round10;
+            overflow: visible;
+
+            span {
+                background: $theme-color;
+                float: right;
+                margin-right: 10px;
+                margin-top: -32px;
+                position: relative;
+                padding: 0 10px;
+                color: $brand-white;
+                font-weight: 600;
+                font-family: $heading-font;
+                @include border-radius(50px);
+                line-height: 1.9;
+
+                &:before,
+                &:after {
+                    border: medium solid transparent;
+                    content: "";
+                    height: 0;
+                    pointer-events: none;
+                    position: absolute;
+                    top: 100%;
+                    width: 0;
+                }
+
+                &:before {
+                    border-top-color: $theme-color;
+                    border-width: 5px;
+                    left: 50%;
+                    margin-left: -5px;
+                }
+            }
+        }
+    }
+}
+
+/* Team Style 2 */
+.team-card {
+    &.team-2 {
+        padding: 20px;
+        @extend .overly;
+
+        &::before {
+            height: 200px;
+            @include border-radius(5px);
+            background: $theme-color;
+            @include transition();
+        }
+
+        .tm-content {
+            background: $brand-white;
+            margin: -50px 20px 0;
+            border-top: transparent;
+            @extend .overly;
+
+            &::before {
+                width: 100%;
+                height: 0;
+                border-bottom: 70px solid #ffffff;
+                border-left: 274px solid transparent;
+                background: transparent;
+                top: -70px;
+                left: 0;
+
+                @include desktop {
+                    border-left: 284px solid transparent;
+                }
+            }
+
+            h3 {
+                font-size: 24px;
+                font-weight: 600;
+                margin-bottom: 5px;
+                @include transition();
+            }
+
+            span {
+                font-size: 14px;
+                color: #999999;
+            }
+
+            @include notebook {
+                &::before {
+                    border-left: 215px solid transparent;
+                }
+            }
+        }
+
+        &:hover {
+            &::before {
+                height: 230px;
+            }
+
+            h3 {
+                color: $theme-color;
+            }
+        }
+
+        @include tablet {
+            padding: 10px;
+            &::before{
+                height: 160px;
+            }
+            .tm-content {
+                margin: -50px 10px 0;
+
+                &::before {
+                    border-left: 175px solid transparent;
+                }
+
+                h3 {
+                    font-size: 20px;
+                }
+            }
+        }
+        @include mobile{
+            margin-bottom: 30px;
+             .tm-content::before {
+                border-left: 270px solid transparent;
+            }
+        }
+    }
+
+    .tm-social {
+        transform: rotate(-14deg);
+        position: relative;
+        margin-top: -78px;
+        padding-bottom: 50px;
+
+        a {
+            display: inline-table;
+            width: 37px;
+            height: 37px;
+            margin-right: 18px;
+            text-align: center;
+            background: $brand-white;
+            color: $theme-color;
+            @include border-radius(4px);
+            border: 1px solid #E9E9E9;
+            @include box-shadow(0px, 2px, 15px, rgba(0, 0, 0, .1));
+            line-height: 37px;
+
+            &:hover {
+                background-color: $theme-color;
+                color: $brand-white;
+                border: 1px solid $theme-color;
+            }
+
+            i {
+                position: relative;
+                top: 3px;
+            }
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+
+        @include notebook {
+            a {
+                margin-right: 10px;
+            }
+        }
+
+        @include tablet {
+            transform: rotate(-21deg);
+            position: relative;
+            margin-top: -74px;
+            padding-bottom: 35px;
+
+            a {
+                width: 34px;
+                height: 33px;
+                margin-right: 6px;
+                font-size: 14px;
+                line-height: 34px;
+                i{
+                    top: 1px;
+                }
+            }
+        }
+    }
+}
+
+.quick-call {
+    border: 1px solid #D6D6D6;
+    display: flex;
+    padding: 40px 60px;
+    max-width: 430px;
+    margin: 0 auto;
+    align-items: center;
+    @extend .overly;
+    @include mobile {
+        padding: 40px 25px;
+    }
+    &::before {
+        background: url('../images/call-bg.png')no-repeat center center / cover;
+    }
+
+    span {
+        width: 58px;
+        height: 58px;
+        display: inline-block;
+        @include border-radius(50%);
+        background-color: $theme-color;
+        text-align: center;
+        line-height: 62px;
+        font-size: 20px;
+        color: $brand-white;
+        margin-right: 20px;
+    }
+
+    .qc-txt {
+        p {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #6666cc;
+        }
+
+        h4 {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: $font;
+        }
+    }
+}

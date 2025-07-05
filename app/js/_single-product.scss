@@ -1,0 +1,351 @@
+/* -------------------------------------
+21. Single Product
+--------------------------------------- */
+.product-gallery {
+    padding-right: 50px;
+}
+
+.single-product {
+    padding: 100px 0 70px;
+}
+
+.entry-summery {
+    .product-meta span {
+        font-size: 22px;
+        font-weight: 600;
+    }
+
+    .product-price {
+        font-size: 28px;
+        font-weight: 600;
+        margin: 20px 0;
+
+        ins {
+            text-decoration: none;
+        }
+
+        del.old-price {
+            opacity: .5;
+            margin-right: 12px;
+        }
+    }
+
+    h1.product-title {
+        font-size: 28px;
+        margin: 20px 0px;
+    }
+
+    .product-ratings {
+        display: flex;
+        margin-top: 5px;
+
+        .star-rating {
+            margin-right: 20px;
+
+            span {
+                margin-right: 5px;
+                color: #fac444;
+            }
+        }
+    }
+
+    button.custom-btn {
+        width: 320px;
+        padding: 17px 0;
+        text-transform: uppercase;
+        font-size: 18px;
+    }
+
+    .product-share {
+        margin-top: 30px;
+
+        span {
+            color: $brand-blue;
+            font-size: 22px;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        a {
+            color: $brand-light;
+            padding-right: 10px;
+
+            &:hover {
+                color: $theme-color;
+            }
+        }
+    }
+}
+
+// product quanty
+.pro-qty {
+    width: 320px;
+    position: relative;
+    margin: 20px 0;
+    @include border-radius(5px);
+
+    .form-control {
+        border: 1px solid $border-color;
+        height: 60px;
+        width: 320px;
+        text-align: center;
+        font-size: 22px;
+        @include border-radius(5px);
+        font-weight: 500;
+    }
+
+    .qty-btn {
+        position: absolute;
+        width: 70px;
+        @include border-radius(5px);
+        height: 100%;
+        top: 50%;
+        border: 1px solid $border-color;
+        transform: translateY(-50%);
+        background: #FFF;
+        left: 0;
+        line-height: 59px;
+        font-size: 22px;
+        padding-left: 27px;
+        cursor: pointer;
+
+        &.dec {
+            left: auto;
+            right: 0;
+        }
+    }
+}
+
+// Shop Tab
+.tabs.wc-tabs {
+    padding-right: 50px;
+
+    .nav {
+        text-align: center;
+        border-bottom: 1px solid $border-color;
+        padding-bottom: 15px;
+
+        .nav-item {
+            margin-right: 80px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+
+        button.nav-link {
+            color: #999999;
+            border: none;
+            padding: 0px;
+            font-weight: 600;
+            font-size: 26px;
+            text-transform: capitalize;
+            background: none;
+            font-family: $heading-font;
+            @extend .overly;
+
+            &::before {
+                height: 1px;
+                top: 40px;
+                width: 30%;
+                background: $theme-color;
+                @include opacity(0);
+                @include transition();
+            }
+
+            &.active,
+            &:hover {
+                color: $brand-blue;
+
+                &::before {
+                    @include opacity(1);
+                    width: 100%;
+                }
+            }
+
+        }
+
+        span.count {
+            padding-left: 10px;
+        }
+
+    }
+
+    .tab-content {
+        padding-top: 20px;
+
+        ul.more-info {
+            margin: 25px 0;
+
+            li {
+                line-height: 34px;
+                font-weight: 500;
+            }
+        }
+        h4{
+            margin-bottom: 20px;
+        }
+    }
+
+
+}
+
+table.shop-table {
+    width: 100%;
+
+    td,
+    th {
+        padding: 10px 20px;
+        border: 1px solid #dddddd
+;
+        vertical-align: middle;
+    }
+}
+
+
+.reviews {
+    .comment-list {
+        list-style: none;
+        margin-top: 25px;
+
+        @include mobile {
+            padding: 20px 0 0px;
+        }
+
+        .comment-thumb {
+            float: left;
+
+            @include mobile {
+                width: 100%;
+                float: none;
+            }
+        }
+
+        .comment-entry {
+            margin-left: 120px;
+
+            @include mobile {
+                margin-left: 0px;
+                margin-top: 20px;
+            }
+
+            .star-rating {
+                span {
+                    i::before {
+                        color: #365A5C;
+                    }
+                }
+            }
+
+            h4 {
+                font-size: 16px;
+                color: $color;
+                display: inline;
+            }
+
+            span {
+                color: #999999
+;
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+// Review Form
+.respond-form {
+    margin-top: 60px;
+
+    .respond-title {
+        font-size: 18px;
+        color: $color;
+    }
+
+    .star-rating {
+        span {
+            cursor: pointer;
+
+            i::before {
+                color: #365A5C;
+            }
+        }
+
+        &.hover-state {
+            span {
+                i::before {
+                    color: $color;
+                }
+
+                &.active i::before {
+                    color: #365A5C;
+                }
+            }
+        }
+    }
+
+    form {
+        margin-top: 30px;
+
+        input,
+        textarea {
+            border: none;
+            background: #FFF;
+            font-size: 14px;
+            color: #c1c1c1;
+
+            &::placeholder {
+                color: #c1c1c1;
+            }
+        }
+
+        textarea {
+            height: 180px;
+        }
+
+        p.comment-form-cookies-consent {
+            color: #c1c1c1;
+            font-size: 14px;
+
+            input#wp-comment-cookies-consent {
+                width: auto;
+                margin-right: 5px;
+            }
+
+            label {
+                cursor: pointer;
+            }
+        }
+
+        .custom-btn {
+            border: none;
+            padding: 14px 42px;
+            margin-top: 20px;
+        }
+    }
+}
+
+// Related Products
+
+.related-products {
+    padding: 45px 0 215px;
+
+    h2.related-title {
+        margin-bottom: 50px;
+        border-top: 1px solid $border-color;
+        padding-top: 45px;
+    }
+
+    .product-summery {
+        h2.product-title {
+            margin-bottom: 5px;
+        }
+        .product-meta {
+            margin-bottom: 20px;
+        }
+
+        .star-rating {
+            margin-top: 20px;
+        }
+    }
+}

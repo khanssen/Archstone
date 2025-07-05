@@ -1,0 +1,286 @@
+/* -------------------------------------
+23. Checkout
+--------------------------------------- */
+section.checkout-section {
+    padding: 45px 0 100px;
+}
+
+div#checkoutCouponform {
+    padding: 35px 30px;
+    border-top: 4px solid rgba(0, 0, 0, .2);
+    background: #f4f4f4;
+}
+
+.checkout-differentform {
+    display: none;
+    overflow: hidden;
+}
+
+.checkout-coupon {
+    h6 {
+        color: $color;
+        font-weight: 400;
+        margin-bottom: 20px;
+        font-size: 14px;
+
+        button {
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: $theme-color;
+            border-bottom: 1px solid;
+
+        }
+    }
+
+    .checkout-couponform {
+        max-width: 40%;
+
+        position: relative;
+
+        @include mobile {
+            max-width: 100%;
+        }
+
+        .custom-btn {
+            border: none;
+            padding: 9px 25px;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    }
+
+}
+
+
+.address2-form {
+
+    input[type=checkbox],
+    input[type=radio] {
+        width: auto;
+        float: left;
+        display: table;
+        margin-top: 6px;
+    }
+}
+
+.container-check {
+    display: block;
+    position: relative;
+    padding-left: 25px;
+    line-height: 1.7;
+    margin-bottom: 8px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+form.form.checkout-form {
+    padding-top: 60px;
+
+    .section-title {
+        font-size: 30px;
+        margin-bottom: 40px;
+    }
+
+    .form-inner {
+        overflow: hidden;
+    }
+
+    .checkout-billingform {
+        padding: 60px 30px 30px;
+        background: #dddddd
+;
+        border: 1px solid #c1c1c1;
+        margin-right: 20px;
+        @include tablet {
+            margin-bottom: 60px;
+        }
+        @include mobile {
+            margin-bottom: 60px;
+        }
+        .form-group.address2-form {
+            margin: 0;
+        }
+        .form-group {
+            label {
+                font-size: 16px;
+                color: #999999;
+                font-weight: 500;
+                padding-bottom: 10px;
+            }
+
+            input,
+            select {
+                background-color: #fff;
+                border: 1px solid #cecece;
+                @include border-radius(5px);
+                padding: 13px 20px;
+            }
+
+            & select {
+                padding: 13px 20px;
+                width: 50%;
+                display: block;
+                color: #aeaeae;
+                outline: 0 none;
+                @include mobile {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+//Cart Checkout
+.order-inner {
+    background: #dddddd
+;
+    border: 1px solid #c1c1c1;
+    padding: 30px 40px;
+}
+
+.cart-total.pay-cart ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-content: space-between;
+
+    li {
+        font-weight: 700;
+        color: $color;
+    }
+
+    &.cart-list {
+        display: block;
+        padding: 30px 0 10px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid $border-color;
+
+        li {
+            display: block;
+            font-weight: 500;
+            color: #999999;
+            font-size: 16px;
+            line-height: 38px;
+
+            span {
+                float: right;
+            }
+        }
+    }
+
+    &:first-child {
+        li {
+            font-size: 22px;
+        }
+    }
+}
+
+.cart-total.pay-cart {
+    p {
+        font-size: 18px;
+        color: $brand-blue;
+        font-weight: 500;
+
+        span {
+            float: right;
+        }
+
+        &:last-child {
+            padding: 10px 0px;
+            border-top: 1px solid $border-color;
+            font-size: 22px;
+
+            span {
+                font-weight: 700;
+            }
+        }
+    }
+}
+
+.checkout-payment {
+    padding-top: 25px;
+
+    h4 {
+        margin-bottom: 20px;
+        font-size: 22px;
+    }
+
+    input[type=radio]:checked~label {
+        color: $brand-blue;
+
+        &::before {
+            content: "";
+            color: $brand-blue;
+            border-color: $brand-blue;
+        }
+    }
+
+    input[type=checkbox],
+    input[type=radio] {
+        visibility: hidden;
+        opacity: 0;
+        display: inline-block;
+        vertical-align: middle;
+        width: 0;
+        height: 0;
+        display: none;
+    }
+}
+
+.payment-checkbox {
+    position: relative;
+    margin-top: 10px;
+    input {
+        display: inline-block;
+        width: 12px;
+        position: absolute;
+        border: 1px solid $border-color;
+        top: 7px;
+    }
+}
+
+.place-order {
+    margin-top: 30px;
+
+    .custom-btn {
+        width: 100%;
+        border: none;
+        padding: 15px 20px;
+    }
+}
+
+.option-field {
+    border-bottom: 1px solid #dddddd;
+    padding: 5px 0;
+
+    label {
+        @extend .overly;
+        padding-left: 25px;
+        font-size: 15px;
+        font-weight: 600;
+
+        &::before {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 3px solid $border-color;
+            background: transparent;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    }
+
+    .pay-option-content {
+        display: none;
+        padding-left: 25px;
+        padding-top: 10px;
+        font-weight: 400;
+        font-size: 15px;
+    }
+}

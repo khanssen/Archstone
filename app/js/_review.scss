@@ -1,0 +1,549 @@
+/* -------------------------------------
+8. Review
+--------------------------------------- */
+.status-section {
+    padding-bottom: 280px;
+    background: $brand-blue;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-blend-mode: multiply;
+}
+
+.status-card {
+    background-color: #CCCCFC;
+    text-align: center;
+    padding: 50px 40px;
+    @extend .round10;
+
+    label {
+        @include heading-4;
+        color: $brand-white;
+
+        img {
+            margin-right: 10px;
+        }
+    }
+
+    h3 {
+        font-size: 80px;
+        font-family: $font;
+        font-weight: 700;
+        color: $theme-color;
+    }
+
+    p {
+        color: $brand-white;
+    }
+
+    @include notebook {
+        label {
+            font-size: 19px;
+        }
+
+        h3 {
+            font-size: 60px;
+        }
+    }
+
+    @include tablet {
+        padding: 40px 15px;
+
+        label {
+            font-size: 19px;
+
+            img {
+                max-width: 36px;
+                margin-right: 6px;
+            }
+        }
+
+        h3 {
+            font-size: 60px;
+        }
+    }
+
+    @include mobile {
+        margin-bottom: 30px;
+    }
+}
+
+.review-section {
+    margin-top: -185px;
+    @extend .overly;
+    z-index: 2;
+    overflow-x: hidden;
+    padding-bottom: 115px;
+
+    &::before {
+        background: url('../images/left-rev-bg.png')no-repeat;
+        left: -34%;
+        width: 75%;
+        background-position: 0 68%;
+    }
+
+    &::after {
+        background: url('../images/right-rev-bg.png')no-repeat;
+        right: -40%;
+        position: absolute;
+        content: "";
+        width: 70%;
+        height: 100%;
+        bottom: 0;
+        z-index: -1;
+        background-position: 0 100%;
+    }
+
+    .owl-nav {
+        button {
+            border-radius: 50%;
+            left: -22px;
+
+            &.owl-next {
+                right: -22px;
+                left: auto;
+            }
+        }
+
+        i {
+            font-size: 45px;
+            position: relative;
+            left: -12px;
+
+            &::before {
+
+                font-weight: 700 !important;
+            }
+        }
+    }
+
+    @include notebook {
+        &::before {
+            background-size: contain;
+        }
+    }
+
+    @include tablet {
+        &::before {
+            background-size: contain;
+        }
+    }
+
+    @include mobile {
+        &::before {
+            background-size: contain;
+        }
+    }
+
+}
+
+.rv-feature {
+    @extend .shadow;
+    @extend .round10;
+
+    .rv-txt {
+        padding: 50px 75px 20px;
+
+        .section-title {
+            font-size: 42px;
+        }
+
+        @include notebook {
+            padding: 40px 60px 20px;
+
+            .section-title {
+                font-size: 34px;
+                margin-bottom: 15px;
+            }
+        }
+
+        @include tablet {
+            padding: 40px 20px 20px;
+
+            .section-title {
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+        }
+
+        @include mobile {
+            padding: 40px 20px 30px;
+
+            .section-title {
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+        }
+
+    }
+
+    .rv-thumb {
+        overflow: hidden;
+
+        @include wide_mobile {
+            text-align: center;
+            padding: 5px;
+        }
+
+        @include tablet {
+            img {
+                height: 330px;
+            }
+        }
+    }
+}
+
+.review-location {
+    padding-top: 100px;
+
+    .owl-nav .owl-prev i {
+        font-size: 45px;
+        position: relative;
+        left: 12px;
+    }
+}
+
+.world-map {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 60px;
+
+}
+
+.carousel-indicators {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    padding: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    list-style: none;
+
+    button {
+        position: absolute;
+    }
+}
+
+.carousel-indicators button:nth-child(1) {
+    left: 0;
+    bottom: 650px;
+
+    @include tablet {
+        bottom: 550px;
+    }
+
+    @include notebook {
+        bottom: 600px;
+        left: -8%;
+    }
+
+    @include mobile {
+        bottom: 490px;
+        left: -2%
+    }
+}
+
+.carousel-indicators button:nth-child(2) {
+    bottom: 660px;
+    left: 25%;
+
+    @include tablet {
+        bottom: 560px;
+    }
+
+    @include notebook {
+        bottom: 610px;
+        left: 16%;
+    }
+
+    @include mobile {
+        bottom: 480px;
+    }
+}
+
+.carousel-indicators button:nth-child(3) {
+    bottom: 390px;
+    left: 9%;
+
+    @include notebook {
+        bottom: 330px;
+        left: 8%;
+    }
+
+    @include mobile {
+        left: -20%;
+    }
+}
+
+.carousel-indicators button:nth-child(4) {
+    bottom: 380px;
+    left: 75%;
+
+    @include tablet {
+        bottom: 330px;
+    }
+
+    @include mobile {
+        left: 50px;
+    }
+}
+
+.carousel-indicators [data-bs-target] {
+    box-sizing: content-box;
+    width: 53px;
+    background-size: cover;
+    height: 53px;
+    border: 2px solid $theme-color;
+    @include border-radius(50%);
+    opacity: 1;
+    position: relative;
+    z-index: 1;
+
+    &::after {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: -1;
+        display: block;
+        content: '';
+        width: 0;
+        height: 0;
+        background: rgba(244, 70, 47, .15);
+        border-radius: 100%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        opacity: 0;
+    }
+
+    &.active::after,
+    &:hover::after {
+        -webkit-animation: circle 2s infinite;
+        animation: circle 2s infinite;
+
+    }
+}
+
+@-webkit-keyframes circle {
+    0% {
+        opacity: 1;
+    }
+
+    40% {
+        opacity: 1;
+    }
+
+    100% {
+        width: 200%;
+        height: 200%;
+        opacity: 0;
+    }
+}
+
+@keyframes circle {
+    0% {
+        opacity: 1;
+    }
+
+    40% {
+        opacity: 1;
+    }
+
+    100% {
+        width: 200%;
+        height: 200%;
+        opacity: 0;
+    }
+}
+
+.review-wrapper {
+    max-width: 72%;
+    margin: 0px auto 20px;
+    @extend .overly;
+    @extend .shadow;
+    @extend .round10;
+    background: $brand-white;
+
+    &::before {
+        background: url('../images/quotes-icon.png')no-repeat center bottom;
+        top: 15%;
+    }
+
+    .single-review {
+        padding: 60px 160px 80px;
+
+        .name {
+            margin-bottom: 5px;
+            font-size: 26px;
+            font-family: $font;
+            font-weight: 700;
+
+        }
+
+        span {
+            color: $theme-color;
+            font-size: 20px;
+        }
+
+        @include notebook {
+            padding: 60px 90px 30px;
+        }
+
+        @include tablet {
+            padding: 60px 90px 30px;
+        }
+
+        @include mobile {
+            padding: 60px 30px 30px;
+
+            .name {
+                font-size: 24px;
+            }
+        }
+
+        @include wide_mobile {
+            padding: 60px 50px 30px;
+
+            .name {
+                font-size: 24px;
+            }
+        }
+    }
+
+    #revCarousel>button {
+        @extend .overly;
+        position: absolute;
+        left: -22px;
+        opacity: 1;
+        color: $brand-blue;
+
+        &::before {
+            width: 44px;
+            height: 44px;
+            top: 50%;
+            transform: translateY(-50%);
+            @include border-radius(50%);
+            background-color: #ff4930;
+            left: 0px;
+
+        }
+
+        &.carousel-control-next {
+            right: -22px;
+            left: auto;
+
+            &::before {
+                left: auto;
+                right: 0px;
+            }
+
+            i {
+                left: auto;
+                right: -24px;
+            }
+        }
+
+        i {
+            font-size: 50px;
+            position: relative;
+            top: 0px;
+            left: -24px;
+        }
+    }
+
+    @include tablet {
+        max-width: 90%;
+
+        #revCarousel>button i {
+            left: -10px;
+        }
+
+        #revCarousel>button.carousel-control-next i {
+            right: -10px;
+        }
+    }
+
+    @include mobile {
+        max-width: 90%;
+        top: 0;
+
+        #revCarousel>button i {
+            left: 10px;
+            font-size: 45px;
+        }
+
+        #revCarousel>button.carousel-control-next i {
+            right: 10px;
+        }
+    }
+
+}
+
+/* 
+.review-wrap {
+    
+} */
+
+.client-quote {
+    @extend .overly;
+
+    &::before {
+        background: transparent;
+        border: 1px solid $border-color;
+        top: auto;
+        bottom: 0;
+        height: 67%;
+    }
+
+    p {
+        color: #999999;
+        font-size: 15px;
+    }
+
+    .quote-head {
+        top: -30px;
+        @extend .overly;
+
+        &::before {
+            background: $theme-color;
+            height: 50%;
+            top: auto;
+            bottom: 0;
+        }
+
+        &::after {
+            position: absolute;
+            content: "";
+            left: 0;
+            top: 52px;
+            border-bottom: 56px solid $theme-color;
+            border-right: 308px solid transparent;
+            z-index: -1;
+
+            @include desktop {
+                border-right: 318px solid transparent;
+            }
+
+            @include notebook {
+                border-bottom: 55px solid #365A5C;
+                border-right: 249px solid transparent;
+            }
+        }
+
+        .cl-meta {
+            @extend .overly;
+
+            &::before {
+                content: "\f115";
+                font-family: flaticon;
+                background: transparent;
+                left: auto;
+                right: 0;
+                width: auto;
+                font-size: 50px;
+                color: #fff;
+                top: 12px
+            }
+        }
+    }
+}

@@ -1,0 +1,371 @@
+/* -------------------------------------
+12. benefit
+--------------------------------------- */
+
+.benefit-section {
+    @extend .overly;
+    overflow: hidden;
+
+    &::before {
+        height: 71.5%;
+        transform: translateY(-50%);
+        top: 50%;
+    }
+
+    &::after {
+        position: absolute;
+        content: "";
+        background: url('../images/weaving.png')no-repeat;
+        top: 15%;
+        left: 0;
+        height: 100%;
+        width: 27%;
+        background-size: contain;
+        z-index: -1;
+    }
+
+    .benefit-img {
+        left: 6%;
+    }
+
+    @include desktop {
+        &::before {
+            height: 66.5%;
+        }
+
+        .benefit-img {
+            left: 39%;
+            width: 145%;
+        }
+
+        .benefit-txt ul {
+            margin: 40px 0 40px;
+
+            li {
+                margin-bottom: 18px;
+            }
+        }
+
+        .custom-btn {
+            margin-top: 30px;
+        }
+    }
+
+    @include mobile {
+        &::before {
+            height: 93.5%;
+        }
+
+        .benefit-img {
+            left: auto;
+        }
+    }
+
+}
+
+.benefit-txt {
+    padding: 110px 0 0;
+
+    @include mobile {
+        padding: 50px 0 0;
+    }
+
+    .section-title {
+        color: $brand-white;
+    }
+
+    ul {
+        @include list-clear;
+        margin: 30px 0 40px;
+
+        li {
+            color: $brand-white;
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 20px;
+            font-size: 17px;
+
+            &::before {
+                position: absolute;
+                content: ">";
+                left: 0px;
+            }
+        }
+    }
+}
+
+.benefit-img {
+    position: relative;
+    width: 122%;
+
+    img {
+        @extend .round10;
+    }
+}
+
+.benefit {
+    overflow: hidden;
+    padding-bottom: 120px;
+    @extend .overly;
+
+    &::before {
+        background: #fff;
+        height: 78%;
+    }
+
+    .benefit-img {
+        @extend .consult-img;
+        width: 115%;
+        left: 90px;
+        top: 15px;
+
+        img {
+            @include border-radius(20px);
+        }
+
+        .img-meta {
+            position: absolute;
+            left: -88px;
+            padding: 30px;
+            bottom: 30px;
+            max-width: 172px;
+            z-index: 1;
+            font-size: 35px;
+
+            p {
+                font-size: 16px;
+                font-weight: 400;
+                font-family: $font;
+            }
+        }
+    }
+
+    @include desktop {
+        .benefit-img {
+            left: 56%;
+        }
+    }
+
+    @include notebook {
+        &::before {
+            height: 90%;
+        }
+
+        .benefit-img {
+            left: 75px;
+        }
+    }
+
+    @include tablet {
+        &::before {
+            height: 94%;
+        }
+
+        .benefit-img {
+            left: 10%;
+            width: 100%;
+            margin-bottom: 80px;
+        }
+    }
+
+    @include mobile {
+        &::before {
+            height: 92%;
+        }
+
+        .benefit-img {
+            margin-bottom: 60px;
+            width: 100%;
+            left: 55px;
+
+            .img-meta {
+                padding: 20px;
+                max-width: 145px;
+                left: -60px;
+            }
+        }
+    }
+}
+
+.benefit-options {
+    margin: 60px 0;
+
+    .single-benefit {
+        @include clear;
+        margin-bottom: 30px;
+
+        span {
+            float: left;
+            width: 80px;
+            height: 80px;
+            background: $theme-color;
+            text-align: center;
+            display: table;
+            margin-top: 5px;
+            @extend .round10;
+
+            i {
+                font-size: 38px;
+                color: $brand-white;
+                display: table-cell;
+                vertical-align: middle;
+            }
+        }
+
+        .sb-txt {
+            margin-left: 100px;
+
+            h3 {
+                font-size: 30px;
+
+                @include mobile {
+                    font-size: 24px;
+                }
+            }
+        }
+    }
+}
+
+
+.business-thumb {
+    .service-cta {
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 85%;
+        background: $theme-color;
+
+        .video-block {
+            margin: 0 auto;
+            left: 56%;
+            transform: translateX(-50%);
+
+            .waves {
+                background: rgba(255, 255, 255, .7);
+            }
+
+            .video {
+                background: $brand-white;
+                color: $theme-color;
+            }
+
+        }
+    }
+}
+
+.business-pormo {
+    .service-counter::before {
+        left: 50%;
+        height: 53%;
+        top: 50%;
+    }
+}
+
+.growth-4 {
+    background: $brand-blue;
+    position: relative;
+
+    .anim-img {
+        animation: none;
+        top: 25%;
+        left: 0px;
+
+        &.anim-2 {
+            top: 85%;
+            left: auto;
+        }
+    }
+
+    .growth-txt {
+       
+        .section-intro.intro-2 {
+            max-width: 100%;
+            text-align: left;
+            margin-bottom: 50px;
+
+            .section-title {
+                max-width: 100%;
+                color: $brand-white;
+
+                &::before {
+                    left: 7%;
+                    top: 120px;
+                    @include mobile{
+                        left: 12%;
+                        top: 90px;
+                    }
+                }
+
+                @include tablet {
+                    font-size: 32px;
+                    &::before {
+                        left: 13%;
+                        top: 90px;
+                    }
+                }
+            }
+
+        }
+
+        p {
+            color: $brand-white;
+        }
+        @include mobile {
+            margin-top: 50px;
+           
+        }
+    }
+
+    .skill {
+        margin-top: 30px;
+
+        .progress {
+            border-radius: 5px;
+            background: #FBE9E7;
+            height: 9px;
+
+            .progress-bar {
+                border-radius: 50px;
+                height: 9px;
+            }
+
+            .meta {
+                color: $brand-white;
+                top: -35px;
+                @include tablet{
+                    font-size: 13px;
+                    top: -25px;
+                }
+            }
+        }
+    }
+
+}
+
+.growth-frame {
+    position: relative;
+
+    .growth-status {
+        background: $theme-color;
+        position: absolute;
+        padding: 8px 38px;
+        right: 0;
+        bottom: 0;
+
+        h4,
+        p {
+            color: $brand-white;
+            margin: 0;
+        }
+
+        h4 {
+            font-size: 36px;
+            letter-spacing: 2px;
+
+            span {
+                margin-right: 5px;
+            }
+        }
+    }
+}
