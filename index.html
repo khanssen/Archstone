@@ -365,26 +365,24 @@
 <script src="/js/user-agent.js"></script>
 <script src="/lazysizes.min.js" async></script>
 
-<!-- Initialize Counter -->
-$(document).ready(function () {
-  let counted = false;
-  $(window).on('scroll', function () {
-    let counterTop = $('.service-counter').offset().top;
-    let scrollTop = $(window).scrollTop();
-    let windowHeight = $(window).height();
+<script>
+  $(document).ready(function () {
+    let counted = false;
+    $(window).on('scroll', function () {
+      let counterTop = $('.service-counter').offset().top;
+      let scrollTop = $(window).scrollTop();
+      let windowHeight = $(window).height();
 
-    if (!counted && scrollTop + windowHeight > counterTop) {
-      $('.counter').each(function () {
-        $(this).counterUp({
+      if (!counted && scrollTop + windowHeight > counterTop + 50) {
+        $('.counter').counterUp({
           delay: 10,
           time: 1000
         });
-      });
-      counted = true;
-    }
+        counted = true;
+      }
+    });
   });
-});
-
+</script>
 
 
 
