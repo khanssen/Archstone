@@ -35,5 +35,13 @@
         .done(done_func)
         .fail(fail_func);
     });
+
+$(document).ready(function () {
+  $('.counter').counterUp({
+    delay: 10,
+    time: 1000
+  });
+});
+
     
 })(jQuery);
