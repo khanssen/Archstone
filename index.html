@@ -335,26 +335,44 @@
 
 
 
-<!--Javascript
+<!-- JavaScript
 ========================================================-->
-    <script src="/js/jquery-3.7.1.min.js"></script>
-    <script src="/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/jquery.scrollUp.min.js"></script>
-    <script src="/js/owl.carousel.min.js"></script>
-    <script src="/js/wow.min.js"></script>
-    <script src="/js/waypoints.js"></script>
-    <script src="/js/jquery.counterup.min.js"></script>
-    <script src="/js/venobox.min.js"></script>
-    <script src="/js/isotope.pkgd.min.js"></script>
-    <script src="/js/jquery-ui.min.js"></script>
-    <script src="/js/jquery.ajaxchimp.min.js"></script>
 
-    <!-- Custom Js -->
+<!-- Core Dependencies -->
+<script src="/js/jquery-3.7.1.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
 
-    <script src="/js/custom.js"></script>
-    <script src="/js/user-agent.js"></script>
-  <script src="/lazysizes.min.js" async></script>
-  <!-- Images End -->
+<!-- UI Plugins -->
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/venobox.min.js"></script>
+<script src="/js/isotope.pkgd.min.js"></script>
+<script src="/js/wow.min.js"></script>
+<script src="/js/jquery.scrollUp.min.js"></script>
+<script src="/js/jquery.ajaxchimp.min.js"></script>
+
+<!-- Counter & Animation Dependencies -->
+<script src="/js/waypoints.js"></script>
+<script src="/js/jquery.counterup.min.js"></script>
+
+<!-- Custom and Utility Scripts -->
+<script src="/js/custom.js"></script>
+<script src="/js/user-agent.js"></script>
+<script src="/lazysizes.min.js" async></script>
+
+<!-- Initialize Counter -->
+<script>
+  $(document).ready(function () {
+    $('.counter').counterUp({
+      delay: 10,
+      time: 1000
+    });
+  });
+</script>
+
+
+
+
 </body>
 
 
