@@ -258,17 +258,20 @@
                     <div class="col-md-6 col-xl-6 order-md-1">
                         <div class="service-promo frame-bg">
                             <img src="/images/service-promo.png" width="288" height="288" alt="">
-                        </div>
                     </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="about-service">
-                            <h3 class="section-title">Unparalleled experience<span class="color">.</span></h3>
-                            <p>Assessment services, architecture and defense-in-depth, compliance support.</p>
-      				 <div class="service-counter clearfix">
-    					<div class="s-count">
-     					   <h3><span class="counter" data-suffix="%">100</span>%</h3>
-      				  <p>success rate in FedRAMP Accreditation</p>
- 			   </div>
+                 </div>
+
+              <div class="service-counter clearfix">
+  		<div class="s-count">
+    			<h3>100%</h3>
+   			 <p>success rate in FedRAMP Accreditation</p>
+ 		 </div>
+  <div class="s-count">
+    <h3>23</h3>
+    <p>years of cybersecurity consulting experience.</p>
+  </div>
+</div>
+
    		 <div class="s-count">
         <h3><span class="counter">23</span></h3>
         <p>years of cybersecurity consulting experience.</p>
@@ -364,25 +367,6 @@
 <script src="/js/custom.js"></script>
 <script src="/js/user-agent.js"></script>
 <script src="/lazysizes.min.js" async></script>
-
-<script>
-  $(document).ready(function () {
-    let counted = false;
-    $(window).on('scroll', function () {
-      let counterTop = $('.service-counter').offset().top;
-      let scrollTop = $(window).scrollTop();
-      let windowHeight = $(window).height();
-
-      if (!counted && scrollTop + windowHeight > counterTop + 50) {
-        $('.counter').counterUp({
-          delay: 10,
-          time: 1000
-        });
-        counted = true;
-      }
-    });
-  });
-</script>
 
 
 
