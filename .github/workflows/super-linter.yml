@@ -12,14 +12,21 @@ on:
   pull_request:
     branches: [ "main" ]
 jobs:
-  run-lint:
+  lint:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
-          fetch-depth: 0
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run Super-Linter
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          FILTER_REGEX_EXCLUDE: _headers.*
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Lint Code Base
         uses: github/super-linter@v4
