@@ -370,7 +370,13 @@ states.forEach(state => {
 });
 
 dropdown.addEventListener("change", function() {
-  const selectedValue = dropdown.value;
-  // Redirect to the respective state page
-  window.location.href = `${selectedValue}.html`;
+  const selectedValue = dropdown.value.toLowerCase(); // Normalize the input
+  
+  // Validate selectedValue against the predefined states
+  if (states.map(state => state.toLowerCase()).includes(selectedValue)) {
+      // Redirect to the respective state page
+      window.location.href = `${selectedValue}.html`;
+  } else {
+      console.error("Invalid state selected.");
+  }
 });
