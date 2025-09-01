@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Test DuckDuckGo Search</title></head>
+  <body>
+    <h2>DuckDuckGo Site Search Demo</h2>
+    <form action="https://archstonesecurity.com" method="get" target="_blank" rel="noopener">
+      <input type="search" name="q" placeholder="Search this site…" required>
+      <input type="hidden" name="sites" value="example.com">
+      <button type="submit">Search</button>
+    </form>
+  </body>
+</html>

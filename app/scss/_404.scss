@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* -------------------------------------
 19. Error 404 
 --------------------------------------- */
@@ -21,4 +22,29 @@
     @include mobile {
         max-width: 90%;
     }
+=======
+/* -------------------------------------
+19. Error 404 
+--------------------------------------- */
+.error-txt {
+    max-width: 60%;
+    text-align: center;
+    margin: 50px auto 0;
+
+    h2 {
+        font-size: 34px;
+        margin-bottom: 30px;
+    }
+
+    p {
+        font-size: 18px;
+    }
+
+    .custom-btn {
+        margin-top: 40px;
+    }
+    @include mobile {
+        max-width: 90%;
+    }
+>>>>>>> f531e83 (Initial commit)
 }
