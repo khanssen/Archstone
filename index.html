@@ -356,6 +356,22 @@
 <script src="/js/custom.js"></script>
 <script src="/js/user-agent.js"></script>
 
+<script>
+(function(){
+  function hidePreloader(){var p=document.getElementById('preloader'); if(p){p.style.display='none'; p.remove();}}
+  window.addEventListener('load', hidePreloader);
+  setTimeout(hidePreloader, 3000); // safety net if 'load' never fires
+
+  // Only init Owl if it actually loaded
+  if (window.jQuery && jQuery.fn && jQuery.fn.owlCarousel) {
+    jQuery(function($){
+      $('.home-slide-2').owlCarousel({
+        items:1, loop:true, autoplay:true, autoplayHoverPause:true, dots:true, nav:false
+      });
+    });
+  }
+})();
+</script>
 
 
 
