@@ -1,0 +1,211 @@
+/* -------------------------------------
+16. Portfolio
+--------------------------------------- */
+.portfolio-menu {
+    margin-bottom: 70px;
+    text-align: left;
+
+    button {
+        background: transparent;
+        border: none;
+        padding: 10px 20px;
+        font-size: 20px;
+        @include border-radius(40px);
+        @include transition();
+
+        &.active,
+        &:hover,
+        &:focus {
+            background-color: $theme-color;
+            color: $brand-white;
+
+        }
+    }
+
+    @include tablet {
+        button {
+            font-size: 18px;
+            padding: 8px 14px;
+        }
+    }
+
+    @include mobile {
+        margin-bottom: 45px;
+
+        button {
+            font-size: 18px;
+            margin-bottom: 10px;
+            padding: 8px 14px;
+        }
+    }
+}
+
+.grid {
+    @include clear;
+}
+
+.work-entry {
+    position: relative;
+    margin-bottom: 30px;
+    @include border-radius(10px);
+    overflow: hidden;
+    z-index: 1;
+    cursor: pointer;
+
+    span.pt-meta {
+        position: absolute;
+        display: inline-block;
+        padding: 3px 15px;
+        background: $theme-color;
+        color: $brand-white;
+        left: 15px;
+        top: 15px;
+        @include border-radius(20px);
+    }
+
+    img {
+        transform: scale(1);
+        @include transition();
+    }
+
+    &:hover img {
+        transform: scale(1.05);
+    }
+}
+
+.masion-portfolio {
+    .work-entry img {
+        width: 100%;
+    }
+}
+
+.grid-sizer,
+.item {
+    background-clip: content-box;
+    width: 33.33%;
+
+    @include mobile {
+        width: 100%;
+    }
+
+    @include wide_mobile {
+        width: 50%;
+    }
+}
+
+/* 2 columns wide */
+.item--width2 {
+    width: 66.6666666667%;
+
+    @include mobile {
+        width: 100%;
+    }
+
+    @include wide_mobile {
+        width: 50%;
+    }
+}
+
+/*Single Portfolio Details*/
+.portf-head {
+    position: relative;
+    z-index: 1;
+    .port-widget {
+        position: absolute;
+        bottom: -30%;
+        right: 0;
+        background: $theme-color;
+        @include tablet {
+            bottom: -20%;
+        }
+        @include mobile {
+            position: relative;
+            bottom: auto;
+            margin: 15px 0;
+        }
+        ul {
+            @include list-clear;
+
+            padding: 20px 30px;
+
+            li {
+                display: block;
+                font-family: $heading-font;
+                color: $brand-white;
+                font-weight: 500;
+                font-size: 24px;
+                border-bottom: 1px solid #ff8777;
+                padding: 13px 30px;
+
+                span {
+                    display: block;
+                    font-size: 16px;
+                    font-family: $font;
+                    margin-top: 7px;
+                }
+
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
+        }
+
+        .port-share {
+            display: flex;
+            background: $brand-blue;
+            padding: 30px 30px 20px;
+            align-items: center;
+
+            h5 {
+                width: 120px;
+                color: $brand-white;
+                font-weight: 500;
+                font-size: 24px;
+            }
+
+            .pt-share {
+                a {
+                    padding: 0 5px;
+                    color: $brand-white;
+                    &:hover{
+                        color: $theme-color;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.portfolio-txt {
+    max-width: 94%;
+    .section-title {
+        font-size: 36px;
+        font-weight: 600;
+    }
+    h2 {
+        margin-bottom: 30px;
+    }
+
+    ul {
+        @include list-clear;
+        margin-top: 45px;
+        li {
+            @extend .overly;
+            padding-left: 25px;
+            margin-bottom: 17px;
+            font-size: 18px;
+            color: $brand-light;
+            &::before {
+                content: "\f127";
+                font-family: flaticon;
+                background: transparent;
+                color: $theme-color;
+            }
+        }
+    }
+    p{
+        font-size: 18px;
+        line-height: 30px;
+        color: $brand-light;
+    }
+}

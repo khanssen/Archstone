@@ -1,0 +1,103 @@
+/* -------------------------------------
+11. Offer
+--------------------------------------- */
+.offer-intro {
+    max-width: 86%;
+    @include tablet{
+        max-width: 100%;
+    }
+    @include mobile{
+        max-width: 100%;
+    }
+    @include wide_mobile{
+        max-width: 77%;
+    }
+}
+
+.offer-section {
+    @extend .overly;
+    padding-bottom: 50px;
+
+    &::before {
+        background: url('../images/offer-bg.png')no-repeat right center / contain;
+
+    }
+   
+}
+@include mobile {
+    .service-btn.text-end{
+        margin-top: 20px;
+        text-align: left !important;
+    }
+}
+.offer-card {
+    padding: 0px 40px 40px;
+    background: #fff;
+    text-align: center;
+    @include border-radius(5px);
+    border: 2px solid #e6e6e6;
+    margin-top: 100px;
+    @include transition;
+    cursor: pointer;
+
+    .offer-img {
+        @extend .frame-bg;
+        max-width: 195px;
+        margin: -70px auto 35px;
+        padding: 0;
+        @include transition;
+
+        img {
+            width: 195px;
+            height: 195px;
+            @include border-radius(50%);
+        }
+
+        &::before,
+        &::after {
+            @include transition;
+            @include opacity(0);
+            transform: scale(.6);
+            
+        }
+
+        &::before {
+            background: url('../images/offer-f2.png')no-repeat top right;
+        }
+
+        &::after {
+            background: url('../images/offer-f1.png')no-repeat bottom left;
+        }
+    }
+
+    p {
+        margin: 20px 0 30px;
+    }
+
+    a.readmore {
+        width: 53px;
+        height: 53px;
+        line-height: 60px;
+        background-color: $theme-color;
+        @include border-radius(50%);
+        color: $brand-white;
+        display: inline-block;
+        font-size: 26px;
+    }
+
+    &:hover {
+        background: $brand-white;
+        box-shadow: 0 0px 49px 1px rgba(0, 0, 0, .1);
+        border: 2px solid $brand-white;
+
+        .offer-img::after,
+        .offer-img::before {
+            @include opacity(1);
+            transform: scale(1);
+        }
+       
+    }
+    @include mobile {
+        margin-bottom: 30px;
+    }
+}

@@ -1,0 +1,371 @@
+/* -------------------------------------
+15. Testimonial
+--------------------------------------- */
+.testimonial {
+    background: $brand-blue;
+    @extend .overly;
+    overflow: hidden;
+
+    &::before {
+        background: url('../images/tes-gr-s.png')no-repeat left top / contain;
+        width: 30%;
+        height: 50%;
+        top: -5%;
+        left: -5%;
+    }
+
+    &::after {
+        background: url('../images/tes-gr-e.png')no-repeat right bottom / contain;
+        width: 22%;
+        position: absolute;
+        content: "";
+        right: -8%;
+        bottom: -32px;
+        height: 50%;
+    }
+
+    .anim-img {
+        top: 80%;
+    }
+
+    .anim-2 {
+        top: 20%;
+    }
+
+    .section-intro {
+
+        .section-title,
+        p {
+            color: $brand-white;
+        }
+    }
+
+    @include mobile {
+        &::before {
+            width: 50%;
+            left: -15%;
+        }
+
+        &::after {
+            width: 35%;
+        }
+    }
+
+    @include wide_mobile {
+        &::before {
+            width: 30%;
+            left: -8%;
+        }
+
+        &::after {
+            width: 25%;
+        }
+    }
+}
+
+.single-quote {
+    text-align: center;
+    cursor: pointer;
+    @extend .overly;
+
+    &::before,
+    &::after {
+        height: 1px;
+        background: $brand-white;
+        width: 45%;
+        top: 16%;
+        @include opacity(0);
+        visibility: hidden;
+        left: -80px;
+    }
+
+    &::after {
+        position: absolute;
+        content: "";
+        left: auto;
+        right: -80px;
+    }
+
+    .quote-num {
+        @include heading;
+        color: transparent;
+        font-size: 82px;
+        -webkit-text-fill-color: $brand-blue;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: white;
+        letter-spacing: 4px;
+    }
+
+    p {
+        color: $brand-white;
+        margin: 30px 0 40px;
+    }
+
+    h3 {
+        margin-bottom: 0;
+        color: $brand-white;
+        font-family: $font;
+    }
+
+    span {
+        color: $theme-color;
+    }
+
+    .quote-num,
+    p,
+    h3,
+    span {
+        @include opacity(.6);
+        @include transition();
+    }
+
+    @include tablet {
+        &::before {
+            left: -50px;
+        }
+
+        &::after {
+            right: -50px;
+        }
+    }
+
+    @include wide_mobile {
+        &::before {
+            left: -25px;
+            width: 35%;
+        }
+
+        &::after {
+            right: -25px;
+            width: 35%;
+        }
+    }
+}
+
+.quote-slider .owl-item.active.center .single-quote,
+.quote-slider .owl-item:hover .single-quote {
+
+    .quote-num,
+    p,
+    h3,
+    span {
+        @include opacity(1);
+    }
+}
+
+.quote-slider .owl-item.active.center .single-quote::before,
+.quote-slider .owl-item.active.center .single-quote::after {
+    @include opacity(1);
+    visibility: visible;
+}
+
+.testimonial-2 {
+    position: relative;
+    padding-bottom: 100px;
+
+    .owl-nav {
+        display: none;
+    }
+
+    &.about-testimonial {
+        .owl-nav {
+            display: block;
+            position: absolute;
+            right: 60px;
+            top: -90px;
+
+            @include mobile {
+                top: 110%;
+            }
+
+            button {
+                width: 65px;
+                height: 47px;
+                line-height: 52px;
+                border-radius: 5px;
+
+                i {
+                    font-size: 22px;
+                    color: $brand-white;
+                    padding-top: 3px;
+                }
+
+                &.owl-next {
+                    right: 20px;
+                    background-color: #e3e3e3 !important;
+                }
+            }
+        }
+    }
+
+    .anim-img {
+        top: 80%;
+        z-index: 2;
+    }
+
+    .anim-2 {
+        top: 20%;
+    }
+
+    .quote {
+        border: 1px solid #dddddd;
+        padding: 45px 45px 30px;
+        border-radius: 10px;
+        cursor: pointer;
+
+        @include notebook {
+            padding: 40px 30px 20px;
+        }
+
+        p {
+            color: #999999;
+            font-size: 18px;
+            line-height: 27px;
+        }
+
+        img {
+            width: auto;
+        }
+
+        .quote-head {
+            margin-bottom: 30px;
+            @extend .overly;
+
+            &::before {
+                background: transparent;
+                color: #e3e3e3;
+                content: "\f133";
+                font-family: flaticon;
+                left: auto;
+                font-size: 100px;
+                right: 0;
+                width: auto;
+                top: 30px;
+                @include transition;
+
+                @include mobile {
+                    font-size: 60px;
+                    right: -10px;
+                }
+            }
+
+            .quote-thumb {
+                float: left;
+
+                img {
+                    @include border-radius(15px);
+                }
+            }
+
+            .quote-info {
+                margin-left: 110px;
+                @include clear;
+
+                h3 {
+                    margin-bottom: 0;
+                    font-weight: 600;
+                }
+
+                span {
+                    color: #fff;
+                    font-weight: 500;
+                }
+
+                .ratings {
+                    margin-top: 10px;
+
+                    i {
+                        color: #fac444;
+                    }
+                }
+            }
+        }
+
+        &:hover .quote-head::before {
+            color: $theme-color;
+            @include opacity(.5);
+        }
+
+    }
+
+    @include tablet {
+        .client-quote.p-4 {
+            padding: 10px !important;
+            .quote-head::after {
+                top: 66px;
+                border-bottom: 41px solid #365A5C;
+                border-right: 197px solid transparent;
+            }
+            .cl-meta {
+                &::before {
+                    content: "\f115";
+                    font-family: flaticon;
+                    background: transparent;
+                    left: auto;
+                    right: -17px;
+                    width: auto;
+                    font-size: 30px;
+                    color: #fff;
+                    top: -3px;
+                }
+                
+                h4{
+                    font-size: 20px;
+                }
+            }
+           
+        }
+    }
+}
+
+.about-testimonial {
+    .section-intro {
+        max-width: 50%;
+
+        @include mobile {
+            max-width: 100%;
+        }
+
+        @include tablet {
+            max-width: 70%;
+        }
+    }
+}
+
+.service-testimonial {
+    @extend .overly;
+
+    &::before {
+        width: 95%;
+        background-color: $brand-white;
+        left: 50%;
+        transform: translateX(-50%);
+        box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, .08);
+    }
+
+    @include mobile {
+        .section-intro {
+            padding-left: 30px;
+        }
+
+        .quote {
+            padding: 20px;
+            margin: 0 30px;
+        }
+    }
+}
+
+section.testimonial-2.service-testimonial {
+    margin: -160px 0 90px;
+    padding: 120px 0 180px;
+    @extend .about-testimonial;
+
+    @include mobile {
+        padding: 60px 0 150px;
+    }
+
+    .owl-nav {
+        right: 50%;
+        top: 120%;
+    }
+}

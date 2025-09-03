@@ -1,0 +1,31 @@
+
+/* -------------------------------------
+14. Shop Sidebar
+--------------------------------------- */
+.range-widget input#amount {
+    color: $brand-blue;
+    font-size: 20px;
+    font-weight: 600;
+    padding: 5px 0;
+}
+.ui-state-default, .ui-widget-content .ui-state-default {
+    border: 1px solid $brand-blue;
+    background: $brand-blue;
+    border-radius: 50%;
+}
+.ui-widget-header {
+    border: none;
+    background: #365A5C;
+}
+.ui-slider-horizontal {
+    height: 4px;
+    .ui-slider-handle {
+        top: -8px;
+        width: 18px;
+        height: 18px;
+    }
+}
+.ui-widget.ui-widget-content {
+    background: #fbc4bc;
+    border: none;
+}

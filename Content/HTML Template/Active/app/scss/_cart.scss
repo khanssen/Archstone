@@ -1,0 +1,197 @@
+
+/* -------------------------------------
+22. Error 404 
+--------------------------------------- */
+
+.woocommerce {
+    .woocommerce-cart-form {
+        @include mobile {
+            overflow-x: auto;
+            margin-bottom: 30px;
+            overflow-y: hidden;
+        }
+    }
+    .shop_table {
+        border: 1px solid rgba(0, 0, 0, .1);
+        margin: 0 -1px 24px 0;
+        text-align: left;
+        width: 100%;
+        border-collapse: separate;
+        border-radius: 5px;
+        thead {
+            background-color: $brand-blue;
+            color: $brand-white;
+            tr {
+                th {
+                    padding: 20px 10px 20px 0;
+                    font-size: 22px;
+                    @include mobile {
+                        font-size: 18px;
+                        padding: 20px;
+                    }
+                    &:first-child {
+                        text-align: right;
+                    }
+                }
+            }
+        }
+        tbody {
+            tr.woocommerce-cart-form__cart-item.cart_item {
+                td {
+                    &.product-thumbnail {
+                        width: 15%;
+                        padding: 20px 15px 20px 20px;
+                        @include mobile {
+                            width: 150px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    th {
+        font-weight: 700;
+        padding: 9px 12px;
+        line-height: 1.5em;
+    }
+    td.product-quantity input {
+        width: 80px;
+        padding: 10px;
+    }
+    td.product-remove {
+        padding-left: 28px;
+        a {
+            i::before {
+                font-size: 24px;
+            }
+        }
+    }
+    .cart td.actions .coupon {
+        float: left;
+    }
+    .cart {
+        td.actions {
+            padding: 20px;
+            .input-text {
+                width: 200px;
+                margin-right: 10px;
+                padding: 5px 20px;
+                border-radius: 5px;
+            }
+        }
+    }
+}
+
+.cart-collaterals {
+    @include mobile {
+        margin-top: 40px;
+    }
+}
+
+td.product-name a,
+td.product-price,
+td.product-subtotal span,
+td.product-quantity .quantity input {
+    font-weight: 700;
+    color: $brand-blue;
+}
+
+td.product-remove a i::before {
+    color: $brand-blue;
+}
+
+.woocommerce .cart td.actions a,
+.woocommerce .cart td.actions button {
+    display: inline;
+    line-height: 1;
+    @include mobile {
+        display: inline-block;
+        margin: 0 0 30px;
+        text-align: left;
+    }
+}
+
+.wc-proceed-to-checkout a.button {
+    padding: 16px 40px;
+    border-radius: 5px;
+    @include mobile {
+        padding: 15px 30px;
+    }
+}
+
+form.woocommerce-cart-form table {
+    padding-bottom: 12px;
+}
+
+.cart-form-footer {
+    text-align: right;
+    @include mobile {
+        text-align: left;
+    }
+    .custom-btn {
+        padding: 20px 42px;
+        margin-left: 30px;
+    }
+    .button {
+        @extend .custom-btn;
+        border: none;
+        padding: 20px 40px;
+        &:disabled[disabled] {
+            cursor: not-allowed;
+        }
+    }
+}
+
+.cart_total_wrap {
+    border: 1px solid #e1e1e1;
+    margin: 0;
+    border-radius: 5px;
+    padding: 30px;
+    @include mobile {
+        padding: 5px;
+    }
+    label {
+        font-size: 24px;
+        font-weight: 700;
+        display: block;
+        padding-bottom: 30px;
+        color: $brand-blue;
+    }
+    input#coupon_code {
+        width: 290px;
+        float: left;
+        border-radius: 0px;
+        padding: 15px 30px;
+        @include mobile {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    }
+    .button {
+        @extend .custom-btn;
+        border-radius: 0px;
+        border: none;
+        padding: 16px 20px;
+    }
+    .cart-collaterals {
+        h2 {
+            @extend label;
+        }
+        .cart_totals {
+            table {
+                tr {
+                    color: $brand-blue;
+                    padding-bottom: 30px;
+                }
+                th {
+                    width: 85%;
+                    padding-bottom: 30px;
+                }
+            }
+            .wc-proceed-to-checkout {
+                margin-top: 15px;
+            }
+        }
+    }
+}
+

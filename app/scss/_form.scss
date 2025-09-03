@@ -1,0 +1,127 @@
+/* -------------------------------------
+24. Form 
+--------------------------------------- */
+.acount-wrap {
+    padding: 60px;
+    border: 2px solid $theme-color;
+    @include border-radius(10px);
+    @include mobile{
+        padding: 50px 40px;
+    }
+    h2 {    
+        margin-bottom: 40px;
+        font-size: 36px;
+    }
+    &.login-wrap{
+        h2{
+            margin-bottom: 10px;
+        }
+        p {
+            margin-bottom: 30px;
+            a{
+                color: $theme-color;
+            }
+        }
+    }
+    form {
+        .form-group {
+            label {
+                font-size: 18px;
+                color: $brand-blue;
+                font-weight: 500;
+                text-transform: capitalize;
+                margin-bottom: 10px;
+            }
+
+            input {
+                background: #FFF;
+                border: 1px solid #ccc;
+            }
+
+        }
+
+        .form-check-input[type=checkbox] {
+            margin-right: 5px;
+        }
+
+        .custom-btn {
+            margin: 20px 0;
+        }
+        .login-half {
+            margin-bottom: 20px;
+            margin-top: 5px;
+            display: -ms-flexbox;
+            display: -webkit-box;
+            display: flex;
+            -ms-flex-align: center;
+            -webkit-box-align: center;
+            align-items: center;
+            -ms-flex-pack: justify;
+            -webkit-box-pack: justify;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .security-code {
+            display: inline-block;
+            border-radius: 10px;
+            height: 64px;
+            line-height: 64px;
+            padding: 0 40px;
+            font-size: 24px;
+            font-weight: bold;
+            background: #CCCCFF;
+        }
+    }
+
+    .form-group.alter-login {
+        display: flex;
+        align-items: center;
+        span {
+            padding-right: 13px;
+        }
+
+        a {
+            display: inline-table;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            margin-right: 10px;
+            background: #0077b5;
+            color: $brand-white;
+            @include border-radius(5px);
+
+            i {
+                display: table-cell;
+                vertical-align: middle;
+                padding-top: 3px;
+            }
+            &:nth-child(2){
+                background:#00acee;
+            }
+            &:nth-child(3){
+                background: #1774eb;
+            }
+        }
+    }
+}
+.thanks-wrap {
+    max-width: 55%;
+    margin: 0 auto;
+    @include mobile{
+        max-width: 90%;
+    }
+    h2{
+        font-size: 65px;
+    }
+    p{
+        font-size: 19px;
+        font-weight: 500;
+        line-height: 1.7;
+        a{
+            color: $theme-color;
+        }
+    }
+    img{
+        padding: 30px 0 50px;
+    }
+}
