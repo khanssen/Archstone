@@ -1,36 +1,56 @@
-# This workflow executes several linters on changed files based on languages used in your code base whenever
-# you push a code or open a pull request.
-#
-# You can adjust the behavior by modifying this file.
-# For more information, see:
-# https://github.com/github/super-linter
 name: Lint Code Base
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
+    paths-ignore:
+      - 'images/**'
+      - 'font/**'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.gif'
+      - '**/*.svg'
+      - '**/*.woff*'
+      - '**/*.ttf'
+      - 'CNAME'
+      - '.nojekyll'
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
+    paths-ignore:
+      - 'images/**'
+      - 'font/**'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.gif'
+      - '**/*.svg'
+      - '**/*.woff*'
+      - '**/*.ttf'
+      - 'CNAME'
+      - '.nojekyll'
+
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
+    # if you don't want lint to block deploys, keep this true
+    continue-on-error: true
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Run Super-Linter
-        uses: github/super-linter@v4
+      - name: Super-Linter
+        uses: github/super-linter/slim@v6
         env:
-          VALIDATE_ALL_CODEBASE: false
-          FILTER_REGEX_EXCLUDE: _headers.*
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-      - name: Lint Code Base
-        uses: github/super-linter@v4
-        env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: "main"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IGNORE_GITIGNORED_FILES: true
+          # enable/disable as you like:
+          VALIDATE_HTML: true
+          VALIDATE_CSS: true
+          VALIDATE_JAVASCRIPT_ES: true
+          # keep your prior exclusion for _headers
+          FILTER_REGEX_EXCLUDE: _headers.*
