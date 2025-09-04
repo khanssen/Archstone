@@ -1,7 +1,9 @@
-﻿name: pages build and deployment
+﻿@'
+name: pages build and deployment
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -17,7 +19,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Debug: list site tree
         run: |
@@ -29,9 +32,10 @@ jobs:
           echo "---- show ./font ----"
           ls -la ./font || true
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: .   # publish repo root
+          path: .
 
   deploy:
     needs: build
@@ -40,5 +44,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
+      - name: Deploy to Pages
+        id: deployment
         uses: actions/deploy-pages@v4
+'@ | Set-Content .github\workflows\pages.yml -NoNewline -Encoding UTF8
