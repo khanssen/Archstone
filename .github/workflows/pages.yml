@@ -24,16 +24,13 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Debug: list site tree
+      - name: "Debug list site tree"
         run: |
-          set -euxo pipefail
           pwd
           echo "---- top-level ----"
           ls -la
-          echo "---- find ./font ----"
-          find . -type d -name font -print -exec ls -la {} \; || true
-          echo "---- show ./font ----"
-          ls -la ./font || true
+          echo "---- font dir ----"
+          if [ -d ./font ]; then ls -la ./font; else echo "no ./font"; fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
