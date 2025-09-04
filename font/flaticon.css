@@ -1,192 +1,27 @@
 ﻿@charset "UTF-8";
+/* Flaticon – rebuilt clean */
 @font-face {
-  font-family: "flaticon";
-  src: url("./flaticon.ttf?a5de18c0d03d402a642eab44967fbb60") format("truetype"), url("./flaticon.woff?a5de18c0d03d402a642eab44967fbb60") format("woff"), url("./flaticon.woff2?a5de18c0d03d402a642eab44967fbb60") format("woff2"), url("./flaticon.eot?a5de18c0d03d402a642eab44967fbb60#iefix") format("embedded-opentype"), url("./flaticon.svg?a5de18c0d03d402a642eab44967fbb60#flaticon") format("svg"); }
-i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
-  font-family: flaticon !important;
+  font-family: "Flaticon";
+  src: url("/font/Flaticon.woff2") format("woff2"),
+       url("/font/Flaticon.woff")  format("woff"),
+       url("/font/Flaticon.ttf")   format("truetype"),
+       url("/font/Flaticon.eot"); /* legacy */
+  font-weight: normal;
   font-style: normal;
+  font-display: swap;
+}
+
+/* Always render pseudo-elements with this font */
+[class^="flaticon-"]::before,
+[class*=" flaticon-"]::before {
+  font-family: "Flaticon" !important;
+  font-style: normal !important;
   font-weight: normal !important;
-  font-variant: normal;
+  speak: never;
+  display: inline-block;
+  text-decoration: inherit;
   text-transform: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; }
-
-.flaticon-planning:before {
-  content: "ï„"; }
-
-.flaticon-project:before {
-  content: "ï„‚"; }
-
-.flaticon-play-button:before {
-  content: "ï„ƒ"; }
-
-.flaticon-chat:before {
-  content: "ï„„"; }
-
-.flaticon-down-arrow:before {
-  content: "ï„…"; }
-
-.flaticon-email:before {
-  content: "ï„†"; }
-
-.flaticon-facebook:before {
-  content: "ï„‡"; }
-
-.flaticon-stock-market:before {
-  content: "ï„ˆ"; }
-
-.flaticon-idea:before {
-  content: "ï„‰"; }
-
-.flaticon-instagram:before {
-  content: "ï„Š"; }
-
-.flaticon-linkedin:before {
-  content: "ï„‹"; }
-
-.flaticon-magnifier:before {
-  content: "ï„Œ"; }
-
-.flaticon-next:before {
-  content: "ï„"; }
-
-.flaticon-next-1:before {
-  content: "ï„Ž"; }
-
-.flaticon-left-arrow:before {
-  content: "ï„"; }
-
-.flaticon-previous:before {
-  content: "ï„"; }
-
-.flaticon-open-24-hours:before {
-  content: "ï„‘"; }
-
-.flaticon-phone-call:before {
-  content: "ï„’"; }
-
-.flaticon-pin:before {
-  content: "ï„“"; }
-
-.flaticon-pinterest:before {
-  content: "ï„”"; }
-
-.flaticon-quote:before {
-  content: "ï„•"; }
-
-.flaticon-select:before {
-  content: "ï„–"; }
-
-.flaticon-technical-support:before {
-  content: "ï„—"; }
-
-.flaticon-twitter:before {
-  content: "ï„˜"; }
-
-.flaticon-up-arrow:before {
-  content: "ï„™"; }
-
-.flaticon-up-arrow-1:before {
-  content: "ï„š"; }
-
-.flaticon-plus:before {
-  content: "ï„›"; }
-
-.flaticon-remove:before {
-  content: "ï„œ"; }
-
-.flaticon-loupe:before {
-  content: "ï„"; }
-
-.flaticon-portfolio:before {
-  content: "ï„ž"; }
-
-.flaticon-save-money:before {
-  content: "ï„Ÿ"; }
-
-.flaticon-growth:before {
-  content: "ï„ "; }
-
-.flaticon-international-business:before {
-  content: "ï„¡"; }
-
-.flaticon-presentation:before {
-  content: "ï„¢"; }
-
-.flaticon-money:before {
-  content: "ï„£"; }
-
-.flaticon-darts:before {
-  content: "ï„¤"; }
-
-.flaticon-stats:before {
-  content: "ï„¥"; }
-
-.flaticon-salary:before {
-  content: "ï„¦"; }
-
-.flaticon-checked:before {
-  content: "ï„§"; }
-
-.flaticon-star:before {
-  content: "ï„¨"; }
-
-.flaticon-star-1:before {
-  content: "ï„©"; }
-
-.flaticon-play:before {
-  content: "ï„ª"; }
-
-.flaticon-analytics:before {
-  content: "ï„«"; }
-
-.flaticon-review:before {
-  content: "ï„¬"; }
-
-.flaticon-certificate:before {
-  content: "ï„­"; }
-
-.flaticon-experience:before {
-  content: "ï„®"; }
-
-.flaticon-like:before {
-  content: "ï„¯"; }
-
-.flaticon-conversation:before {
-  content: "ï„°"; }
-
-.flaticon-share:before {
-  content: "ï„±"; }
-
-.flaticon-phone-call-1:before {
-  content: "ï„²"; }
-
-.flaticon-right-quotation-mark:before {
-  content: "ï„³"; }
-
-.flaticon-quote-left:before {
-  content: "ï„´"; }
-
-.flaticon-technology:before {
-  content: "ï„µ"; }
-
-.flaticon-plane:before {
-  content: "ï„¶"; }
-
-.flaticon-promotion:before {
-  content: "ï„·"; }
-
-.flaticon-safe:before {
-  content: "ï„¸"; }
-
-.flaticon-insurance:before {
-  content: "ï„¹"; }
-
-.flaticon-share-1:before {
-  content: "ï„º"; }
-
-.flaticon-investment:before {
-  content: "ï„»"; }
-
-
+  -moz-osx-font-smoothing: grayscale;
+}
