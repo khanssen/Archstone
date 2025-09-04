@@ -1,5 +1,4 @@
-﻿@'
-name: pages build and deployment
+﻿name: pages build and deployment
 on:
   push:
     branches:
@@ -22,8 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
       - name: Debug: list site tree
         run: |
+          set -euxo pipefail
           pwd
           echo "---- top-level ----"
           ls -la
@@ -47,4 +50,3 @@ jobs:
       - name: Deploy to Pages
         id: deployment
         uses: actions/deploy-pages@v4
-'@ | Set-Content .github\workflows\pages.yml -NoNewline -Encoding UTF8
