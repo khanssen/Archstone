@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 @font-face {
   font-family: "flaticon";
   src: url("./flaticon.ttf?a5de18c0d03d402a642eab44967fbb60") format("truetype"), url("./flaticon.woff?a5de18c0d03d402a642eab44967fbb60") format("woff"), url("./flaticon.woff2?a5de18c0d03d402a642eab44967fbb60") format("woff2"), url("./flaticon.eot?a5de18c0d03d402a642eab44967fbb60#iefix") format("embedded-opentype"), url("./flaticon.svg?a5de18c0d03d402a642eab44967fbb60#flaticon") format("svg"); }
@@ -13,178 +13,179 @@ i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
   -moz-osx-font-smoothing: grayscale; }
 
 .flaticon-planning:before {
-  content: ""; }
+  content: "ï„"; }
 
 .flaticon-project:before {
-  content: ""; }
+  content: "ï„‚"; }
 
 .flaticon-play-button:before {
-  content: ""; }
+  content: "ï„ƒ"; }
 
 .flaticon-chat:before {
-  content: ""; }
+  content: "ï„„"; }
 
 .flaticon-down-arrow:before {
-  content: ""; }
+  content: "ï„…"; }
 
 .flaticon-email:before {
-  content: ""; }
+  content: "ï„†"; }
 
 .flaticon-facebook:before {
-  content: ""; }
+  content: "ï„‡"; }
 
 .flaticon-stock-market:before {
-  content: ""; }
+  content: "ï„ˆ"; }
 
 .flaticon-idea:before {
-  content: ""; }
+  content: "ï„‰"; }
 
 .flaticon-instagram:before {
-  content: ""; }
+  content: "ï„Š"; }
 
 .flaticon-linkedin:before {
-  content: ""; }
+  content: "ï„‹"; }
 
 .flaticon-magnifier:before {
-  content: ""; }
+  content: "ï„Œ"; }
 
 .flaticon-next:before {
-  content: ""; }
+  content: "ï„"; }
 
 .flaticon-next-1:before {
-  content: ""; }
+  content: "ï„Ž"; }
 
 .flaticon-left-arrow:before {
-  content: ""; }
+  content: "ï„"; }
 
 .flaticon-previous:before {
-  content: ""; }
+  content: "ï„"; }
 
 .flaticon-open-24-hours:before {
-  content: ""; }
+  content: "ï„‘"; }
 
 .flaticon-phone-call:before {
-  content: ""; }
+  content: "ï„’"; }
 
 .flaticon-pin:before {
-  content: ""; }
+  content: "ï„“"; }
 
 .flaticon-pinterest:before {
-  content: ""; }
+  content: "ï„”"; }
 
 .flaticon-quote:before {
-  content: ""; }
+  content: "ï„•"; }
 
 .flaticon-select:before {
-  content: ""; }
+  content: "ï„–"; }
 
 .flaticon-technical-support:before {
-  content: ""; }
+  content: "ï„—"; }
 
 .flaticon-twitter:before {
-  content: ""; }
+  content: "ï„˜"; }
 
 .flaticon-up-arrow:before {
-  content: ""; }
+  content: "ï„™"; }
 
 .flaticon-up-arrow-1:before {
-  content: ""; }
+  content: "ï„š"; }
 
 .flaticon-plus:before {
-  content: ""; }
+  content: "ï„›"; }
 
 .flaticon-remove:before {
-  content: ""; }
+  content: "ï„œ"; }
 
 .flaticon-loupe:before {
-  content: ""; }
+  content: "ï„"; }
 
 .flaticon-portfolio:before {
-  content: ""; }
+  content: "ï„ž"; }
 
 .flaticon-save-money:before {
-  content: ""; }
+  content: "ï„Ÿ"; }
 
 .flaticon-growth:before {
-  content: ""; }
+  content: "ï„ "; }
 
 .flaticon-international-business:before {
-  content: ""; }
+  content: "ï„¡"; }
 
 .flaticon-presentation:before {
-  content: ""; }
+  content: "ï„¢"; }
 
 .flaticon-money:before {
-  content: ""; }
+  content: "ï„£"; }
 
 .flaticon-darts:before {
-  content: ""; }
+  content: "ï„¤"; }
 
 .flaticon-stats:before {
-  content: ""; }
+  content: "ï„¥"; }
 
 .flaticon-salary:before {
-  content: ""; }
+  content: "ï„¦"; }
 
 .flaticon-checked:before {
-  content: ""; }
+  content: "ï„§"; }
 
 .flaticon-star:before {
-  content: ""; }
+  content: "ï„¨"; }
 
 .flaticon-star-1:before {
-  content: ""; }
+  content: "ï„©"; }
 
 .flaticon-play:before {
-  content: ""; }
+  content: "ï„ª"; }
 
 .flaticon-analytics:before {
-  content: ""; }
+  content: "ï„«"; }
 
 .flaticon-review:before {
-  content: ""; }
+  content: "ï„¬"; }
 
 .flaticon-certificate:before {
-  content: ""; }
+  content: "ï„­"; }
 
 .flaticon-experience:before {
-  content: ""; }
+  content: "ï„®"; }
 
 .flaticon-like:before {
-  content: ""; }
+  content: "ï„¯"; }
 
 .flaticon-conversation:before {
-  content: ""; }
+  content: "ï„°"; }
 
 .flaticon-share:before {
-  content: ""; }
+  content: "ï„±"; }
 
 .flaticon-phone-call-1:before {
-  content: ""; }
+  content: "ï„²"; }
 
 .flaticon-right-quotation-mark:before {
-  content: ""; }
+  content: "ï„³"; }
 
 .flaticon-quote-left:before {
-  content: ""; }
+  content: "ï„´"; }
 
 .flaticon-technology:before {
-  content: ""; }
+  content: "ï„µ"; }
 
 .flaticon-plane:before {
-  content: ""; }
+  content: "ï„¶"; }
 
 .flaticon-promotion:before {
-  content: ""; }
+  content: "ï„·"; }
 
 .flaticon-safe:before {
-  content: ""; }
+  content: "ï„¸"; }
 
 .flaticon-insurance:before {
-  content: ""; }
+  content: "ï„¹"; }
 
 .flaticon-share-1:before {
-  content: ""; }
+  content: "ï„º"; }
 
 .flaticon-investment:before {
-  content: ""; }
+  content: "ï„»"; }
+
