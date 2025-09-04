@@ -18,9 +18,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Debug: list site tree
+        run: |
+          pwd
+          echo "---- top-level ----"
+          ls -la
+          echo "---- find ./font ----"
+          find . -type d -name font -print -exec ls -la {} \; || true
+          echo "---- show ./font ----"
+          ls -la ./font || true
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: .   # publish repo root
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
