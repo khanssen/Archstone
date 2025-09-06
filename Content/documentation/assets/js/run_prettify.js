@@ -89,4 +89,83 @@
     el.type = "text/javascript";
     el.async = true;
     el.onload = el.onerror = el.onreadystatechange = function () {
-      if (el && (!el.readySta
+      if (el && (!el.readyState || /loaded|complete/.test(el.readyState))) {
+        el.onload = el.onerror = el.onreadystatechange = null;
+        if (el.parentNode) el.parentNode.removeChild(el);
+        el = null;
+        pendingLanguages = Math.max(0, pendingLanguages - 1);
+        checkReadinessSoon();
+      }
+    };
+    el.src = langUrl(name);
+    // insert early to avoid base <base> quirks in old IE
+    head.insertBefore(el, head.firstChild);
+  }
+  for (var i = 0; i < langs.length; i++) loadLang(langs[i]);
+
+  // --- Load skins with simple fallback chain ---
+  (function loadSkins(urls) {
+    var list = [];
+    for (var i = 0; i < skins.length; i++) list.push(skinUrl(skins[i]));
+    list.push(baseCssUrl);
+    function insertAt(index) {
+      if (index >= list.length) return;
+      var link = doc.createElement("link");
+      link.rel = "stylesheet";
+      link.type = "text/css";
+      if (index + 1 < list.length) {
+        link.onerror = link.error = function () { insertAt(index + 1); };
+      }
+      link.href = list[index];
+      head.appendChild(link);
+    }
+    insertAt(0);
+  })();
+
+  // --- After langs + DOM + PR.prettyPrint are ready, run prettify & callbacks ---
+  var readinessTimer = null;
+  function checkReadinessSoon() {
+    if (readinessTimer != null) return;
+    readinessTimer = setTimeout(function () {
+      readinessTimer = null;
+      checkReadiness();
+    }, 25);
+  }
+
+  function checkReadiness() {
+    // 1) language handlers done
+    if (pendingLanguages > 0) return checkReadinessSoon();
+    // 2) prettify core present
+    if (!(win.PR && typeof win.PR.prettyPrint === "function")) return checkReadinessSoon();
+
+    // 3) DOM ready, then autorun + callbacks
+    contentLoaded(function () {
+      if (!autorun) return;
+
+      var completion = callbacks.length ? function () {
+        var args = arguments;
+        for (var i = 0; i < callbacks.length; i++) {
+          var name = callbacks[i];
+          var fn = win.exports && win.exports[name];
+          if (typeof fn === "function") {
+            setTimeout((function (f) { return function () { f.apply(win, args); }; })(fn), 0);
+          }
+        }
+      } : undefined;
+
+      try { win.PR.prettyPrint(completion); }
+      catch (e) { /* swallow to avoid breaking host pages */ }
+    });
+  }
+
+  // Kick it off in case there are zero langs (pendingLanguages === 0)
+  checkReadinessSoon();
+
+  // --- AMD definition (safe: factory returns window.PR at require-time) ---
+  var amdDefine = (typeof win.define === "function" && win.define.amd) ? win.define : null;
+  if (amdDefine) {
+    amdDefine("google-code-prettify", [], function () {
+      return win.PR;
+    });
+  }
+})();
