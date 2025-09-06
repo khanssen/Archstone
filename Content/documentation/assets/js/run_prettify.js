@@ -1969,13 +1969,14 @@ function recombineTagsAndDecorations(job) {
       // function that does not conform to the AMD API.
       var define = win['define'];
       if (typeof define === "function" && define['amd']) {
-        define("google-code-prettify", [], function () {
-          return PR;
-        });
-      }
-    })();
-    return prettyPrint;
-  })();
+      (function () {
+  var amdDefine = (typeof window !== "undefined" ? window.define : (typeof globalThis !== "undefined" ? globalThis.define : undefined));
+  if (typeof amdDefine === "function" && amdDefine.amd) {
+    amdDefine("google-code-prettify", [], function () {
+      return PR; // ensure PR exists
+    });
+  }
+})();
 
   // If this script is deferred or async and the document is already
   // loaded we need to wait for language handlers to load before performing
