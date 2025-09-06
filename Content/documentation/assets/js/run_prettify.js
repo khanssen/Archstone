@@ -1980,28 +1980,55 @@ function recombineTagsAndDecorations(job) {
 })();
 
 
-  // If this script is deferred or async and the document is already
-  // loaded we need to wait for language handlers to load before performing
-  // any autorun.
-  function onLangsLoaded() {
-    if (autorun) {
-      contentLoaded(
-        function () {
-          var n = callbacks.length;
-          var callback = n ? function () {
-            for (var i = 0; i < n; ++i) {
-              (function (i) {
-                win.setTimeout(
-                   function () {
-                     win['exports'][callbacks[i]].apply(win, arguments);
-                   }, 0);
-               })(i);
-            }
-          } : void 0;
-          prettyPrint(callback);
-        });
-    }
-  }
-  checkPendingLanguages();
+ // If this script is deferred or async and the document is already loaded,
+// wait for language handlers to load before performing any autorun.
+(function () {
+  var root = (typeof window !== "undefined" ? window : globalThis);
 
-}());
+  function onLangsLoaded() {
+    if (!root.autorun) return;
+
+    // contentLoaded(fn) should call fn when DOM is ready; if it's missing,
+    // fall back to DOMContentLoaded/readyState.
+    var runWhenReady = (typeof root.contentLoaded === "function")
+      ? root.contentLoaded
+      : function (fn) {
+          if (document.readyState === "complete" || document.readyState === "interactive") {
+            fn();
+          } else {
+            document.addEventListener("DOMContentLoaded", fn, { once: true });
+          }
+        };
+
+    runWhenReady(function () {
+      var list = Array.isArray(root.callbacks) ? root.callbacks : [];
+      var n = list.length;
+
+      // Build an optional completion callback for prettyPrint.
+      var completion = n ? function () {
+        var args = arguments; // capture outer args for setTimeout closures
+        for (var i = 0; i < n; ++i) {
+          var name = list[i];
+          var fn = root.exports && root.exports[name];
+          if (typeof fn === "function") {
+            root.setTimeout((function (f) {
+              return function () { f.apply(root, args); };
+            })(fn), 0);
+          }
+        }
+      } : undefined;
+
+      if (typeof root.prettyPrint === "function") {
+        root.prettyPrint(completion);
+      }
+    });
+  }
+
+  // Ensure we actually pass the callback so it fires after langs load.
+  if (typeof root.checkPendingLanguages === "function") {
+    root.checkPendingLanguages(onLangsLoaded);
+  } else {
+    // Fallback: if the hook isn't present, just call it directly.
+    onLangsLoaded();
+  }
+})();
