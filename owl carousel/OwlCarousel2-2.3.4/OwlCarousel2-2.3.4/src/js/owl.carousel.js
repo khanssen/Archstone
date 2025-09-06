@@ -1429,6 +1429,20 @@
 	 * @todo Replace by a more generic approach
 	 * @protected
 	 */
+	// Helper to sanitize potentially unsafe src values before using in DOM
+	function sanitizeImageSrc(src) {
+		if (typeof src !== "string") return "";
+		src = src.trim();
+		// Only allow http(s) or data:image/* URLs, else empty string
+		if (/^(https?:\/\/|\/|\.\/|\.\.\/)/i.test(src)) {
+			return src;
+		}
+		if (/^data:image\//i.test(src)) {
+			return src;
+		}
+		return "";
+	}
+	
 	Owl.prototype.preloadAutoWidthImages = function(images) {
 		images.each($.proxy(function(i, element) {
 			this.enter('pre-loading');
@@ -1438,7 +1452,14 @@
 				element.css('opacity', 1);
 				this.leave('pre-loading');
 				!this.is('pre-loading') && !this.is('initializing') && this.refresh();
-			}, this)).attr('src', element.attr('src') || element.attr('data-src') || element.attr('data-src-retina'));
+			}, this)).attr(
+				'src',
+				sanitizeImageSrc(
+					element.attr('src') ||
+					element.attr('data-src') ||
+					element.attr('data-src-retina')
+				)
+			);
 		}, this));
 	};
 
