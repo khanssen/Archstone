@@ -1955,28 +1955,30 @@ function recombineTagsAndDecorations(job) {
                  : (prettyPrint = $prettyPrint)
           };
     
-      // Make PR available via the Asynchronous Module Definition (AMD) API.
-      // Per https://github.com/amdjs/amdjs-api/wiki/AMD:
-      // The Asynchronous Module Definition (AMD) API specifies a
-      // mechanism for defining modules such that the module and its
-      // dependencies can be asynchronously loaded.
-      // ...
-      // To allow a clear indicator that a global define function (as
-      // needed for script src browser loading) conforms to the AMD API,
-      // any global define function SHOULD have a property called "amd"
-      // whose value is an object. This helps avoid conflict with any
-      // other existing JavaScript code that could have defined a define()
-      // function that does not conform to the AMD API.
-      var define = win['define'];
-      if (typeof define === "function" && define['amd']) {
-      (function () {
-  var amdDefine = (typeof window !== "undefined" ? window.define : (typeof globalThis !== "undefined" ? globalThis.define : undefined));
+// Make PR available via the Asynchronous Module Definition (AMD) API.
+// Per https://github.com/amdjs/amdjs-api/wiki/AMD:
+// The AMD API specifies a mechanism for defining modules such that the
+// module and its dependencies can be asynchronously loaded.
+//
+// To allow a clear indicator that a global define function (as
+// needed for script src browser loading) conforms to the AMD API,
+// any global define function SHOULD have a property called "amd"
+// whose value is an object. This helps avoid conflict with any
+// other existing JavaScript code that could have defined a define()
+// function that does not conform to the AMD API.
+
+(function () {
+  var amdDefine =
+    (typeof window !== "undefined" && window.define) ||
+    (typeof globalThis !== "undefined" && globalThis.define);
+
   if (typeof amdDefine === "function" && amdDefine.amd) {
     amdDefine("google-code-prettify", [], function () {
-      return PR; // ensure PR exists
+      return PR; // make sure PR is defined earlier in your script
     });
   }
 })();
+
 
   // If this script is deferred or async and the document is already
   // loaded we need to wait for language handlers to load before performing
