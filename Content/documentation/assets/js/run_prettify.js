@@ -84,24 +84,51 @@
 
   // --- Load language handlers, track pending ---
   var pendingLanguages = langs.length;
-  function loadLang(name) {
-    var el = doc.createElement("script");
-    el.type = "text/javascript";
-    el.async = true;
-    el.onload = el.onerror = el.onreadystatechange = function () {
-      if (el && (!el.readyState || /loaded|complete/.test(el.readyState))) {
-        el.onload = el.onerror = el.onreadystatechange = null;
-        if (el.parentNode) el.parentNode.removeChild(el);
-        el = null;
-        pendingLanguages = Math.max(0, pendingLanguages - 1);
-        checkReadinessSoon();
-      }
-    };
-    el.src = langUrl(name);
-    // insert early to avoid base <base> quirks in old IE
-    head.insertBefore(el, head.firstChild);
+function loadLang(name) {
+  var el = doc.createElement("script");
+  el.type = "text/javascript";
+  el.async = true;
+
+  var done = false;
+
+  function cleanup() {
+    try {
+      el.onload = null;
+      el.onreadystatechange = null;
+      el.onerror = null;
+      if (el.parentNode) el.parentNode.removeChild(el);
+    } catch (_) { /* ignore */ }
   }
-  for (var i = 0; i < langs.length; i++) loadLang(langs[i]);
+
+  function complete() {
+    if (done) return;
+    done = true;
+    cleanup();
+    pendingLanguages = Math.max(0, pendingLanguages - 1);
+    checkReadinessSoon();
+  }
+
+  el.onload = function () {
+    // modern browsers
+    complete();
+  };
+
+  el.onreadystatechange = function () {
+    // old IE
+    if (!el.readyState || /loaded|complete/.test(el.readyState)) {
+      complete();
+    }
+  };
+
+  el.onerror = function () {
+    // treat errors as "loaded" so we don't stall
+    complete();
+  };
+
+  el.src = langUrl(name);
+  head.insertBefore(el, head.firstChild);
+}
+
 
   // --- Load skins with simple fallback chain ---
   (function loadSkins(urls) {
