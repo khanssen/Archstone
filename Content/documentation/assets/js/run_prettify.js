@@ -1442,6 +1442,9 @@ function recombineTagsAndDecorations(job) {
   var isIE8OrEarlier = isIE8OrEarlierCheck();
   var newlineRe = /\n/g;
 
+function recombineTagsAndDecorations(job) {  // <-- duplicate, nested
+
+
     
 	  function recombineTagsAndDecorations(job) {
   		var isIE8OrEarlier = isIE8OrEarlierCheck();
