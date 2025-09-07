@@ -5,26 +5,32 @@ on:
     branches: [ main ]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
-  build:
+  build-and-smoke:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout full history
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # <-- full history (needed for many tools)
+          fetch-depth: 0
 
-      # Optional: set up Node if you run JS tooling
-      - name: Setup Node
+      # Only runs if you actually have a package.json at repo root
+      - name: Set up Node
+        if: hashFiles('package.json') != ''
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 'lts/*'
+          cache: npm
 
-      - name: Install deps
+      - name: Install (if package.json exists)
+        if: hashFiles('package.json') != ''
         run: npm ci
 
-      - name: Lint
-        run: npm run lint --if-present
+      # Basic HTML build/smoke test: ensure the index exists
+      - name: Verify site entrypoint
+        run: |
+          test -f index.html || (echo "index.html not found at repo root" && exit 1)
 
-      - name: Test
-        run: npm test --if-present

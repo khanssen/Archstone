@@ -1,6 +1,8 @@
-﻿name: pages build and deployment
+﻿name: Deploy GitHub Pages
+
 on:
-  push: { branches: [ main ] }
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -9,18 +11,43 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: "pages"
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
+          fetch-depth: 0
+
+      # If you have a build step (npm), keep these; otherwise they no-op.
+      - name: Set up Node
+        if: hashFiles('package.json') != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+
+      - name: Install deps
+        if: hashFiles('package.json') != ''
+        run: npm ci
+
+      - name: Build (optional)
+        if: hashFiles('package.json') != '' && hashFiles('package.json', 'package-lock.json') != ''
+        run: |
+          # replace with your actual build, or leave as a no-op
+          echo "No build step defined; skipping"
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # If your site files are at the repo root, use '.'
+          # If they live in a subfolder (e.g., 'dist' or 'docs'), change this.
           path: .
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -28,5 +55,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
+      - name: Deploy to Pages
+        id: deployment
         uses: actions/deploy-pages@v4

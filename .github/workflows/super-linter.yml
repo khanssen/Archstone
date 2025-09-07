@@ -1,26 +1,37 @@
-name: Lint Code Base
-on:
-  push: { branches: [ main ] }
-  pull_request: { branches: [ main ] }
+name: Super Linter
 
-permissions: { contents: read }
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
   lint:
     runs-on: ubuntu-latest
-    # keep green even if lint finds issues (flip to false later)
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # REQUIRED for full history (some linters look at git metadata)
+          fetch-depth: 0
+
       - name: Super-Linter
-        uses: github/super-linter/slim@v6
+        uses: github/super-linter@v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
-          VALIDATE_ALL_CODEBASE: false
-          IGNORE_GITIGNORED_FILES: true
-          # narrow scope for now; expand later as you fix issues
+
+          # Enable/disable as you like:
           VALIDATE_HTML: true
           VALIDATE_CSS: true
-          VALIDATE_JAVASCRIPT_ES: false
+          VALIDATE_JAVASCRIPT: true
+          VALIDATE_JSON: true
+          VALIDATE_YAML: true
+
+          # If you want to ignore vendored files:
+          FILTER_REGEX_EXCLUDE: |
+            (^|/)(node_modules|vendor|dist|build|\.github/)|owl carousel/
