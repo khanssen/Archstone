@@ -25,3 +25,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Use the exact classes + hex from flaticon.html */
+.flaticon-linkedin::before { content: "\f10b"; }        /* REPLACE with your hex */
+.flaticon-youtube::before,
+.flaticon-play-button::before { content: "\f103"; }     /* REPLACE with your hex */

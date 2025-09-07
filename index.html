@@ -14,7 +14,9 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/animate.css">
     <link rel="stylesheet" href="font/flaticon.css">
-    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+	<link rel="stylesheet" href="/css/owl.carousel.min.css">
+	<link rel="stylesheet" href="/css/owl.theme.default.min.css">
+	<script src="/js/owl.carousel.min.js"></script>
     <link rel="stylesheet" href="/css/venobox.min.css">
     <link rel="stylesheet" href="/css/jquery-ui.min.css">
 
@@ -60,7 +62,7 @@
                        Follow Us:
 							<ul>
                                 <li><a href="https://www.linkedin.com/company/archstone-security-llc/"><i class="Flaticon-linkedin"></i></a></li>
-								<li><a href="https://www.linkedin.com/company/archstone-security-llc/"><i class="Flaticon-play-button"></i></a></li>
+								<li><a href="https://www.youtube.com/@ArchstoneSecurity/"><i class="Flaticon-play-button"></i></a></li>
                             </ul>
                         </div>
                     </div>
@@ -111,7 +113,7 @@
                                                 <a class="dropdown-item" href="/about_us.html">About Us</a>
                                             </li>
                                             <li class="dropdown">
-                                                <a class="dropdown-item" href="/faqs.html">FAQ</a>
+                                                <a class="dropdown-item" href="/faqs.html">FAQs</a>
                                             </li>
                                          </ul>
                                     </li>
@@ -158,69 +160,91 @@
 				
 
     <!-- Banner Section End -->
-	<div class="main-content">
-    <section>
-        <!-- Slider main container -->
-        <div class="home-slide-2 owl-carousel">
-            <!-- Single Slide  -->
-            <div class="single-slide">
-		<div id="slider-range">
-s                <div class="slide-bg sb-1" style="background-image: url('/images/banner2-f.png');"></div>
-                <div class="slide-bg sb-2" style="background-image: url('/images/banner2-e.png');"></div>
+<div class="main-content">
+  <section>
+    <!-- Slider main container -->
+    <div class="home-slide-2 owl-carousel">
 
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="slide-img">
-                                <div class="anim-item"><img src="/images/frame-up.png" alt=""></div>
-                                <div class="anim-item anim-item2"><img src="/images/frame-end.png" alt=""></div>
-                                <img src="/images/lock.png" alt="Banner Men 2">
-                            </div>
-                        </div>
-		</div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="slide-txt">
-                                <span>Cybersecurity Consulting</span>
-                                <h1 class="banner-title">Problems Solved</h1>
-                                <p>Simplify your complex compliance and regulatory capabilities.</p>
-                                <a href="/services.html" class="custom-btn unfill">Discover More <i
-                                        class="Flaticon-next-1"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Single Slide  -->
-            <div class="single-slide">
-                <div class="slide-bg sb-1" style="background-image: url('/images/banner2-f.png');"></div>
-                <div class="slide-bg sb-2" style="background-image: url('/images/banner2-e.png');"></div>
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="slide-img">
+      <!-- Single Slide -->
+      <div class="single-slide">
 
-                                <div class="anim-item"><img src="/images/frame-up.png" alt=""></div>
-                                <div class="anim-item anim-item2"><img src="/images/frame-end.png" alt=""></div>
-                                <img src="/images/crest.png" alt="Man atop a hill">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="slide-txt">
-                                <span>Accreditation Testing</span>
-                                <h1 class="banner-title">Become Certified</h1>
-                                <p>Streamlined, efficient assessment services by experienced staff.</p>
-                                <a href="/services.html" class="custom-btn unfill">Discover More <i
-                                        class="Flaticon-next-1"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Slides -->
+        <!-- Price Range Slider -->
+        <div class="price-filter">
+          <div id="slider-range"></div>
+          <input type="text" id="amount" readonly>
         </div>
 
-    </section>
-		</div>
+        <!-- Slide Backgrounds -->
+        <div class="slide-bg sb-1" style="background-image: url('/images/banner2-f.png');"></div>
+        <div class="slide-bg sb-2" style="background-image: url('/images/banner2-e.png');"></div>
+
+        <!-- Slide Content -->
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-6 col-md-6">
+              <div class="slide-img">
+                <div class="anim-item"><img src="/images/frame-up.png" alt=""></div>
+                <div class="anim-item anim-item2"><img src="/images/frame-end.png" alt=""></div>
+                <img src="/images/lock.png" alt="Banner Men 2">
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <div class="slide-txt">
+                <span>Cybersecurity Consulting</span>
+                <h1 class="banner-title">Problems Solved</h1>
+                <p>Simplify your complex compliance and regulatory capabilities.</p>
+                <a href="/services.html" class="custom-btn unfill">
+                  Discover More <i class="flaticon-next-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Slide Content -->
+
+      </div>
+      <!-- /Single Slide -->
+
+      <!-- Single Slide -->
+      <div class="single-slide">
+
+        <!-- Slide Backgrounds -->
+        <div class="slide-bg sb-1" style="background-image: url('/images/banner2-f.png');"></div>
+        <div class="slide-bg sb-2" style="background-image: url('/images/banner2-e.png');"></div>
+
+        <!-- Slide Content -->
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-6 col-md-6">
+              <div class="slide-img">
+                <div class="anim-item"><img src="/images/frame-up.png" alt=""></div>
+                <div class="anim-item anim-item2"><img src="/images/frame-end.png" alt=""></div>
+                <img src="/images/crest.png" alt="Man atop a hill">
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <div class="slide-txt">
+                <span>Accreditation Testing</span>
+                <h1 class="banner-title">Become Certified</h1>
+                <p>Streamlined, efficient assessment services by experienced staff.</p>
+                <a href="/services.html" class="custom-btn unfill">
+                  Discover More <i class="flaticon-next-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Slide Content -->
+
+      </div>
+      <!-- /Single Slide -->
+
+    </div>
+    <!-- /Slider main container -->
+  </section>
+</div>
+
+
     <!-- Banner Section End -->
 	
 	<!-- service card start -->

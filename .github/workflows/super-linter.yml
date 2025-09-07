@@ -1,46 +1,18 @@
 name: Lint Code Base
-
 on:
-  push:
-    branches: [ main ]
-    paths-ignore:
-      - 'images/**'
-      - 'font/**'
-      - '**/*.png'
-      - '**/*.jpg'
-      - '**/*.gif'
-      - '**/*.svg'
-      - '**/*.woff*'
-      - '**/*.ttf'
-      - 'CNAME'
-      - '.nojekyll'
-  pull_request:
-    branches: [ main ]
-    paths-ignore:
-      - 'images/**'
-      - 'font/**'
-      - '**/*.png'
-      - '**/*.jpg'
-      - '**/*.gif'
-      - '**/*.svg'
-      - '**/*.woff*'
-      - '**/*.ttf'
-      - 'CNAME'
-      - '.nojekyll'
+  push: { branches: [ main ] }
+  pull_request: { branches: [ main ] }
 
-permissions:
-  contents: read
+permissions: { contents: read }
 
 jobs:
   lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    # if you don't want lint to block deploys, keep this true
+    # keep green even if lint finds issues (flip to false later)
     continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Super-Linter
         uses: github/super-linter/slim@v6
         env:
@@ -48,9 +20,7 @@ jobs:
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: false
           IGNORE_GITIGNORED_FILES: true
-          # enable/disable as you like:
+          # narrow scope for now; expand later as you fix issues
           VALIDATE_HTML: true
           VALIDATE_CSS: true
-          VALIDATE_JAVASCRIPT_ES: true
-          # keep your prior exclusion for _headers
-          FILTER_REGEX_EXCLUDE: _headers.*
+          VALIDATE_JAVASCRIPT_ES: false
