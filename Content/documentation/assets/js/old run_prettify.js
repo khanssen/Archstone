@@ -1254,7 +1254,7 @@ var IN_GLOBAL_SCOPE = false;
           // only when not followint [|&;<>].
           '^.[^\\s\\w.$@\'"`/\\\\]*';
         if (options['regexLiterals']) {
-          punctuation += '(?!\s*\/)';
+          punctuation += '(?!\\s*\\/)';
         }
     
         fallthroughStylePatterns.push(
