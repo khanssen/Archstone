@@ -1,0 +1,21 @@
+﻿* text=auto
+
+# Normalize text files to LF in the repo
+*.html text eol=lf
+*.css  text eol=lf
+*.js   text eol=lf
+*.md   text eol=lf
+*.yml  text eol=lf
+*.svg  text eol=lf
+
+# Treat assets as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.mp4 binary
+*.webp binary
+*.woff* binary
+*.ttf binary
