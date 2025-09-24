@@ -11,14 +11,16 @@
     <link rel="shortcut icon" href="/images/favicon.ico">
 
     <!-- Css Library -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/jquery-ui.min.css">
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/animate.css">
     <link rel="stylesheet" href="font/flaticon.css">
 	<link rel="stylesheet" href="/css/owl.carousel.min.css">
+	<link rel="stylesheet" href="css/owl.theme.default.css">
 	<link rel="stylesheet" href="/css/owl.theme.default.min.css">
 	<script src="/js/owl.carousel.min.js"></script>
     <link rel="stylesheet" href="/css/venobox.min.css">
-    <link rel="stylesheet" href="/css/jquery-ui.min.css">
+
 
     <!-- Style css -->
     <link rel="stylesheet" href="/css/style.css">
@@ -159,7 +161,7 @@
     <!-- Header End -->
 				
 
-    <!-- Banner Section End -->
+    <!-- Banner Section Start -->
 <div class="main-content">
   <section>
     <!-- Slider main container -->
@@ -363,8 +365,29 @@
 <script src="/js/jquery.scrollUp.min.js"></script>
 <script src="/js/owl.carousel.min.js"></script>
 <script src="/js/custom.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+	
+<!--Test code-->
 
+<script>
+  $(function () {
+    $('.home-slide-2').owlCarousel({ items:1, loop:true, autoplay:true, dots:true });
 
+    $('#slider-range').slider({
+      range: true, min: 0, max: 500, values: [75, 300],
+      slide: function (e, ui) {
+        $('#amount').val('$' + ui.values[0] + ' - $' + ui.values[1]);
+      }
+    });
+    $('#amount').val(
+      '$' + $('#slider-range').slider('values', 0) + ' - $' + $('#slider-range').slider('values', 1)
+    );
+  });
+</script>
+
+<!--End Test code-->
      
   <!-- Images End -->
 </body>
