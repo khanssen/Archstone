@@ -1,0 +1,12 @@
+# from repo root
+git add -A
+git commit -m "Site updates"
+git push
+
+git add -A → stage everything (new/modified/deleted) repo-wide
+
+git add . → stage new + modified under the current folder (no deletions)
+
+git add -u → stage modified + deleted (no new files) repo-wide
+
+git add -p → stage changes interactively (by hunk)
