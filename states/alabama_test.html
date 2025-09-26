@@ -45,26 +45,48 @@
       </button>
 
       <div class="collapse navbar-collapse" id="mainNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="../stateramp.html">GovRAMP</a></li>
-          <li class="nav-item"><a class="nav-link" href="../vciso.html">Virtual CISO</a></li>
-          <li class="nav-item"><a class="nav-link" href="../fedramp.html">FedRAMP</a></li>
-          <li class="nav-item"><a class="nav-link" href="../cmmc.html">CMMC</a></li>
-          <li class="nav-item"><a class="nav-link" href="../fisma.html">FISMA</a></li>
-          <li class="nav-item"><a class="nav-link" href="../services.html">Services</a></li>
-          <li class="nav-item"><a class="nav-link" href="../about_us.html">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="../faqs.html">FAQ</a></li>
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+
+          <!-- Home (parent link + split dropdown toggle) -->
+          <li class="nav-item dropdown d-flex align-items-center">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link dropdown-toggle dropdown-toggle-split" href="#"
+               data-bs-toggle="dropdown" aria-expanded="false"
+               aria-label="Open Home menu"></a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/">Home</a></li>
+              <li><a class="dropdown-item" href="../stateramp.html">GovRAMP</a></li>
+              <li><a class="dropdown-item" href="../vciso.html">Virtual CISO</a></li>
+              <li><a class="dropdown-item" href="../fedramp.html">FedRAMP</a></li>
+              <li><a class="dropdown-item" href="../cmmc.html">CMMC</a></li>
+              <li><a class="dropdown-item" href="../fisma.html">FISMA</a></li>
+            </ul>
+          </li>
+
+          <!-- Pages (parent link + split dropdown toggle) -->
+          <li class="nav-item dropdown d-flex align-items-center">
+            <a class="nav-link" href="../services.html">Pages</a>
+            <a class="nav-link dropdown-toggle dropdown-toggle-split" href="#"
+               data-bs-toggle="dropdown" aria-expanded="false"
+               aria-label="Open Pages menu"></a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="../services.html">Services</a></li>
+              <li><a class="dropdown-item" href="../about_us.html">About Us</a></li>
+              <li><a class="dropdown-item" href="../faqs.html">FAQ</a></li>
+            </ul>
+          </li>
+
+          <!-- Plain links -->
+          <li class="nav-item"><a class="nav-link" href="../blog.html">Blog</a></li>
           <li class="nav-item">
-            <a class="nav-link" href="https://us10.list-manage.com/contact-form?u=3003506ab400c271d335edcbe&form_id=1ce62c284026a1314c66c0db77875899">
-              Contact
-            </a>
+            <a class="nav-link" href="https://us10.list-manage.com/contact-form?u=3003506ab400c271d335edcbe&form_id=1ce62c284026a1314c66c0db77875899">Contact</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 </header>
+
 
 
 <main class="container py-4">
