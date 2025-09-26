@@ -42,6 +42,18 @@
     /* If JS fails, don't leave the preloader covering the page */
     #preloader { display: none; }
   </style>
+	
+	<!--Test code -->
+	
+	<style>
+  /* Safe Mode: force content visible */
+  #preloader, .preloader { display:none !important; }
+  html, body, main, section { opacity:1 !important; visibility:visible !important; }
+  .primary-navigation.sticky-header { position:relative !important; height:auto !important; }
+  .main-content, .about-main { display:block !important; }
+  body { background:#fff; }
+</style>
+	<!--End test code -->
 
   <!-- Google tag (gtag.js) - load first -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGLH49FH2F"></script>
