@@ -2,27 +2,112 @@
 <html lang="en-US">
 <head>
   <meta charset="utf-8">
-  <title>Isolation Test</title>
+  <title>Alabama GovRAMP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Known-good Bootstrap 5 from CDN -->
+
+  <!-- Basic meta/social -->
+  <link rel="canonical" href="https://archstonesecurity.com/states/alabama.html">
+  <meta name="description" content="Alabama has adopted GovRAMP requirements for IT acquisitions. Learn what agencies require and how vendors can comply.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Alabama &amp; GovRAMP Requirements">
+  <meta property="og:description" content="Alabama has adopted GovRAMP requirements for IT acquisitions. Learn what agencies require and how vendors can comply.">
+  <meta property="og:url" content="https://archstonesecurity.com/states/alabama.html">
+  <meta property="og:image" content="https://archstonesecurity.com/images/og/alabamaOG.png">
+  <meta property="og:site_name" content="Archstone Security">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Alabama &amp; GovRAMP Requirements">
+  <meta name="twitter:description" content="Alabama has adopted GovRAMP requirements for IT acquisitions. Learn what agencies require and how vendors can comply.">
+  <meta name="twitter:image" content="https://archstonesecurity.com/images/og/alabamaOG.png">
+
+  <!-- Known-good Bootstrap 5 (CDN) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body{background:#fff;color:#111}
-    header, main, footer{padding:16px}
-    /* Nuke any “overlay” behavior just in case */
-    *{opacity:1!important;visibility:visible!important}
+    /* Kill any overlay/hide-on-load patterns */
+    * { opacity:1 !important; visibility:visible !important; }
+    body { background:#fff; color:#111; }
+    header, main, footer { padding-top: 12px; }
+    img { max-width:100%; height:auto; }
   </style>
 </head>
+
 <body>
 <header class="border-bottom">
-  <h1 class="h4 mb-0">Alabama & GovRAMP</h1>
+  <div class="container d-flex align-items-center justify-content-between">
+    <a class="navbar-brand" href="../index.html">
+      <img src="../images/Logo%20Transparent.png" alt="BrandNav" style="height:40px">
+    </a>
+    <nav class="d-none d-md-block">
+      <ul class="nav">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="../stateramp.html">GovRAMP</a></li>
+        <li class="nav-item"><a class="nav-link" href="../vciso.html">Virtual CISO</a></li>
+        <li class="nav-item"><a class="nav-link" href="../fedramp.html">FedRAMP</a></li>
+        <li class="nav-item"><a class="nav-link" href="../cmmc.html">CMMC</a></li>
+        <li class="nav-item"><a class="nav-link" href="../fisma.html">FISMA</a></li>
+        <li class="nav-item"><a class="nav-link" href="../services.html">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="../about_us.html">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="../faqs.html">FAQ</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://us10.list-manage.com/contact-form?u=3003506ab400c271d335edcbe&form_id=1ce62c284026a1314c66c0db77875899">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
 </header>
+
 <main class="container py-4">
-  <h2 class="h5">This should be visible.</h2>
-  <p>If you can read this, rendering is fine; your theme CSS/JS is hiding content on the real page.</p>
+  <div class="row">
+    <div class="col-md-9">
+      <h2 class="h4 d-flex align-items-center gap-2">
+        <a href="../stateramp.html" class="me-2">
+          <img src="../images/back%20button.png" alt="Back" style="height:24px">
+        </a>
+        Alabama and GovRAMP
+      </h2>
+
+      <p>
+        Alabama recently consolidated some of its acquisitions processes under
+        <a href="https://law.justia.com/codes/alabama/2021/title-41/chapter-16/article-2/section-41-16-20/">Alabama Code 2021-296</a>,
+        requiring that most procurement activities be centralized at the Alabama Chief Procurement Office (CPO). Agency management has been tasked with incorporating security requirements in contract documents and statements of work, ensuring that information security requirements are not only acknowledged but integral to the service provider's responsibilities. It is Alabama's objective to maintain the integrity of State-managed networks and systems, obliging service providers to configure their systems and software to align with information security policies and standards published by NIST. The Invitation to Bid (ITB) is a document used by agencies to procure IT goods and services through the competitive bidding process of State Purchasing. The ITB sets the minimum specifications for the product or service and establishes the qualifications that a vendor must meet in order to bid. Organizations seeking to competitively bid may encounter requirements to comply with GovRAMP.
+      </p>
+
+      <p>Alabama policies require that acquisition contracts and solicitation documents for information systems and services include, either explicitly or by reference, security requirements that describe:</p>
+      <ul>
+        <li>Required security capabilities and/or controls.</li>
+        <li>Required design and development processes.</li>
+        <li>Required test and evaluation procedures.</li>
+        <li>Required documentation.</li>
+      </ul>
+    </div>
+
+    <div class="col-md-3">
+      <aside>
+        <h3 class="h6">Helpful Links</h3>
+        <ul class="list-unstyled">
+          <li class="mb-1"><a href="https://oit.alabama.gov/">Alabama Office of Information Technology</a></li>
+          <li class="mb-1"><a href="https://oit.alabama.gov/it-governance/">Alabama IT Governance</a></li>
+          <li class="mb-1"><a href="https://oit.alabama.gov/governance-library/600-security-privacy/">Alabama Information Security &amp; Privacy</a></li>
+          <li class="mb-1"><a href="https://GovRAMP.org/">GovRAMP</a></li>
+          <li class="mb-1"><a href="https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final">NIST SP 800-53 R5</a></li>
+          <li class="mb-1"><a href="https://www.fedramp.gov/">FedRAMP</a></li>
+          <li class="mb-1"><a href="https://csrc.nist.gov/pubs/sp/800/18/r1/final">NIST SP 800-18 R1</a></li>
+          <li class="mb-1"><a href="https://csrc.nist.gov/pubs/sp/800/37/r2/final">NIST SP 800-37 R2</a></li>
+        </ul>
+      </aside>
+    </div>
+  </div>
 </main>
-<footer class="border-top">Footer</footer>
-<!-- BS5 bundle (no jQuery required) -->
+
+<footer class="border-top">
+  <div class="container py-3 d-flex justify-content-between align-items-center">
+    <div>
+      <strong>Archstone Security</strong>
+    </div>
+    <div>
+      <a href="../index.html"><img src="../images/Logo%20Transparent.png" alt="Logo" style="height:32px"></a>
+    </div>
+  </div>
+</footer>
+
+<!-- JS (Bootstrap 5 only) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
