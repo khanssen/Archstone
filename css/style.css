@@ -52,7 +52,6 @@ Tags: consultation, template, business, bootstrap 5, agency
 .flaticon-play-button::before { content: "Y" !important; }
 
 
-@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:wght@500;600;700&family=Poppins:wght@400;500;700&display=swap");
 body {
   font-family: "Poppins", sans-serif;
   background-color: #fff;
@@ -8989,4 +8988,109 @@ th, td {
 
 .flaticon-play-button::before,
 .flaticon-youtube::before { content: "\f103" !important; }     /* example hex */
+
+
+/* Consulpro fixes – safe overrides (place AFTER the theme CSS)
+   - fixes invalid color, improves contrast & focus, reduces motion,
+     removes risky global object-fit, and avoids layout shift on hover
+*/
+
+/* ---------- tokens */
+:root{
+  --brand-blue: #bdced7;
+  --text: #455359;
+  --text-strong: #0a5879;
+  --bg: #fff;
+}
+
+/* ---------- global hygiene */
+*,*::before,*::after{ box-sizing: border-box; }
+
+/* remove risky global object-fit from theme without breaking sized thumbs */
+img,figure{ max-width:100%; height:auto; object-fit: initial; margin:0; vertical-align:middle; }
+
+/* safer link styles (keep a visible affordance) */
+a{ text-decoration: underline; }
+a:hover,a:focus{ text-decoration-thickness: from-font; }
+
+/* accessible focus ring */
+:where(a,button,input,textarea,select,[role="button"]):focus-visible{
+  outline:2px solid var(--text-strong);
+  outline-offset:2px;
+  box-shadow:none;
+}
+
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; transition:none !important; }
+}
+
+/* ---------- heading fixes (invalid color + no janky hover) */
+h2{
+  font-size:30px;
+  text-transform:uppercase;
+  font-family:"Fira Sans",sans-serif;
+  /* gentle tracking; no big jumps on hover */
+  letter-spacing:-0.5px;
+  transition: color .3s ease;
+  margin-bottom:.8rem;
+  color: var(--text);                /* was: " #455359 " (invalid) */
+  text-align:left;
+}
+h2:hover{ letter-spacing:-0.5px; }   /* keep layout stable */
+
+/* ensure all other headings use readable default text color */
+h1,h3,h4,h5,h6{ color: var(--text); }
+
+/* ---------- contrast on brand-blue sections
+   Many components use #fff on #bdced7 (fails contrast).
+   Force readable text in the most common brand-blue blocks. */
+:where(.banner-section .single-slide,
+       .home-slide-2,
+       .trusted-brands,
+       .promo-section,
+       .banner-4,
+       .status-section,
+       .header){ color: var(--text); }
+
+:where(.banner-section .single-slide,
+       .home-slide-2,
+       .trusted-brands,
+       .promo-section,
+       .banner-4,
+       .status-section,
+       .header) :is(p,li,a,h1,h2,h3,h4,h5,h6,span){
+  color: var(--text) !important;
+}
+
+/* buttons should still pop on brand background */
+.custom-btn, .cart-form-footer .button, .cart_total_wrap .button{
+  background: var(--brand-blue);
+  color:#fff;
+}
+
+/* ---------- inputs: restore visible focus, keep neutral placeholder */
+input, textarea, .form-control{ color: var(--text); }
+input::placeholder, textarea::placeholder, .form-control::placeholder{ color:#9aa7ae; }
+:where(input,textarea,.form-control):focus{
+  border-color:#c7d5dc;
+  outline:0; box-shadow:none;
+}
+:where(input,textarea,.form-control):focus-visible{
+  outline:2px solid var(--text-strong);
+  outline-offset:2px;
+}
+
+/* ---------- remove temporary icon hacks if still present (defensive) */
+.flaticon-linkedin::before,
+.flaticon-play-button::before{ content: unset !important; }
+
+/* ---------- parallax/janky backgrounds: tame on mobile */
+@media (max-width: 767px){
+  .talk-section .talk-bg{ background-attachment: scroll; }
+}
+
+/* ---------- hover animations: prefer transform only */
+.serv
+
 
