@@ -1694,7 +1694,16 @@
 
             };
 
-            imageToLoad.src = imageSource;
+            // Only allow http, https, protocol-relative, relative URLs
+            var SAFE_URL_REGEX = /^(https?:\/\/|\/\/|\/|\.\/|\.\.\/)[^\s]*$/i;
+            if (SAFE_URL_REGEX.test(imageSource)) {
+                imageToLoad.src = imageSource;
+            } else {
+                // If not safe, skip loading and trigger error handler
+                if (typeof imageToLoad.onerror === "function") {
+                    imageToLoad.onerror();
+                }
+            }
 
         } else {
 
