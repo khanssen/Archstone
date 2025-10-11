@@ -1432,37 +1432,11 @@
     Slick.prototype.initDotEvents = function() {
 
         var _ = this;
+/**
  * @protected
-	 */		 */
-	Owl.prototype.preloadAutoWidthImages = function(images) {		Owl.prototype.preloadAutoWidthImages = function(images) {
-		function isSafeSrcValue(src) {
-			// Only allow safe URLs (starts with http(s), or absolute/relative path)
-			return src && (/^(https?:\/\/|\/|\.\/|\.\.\/)/.test(src));
-		}
-		images.each($.proxy(function(i, element) {			images.each($.proxy(function(i, element) {
-			this.enter('pre-loading');				this.enter('pre-loading');
-			element = $(element);				element = $(element);
-			var origSrc = element.attr('src');
-			var dataSrc = element.attr('data-src');
-			var dataSrcRetina = element.attr('data-src-retina');
-			var chosenSrc = origSrc || dataSrc || dataSrcRetina;
-			var safeSrc = isSafeSrcValue(chosenSrc) ? chosenSrc : '';
-			$(new Image()).one('load', $.proxy(function(e) {				$(new Image()).one('load', $.proxy(function(e) {
-				element.attr('src', e.target.src);					element.attr('src', e.target.src);
-				element.css('opacity', 1);					element.css('opacity', 1);
-				this.leave('pre-loading');					this.leave('pre-loading');
-				!this.is('pre-loading') && !this.is('initializing') && this.refresh();					!this.is('pre-loading') && !this.is('initializing') && this.refresh();
-			}, this)).attr('src', element.attr('src') || element.attr('data-src') || element.attr('data-src-retina'));				}, this)).attr('src', safeSrc);
- Warning
-DOM text reinterpreted as HTML
- is reinterpreted as HTML without escaping meta-characters.
- is reinterpreted as HTML without escaping meta-characters.
-Extracting text from a DOM node and interpreting it as HTML can lead to a cross-site scripting vulnerability.
+ */
 
-		}, this));			}, this));
-	};		};
-
-        var _ = this;
+;
 
         if ( _.options.pauseOnHover ) {
 
