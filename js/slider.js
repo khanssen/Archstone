@@ -1565,73 +1565,80 @@
                     imageSource = $(this).attr('data-lazy'),
                     imageSrcSet = $(this).attr('data-srcset'),
                     imageSizes  = $(this).attr('data-sizes') || _.$slider.attr('data-sizes'),
-                    imageToLoad = document.createElement('img'),
-                    isValidImageSource = false;
+                    imageToLoad = document.createElement('img');
+// Create the image element once
+imageToLoad = document.createElement('img');
 
-                // Only allow http(s), protocol-relative, or relative URLs, not 'javascript:' or 'data:text/html'
-                if (typeof imageSource === "string") {
-                    var trimmedSource = imageSource.trim();
-                    // Whitelist: must start with suitable prefix AND end with a safe image extension
-                    var allowedPrefixes = /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i;
-                    var allowedExtensions = /\.(png|jpe?g|gif|webp|svg)$/i;
-                    if (
-                        trimmedSource &&
-                        allowedPrefixes.test(trimmedSource) &&
-                        allowedExtensions.test(trimmedSource)
-                    ) {
-                        isValidImageSource = true;
-                    }
-                }
+// Define its onload handler
+imageToLoad.onload = function () {
+    // Only allow http(s), protocol-relative, or relative URLs — block javascript:, data:, etc.
+    if (typeof imageSource === "string") {
+        var trimmedSource = imageSource.trim();
 
-                imageToLoad.onload = function() {
+        // Whitelist: must start with safe prefix AND end with a safe image extension
+        var allowedPrefixes = /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i;
+        var allowedExtensions = /\.(png|jpe?g|gif|webp|svg)$/i;
 
-                    image
-                        .animate({ opacity: 0 }, 100, function() {
+        isValidImageSource =
+            trimmedSource &&
+            allowedPrefixes.test(trimmedSource) &&
+            allowedExtensions.test(trimmedSource);
+    }
 
-                            if (imageSrcSet) {
-                                image
-                                    .attr('srcset', imageSrcSet );
+    if (isValidImageSource) {
+        // Apply image sizes if specified
+        if (imageSizes) {
+            image.setAttribute('sizes', imageSizes);
+        }
 
-                                if (imageSizes) {
-                                    image
-                                        .attr('sizes', imageSizes );
-                                }
-                            }
+        // Load the validated image into the slider
+        image
+            .attr('src', trimmedSource)
+            .animate({ opacity: 1 }, 200, function () {
+                image
+                    .removeAttr('data-lazy data-srcset data-sizes')
+                    .removeClass('slick-loading');
+            });
 
-                            image
-                                .attr('src', imageSource)
-                                .animate({ opacity: 1 }, 200, function() {
-                                    image
-                                        .removeAttr('data-lazy data-srcset data-sizes')
-                                        .removeClass('slick-loading');
-                                });
-                            _.$slider.trigger('lazyLoaded', [_, image, imageSource]);
-                        });
+        _.$slider.trigger('lazyLoaded', [_, image, trimmedSource]);
+    } else {
+        console.warn("⚠️ Blocked unsafe image source:", imageSource);
+        image
+            .removeAttr('data-lazy')
+            .removeClass('slick-loading')
+            .addClass('slick-lazyload-error');
+        _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+    }
+};
 
-                };
+// Define its onerror handler
+imageToLoad.onerror = function () {
+    image
+        .removeAttr('data-lazy')
+        .removeClass('slick-loading')
+        .addClass('slick-lazyload-error');
 
-                imageToLoad.onerror = function() {
+    _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+};
 
-                    image
-                        .removeAttr( 'data-lazy' )
-                        .removeClass( 'slick-loading' )
-                        .addClass( 'slick-lazyload-error' );
+// ✅ Only set src if it’s valid
+if (typeof imageSource === "string") {
+    var trimmedSource = imageSource.trim();
+    var allowedPrefixes = /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i;
+    var allowedExtensions = /\.(png|jpe?g|gif|webp|svg)$/i;
+    if (allowedPrefixes.test(trimmedSource) && allowedExtensions.test(trimmedSource)) {
+        imageToLoad.src = trimmedSource;
+    } else {
+        console.warn("⚠️ Skipped setting unsafe image source:", imageSource);
+        image
+            .removeAttr('data-lazy')
+            .removeClass('slick-loading')
+            .addClass('slick-lazyload-error');
+        _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+    }
+}
 
-                    _.$slider.trigger('lazyLoadError', [ _, image, imageSource ]);
-
-                };
-
-                if (isValidImageSource) {
-                    imageToLoad.src = imageSource;
-                } else {
-                    // Invalid src, set error class and do not load
-                    image
-                        .removeAttr( 'data-lazy' )
-                        .removeClass( 'slick-loading' )
-                        .addClass( 'slick-lazyload-error' );
-                    _.$slider.trigger('lazyLoadError', [ _, image, imageSource ]);
-                }
-
+                imageToLoad.src = imageSource;
 
             });
 
@@ -1799,17 +1806,6 @@
 
     };
 
-    // Helper function to validate/sanitize image URLs
-    function sanitizeImageUrl(url) {
-        if (typeof url !== 'string') return '';
-        // Only allow URLs starting with http:, https:, /, or ./ (can be tuned)
-        var allowed = /^(https?:\/\/|\/|\.\/)/i;
-        var forbidden = /^(javascript:|data:|vbscript:)/i;
-        if (forbidden.test(url)) return '';
-        if (!allowed.test(url)) return '';
-        return url;
-    }
-
     Slick.prototype.progressiveLazyLoad = function( tryCount ) {
 
         tryCount = tryCount || 1;
@@ -1825,7 +1821,7 @@
         if ( $imgsToLoad.length ) {
 
             image = $imgsToLoad.first();
-            imageSource = sanitizeImageUrl(image.attr('data-lazy'));
+            imageSource = image.attr('data-lazy');
             imageSrcSet = image.attr('data-srcset');
             imageSizes  = image.attr('data-sizes') || _.$slider.attr('data-sizes');
             imageToLoad = document.createElement('img');
@@ -1843,7 +1839,7 @@
                 }
 
                 image
-                    .attr( 'src', imageSource || '' )
+                    .attr( 'src', imageSource )
                     .removeAttr('data-lazy data-srcset data-sizes')
                     .removeClass('slick-loading');
 
@@ -1884,18 +1880,7 @@
 
             };
 
-            if (imageSource) {
-                imageToLoad.src = imageSource;
-            } else {
-                // If the URL is invalid, mark the image as error and continue
-                image
-                    .removeAttr('data-lazy')
-                    .removeClass('slick-loading')
-                    .addClass('slick-lazyload-error');
-                _.$slider.trigger('lazyLoadError', [ _, image, image.attr('data-lazy') ]);
-                _.progressiveLazyLoad();
-                return;
-            }
+            imageToLoad.src = imageSource;
 
         } else {
 
@@ -3097,3 +3082,4 @@
     };
 
 }));
+type C:\Archstone\.gitattributes
