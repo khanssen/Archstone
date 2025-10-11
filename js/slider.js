@@ -1575,14 +1575,71 @@ imageToLoad.onload = function () {
     if (typeof imageSource === "string") {
         var trimmedSource = imageSource.trim();
 
-        // Whitelist: must start with safe prefix AND end with a safe image extension
-        var allowedPrefixes = /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i;
-        var allowedExtensions = /\.(png|jpe?g|gif|webp|svg)$/i;
+      	
+	var trimmedSource = imageSource.trim();
+	
 
-        isValidImageSource =
-            trimmedSource &&
-            allowedPrefixes.test(trimmedSource) &&
-            allowedExtensions.test(trimmedSource);
+	// Whitelist: must start with safe prefix AND end with a safe image extension (svg excluded for security)
+	var allowedPrefixes = /^(https?:\/\/|\/|\.\/|\.\.\/)/i; // Do not allow protocol-relative (//) URIs
+	var allowedExtensions = /\.(png|jpe?g|gif|webp)$/i; // Removed svg for XSS safety
+	
+
+	// Ensure source is a valid URL and not protocol-relative, javascript:, or data:
+	var isValidImageSource = false;
+	if (trimmedSource &&
+	allowedPrefixes.test(trimmedSource) &&
+	allowedExtensions.test(trimmedSource)) {
+	try {
+	// If absolute URL, must be http or https only
+	if (/^https?:\/\//i.test(trimmedSource)) {
+	var urlObj = new URL(trimmedSource, window.location.origin);
+	isValidImageSource = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+	} else {
+	// Relative URLs allowed (begins with /, ./, or ../)
+	isValidImageSource = /^(\.\/|\.\.\/|\/)/.test(trimmedSource);
+	}
+	} catch (e) {
+	isValidImageSource = false;
+	}
+	}
+}	}
+	
+
+	if (isValidImageSource) {
+
+
+if (typeof imageSource === "string") {
+        var trimmedSource = imageSource.trim();	        var trimmedSource = imageSource.trim();
+
+
+        // Whitelist: must start with safe prefix AND end with a safe image extension	        // Whitelist: must start with safe prefix AND end with a safe image extension (svg excluded for security)
+        var allowedPrefixes = /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i;	        var allowedPrefixes = /^(https?:\/\/|\/|\.\/|\.\.\/)/i; // Do not allow protocol-relative (//) URIs
+        var allowedExtensions = /\.(png|jpe?g|gif|webp|svg)$/i;	        var allowedExtensions = /\.(png|jpe?g|gif|webp)$/i; // Removed svg for XSS safety
+
+
+        isValidImageSource =	        // Ensure source is a valid URL and not protocol-relative, javascript:, or data:
+            trimmedSource &&	        var isValidImageSource = false;
+        if (trimmedSource &&
+            allowedPrefixes.test(trimmedSource) &&	            allowedPrefixes.test(trimmedSource) &&
+            allowedExtensions.test(trimmedSource);	            allowedExtensions.test(trimmedSource)) {
+            try {
+                // If absolute URL, must be http or https only
+                if (/^https?:\/\//i.test(trimmedSource)) {
+                    var urlObj = new URL(trimmedSource, window.location.origin);
+                    isValidImageSource = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+                } else {
+                    // Relative URLs allowed (begins with /, ./, or ../)
+                    isValidImageSource = /^(\.\/|\.\.\/|\/)/.test(trimmedSource);
+                }
+            } catch (e) {
+                isValidImageSource = false;
+            }
+        }
+    }	    }
+
+
+    if (isValidImageSource) {	    if (isValidImageSource) {
+
     }
 
     if (isValidImageSource) {
