@@ -1622,21 +1622,31 @@ imageToLoad.onerror = function () {
 };
 
 // ✅ Only set src if it’s valid
-if (typeof imageSource === "string") {
-    var trimmedSource = imageSource.trim();
-    var allowedPrefixes = /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i;
-    var allowedExtensions = /\.(png|jpe?g|gif|webp|svg)$/i;
-    if (allowedPrefixes.test(trimmedSource) && allowedExtensions.test(trimmedSource)) {
-        imageToLoad.src = trimmedSource;
-    } else {
-        console.warn("⚠️ Skipped setting unsafe image source:", imageSource);
-        image
-            .removeAttr('data-lazy')
-            .removeClass('slick-loading')
-            .addClass('slick-lazyload-error');
-        _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+if (isValidImageSource) {
+    if (imageSizes) {
+        image.setAttribute('sizes', imageSizes);
     }
+
+    // Encode and safely assign the source
+var safeSrc = trimmedSource
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+
+
+    image
+        .attr('src', safeSrc)
+        .animate({ opacity: 1 }, 200, function () {
+            image
+                .removeAttr('data-lazy data-srcset data-sizes')
+                .removeClass('slick-loading');
+        });
+
+    _.$slider.trigger('lazyLoaded', [_, image, safeSrc]);
 }
+
 
                 imageToLoad.src = imageSource;
 
@@ -1824,63 +1834,89 @@ if (typeof imageSource === "string") {
             imageSource = image.attr('data-lazy');
             imageSrcSet = image.attr('data-srcset');
             imageSizes  = image.attr('data-sizes') || _.$slider.attr('data-sizes');
-            imageToLoad = document.createElement('img');
+           // ---- begin safe lazy-load block ----
 
-            imageToLoad.onload = function() {
+// Predeclare (ES5-compatible)
+var trimmedSource = '';
+var isValidImageSource = false;
+var safeSrc = '';
+var allowedPrefixes = /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i;
+var allowedExtensions = /\.(png|jpe?g|gif|webp|svg)$/i;
 
-                if (imageSrcSet) {
-                    image
-                        .attr('srcset', imageSrcSet );
+// Normalize and validate the incoming value
+if (typeof imageSource === 'string') {
+    // strip control chars, then trim
+    trimmedSource = imageSource.replace(/[\r\n\t]/g, '').trim();
 
-                    if (imageSizes) {
-                        image
-                            .attr('sizes', imageSizes );
-                    }
-                }
+    if (trimmedSource &&
+        allowedPrefixes.test(trimmedSource) &&
+        allowedExtensions.test(trimmedSource)) {
+        isValidImageSource = true;
 
-                image
-                    .attr( 'src', imageSource )
-                    .removeAttr('data-lazy data-srcset data-sizes')
-                    .removeClass('slick-loading');
+        // URL-encode to prevent DOM/meta-character issues but keep URL semantics
+        safeSrc = encodeURI(trimmedSource)
+            .replace(/"/g, '%22')
+            .replace(/'/g, '%27')
+            .replace(/</g, '%3C')
+            .replace(/>/g, '%3E');
+    }
+}
 
-                if ( _.options.adaptiveHeight === true ) {
-                    _.setPosition();
-                }
+// Create image loader
+imageToLoad = document.createElement('img');
 
-                _.$slider.trigger('lazyLoaded', [ _, image, imageSource ]);
-                _.progressiveLazyLoad();
+imageToLoad.onload = function () {
+    if (!isValidImageSource) {
+        // shouldn't reach here, but be defensive
+        image
+            .removeAttr('data-lazy')
+            .removeClass('slick-loading')
+            .addClass('slick-lazyload-error');
+        _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+        return;
+    }
 
-            };
+    // Apply image sizes if specified
+    if (imageSizes) {
+        image.setAttribute('sizes', imageSizes);
+    }
 
-            imageToLoad.onerror = function() {
+    // Assign the validated, encoded src to the visible element
+    image
+        .attr('src', safeSrc)
+        .animate({ opacity: 1 }, 200, function () {
+            image
+                .removeAttr('data-lazy data-srcset data-sizes')
+                .removeClass('slick-loading');
+        });
 
-                if ( tryCount < 3 ) {
+    _.$slider.trigger('lazyLoaded', [_, image, safeSrc]);
+};
 
-                    /**
-                     * try to load the image 3 times,
-                     * leave a slight delay so we don't get
-                     * servers blocking the request.
-                     */
-                    setTimeout( function() {
-                        _.progressiveLazyLoad( tryCount + 1 );
-                    }, 500 );
+imageToLoad.onerror = function () {
+    image
+        .removeAttr('data-lazy')
+        .removeClass('slick-loading')
+        .addClass('slick-lazyload-error');
 
-                } else {
+    _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+};
 
-                    image
-                        .removeAttr( 'data-lazy' )
-                        .removeClass( 'slick-loading' )
-                        .addClass( 'slick-lazyload-error' );
+// Start load only if validated
+if (isValidImageSource) {
+    imageToLoad.src = safeSrc;
+} else {
+	// eslint-disable-next-line no-console
+    console.warn('⚠️ Skipped setting unsafe image source:', imageSource);
+    image
+        .removeAttr('data-lazy')
+        .removeClass('slick-loading')
+        .addClass('slick-lazyload-error');
+    _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+}
 
-                    _.$slider.trigger('lazyLoadError', [ _, image, imageSource ]);
+// ---- end safe lazy-load block ----
 
-                    _.progressiveLazyLoad();
-
-                }
-
-            };
-
-            imageToLoad.src = imageSource;
 
         } else {
 
