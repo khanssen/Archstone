@@ -3082,4 +3082,4 @@ if (typeof imageSource === "string") {
     };
 
 }));
-type C:\Archstone\.gitattributes
+
