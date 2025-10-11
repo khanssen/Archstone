@@ -1571,12 +1571,13 @@
                 // Only allow http(s), protocol-relative, or relative URLs, not 'javascript:' or 'data:text/html'
                 if (typeof imageSource === "string") {
                     var trimmedSource = imageSource.trim();
+                    // Whitelist: must start with suitable prefix AND end with a safe image extension
+                    var allowedPrefixes = /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i;
+                    var allowedExtensions = /\.(png|jpe?g|gif|webp|svg)$/i;
                     if (
                         trimmedSource &&
-                        (
-                            // Starts with http://, https://, protocol-relative, or relative
-                            /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i.test(trimmedSource)
-                        )
+                        allowedPrefixes.test(trimmedSource) &&
+                        allowedExtensions.test(trimmedSource)
                     ) {
                         isValidImageSource = true;
                     }
