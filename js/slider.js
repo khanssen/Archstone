@@ -1773,6 +1773,17 @@
 
     };
 
+    // Helper function to validate/sanitize image URLs
+    function sanitizeImageUrl(url) {
+        if (typeof url !== 'string') return '';
+        // Only allow URLs starting with http:, https:, /, or ./ (can be tuned)
+        var allowed = /^(https?:\/\/|\/|\.\/)/i;
+        var forbidden = /^(javascript:|data:|vbscript:)/i;
+        if (forbidden.test(url)) return '';
+        if (!allowed.test(url)) return '';
+        return url;
+    }
+
     Slick.prototype.progressiveLazyLoad = function( tryCount ) {
 
         tryCount = tryCount || 1;
@@ -1788,7 +1799,7 @@
         if ( $imgsToLoad.length ) {
 
             image = $imgsToLoad.first();
-            imageSource = image.attr('data-lazy');
+            imageSource = sanitizeImageUrl(image.attr('data-lazy'));
             imageSrcSet = image.attr('data-srcset');
             imageSizes  = image.attr('data-sizes') || _.$slider.attr('data-sizes');
             imageToLoad = document.createElement('img');
@@ -1806,7 +1817,7 @@
                 }
 
                 image
-                    .attr( 'src', imageSource )
+                    .attr( 'src', imageSource || '' )
                     .removeAttr('data-lazy data-srcset data-sizes')
                     .removeClass('slick-loading');
 
@@ -1847,7 +1858,18 @@
 
             };
 
-            imageToLoad.src = imageSource;
+            if (imageSource) {
+                imageToLoad.src = imageSource;
+            } else {
+                // If the URL is invalid, mark the image as error and continue
+                image
+                    .removeAttr('data-lazy')
+                    .removeClass('slick-loading')
+                    .addClass('slick-lazyload-error');
+                _.$slider.trigger('lazyLoadError', [ _, image, image.attr('data-lazy') ]);
+                _.progressiveLazyLoad();
+                return;
+            }
 
         } else {
 
