@@ -1565,7 +1565,22 @@
                     imageSource = $(this).attr('data-lazy'),
                     imageSrcSet = $(this).attr('data-srcset'),
                     imageSizes  = $(this).attr('data-sizes') || _.$slider.attr('data-sizes'),
-                    imageToLoad = document.createElement('img');
+                    imageToLoad = document.createElement('img'),
+                    isValidImageSource = false;
+
+                // Only allow http(s), protocol-relative, or relative URLs, not 'javascript:' or 'data:text/html'
+                if (typeof imageSource === "string") {
+                    var trimmedSource = imageSource.trim();
+                    if (
+                        trimmedSource &&
+                        (
+                            // Starts with http://, https://, protocol-relative, or relative
+                            /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i.test(trimmedSource)
+                        )
+                    ) {
+                        isValidImageSource = true;
+                    }
+                }
 
                 imageToLoad.onload = function() {
 
@@ -1605,7 +1620,17 @@
 
                 };
 
-                imageToLoad.src = imageSource;
+                if (isValidImageSource) {
+                    imageToLoad.src = imageSource;
+                } else {
+                    // Invalid src, set error class and do not load
+                    image
+                        .removeAttr( 'data-lazy' )
+                        .removeClass( 'slick-loading' )
+                        .addClass( 'slick-lazyload-error' );
+                    _.$slider.trigger('lazyLoadError', [ _, image, imageSource ]);
+                }
+
 
             });
 
