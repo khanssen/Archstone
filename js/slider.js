@@ -1432,28 +1432,35 @@
     Slick.prototype.initDotEvents = function() {
 
         var _ = this;
+ * @protected
+	 */		 */
+	Owl.prototype.preloadAutoWidthImages = function(images) {		Owl.prototype.preloadAutoWidthImages = function(images) {
+		function isSafeSrcValue(src) {
+			// Only allow safe URLs (starts with http(s), or absolute/relative path)
+			return src && (/^(https?:\/\/|\/|\.\/|\.\.\/)/.test(src));
+		}
+		images.each($.proxy(function(i, element) {			images.each($.proxy(function(i, element) {
+			this.enter('pre-loading');				this.enter('pre-loading');
+			element = $(element);				element = $(element);
+			var origSrc = element.attr('src');
+			var dataSrc = element.attr('data-src');
+			var dataSrcRetina = element.attr('data-src-retina');
+			var chosenSrc = origSrc || dataSrc || dataSrcRetina;
+			var safeSrc = isSafeSrcValue(chosenSrc) ? chosenSrc : '';
+			$(new Image()).one('load', $.proxy(function(e) {				$(new Image()).one('load', $.proxy(function(e) {
+				element.attr('src', e.target.src);					element.attr('src', e.target.src);
+				element.css('opacity', 1);					element.css('opacity', 1);
+				this.leave('pre-loading');					this.leave('pre-loading');
+				!this.is('pre-loading') && !this.is('initializing') && this.refresh();					!this.is('pre-loading') && !this.is('initializing') && this.refresh();
+			}, this)).attr('src', element.attr('src') || element.attr('data-src') || element.attr('data-src-retina'));				}, this)).attr('src', safeSrc);
+ Warning
+DOM text reinterpreted as HTML
+ is reinterpreted as HTML without escaping meta-characters.
+ is reinterpreted as HTML without escaping meta-characters.
+Extracting text from a DOM node and interpreting it as HTML can lead to a cross-site scripting vulnerability.
 
-        if (_.options.dots === true && _.slideCount > _.options.slidesToShow) {
-            $('li', _.$dots).on('click.slick', {
-                message: 'index'
-            }, _.changeSlide);
-
-            if (_.options.accessibility === true) {
-                _.$dots.on('keydown.slick', _.keyHandler);
-            }
-        }
-
-        if (_.options.dots === true && _.options.pauseOnDotsHover === true && _.slideCount > _.options.slidesToShow) {
-
-            $('li', _.$dots)
-                .on('mouseenter.slick', $.proxy(_.interrupt, _, true))
-                .on('mouseleave.slick', $.proxy(_.interrupt, _, false));
-
-        }
-
-    };
-
-    Slick.prototype.initSlideEvents = function() {
+		}, this));			}, this));
+	};		};
 
         var _ = this;
 
@@ -1958,6 +1965,15 @@ imageToLoad.onerror = function () {
 
     _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
 };
+// Helper to sanitize a url to prevent javascript: scheme, etc.
+	function sanitizeUrl(url) {
+		if (typeof url !== 'string') return '';
+		url = url.trim();
+		// Allow http, https, // (protocol-relative), or data:image/
+		if (/^(https?:|\/\/)/i.test(url)) return url;
+		if (/^data:image\//i.test(url)) return url;
+		return '';
+	}
 
 // Start load only if validated
 if (isValidImageSource) {
