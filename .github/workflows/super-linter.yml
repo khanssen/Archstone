@@ -27,17 +27,23 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+          # Use your repo ESLint config
           LINTER_RULES_PATH: .
           JAVASCRIPT_ES_CONFIG_FILE: eslint.config.cjs
 
-          # 🔽 Exclude all the junk files and vendor code
-          FILTER_REGEX_EXCLUDE: >
-            (^|/)(node_modules|dist|build|coverage|vendor)/
-            | (^|/)(HTML Template|Content/.*/documentation|documentation)/
-            | (^|/)owl carousel/
-            | \.min\.js$
-
+          # Only if you want to lint everything, not just changes
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_JAVASCRIPT_ES: true
-          OUTPUT_DETAILS: detailed
-          LOG_LEVEL: NOTICE
+
+          #  Exclude vendor/templates/minified/etc.
+          FILTER_REGEX_EXCLUDE: |
+            (^|/)(node_modules|dist|build|coverage|vendor)/
+            | (^|/)(HTML[ _-]?Template|Content[ _/-]?.*/documentation|documentation)/
+            | (^|/)(owl[ _-]?carousel)/
+            | (^|/)(gulpfile\.js)
+            | (^|/)js/.*\.min\.js$
+            | (^|/)Content/HTML[ _-]?Template/.*
+            | (^|/)owl[ _-]?carousel/.*
+            | (^|/)documentation/.*
+            | (^|/)HTML[ _-]?Template/.*
+            | \.min\.js$
