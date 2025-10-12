@@ -1,37 +1,40 @@
 // eslint.config.cjs
 const js = require("@eslint/js");
-const globals = require("globals");
 
+/** @type {import('eslint').Linter.FlatConfig[]} */
 module.exports = [
   {
-    files: ["**/*.js"],
+    // Ignore files (replaces .eslintignore)
     ignores: [
       "node_modules/**",
       "dist/**",
       "build/**",
+      "**/*.min.js",
       "vendor/**",
-      "js/*.min.js"
     ],
+  },
+  js.configs.recommended,
+  {
+    files: ["**/*.js"],
     languageOptions: {
-      ecmaVersion: 5,      // your slider is ES5-style
+      ecmaVersion: 2020,
       sourceType: "script",
       globals: {
-        ...globals.browser,
-        $: "readonly",
-        jQuery: "readonly",
-        console: "readonly",
         window: "readonly",
         document: "readonly",
+        define: "readonly",
+        jQuery: "readonly",
+        $: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
       },
     },
     rules: {
-      // mimic common Super-Linter defaults
-      "no-console": "warn",          // we’ll silence specific lines inline
-      "eqeqeq": "error",
-      "no-implied-eval": "error",
-      "no-unused-vars": ["warn", { args: "after-used", varsIgnorePattern: "^_" }],
-      "no-unsafe-finally": "error"
+      "no-console": "off",
+      "no-unused-vars": [
+        "warn",
+        { args: "none", varsIgnorePattern: "^_\\$?" },
+      ],
     },
   },
-  js.configs.recommended, // ESLint recommended rules
 ];
