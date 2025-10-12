@@ -1,18 +1,6 @@
-// eslint.config.cjs
-const js = require("@eslint/js");
+import js from "@eslint/js";
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
-module.exports = [
-  {
-    // Ignore files (replaces .eslintignore)
-    ignores: [
-      "node_modules/**",
-      "dist/**",
-      "build/**",
-      "**/*.min.js",
-      "vendor/**",
-    ],
-  },
+export default [
   js.configs.recommended,
   {
     files: ["**/*.js"],
@@ -20,21 +8,40 @@ module.exports = [
       ecmaVersion: 2020,
       sourceType: "script",
       globals: {
+        // Browser globals
         window: "readonly",
         document: "readonly",
-        define: "readonly",
-        jQuery: "readonly",
-        $: "readonly",
+        navigator: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
         setInterval: "readonly",
         clearInterval: "readonly",
+        console: "readonly",
+        Image: "readonly",
+        fetch: "readonly",
+
+        // jQuery
+        $: "readonly",
+        jQuery: "readonly",
+
+        // Define AMD support
+        define: "readonly",
+        module: "readonly",
+        exports: "readonly",
+
+        // Google Maps
+        google: "readonly",
+
+        // Third-party libraries used in your code
+        WOW: "readonly",
+        hljs: "readonly",
       },
     },
     rules: {
       "no-console": "off",
-      "no-unused-vars": [
-        "warn",
-        { args: "none", varsIgnorePattern: "^_\\$?" },
-      ],
+      "no-unused-vars": ["warn", { args: "none", varsIgnorePattern: "^_\\$?" }],
+      "no-redeclare": "off",
+      "no-undef": "off",
     },
   },
 ];
