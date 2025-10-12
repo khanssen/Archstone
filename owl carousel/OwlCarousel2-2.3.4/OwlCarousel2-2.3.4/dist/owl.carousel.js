@@ -1958,6 +1958,16 @@
 	 * @param {Number} position - The absolute position of the item.
 	 * @protected
 	 */
+	// Helper to sanitize a url to prevent javascript: scheme, etc.
+	
+	function sanitizeUrl(url) {
+		if (typeof url !== 'string') return '';
+		url = url.trim();
+		// Allow http, https, // (protocol-relative), or data:image/
+		if (/^(https?:|\/\/)/i.test(url)) return url;
+		if (/^data:image\//i.test(url)) return url;
+		return '';
+	}
 	Lazy.prototype.load = function(position) {
 		var $item = this._core.$stage.children().eq(position),
 			$elements = $item && $item.find('.owl-lazy');
