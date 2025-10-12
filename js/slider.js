@@ -1538,132 +1538,119 @@
         var _ = this,
             loadRange, cloneRange, rangeStart, rangeEnd;
 
-        function loadImages(imagesScope) {
+function loadImages(imagesScope) {
+  $('img[data-lazy]', imagesScope).each(function () {
+    var image = $(this);
+    var imageSource = image.attr('data-lazy');
+    var imageSrcSet = image.attr('data-srcset');
+    var imageSizes = image.attr('data-sizes') || _.$slider.attr('data-sizes');
 
-            $('img[data-lazy]', imagesScope).each(function() {
+    // Create loader
+    var imageToLoad = document.createElement('img');
 
-                var image = $(this),
-                    imageSource = $(this).attr('data-lazy'),
-                    imageSrcSet = $(this).attr('data-srcset'),
-                    imageSizes  = $(this).attr('data-sizes') || _.$slider.attr('data-sizes'),
-                    imageToLoad = document.createElement('img');
-// Create the image element once
-imageToLoad = document.createElement('img');
+    // Validation: explicit http/https or relative; block protocol-relative (//). No SVG.
+    var allowedPrefixes = /^(https?:\/\/|\/(?!\/)|\.\/|\.\.\/)/i;
+    var allowedExtensions = /\.(png|jpe?g|gif|webp)$/i;
 
-// Define its onload handler
-imageToLoad.onload = function () {
-    // Only allow http(s), protocol-relative, or relative URLs — block javascript:, data:, etc.
-    if (typeof imageSource === "string") {
-        var trimmedSource = imageSource.trim();
+    var trimmedSource = '';
+    var safeSrc = '';
+    var isValidImageSource = false;
 
-      	
-	var trimmedSource = imageSource.trim();
-	
+    if (typeof imageSource === 'string') {
+      // normalize
+      trimmedSource = imageSource.replace(/[\r\n\t]/g, '').trim();
 
-	// Whitelist: must start with safe prefix AND end with a safe image extension (svg excluded for security)
-	var allowedPrefixes = /^(https?:\/\/|\/|\.\/|\.\.\/)/i; // Do not allow protocol-relative (//) URIs
-	var allowedExtensions = /\.(png|jpe?g|gif|webp)$/i; // Removed svg for XSS safety
-	
+      if (
+        trimmedSource &&
+        allowedPrefixes.test(trimmedSource) &&
+        allowedExtensions.test(trimmedSource)
+      ) {
+        // absolute http/https OR relative / ./ ../
+        isValidImageSource =
+          /^https?:\/\//i.test(trimmedSource) || /^(\.\/|\.\.\/|\/)/.test(trimmedSource);
 
-	// Ensure source is a valid URL and not protocol-relative, javascript:, or data:
-	var isValidImageSource = false;
-	if (trimmedSource &&
-	allowedPrefixes.test(trimmedSource) &&
-	allowedExtensions.test(trimmedSource)) {
-	try {
-	// If absolute URL, must be http or https only
-	if (/^https?:\/\//i.test(trimmedSource)) {
-	var urlObj = new URL(trimmedSource, window.location.origin);
-	isValidImageSource = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-	} else {
-	// Relative URLs allowed (begins with /, ./, or ../)
-	isValidImageSource = /^(\.\/|\.\.\/|\/)/.test(trimmedSource);
-	}
-	} catch (e) {
-	isValidImageSource = false;
-	}
-	}
-}	}
-	
-
-	if (isValidImageSource) {
-
-
-if (typeof imageSource === "string") {
-        var trimmedSource = imageSource.trim();	        var trimmedSource = imageSource.trim();
-
-
-        // Whitelist: must start with safe prefix AND end with a safe image extension	        // Whitelist: must start with safe prefix AND end with a safe image extension (svg excluded for security)
-        var allowedPrefixes = /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i;	        var allowedPrefixes = /^(https?:\/\/|\/|\.\/|\.\.\/)/i; // Do not allow protocol-relative (//) URIs
-        var allowedExtensions = /\.(png|jpe?g|gif|webp|svg)$/i;	        var allowedExtensions = /\.(png|jpe?g|gif|webp)$/i; // Removed svg for XSS safety
-
-
-        isValidImageSource =	        // Ensure source is a valid URL and not protocol-relative, javascript:, or data:
-            trimmedSource &&	        var isValidImageSource = false;
-        if (trimmedSource &&
-            allowedPrefixes.test(trimmedSource) &&	            allowedPrefixes.test(trimmedSource) &&
-            allowedExtensions.test(trimmedSource);	            allowedExtensions.test(trimmedSource)) {
-            try {
-                // If absolute URL, must be http or https only
-                if (/^https?:\/\//i.test(trimmedSource)) {
-                    var urlObj = new URL(trimmedSource, window.location.origin);
-                    isValidImageSource = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-                } else {
-                    // Relative URLs allowed (begins with /, ./, or ../)
-                    isValidImageSource = /^(\.\/|\.\.\/|\/)/.test(trimmedSource);
-                }
-            } catch (e) {
-                isValidImageSource = false;
-            }
+        if (isValidImageSource) {
+          // encode meta-chars to avoid DOM reinterpretation while keeping URL semantics
+          safeSrc = encodeURI(trimmedSource)
+            .replace(/"/g, '%22')
+            .replace(/'/g, '%27')
+            .replace(/</g, '%3C')
+            .replace(/>/g, '%3E');
         }
-    }	    }
-
-
-    if (isValidImageSource) {	    if (isValidImageSource) {
-
+      }
     }
 
-    if (isValidImageSource) {
-        // Apply image sizes if specified
-        if (imageSizes) {
-            image.setAttribute('sizes', imageSizes);
-        }
+    imageToLoad.onload = function () {
+      // Apply sizes if provided
+      if (imageSizes) {
+        image.setAttribute('sizes', imageSizes);
+      }
+      // Assign validated, encoded src to the visible element
+      image
+        .attr('src', safeSrc)
+        .animate({ opacity: 1 }, 200, function () {
+          image
+            .removeAttr('data-lazy data-srcset data-sizes')
+            .removeClass('slick-loading');
+        });
 
-        // Load the validated image into the slider
-        image
-            .attr('src', trimmedSource)
-            .animate({ opacity: 1 }, 200, function () {
-                image
-                    .removeAttr('data-lazy data-srcset data-sizes')
-                    .removeClass('slick-loading');
-            });
+      _.$slider.trigger('lazyLoaded', [_, image, safeSrc]);
+    };
 
-        _.$slider.trigger('lazyLoaded', [_, image, trimmedSource]);
-    } else {
-        console.warn("⚠️ Blocked unsafe image source:", imageSource);
-        image
-            .removeAttr('data-lazy')
-            .removeClass('slick-loading')
-            .addClass('slick-lazyload-error');
-        _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
-    }
-};
-
-// Define its onerror handler
-imageToLoad.onerror = function () {
-    image
+    imageToLoad.onerror = function () {
+      image
         .removeAttr('data-lazy')
         .removeClass('slick-loading')
         .addClass('slick-lazyload-error');
 
-    _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+      _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+    };
+
+    // Start load only if validated
+    if (isValidImageSource) {
+      // Optional: if you also support srcset/sizes natively on the loader
+      if (imageSrcSet) {
+        imageToLoad.srcset = imageSrcSet;
+      }
+      if (imageSizes) {
+        imageToLoad.sizes = imageSizes;
+      }
+      imageToLoad.src = safeSrc;
+    } else {
+      // mirror the error path to keep UI consistent (no console needed for lint)
+      image
+        .removeAttr('data-lazy')
+        .removeClass('slick-loading')
+        .addClass('slick-lazyload-error');
+      _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+    }
+  });
+}
+
+}; // ← closes imageToLoad.onload
+
+// Define its onerror handler (leading ; guards against missing semicolon above)
+;imageToLoad.onerror = function () {
+  image
+    .removeAttr('data-lazy')
+    .removeClass('slick-loading')
+    .addClass('slick-lazyload-error');
+
+  _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
 };
 
-// ✅ Only set src if it’s valid
+// ✅ Only start loading if it’s valid
 if (isValidImageSource) {
-    if (imageSizes) {
-        image.setAttribute('sizes', imageSizes);
-    }
+  imageToLoad.src = safeSrc; // this will trigger the onload handler above
+} else {
+  // mirror the error path to keep UI consistent
+  image
+    .removeAttr('data-lazy')
+    .removeClass('slick-loading')
+    .addClass('slick-lazyload-error');
+  _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+}
+
 
     // Encode and safely assign the source
 var safeSrc = trimmedSource
@@ -1874,12 +1861,6 @@ var safeSrc = trimmedSource
             imageSizes  = image.attr('data-sizes') || _.$slider.attr('data-sizes');
            // ---- begin safe lazy-load block ----
 
-// Predeclare (ES5-compatible)
-var trimmedSource = '';
-var isValidImageSource = false;
-var safeSrc = '';
-var allowedPrefixes = /^((https?:)?\/\/|\/|\.\/|\.\.\/)/i;
-var allowedExtensions = /\.(png|jpe?g|gif|webp|svg)$/i;
 
 // Normalize and validate the incoming value
 if (typeof imageSource === 'string') {
