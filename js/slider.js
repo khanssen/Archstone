@@ -1652,81 +1652,30 @@ if (isValidImageSource) {
 }
 
 
-    // Encode and safely assign the source
+   // Encode and safely assign the source
 var safeSrc = trimmedSource
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;");
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;")
+  .replace(/'/g, "&#x27;");
 
-
+// Fade-in the loaded image
+image
+  .attr("src", safeSrc)
+  .animate({ opacity: 1 }, 200, function () {
     image
-        .attr('src', safeSrc)
-        .animate({ opacity: 1 }, 200, function () {
-            image
-                .removeAttr('data-lazy data-srcset data-sizes')
-                .removeClass('slick-loading');
-        });
+      .removeAttr("data-lazy data-srcset data-sizes")
+      .removeClass("slick-loading");
+  });
 
-    _.$slider.trigger('lazyLoaded', [_, image, safeSrc]);
+// Notify that lazy-load finished
+_.$slider.trigger("lazyLoaded", [_, image, safeSrc]);
+
+// ✅ only set src on the preloader element if needed, and stay inside this function’s scope
+if (imageToLoad && isValidImageSource) {
+  imageToLoad.src = safeSrc;
 }
-
-
-                imageToLoad.src = imageSource;
-
-            });
-
-        }
-
-        if (_.options.centerMode === true) {
-            if (_.options.infinite === true) {
-                rangeStart = _.currentSlide + (_.options.slidesToShow / 2 + 1);
-                rangeEnd = rangeStart + _.options.slidesToShow + 2;
-            } else {
-                rangeStart = Math.max(0, _.currentSlide - (_.options.slidesToShow / 2 + 1));
-                rangeEnd = 2 + (_.options.slidesToShow / 2 + 1) + _.currentSlide;
-            }
-        } else {
-            rangeStart = _.options.infinite ? _.options.slidesToShow + _.currentSlide : _.currentSlide;
-            rangeEnd = Math.ceil(rangeStart + _.options.slidesToShow);
-            if (_.options.fade === true) {
-                if (rangeStart > 0) rangeStart--;
-                if (rangeEnd <= _.slideCount) rangeEnd++;
-            }
-        }
-
-        loadRange = _.$slider.find('.slick-slide').slice(rangeStart, rangeEnd);
-
-        if (_.options.lazyLoad === 'anticipated') {
-            var prevSlide = rangeStart - 1,
-                nextSlide = rangeEnd,
-                $slides = _.$slider.find('.slick-slide');
-
-            for (var i = 0; i < _.options.slidesToScroll; i++) {
-                if (prevSlide < 0) prevSlide = _.slideCount - 1;
-                loadRange = loadRange.add($slides.eq(prevSlide));
-                loadRange = loadRange.add($slides.eq(nextSlide));
-                prevSlide--;
-                nextSlide++;
-            }
-        }
-
-        loadImages(loadRange);
-
-        if (_.slideCount <= _.options.slidesToShow) {
-            cloneRange = _.$slider.find('.slick-slide');
-            loadImages(cloneRange);
-        } else
-        if (_.currentSlide >= _.slideCount - _.options.slidesToShow) {
-            cloneRange = _.$slider.find('.slick-cloned').slice(0, _.options.slidesToShow);
-            loadImages(cloneRange);
-        } else if (_.currentSlide === 0) {
-            cloneRange = _.$slider.find('.slick-cloned').slice(_.options.slidesToShow * -1);
-            loadImages(cloneRange);
-        }
-
-    };
 
     Slick.prototype.loadSlider = function() {
 
