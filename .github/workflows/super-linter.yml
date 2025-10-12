@@ -1,6 +1,7 @@
 name: Super Linter
 permissions:
   contents: read
+  statuses: write  # allow Super Linter to post commit statuses
 
 on:
   push:
@@ -23,17 +24,20 @@ jobs:
 
       - name: Run Super Linter
         uses: github/super-linter@v7
-        with:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          # enables your repo-wide ESLint config and correct path resolution
+          # Point Super Linter/ESLint at your flat config
           LINTER_RULES_PATH: .
           JAVASCRIPT_ES_CONFIG_FILE: eslint.config.cjs
 
-          # enables JavaScript validation
+          # Enable linters you want
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_JAVASCRIPT_ES: true
           # VALIDATE_HTML: true
           # VALIDATE_CSS: true
+
+          # Optional: clearer logs
+          OUTPUT_DETAILS: detailed
+          LOG_LEVEL: NOTICE
