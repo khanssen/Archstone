@@ -24,16 +24,15 @@ jobs:
       - name: Run Super Linter
         uses: github/super-linter@v7
         with:
-          pull-latest: true   # ✅ ensures the newest Docker image is used (prevents stale cache)
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          # ✅ enables your repo-wide ESLint config and correct path resolution
+          # enables your repo-wide ESLint config and correct path resolution
           LINTER_RULES_PATH: .
           JAVASCRIPT_ES_CONFIG_FILE: eslint.config.cjs
 
-          # ✅ enables JavaScript validation
+          # enables JavaScript validation
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_JAVASCRIPT_ES: true
           # VALIDATE_HTML: true
