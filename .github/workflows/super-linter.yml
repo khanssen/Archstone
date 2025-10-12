@@ -1,7 +1,6 @@
 name: Super Linter
 permissions:
   contents: read
-  statuses: write  # allow Super Linter to post commit statuses
 
 on:
   push:
@@ -28,16 +27,17 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          # Point Super Linter/ESLint at your flat config
           LINTER_RULES_PATH: .
           JAVASCRIPT_ES_CONFIG_FILE: eslint.config.cjs
 
-          # Enable linters you want
+          # 🔽 Exclude all the junk files and vendor code
+          FILTER_REGEX_EXCLUDE: >
+            (^|/)(node_modules|dist|build|coverage|vendor)/
+            | (^|/)(HTML Template|Content/.*/documentation|documentation)/
+            | (^|/)owl carousel/
+            | \.min\.js$
+
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_JAVASCRIPT_ES: true
-          # VALIDATE_HTML: true
-          # VALIDATE_CSS: true
-
-          # Optional: clearer logs
           OUTPUT_DETAILS: detailed
           LOG_LEVEL: NOTICE
