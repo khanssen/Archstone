@@ -26,9 +26,17 @@ jobs:
 
       - name: Run Super Linter
         uses: github/super-linter@v7
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+			env:
+  				DEFAULT_BRANCH: main
+  				GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  				LINTER_RULES_PATH: .
+  				JAVASCRIPT_ES_CONFIG_FILE: eslint.config.cjs
+  				VALIDATE_ALL_CODEBASE: true
+  				VALIDATE_JAVASCRIPT_ES: true
+				
+  # Ignore minified, vendor libs, docs, tests, and the OwlCarousel bundle
+  FILTER_REGEX_EXCLUDE: '(^|/)(node_modules|dist|build|vendor|documentation|docs|docs_src|test|tests|\.git|HTML Template/.*/documentation|owl carousel/.*|.*\.min\.js)(/|$)'
+
 
           # Use your repo ESLint config
           LINTER_RULES_PATH: .
