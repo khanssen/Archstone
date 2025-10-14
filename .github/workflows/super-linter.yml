@@ -4,7 +4,6 @@ permissions:
   contents: read
   statuses: write
 
-
 on:
   push:
     branches: [ main ]
@@ -26,28 +25,19 @@ jobs:
 
       - name: Run Super Linter
         uses: github/super-linter@v7
-			env:
-  				DEFAULT_BRANCH: main
-  				GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  				LINTER_RULES_PATH: .
-  				JAVASCRIPT_ES_CONFIG_FILE: eslint.config.cjs
-  				VALIDATE_ALL_CODEBASE: true
-  				VALIDATE_JAVASCRIPT_ES: true
-				
-  # Ignore minified, vendor libs, docs, tests, and the OwlCarousel bundle
-  FILTER_REGEX_EXCLUDE: '(^|/)(node_modules|dist|build|vendor|documentation|docs|docs_src|test|tests|\.git|HTML Template/.*/documentation|owl carousel/.*|.*\.min\.js)(/|$)'
-
-
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Use your repo ESLint config
           LINTER_RULES_PATH: .
           JAVASCRIPT_ES_CONFIG_FILE: eslint.config.cjs
 
-          # Only if you want to lint everything, not just changes
+          # Lint entire repo (not just changed files)
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_JAVASCRIPT_ES: true
 
-          #  Exclude vendor/templates/minified/etc.
-          FILTER_REGEX_EXCLUDE: |
+          # Exclude vendor/templates/minified/etc.
+          FILTER_REGEX_EXCLUDE: >-
             (^|/)(node_modules|dist|build|coverage|vendor)/
             | (^|/)(HTML[ _-]?Template|Content[ _/-]?.*/documentation|documentation)/
             | (^|/)(owl[ _-]?carousel)/
