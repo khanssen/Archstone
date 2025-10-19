@@ -1,54 +1,22 @@
-name: Super Duper Linter Splinter
+- name: Run Super Linter
+  uses: super-linter/super-linter@v7.4.0
+  env:
+    # ESLint flat config
+    ESLINT_USE_FLAT_CONFIG: true
+    JAVASCRIPT_ES_CONFIG_FILE: eslint.config.js
+    LINTER_RULES_PATH: .
 
-permissions:
-  contents: read
-  statuses: write
+    # Lint entire repo
+    VALIDATE_ALL_CODEBASE: true
+    VALIDATE_JAVASCRIPT_ES: true
+    # (Optional) turn on if you lint TS via ESLint:
+    # VALIDATE_TYPESCRIPT_ES: true
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
+    # Nice output
+    OUTPUT_DETAILS: detailed
+    LOG_LEVEL: DEBUG
+    ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
+    SAVE_SUPER_LINTER_SUMMARY: true
 
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Node (for JS linters)
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'        # speeds up installs
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run Super Linter Splinter
-        uses: super-linter/super-linter@v7.4.0
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-          # ESLint flat config
-          ESLINT_USE_FLAT_CONFIG: true
-          JAVASCRIPT_ES_CONFIG_FILE: eslint.config.js
-          LINTER_RULES_PATH: .
-
-          # Lint entire repo
-          VALIDATE_ALL_CODEBASE: true
-          VALIDATE_JAVASCRIPT_ES: true
-
-          # Nice output
-          OUTPUT_DETAILS: detailed
-          LOG_LEVEL: DEBUG
-          ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
-          SAVE_SUPER_LINTER_SUMMARY: true
-
-          # Exclude vendor/minified/etc.
-          FILTER_REGEX_EXCLUDE: "(^|/)(node_modules|dist|build|coverage|vendor)/|(^|/)(HTML[ _-]?Template|Content[ _/-]?.*/documentation|documentation)/|(^|/)(owl[ _-]?carousel)/|(^|/)(gulpfile\\.js)|(^|/)js/.*\\.min\\.js$|(^|/)Content/HTML[ _-]?Template/.*|(^|/)owl[ _-]?carousel/.*|(^|/)documentation/.*|(^|/)HTML[ _-]?Template/.*|\\.min\\.js$"
-		  
+    # Exclude vendor/minified/etc.
+    FILTER_REGEX_EXCLUDE: "(^|/)(node_modules|dist|build|coverage|vendor)/|(^|/)(HTML[ _-]?Template|Content[ _/-]?.*/documentation|documentation)/|(^|/)(owl[ _-]?carousel)/|(^|/)(gulpfile\\.js)|(^|/)js/.*\\.min\\.js$|(^|/)Content/HTML[ _-]?Template/.*|(^|/)owl[ _-]?carousel/.*|(^|/)documentation/.*|(^|/)HTML[ _-]?Template/.*|\\.min\\.js$"
