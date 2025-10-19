@@ -27,6 +27,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
+		  JAVASCRIPT_ES_CONFIG_FILE: eslint.config.js
+          TYPESCRIPT_ES_CONFIG_FILE: eslint.config.js
 
           # ESLint FLAT CONFIG 
           ESLINT_USE_FLAT_CONFIG: true
