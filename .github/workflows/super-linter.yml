@@ -27,21 +27,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
-		  JAVASCRIPT_ES_CONFIG_FILE: eslint.config.js
+
+          ESLINT_USE_FLAT_CONFIG: true
+          LINTER_RULES_PATH: .
+
+          # <-- add these two
+          JAVASCRIPT_ES_CONFIG_FILE: eslint.config.js
           TYPESCRIPT_ES_CONFIG_FILE: eslint.config.js
 
-          # ESLint FLAT CONFIG 
-          ESLINT_USE_FLAT_CONFIG: true
-          # No JAVASCRIPT_ES_CONFIG_FILE in flat mode
-
-          LINTER_RULES_PATH: .
-          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_ALL_CODEBASE: true   # force full scan this run; set to false later
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_TYPESCRIPT_ES: true
 
-          # Avoid scanning heavy dirs
           FILTER_REGEX_EXCLUDE: "(^node_modules/|/node_modules/|^dist/|^build/|^coverage/|^vendor/)"
-
           OUTPUT_DETAILS: detailed
           LOG_LEVEL: NOTICE
           ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
