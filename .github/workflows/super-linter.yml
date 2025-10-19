@@ -52,5 +52,5 @@ jobs:
           LOG_LEVEL: NOTICE
           ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
           SAVE_SUPER_LINTER_SUMMARY: true   # optional; implied by the line above	
-		  VALIDATE_JAVASCRIPT_ES: true
-		  JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
+          VALIDATE_JAVASCRIPT_ES: true
+          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
