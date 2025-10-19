@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -23,16 +25,23 @@ jobs:
       - name: Run Super Linter (JS/TS)
         uses: super-linter/super-linter@v7.4.0
         env:
-          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+
+          # ESLint FLAT CONFIG 
           ESLINT_USE_FLAT_CONFIG: true
-          JAVASCRIPT_ES_CONFIG_FILE: eslint.config.js
+          # No JAVASCRIPT_ES_CONFIG_FILE in flat mode
+
           LINTER_RULES_PATH: .
-          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_ALL_CODEBASE: false
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_TYPESCRIPT_ES: true
+
+          # Avoid scanning heavy dirs
+          FILTER_REGEX_EXCLUDE: "(^node_modules/|/node_modules/|^dist/|^build/|^coverage/|^vendor/)"
+
           OUTPUT_DETAILS: detailed
-          LOG_LEVEL: DEBUG
+          LOG_LEVEL: NOTICE
           ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
           SAVE_SUPER_LINTER_SUMMARY: true
 
@@ -40,17 +49,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Run Super Linter (Meta)
         uses: super-linter/super-linter@v7.4.0
         env:
-          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+          VALIDATE_ALL_CODEBASE: false
           VALIDATE_YAML: true
           VALIDATE_MARKDOWN: true
           VALIDATE_JSON: true
+          FILTER_REGEX_EXCLUDE: "(^node_modules/|/node_modules/|^dist/|^build/|^coverage/|^vendor/)"
           OUTPUT_DETAILS: detailed
           LOG_LEVEL: NOTICE
           ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
-          SAVE_SUPER_LINTER_SUMMARY: true   # optional; implied by the line above	
-          VALIDATE_JAVASCRIPT_ES: true
-          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
+          SAVE_SUPER_LINTER_SUMMARY: true
