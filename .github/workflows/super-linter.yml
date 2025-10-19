@@ -33,7 +33,7 @@ jobs:
           # No JAVASCRIPT_ES_CONFIG_FILE in flat mode
 
           LINTER_RULES_PATH: .
-          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ALL_CODEBASE: true
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_TYPESCRIPT_ES: true
 
