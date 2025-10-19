@@ -32,8 +32,8 @@ jobs:
           LINTER_RULES_PATH: .
 
           # <-- add these two
-          JAVASCRIPT_ES_CONFIG_FILE: eslint.config.js
-          TYPESCRIPT_ES_CONFIG_FILE: eslint.config.js
+          JAVASCRIPT_ES_CONFIG_FILE: eslint.config.cjs
+          TYPESCRIPT_ES_CONFIG_FILE: eslint.config.cjs
 
           VALIDATE_ALL_CODEBASE: true   # force full scan this run; set to false later
           VALIDATE_JAVASCRIPT_ES: true
