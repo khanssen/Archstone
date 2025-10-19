@@ -51,4 +51,6 @@ jobs:
           OUTPUT_DETAILS: detailed
           LOG_LEVEL: NOTICE
           ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
-          SAVE_SUPER_LINTER_SUMMARY: true
+          SAVE_SUPER_LINTER_SUMMARY: true	
+		  VALIDATE_JAVASCRIPT_ES: true
+		  JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
