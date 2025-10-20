@@ -1,3 +1,9 @@
+// Example of unused e → remove or rename
+$qty.on('click', '.qty-btn', function () {   // remove (e)
+  const $btn = $(this);
+  ...
+});
+
 (function ($) {
   'use strict';
 
