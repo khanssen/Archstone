@@ -1,25 +1,45 @@
 // eslint.config.cjs
 const eslintJs = require("@eslint/js");
-let tseslint;
-try {
-  // optional, only if you lint TS:
-  tseslint = require("typescript-eslint");
-} catch {
-  tseslint = null;
-}
+const globals = require("globals");
 
 module.exports = [
-  eslintJs.configs.recommended,
-  ...(tseslint ? tseslint.configs.recommended : []),
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
-    ignores: ["**/node_modules/**", "dist/**", "build/**", "coverage/**", "vendor/**"],
+    ignores: [
+      "**/*.min.js",
+      "**/dist/**",
+      "**/vendor/**",
+      "**/assets/js/vendor/**",
+      "**/assets/js/old/**",
+      "**/node_modules/**",
+      "**/jquery/**",
+      "**/HTML Template/**",
+      "**/Content/**",
+      "**/Archive/**",
+      "**/documentation/**",
+      "**/blogs/**",
+      "**/states/**",
+      "**/Certificates/**",
+      "**/font/**",
+      "js/**",
+      "**/owl carousel/**"
+    ]
+  },
+  {
+    ...eslintJs.configs.recommended,
+    files: ["app/js/**/*.js"],
     languageOptions: {
       ecmaVersion: "latest",
-      sourceType: "module" // or "commonjs" to match your codebase
+      sourceType: "module",
+      globals: {
+        ...globals.browser,
+        ...globals.jquery,
+        WOW: "readonly"
+      }
     },
     rules: {
-      // your rules here
+      semi: ["error", "always"],
+      "no-unused-vars": ["warn", { args: "none" }],
+      "no-redeclare": "warn"
     }
   }
 ];
