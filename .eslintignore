@@ -1,9 +1,0 @@
-**/*.min.js
-**/dist/**
-**/vendor/**
-**/assets/js/vendor/**
-**/assets/js/old/**
-**/node_modules/**
-**/jquery/**
-**/HTML Template/**
-**/Content/HTML Template/**

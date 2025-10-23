@@ -8,11 +8,11 @@
     });
 
     // Sticky Menu
-    let header = $('.sticky-header');
-    let win = $(window);
+    const header = $('.sticky-header');
+    const win = $(window);
 
     win.on('scroll', function () {
-        let scroll = win.scrollTop();
+        const scroll = win.scrollTop();
         if (scroll < 1) {
             header.removeClass("scroll-on");
         } else {
@@ -21,7 +21,7 @@
     });
 
     // Home 2 Slider
-    let homeslide2 = $(".home-slide-2");
+    const homeslide2 = $(".home-slide-2");
 
     homeslide2.owlCarousel({
         items: 1,
@@ -33,7 +33,7 @@
         animateOut: 'fadeOut',
         navText: ["<i class='flaticon-left-arrow'></i>", "<i class='flaticon-next'></i>"]
     });
-    homeslide2.on("translate.owl.carousel", function (e) {
+    homeslide2.on("translate.owl.carousel", function () {
         $(".banner-title").removeClass("animated fadeInLeft").css("opacity", "0");
         $(".slide-txt p, .slide-txt span").removeClass("animated fadeInLeft").css("opacity", "0");
         $(".slide-txt .custom-btn").removeClass("animated fadeInDown").css("opacity", "0");
@@ -41,7 +41,7 @@
         $(".slide-bg.sb-1").removeClass("animated fadeInLeft").css("opacity", "0");
         $(".slide-bg.sb-2").removeClass("animated fadeInRight").css("opacity", "0");
     });
-    homeslide2.on("translated.owl.carousel", function (e) {
+    homeslide2.on("translated.owl.carousel", function () {
         $(".banner-title").addClass("animated fadeInLeft").css("opacity", "1");
         $(".slide-txt p, .slide-txt span").addClass("animated fadeInLeft").css("opacity", "1");
         $(".slide-txt .custom-btn").addClass("animated fadeInDown").css("opacity", "1");
@@ -51,7 +51,7 @@
     });
 
     // Home 3 Slider 
-    let homeSlider = $(".banner-slide");
+    const homeSlider = $(".banner-slide");
     homeSlider.owlCarousel({
         items: 1,
         nav: true,
@@ -63,13 +63,13 @@
         navText: ["<i class='flaticon-left-arrow'></i>", "<i class='flaticon-next'></i>"]
     });
 
-    homeSlider.on("translate.owl.carousel", function (e) {
+    homeSlider.on("translate.owl.carousel", function () {
         $(".banner-title").removeClass("animated fadeInUp").css("opacity", "0");
         $(".slide-txt p,.slide-txt span").removeClass("animated fadeInLeft").css("opacity", "0");
         $(".slide-txt .custom-btn").removeClass("animated fadeInDown").css("opacity", "0");
         $(".slide-img").removeClass("animated fadeInUp").css("opacity", "0");
     });
-    homeSlider.on("translated.owl.carousel", function (e) {
+    homeSlider.on("translated.owl.carousel", function () {
         $(".banner-title").addClass("animated fadeInUp").css("opacity", "1");
         $(".slide-txt p,.slide-txt span").addClass("animated fadeInLeft").css("opacity", "1");
         $(".slide-txt .custom-btn").addClass("animated fadeInDown").css("opacity", "1");
@@ -77,7 +77,7 @@
     });
 
     // Brands Carousel
-    let brands = $(".capabilities");
+    const brands = $(".capabilities");
     brands.owlCarousel({
         margin: 10,
         responsiveClass: true,
@@ -106,7 +106,7 @@
     });
 
     // Team Carousel
-    let team = $('.team-wrap');
+    const team = $('.team-wrap');
     team.owlCarousel({
         nav: false,
         dots: false,
@@ -128,7 +128,7 @@
     });
 
     // Quote Carousel
-    let quote = $('.quote-slider');
+    const quote = $('.quote-slider');
     quote.owlCarousel({
         nav: false,
         dots: true,
@@ -151,7 +151,7 @@
     });
 
     // Quote 2 Slider
-    let quote2 = $(".quote-slider2");
+    const quote2 = $(".quote-slider2");
 
     quote2.owlCarousel({
         items: 2,
@@ -180,7 +180,7 @@
             offset: 100,
             animateClass: 'animated',
             mobile: true
-        }).init()
+        }).init();
     }
     wowAnimation();
 
@@ -208,19 +208,19 @@
     });
 
     // Portfolio Isotope 
-    let $grid = $('.grid').isotope({
+    const $grid = $('.grid').isotope({
         itemSelector: '.grid-item',
         percentPosition: true,
     });
 
     $('.portfolio-menu').on('click', '.button', function () {
-        let filterValue = $(this).attr('data-filter');
+        const filterValue = $(this).attr('data-filter');
         $grid.isotope({ filter: filterValue });
     });
 
     // change active class on buttons
     $('.portfolio-menu').each(function (i, buttonGroup) {
-        let $buttonGroup = $(buttonGroup);
+        const $buttonGroup = $(buttonGroup);
         $buttonGroup.on('click', 'button', function () {
             $buttonGroup.find('.active').removeClass('active');
             $(this).addClass('active');
@@ -228,7 +228,7 @@
     });
 
     // Portfolio 2 Massionary
-    let $massonaryGrid = $('.masson-grid').isotope({
+    const $massonaryGrid = $('.masson-grid').isotope({
         itemSelector: '.item',
         percentPosition: true,
         masonry: {
@@ -238,7 +238,7 @@
     });
 
     $('.portfolio-menu.massionary-menu').on('click', '.button', function () {
-        let filterValue = $(this).attr('data-filter');
+        const filterValue = $(this).attr('data-filter');
         $massonaryGrid.isotope({ filter: filterValue });
     });
 
@@ -253,19 +253,20 @@
     });
 
     // Product Quantity JS
-    var productQty = $(".pro-qty");
+    const productQty = $(".pro-qty");
     productQty.append('<div class="inc qty-btn">+</div>');
     productQty.append('<div class= "dec qty-btn">-</div>');
     $('.qty-btn').on('click', function (e) {
         e.preventDefault();
-        var $button = $(this);
-        var oldValue = $button.parent().find('input').val();
+        const $button = $(this);
+        const oldValue = $button.parent().find('input').val();
+        let newVal;
         if ($button.hasClass('inc')) {
-            var newVal = parseFloat(oldValue) + 1;
+            newVal = parseFloat(oldValue) + 1;
         } else {
             // Don't allow decrementing below zero
             if (oldValue > 1) {
-                var newVal = parseFloat(oldValue) - 1;
+                newVal = parseFloat(oldValue) - 1;
             } else {
                 newVal = 1;
             }
@@ -309,7 +310,7 @@
     });
 
     // mailchimp subscription
-    let mailchimp = $(".mailchimp-sform");
+    const mailchimp = $(".mailchimp-sform");
     if (mailchimp.length > 0) {
         /*  MAILCHIMP  */
         mailchimp.ajaxChimp({
@@ -329,7 +330,7 @@
         }
     }
     $.ajaxChimp.translations.es = {
-        'submit': 'Submitting...',
+        submit: 'Submitting...',
         0: 'We have sent you a confirmation email',
         1: 'Please enter a value',
         2: 'An email address must contain a single @',
@@ -338,39 +339,37 @@
         5: 'This email address looks fake or invalid. Please enter a real email address'
     };
 
-
 })(jQuery);
 
 
 // script.js
 
 const dropdown = document.getElementById("dropdown-select");
-const contentContainer = document.getElementById("content");
-
 
 // Array of states
 const states = [
-  "Alabama", "Alaska", "Arizona", "Arkansas", "California",
-  "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
-  "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
-  "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
-  "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
-  "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
-  "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
-  "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-  "Tennessee", "Texas", "Utah", "Vermont", "Virginia",
-  "Washington", "West Virginia", "Wisconsin", "Wyoming"
+    "Alabama", "Alaska", "Arizona", "Arkansas", "California",
+    "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
+    "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
+    "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
+    "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
+    "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+    "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
+    "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+    "Tennessee", "Texas", "Utah", "Vermont", "Virginia",
+    "Washington", "West Virginia", "Wisconsin", "Wyoming"
 ];
 
-states.forEach(state => {
-  const option = document.createElement("option");
-  option.value = state.toLowerCase(); // Use lowercase as value for consistency
-  option.textContent = state;
-  dropdown.appendChild(option);
-});
+if (dropdown) {
+    states.forEach((state) => {
+        const option = document.createElement("option");
+        option.value = state.toLowerCase();
+        option.textContent = state;
+        dropdown.appendChild(option);
+    });
 
-dropdown.addEventListener("change", function() {
-  const selectedValue = dropdown.value;
-  // Redirect to the respective state page
-  window.location.href = `${selectedValue}.html`;
-});
+    dropdown.addEventListener("change", function () {
+        const selectedValue = dropdown.value;
+        window.location.href = `${selectedValue}.html`;
+    });
+}
