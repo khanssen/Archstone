@@ -1,67 +1,65 @@
-name: Super Duper Linter Splinter
+// eslint.config.cjs (Flat config)
+const globals = require("globals");
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-  workflow_dispatch:
+module.exports = [
+  //  1) IGNORES — MUST BE FIRST
+  {
+    ignores: [
+      "Content/HTML Template/**",
+      "HTML Template/**",
 
-permissions:
-  contents: read
-  statuses: write
+      "Content/js/**",
+      "Content/app/js/**",
+      "Content/documentation/assets/**",
 
-jobs:
-  lint-js:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - name: Run Super Linter (JS/TS)
-        uses: super-linter/super-linter@v7.4.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: main
+      "**/*.min.js",
+      "**/gulpfile.js",
 
-          ESLINT_USE_FLAT_CONFIG: true
-          LINTER_RULES_PATH: .  
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      "coverage/**",
+      "vendor/**"
+    ],
+  },
 
-          # <-- add these two
-          JAVASCRIPT_ES_CONFIG_FILE: eslint.config.cjs
-          TYPESCRIPT_ES_CONFIG_FILE: eslint.config.cjs
+  //  2) Browser + jQuery code
+  {
+    files: ["**/*.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "script",
+      globals: {
+        ...globals.browser,
+        ...globals.jquery,
+        WOW: "readonly",
+        google: "readonly",
+      },
+    },
+    rules: {
+      semi: ["error", "always"],
+      "no-undef": "off",
+      "no-unused-vars": ["warn", { args: "none" }],
+      "no-redeclare": "warn",
+    },
+  },
 
-          VALIDATE_ALL_CODEBASE: true   # force full scan this run; set to false later
-          VALIDATE_JAVASCRIPT_ES: true
-          VALIDATE_TYPESCRIPT_ES: true
+  //  3) Node build scripts (gulp, configs)
+  {
+    files: ["**/gulpfile.js", "**/*.cjs"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "script",
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      semi: ["error", "always"],
+      "no-undef": "off",
+      "no-unused-vars": ["warn", { args: "none" }],
+      "no-redeclare": "warn",
+    },
+  },
+];
 
-          FILTER_REGEX_EXCLUDE: "(^node_modules/|/node_modules/|^dist/|^build/|^coverage/|^vendor/)"
-          OUTPUT_DETAILS: detailed
-          LOG_LEVEL: NOTICE
-          ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
-          SAVE_SUPER_LINTER_SUMMARY: true
-
-  lint-meta:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Run Super Linter (Meta)
-        uses: super-linter/super-linter@v7.4.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: main
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_YAML: true
-          VALIDATE_MARKDOWN: true
-          VALIDATE_JSON: true
-          FILTER_REGEX_EXCLUDE: "(^node_modules/|/node_modules/|^dist/|^build/|^coverage/|^vendor/)"
-          OUTPUT_DETAILS: detailed
-          LOG_LEVEL: NOTICE
-          ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
-          SAVE_SUPER_LINTER_SUMMARY: true

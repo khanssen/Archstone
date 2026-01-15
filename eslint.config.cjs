@@ -1,10 +1,20 @@
-﻿const globals = require("globals");
+// eslint.config.cjs (Flat config)
+const globals = require("globals");
 
 module.exports = [
-  // 1) Ignore vendor/template assets (the stuff causing your CI noise)
   {
+    //  MUST BE FIRST
     ignores: [
       "Content/HTML Template/**",
+      "HTML Template/**",
+
+      "Content/js/**",
+      "Content/app/js/**",
+      "Content/documentation/assets/**",
+
+      "**/*.min.js",
+      "**/gulpfile.js",
+
       "node_modules/**",
       "dist/**",
       "build/**",
@@ -13,7 +23,6 @@ module.exports = [
     ],
   },
 
-  // 2) Default JS rules for the repo
   {
     files: ["**/*.{js,cjs,mjs}"],
     languageOptions: {
@@ -32,14 +41,44 @@ module.exports = [
       "no-redeclare": "warn",
     },
   },
+];
 
-  // 3) Node-specific files (if you ever lint these)
+  // Browser + jQuery code
   {
-    files: ["**/gulpfile.js", "**/*.config.{js,cjs}", "**/*.cjs"],
-    languageOptions: {
+    files: ["**/*.js"],
+      languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "script",
       globals: {
-        ...globals.node,
-      },
+        ...globals.browser,
+        ...globals.jquery,
+        WOW: "readonly",
+        google: "readonly"
+      }
     },
+    rules: {
+      semi: ["error", "always"],
+      no-undef: "off",
+      "no-unused-vars": ["warn", { args: "none" }],
+      "no-redeclare": "warn"
+    }
   },
+
+  // Node build scripts (gulpfile)
+  {
+    files: ["**/gulpfile.js", "**/*.cjs"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "script",
+      globals: {
+        ...globals.node
+      }
+    },
+    rules: {
+      semi: ["error", "always"],
+      no-undef: "off",
+      "no-unused-vars": ["warn", { args: "none" }],
+      "no-redeclare": "warn"
+    }
+  }
 ];
