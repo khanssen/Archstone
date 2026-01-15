@@ -29,7 +29,7 @@ jobs:
           DEFAULT_BRANCH: main
 
           ESLINT_USE_FLAT_CONFIG: true
-          LINTER_RULES_PATH: .
+          LINTER_RULES_PATH: .  
 
           # <-- add these two
           JAVASCRIPT_ES_CONFIG_FILE: eslint.config.cjs

@@ -1,8 +1,8 @@
-\# from repo root
+**Push from repo root**
 
 git add -A
 
-git commit -m "alabama test"
+git commit -m "transfer of sample control interface"
 
 git push
 
@@ -24,7 +24,7 @@ git add -p → stage changes interactively (by hunk)
 
 
 
-**Commit locally first, test and lint your code:**
+**Commit locally first, test and lint code:**
 
 
 
@@ -46,10 +46,6 @@ git push origin main
 
 
 
-
-
-
-
 **Script execution bypass**
 
 
@@ -57,6 +53,4 @@ git push origin main
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 npm ci
-
-
 
