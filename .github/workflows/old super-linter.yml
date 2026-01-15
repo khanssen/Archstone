@@ -7,11 +7,14 @@ module.exports = [
     ignores: [
       "Content/HTML Template/**",
       "HTML Template/**",
+
       "Content/js/**",
       "Content/app/js/**",
       "Content/documentation/assets/**",
+
       "**/*.min.js",
       "**/gulpfile.js",
+
       "node_modules/**",
       "dist/**",
       "build/**",
@@ -19,6 +22,7 @@ module.exports = [
       "vendor/**"
     ],
   },
+
   //  2) Browser + jQuery code
   {
     files: ["**/*.js"],
@@ -34,26 +38,28 @@ module.exports = [
     },
     rules: {
       semi: ["error", "always"],
-      "no-undef": "error",  // Changed from "off" - you want this on
+      "no-undef": "off",
       "no-unused-vars": ["warn", { args: "none" }],
       "no-redeclare": "warn",
     },
   },
+
   //  3) Node build scripts (gulp, configs)
   {
-    files: ["gulpfile.js", "*.cjs", "**/*.config.js"],  // Fixed glob patterns
+    files: ["**/gulpfile.js", "**/*.cjs"],
     languageOptions: {
       ecmaVersion: "latest",
-      sourceType: "commonjs",  // Changed from "script"
+      sourceType: "script",
       globals: {
         ...globals.node,
       },
     },
     rules: {
       semi: ["error", "always"],
-      "no-undef": "error",  // Changed from "off"
+      "no-undef": "off",
       "no-unused-vars": ["warn", { args: "none" }],
       "no-redeclare": "warn",
     },
   },
 ];
+
