@@ -181,91 +181,303 @@
     <!-- Banner Section End -->
 	
 	 <!--Faq Section Start -->
-    <section class="faq faq-index spaceBig">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-7">
-                    <div class="section-intro intro-left">
-                        <h2 class="section-title">Frequently Asked Questions<span class="color">.</span></h2>
-                            <p>Lorem Ipsum available the majority have suffered alteration
-                                in some form, by injected humour, or randomised.</p>
-                    </div>
+   <section class="faq faq-index spaceBig">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="section-intro intro-left">
+                    <h2 class="section-title">Frequently Asked Questions<span class="color">.</span></h2>
+                    <p>
+                        Clear answers to common CMMC, FedRAMP, and cloud compliance questions—without the marketing noise.
+                    </p>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-lg-12">
-                    <div class="faq-inner">
-                        <div class="accordion" id="accordionExample">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        How do I figure out what controls I inherit from a FedRAMPed solution?
-                                    </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show"
-                                    aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                    <div class="accordion-body">
-                                    This is where the answer would go.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingTwo">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                       How awesome are you?<i
-                                            class="bx bx-chevron-down"></i>
-                                    </button>
-                                </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                                    data-bs-parent="#accordionExample">
-                                    <div class="accordion-body">
-                                   Pretty fucking awesome.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingThree">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseThree" aria-expanded="false"
-                                        aria-controls="collapseThree">
-                                        For FedRAMP, does the underlying infrastructure really matter?<i
-                                            class="bx bx-chevron-down"></i>
-                                    </button>
-                                </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse"
-                                    aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                    <div class="accordion-body">
-                                      Many organizations with software-as-a-service products assume that FedRAMP accreditation testing is only conducted on the application. In reality, all the underlying infrastructure supporting the solution are in scope for the assessment. So, for testing access controls, your assessor will not stop at your application. They will test access controls for the operating systems and other underlying components within the infrastructure.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingFour">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseFour" aria-expanded="false"
-                                        aria-controls="collapseFour">
-                                        Quisque varius a sollicitudin nulla consequat ut? <i
-                                            class="bx bx-chevron-down"></i>
-                                    </button>
-                                </h2>
-                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
-                                    data-bs-parent="#accordionExample">
-                                    <div class="accordion-body">
-                                        Lorem Ipsum available, but the majority have suffered alteration
-                                        in some form, by injected humour, or randomised words which
-                                        don't look even slightly believable.
-                                    </div>
-                                </div>
-                            </div>
-                        </div><!-- Accordion End -->
-                    </div>
-                </div>
-             </div>
         </div>
-    </section>
-    <!--Faq Section End -->
+
+        <div class="row mt-3">
+            <div class="col-lg-12">
+                <div class="faq-inner">
+                    <div class="accordion" id="accordionExample">
+
+                        <!-- FAQ 1 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    What are the differences between a CMMC ESP, CSP, MSP, and MSSP?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show"
+                                aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    These terms describe very different roles under CMMC, and confusing them often leads to
+                                    unnecessary scope and compliance cost.
+
+                                    <ul>
+                                        <li><strong>ESP (External Service Provider):</strong> Any third party that provides
+                                            services affecting the security of CUI. This is a CMMC concept, not a business model.
+                                            <br><em>Examples:</em> Managed IT providers, SOC operators, identity providers,
+                                            backup services.</li>
+
+                                        <li><strong>CSP (Cloud Service Provider):</strong> A provider offering cloud services
+                                            as defined in NIST SP 800-145 (on-demand, scalable, multi-tenant, etc.).
+                                            <br><em>Examples:</em> AWS, Azure, Google Cloud, SaaS application vendors.</li>
+
+                                        <li><strong>MSP (Managed Service Provider):</strong> A company providing people-driven
+                                            IT services such as help desk, system administration, or endpoint management.
+                                            <br><em>Examples:</em> Outsourced IT support, patching services, Intune administrators.</li>
+
+                                        <li><strong>MSSP (Managed Security Service Provider):</strong> A specialized MSP focused
+                                            on security operations.
+                                            <br><em>Examples:</em> SIEM monitoring, SOC-as-a-Service, vulnerability scanning teams.</li>
+                                    </ul>
+
+                                    An MSP or MSSP may also be an ESP. A CSP may or may not be an ESP. These labels are not interchangeable.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 2 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    When do I need to use a sovereign cloud like GCC-High?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse"
+                                aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    Sovereign clouds such as GCC-High are not required by default for CMMC or FedRAMP.
+
+                                    They are required when data is subject to:
+                                    <ul>
+                                        <li><strong>ITAR</strong> – Export-controlled defense articles and technical data</li>
+                                        <li><strong>EAR</strong> – Certain controlled dual-use technologies</li>
+                                        <li><strong>NOFORN</strong> – Information restricted to U.S. persons only</li>
+                                    </ul>
+
+                                    These requirements come from law, regulation, or explicit contract language—not from CMMC itself.
+                                    If your contract or data markings do not impose these restrictions, sovereign cloud usage
+                                    is optional, not mandatory.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 3 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseThree" aria-expanded="false"
+                                    aria-controls="collapseThree">
+                                    Is my product considered “cloud”?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse"
+                                aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    A product is considered cloud only if it meets the characteristics defined in
+                                    NIST SP 800-145.
+
+                                    Cloud services include:
+                                    <ul>
+                                        <li>On-demand self-service</li>
+                                        <li>Broad network access</li>
+                                        <li>Resource pooling (multi-tenancy)</li>
+                                        <li>Rapid elasticity</li>
+                                        <li>Measured service</li>
+                                    </ul>
+
+                                    <em>Examples of cloud:</em> SaaS platforms, PaaS offerings, IaaS environments.  
+                                    <em>Not cloud:</em> Dedicated hosted servers, managed appliances, staff-run enterprise systems.
+
+                                    If your product primarily relies on people and dedicated equipment rather than customer-controlled
+                                    scalable infrastructure, it is likely not cloud.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 4 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFour" aria-expanded="false"
+                                    aria-controls="collapseFour">
+                                    I’m being told I need “FedRAMP equivalency.” Is that true?
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse"
+                                aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    FedRAMP applies only to cloud service providers as defined by NIST SP 800-145.
+
+                                    If your product is a managed or enterprise service—where your staff operate systems,
+                                    access customer data, or provide bespoke infrastructure—it may not be cloud at all.
+
+                                    FedRAMP equivalency is not a universal requirement. It becomes relevant only when:
+                                    <ul>
+                                        <li>Customer data is stored or processed in a scalable, multi-tenant cloud service</li>
+                                        <li>The service is offered broadly, not as a bespoke managed environment</li>
+                                    </ul>
+
+                                    Many organizations are incorrectly told to pursue FedRAMP when their product does not meet
+                                    the cloud definition.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 5 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFive">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFive" aria-expanded="false"
+                                    aria-controls="collapseFive">
+                                    Is end-to-end encryption (e.g., PreVeil) required for CMMC?
+                                </button>
+                            </h2>
+                            <div id="collapseFive" class="accordion-collapse collapse"
+                                aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    No. End-to-end encryption products are not required by CMMC.
+
+                                    CMMC does not require data loss prevention (DLP) or zero-knowledge encryption.
+                                    However, products like PreVeil allow organizations to create a very small,
+                                    tightly controlled boundary with virtually no risk of data spillage.
+
+                                    These products are optional architectural choices, not compliance requirements.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 6 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingSix">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseSix" aria-expanded="false"
+                                    aria-controls="collapseSix">
+                                    Is it ever acceptable to use non-FedRAMP services inside my system boundary?
+                                </button>
+                            </h2>
+                            <div id="collapseSix" class="accordion-collapse collapse"
+                                aria-labelledby="headingSix" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    Yes.
+
+                                    FedRAMP is not required for services that do not store or process CUI, such as:
+                                    <ul>
+                                        <li>Telemetry and performance monitoring</li>
+                                        <li>Anonymous diagnostics</li>
+                                        <li>Public threat intelligence feeds</li>
+                                    </ul>
+
+                                    However, audit logs, security event data, and vulnerability scan results are considered
+                                    Federal data and must be handled accordingly.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 7 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingSeven">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseSeven" aria-expanded="false"
+                                    aria-controls="collapseSeven">
+                                    Does CMMC require U.S.-citizen-only access?
+                                </button>
+                            </h2>
+                            <div id="collapseSeven" class="accordion-collapse collapse"
+                                aria-labelledby="headingSeven" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    No. CMMC does not impose a blanket U.S.-citizen-only requirement.
+
+                                    Citizenship restrictions apply only when driven by:
+                                    <ul>
+                                        <li>ITAR, EAR, or NOFORN markings</li>
+                                        <li>Explicit contractual language</li>
+                                    </ul>
+
+                                    In the absence of those requirements, CMMC does not mandate U.S.-only access.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 8 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingEight">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseEight" aria-expanded="false"
+                                    aria-controls="collapseEight">
+                                    Do I need to use “government” versions of products for CMMC or FedRAMP?
+                                </button>
+                            </h2>
+                            <div id="collapseEight" class="accordion-collapse collapse"
+                                aria-labelledby="headingEight" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    No—unless ITAR, EAR, or NOFORN apply.
+
+                                    A product can meet CMMC or FedRAMP requirements without being a “gov” version,
+                                    as long as security controls are satisfied.
+
+                                    However, agencies and systems handling higher-sensitivity data may be prohibited
+                                    from using non-sovereign versions, even if they are compliant.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 9 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingNine">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseNine" aria-expanded="false"
+                                    aria-controls="collapseNine">
+                                    Is everyone now subject to a CMMC Level 2 independent assessment?
+                                </button>
+                            </h2>
+                            <div id="collapseNine" class="accordion-collapse collapse"
+                                aria-labelledby="headingNine" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    No.
+
+                                    A DoD memorandum issued in January 2025 clarified that only certain defense
+                                    contractor groupings are required to undergo independent Level 2 assessments.
+
+                                    Others remain eligible for self-assessment, depending on contract scope and data sensitivity.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 10 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTen">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseTen" aria-expanded="false"
+                                    aria-controls="collapseTen">
+                                    How do I know whether I need a Level 2 self-assessment or independent assessment?
+                                </button>
+                            </h2>
+                            <div id="collapseTen" class="accordion-collapse collapse"
+                                aria-labelledby="headingTen" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    The determination is driven by:
+                                    <ul>
+                                        <li>Contract language</li>
+                                        <li>DoD program designation</li>
+                                        <li>Whether the contractor handles prioritized acquisition programs or critical CUI</li>
+                                    </ul>
+
+                                    If the contract requires certification by a C3PAO, an independent assessment is required.
+                                    Otherwise, a self-assessment may be permitted.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- Accordion End -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 				
 					
 	<!-- Footer Section Start -->
