@@ -181,11 +181,11 @@
     display:none;
   }
   .drawer.open{display:block;}
-  .drawer .cite{font-family:'IBM Plex Mono',monospace;font-size:.76rem;color:var(--muted);letter-spacing:.05em;}
+  .drawer .cite{font-family:'IBM Plex Mono',monospace;font-size:.76rem;color:var(--muted);letter-spacing:.05em;padding-right:40px;}
   .citelink{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--faint);}
   .citelink:hover{color:var(--focus);border-bottom-color:var(--focus);}
   .citelink .ext{font-size:.7em;margin-left:4px;opacity:.7;}
-  .drawer h2{font-family:'Sora',sans-serif;font-size:1.25rem;margin-top:6px;line-height:1.3;}
+  .drawer h2{font-family:'Sora',sans-serif;font-size:1.25rem;margin-top:6px;line-height:1.3;padding-right:40px;}
   .drawer .status{display:inline-block;margin-top:10px;font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:4px;border:1px solid currentColor;}
   .drawer p.blurb{margin-top:14px;font-size:.94rem;line-height:1.68;color:var(--text);}
   .drawer .watch{margin-top:14px;padding:11px 13px;border:1px solid rgba(229,180,78,.35);border-radius:6px;background:rgba(229,180,78,.06);font-size:.8rem;line-height:1.55;color:#EAD9AE;}
@@ -203,8 +203,8 @@
   .morebtn{display:block;width:100%;text-align:left;margin-top:6px;background:none;border:1px dashed var(--grid);color:var(--faint);border-radius:5px;padding:6px 10px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.04em;}
   .morebtn:hover{color:var(--muted);border-color:var(--line);}
   .morewrap{opacity:.75;}
-  .closebtn{position:absolute;top:14px;right:14px;background:none;border:1px solid var(--line);color:var(--muted);border-radius:5px;width:28px;height:28px;cursor:pointer;font-size:.9rem;}
-  .closebtn:hover{color:var(--text);border-color:var(--muted);}
+  .closebtn{position:absolute;top:14px;right:14px;z-index:5;display:flex;align-items:center;justify-content:center;background:var(--panel-2);border:1px solid var(--muted);color:var(--text);border-radius:5px;width:30px;height:30px;line-height:1;cursor:pointer;font-size:1rem;}
+  .closebtn:hover{background:var(--broken);border-color:var(--broken);color:#fff;}
   .backbtn{display:inline-flex;align-items:center;gap:7px;margin-bottom:14px;background:none;border:1px solid var(--line);color:var(--muted);border-radius:5px;padding:5px 12px 5px 9px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.04em;max-width:100%;}
   .backbtn:hover{color:var(--text);border-color:var(--focus);}
   .backbtn .arrow{font-size:.85rem;line-height:1;}
