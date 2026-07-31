@@ -1,0 +1,36 @@
+#!/bin/sh
+# Pre-push validation for the regulatory map.
+# Runs only when cui-regulatory-map/index.html is part of what is being pushed.
+# Bypass in an emergency with:  git push --no-verify
+
+MAP="cui-regulatory-map/index.html"
+
+# Determine what this push would send. If the remote ref is unknown (new branch),
+# fall back to comparing against origin/HEAD.
+CHANGED=$(git diff --name-only @{push}..HEAD 2>/dev/null || git diff --name-only origin/HEAD..HEAD 2>/dev/null)
+
+echo "$CHANGED" | grep -q "^$MAP$"
+MAP_TOUCHED=$?
+
+if [ $MAP_TOUCHED -ne 0 ]; then
+  echo "pre-push: map unchanged in this push - validation skipped"
+  exit 0
+fi
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-push: node not found - cannot validate. Install Node or use --no-verify."
+  exit 1
+fi
+
+echo "pre-push: validating $MAP"
+node scripts/validate-map.js "$MAP"
+STATUS=$?
+
+if [ $STATUS -ne 0 ]; then
+  echo ""
+  echo "pre-push: BLOCKED. Fix the failures above, or override with:"
+  echo "  git push --no-verify"
+  echo ""
+fi
+
+exit $STATUS
