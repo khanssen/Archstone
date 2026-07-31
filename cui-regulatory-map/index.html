@@ -1,7 +1,11 @@
 <!DOCTYPE html>
+<!-- build: v19 | 2026-07-31 | 39 nodes / 76 edges | 46 load / 13 ref / 9 broken / 8 open -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="build" content="v19">
+<meta name="build-date" content="2026-07-31">
+<meta name="build-counts" content="nodes=39 edges=76 load=46 ref=13 broken=9 open=8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Federal Cybersecurity Regulatory Roadmap — CMMC, FedRAMP &amp; NIST 800-171 Dependencies | Archstone Security</title>
 <meta name="description" content="Interactive map of the federal CUI compliance stack — how CMMC, FedRAMP, DFARS 252.204-7012, and NIST 800-171/800-53 depend on each other, and how recent changes affect other programs and guidelines.">
@@ -425,7 +429,7 @@ const NODES = [
   {id:'dibcac',  tier:6, cite:'via 7020', name:'DIBCAC government assessments', status:'inforce', programs:['CMMC'],
    blurb:'"Select government-led assessments" - the July 13 release\'s phrase for what continues: Medium and High assessments conducted under 7020. The surviving third-party check, sparse and government-run, and the plausible surge model for whatever the task force designs.'},
   {id:'agencyato',tier:6, cite:'Agency AO · RMF', name:'The Agency ATO - the other signature', status:'inforce', sig:true, programs:['FISMA'],
-   blurb:'The federal-side twin of the SPRS affirmation: an authorizing official\'s risk-acceptance decision, expressed in 800-53 control terms because A-130 and FIPS permit no other vocabulary, with FISMA accountability behind the signature. FedRAMP\'s entire reuse economics exist to feed this decision - hundreds of agencies inherit one package because they cannot independently re-assess. The trust chain runs AO → marketplace label → package contents, and 20x thinned the last link while leaving the first two looking identical.',
+   blurb:'The federal-side twin of the SPRS affirmation: an authorizing official\'s risk-acceptance decision, expressed in 800-53 control terms because A-130 and FIPS permit no other vocabulary, with FISMA accountability behind the signature. FedRAMP\'s entire reuse economics exist to feed this decision - hundreds of agencies inherit one package because re-assessing independently is prohibitive at that scale. Prohibitive is not impossible: a department with its own assessment staff can decline to require certification and authorize against its own standing security program instead, and in July 2026 one did. The trust chain runs AO → marketplace label → package contents, and 20x thinned the last link while leaving the first two looking identical.',
    watch:'The first inheriting AO called to defend a Class C authorization file at an incident hearing will have to document what the inherited file does and does not contain.'},
   {id:'ig',      tier:6, cite:'Agency IGs · annual FISMA eval', name:'Inspectors General - the discovery clock', status:'inforce', programs:['FISMA'],
    blurb:'Agency Inspectors General evaluate agency ATO files annually under FISMA metrics - the mechanism that finds the fracture before the breach does. The first IG that pulls a 20x inheritance file and finds KSI assertions where a control-level SAR used to be writes the finding that makes the evidence gap public. Those evaluations flow to OMB and CISA through CyberScope, the FISMA reporting platform - the annual submission is the moment an evidence gap in one agency\'s files becomes visible above the agency. That is an annual cycle, not a breach lottery; the civilian discovery clock runs faster than people assume.'},
@@ -490,7 +494,7 @@ const EDGES = [
   {from:'ksi',     to:'m53a',    type:'broken', note:'no 800-53A procedures performed against the baseline by any party - crosswalks map requirements, not assessment acts'},
   {from:'ksi',     to:'agencyato',type:'broken', note:'the KSI package is precisely what the authorizing official cannot authorize against: the AO\'s duty to evaluate in 800-53 terms is non-waivable (via A-130), and a self-reported indicator set does not carry the control-level evidence that duty consumes. This is the break with teeth - it is what the IG finds'},
   {from:'ksi',     to:'sp18',    type:'broken', note:'the authorization package is the system plan, and r2\'s plan elements require per-control implementation and assessment status - facts a KSI validation never produces, in any format'},
-  {from:'cr26',    to:'agencyato',type:'broken', note:'the governance half of the fracture: the AGU agency-use rules bar an agency from demanding certification paths or thicker evidence absent a head-of-agency demonstrable-need determination. The evidence thinned (see KSI) and the request for thicker evidence got taxed to the top of the org chart. DISA cleared that bar wholesale; a civilian AO shop realistically cannot'},
+  {from:'cr26',    to:'agencyato',type:'broken', note:'the governance half of the fracture: the AGU agency-use rules bar an agency from demanding certification paths or thicker evidence absent a head-of-agency demonstrable-need determination. The evidence thinned (see KSI) and the request for thicker evidence got taxed to the top of the org chart. DISA cleared that bar wholesale; a civilian AO shop realistically cannot. Corroborated in writing: a July 2026 department memo setting out what its own cloud authorization process requires puts the Security Assessment Report first and 20x key security indicators last and conditional'},
   {from:'cr26',    to:'a130',    type:'broken', note:'the program\'s packages abandoned the vocabulary this layer makes mandatory - 20x serves consumers who are legally required to evaluate in 800-53 terms and told by the program not to read its output that way'},
   {from:'ig',      to:'agencyato',type:'ref',  note:'annual FISMA evaluation of ATO files - the discovery mechanism, on a yearly clock'},
   // NIST standards mandate (statute → standards spine)
