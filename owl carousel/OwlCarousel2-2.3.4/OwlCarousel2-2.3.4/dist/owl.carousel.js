@@ -1978,7 +1978,8 @@
 
 		$elements.each($.proxy(function(index, element) {
 			var $element = $(element), image,
-                url = (window.devicePixelRatio > 1 && $element.attr('data-src-retina')) || $element.attr('data-src') || $element.attr('data-srcset');
+                rawUrl = (window.devicePixelRatio > 1 && $element.attr('data-src-retina')) || $element.attr('data-src') || $element.attr('data-srcset'),
+                url = sanitizeUrl(rawUrl);
 
 			this._core.trigger('load', { element: $element, url: url }, 'lazy');
 
