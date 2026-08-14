@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>RFI figure — evidence flow</title>
+<style>
+/* 864 x 624 px = 9.00in x 6.50in at 96dpi — landscape letter inside the RFI's
+   one-inch margins. 9pt = 12px, the RFI's floor for text in a figure.
+   Nothing below is smaller than 12px. */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#eef0ec;display:grid;place-items:center;min-height:100vh;padding:16px;
+  font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+/* the canvas is a fixed 864x624 so print geometry is exact; scale it to fit a narrow screen */
+@media (max-width:900px){
+  body{display:block;padding:10px;overflow-x:hidden}
+  .page{transform-origin:top left;transform:scale(calc((100vw - 20px)/864))}
+}
+.page{width:864px;height:624px;background:#fff;display:flex;flex-direction:column;
+  color:#0b0b0b;line-height:1.3}
+
+h1{font-size:18.5px;font-weight:850;letter-spacing:-.015em;line-height:1.08}
+.dek{font-size:12.5px;color:#4c4b48;margin-top:2px}
+
+.flow{flex:1;display:flex;align-items:stretch;gap:0 9px;margin-top:9px;min-height:0}
+.col{flex:1;display:flex;flex-direction:column;min-width:0}
+.c1{flex:0 0 166px} .c2{flex:0 0 172px} .cb{flex:0 0 176px} .c3{flex:1}
+.hd{font-size:12px;font-weight:800;letter-spacing:.055em;text-transform:uppercase;
+  color:#8a8880;padding-bottom:4px;border-bottom:1px solid #d9dcd6;margin-bottom:7px;
+  display:flex;align-items:flex-start;gap:6px;min-height:45px}
+.hd i{flex:none;width:16px;height:16px;border-radius:50%;background:#0b0b0b;color:#fff;
+  font-size:11.5px;font-weight:800;font-style:normal;display:grid;place-items:center;line-height:1}
+.hd em{font-style:normal;color:#0a7a12}
+
+.stack{display:flex;flex-direction:column;gap:7px;flex:1}
+.card{border-radius:8px;padding:6px 9px;border:1.8px solid #8fd68f;background:#fff;
+  display:flex;flex-direction:column;flex:1}
+.card .tag{font-size:12px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:#0a7a12}
+.card .more{display:inline-block;margin-left:9px;padding:0 5px;border-radius:3px;
+  background:#e7f6e7;border:1px solid #8fd68f;color:#0a7a12;font-size:12px;font-weight:800;
+  letter-spacing:0;text-transform:none}
+.card .nm{font-size:14px;font-weight:800;margin-top:1px;line-height:1.12}
+.card .ds{font-size:12px;color:#4c4b48;margin-top:3px}
+.card .met{font-size:12px;font-weight:800;color:#0a7a12;margin-top:auto;padding-top:4px}
+.pub{background:#e7f6e7}
+
+.arw{flex:0 0 15px;display:flex;align-items:center;justify-content:center}
+.arw span{width:13px;height:11px;position:relative}
+.arw span::before{content:"";position:absolute;top:4.1px;left:0;height:2.8px;width:8px;background:#0ca30c}
+.arw span::after{content:"";position:absolute;left:7px;top:0;border-top:5.5px solid transparent;
+  border-bottom:5.5px solid transparent;border-left:7px solid #0ca30c}
+.arw.red span::before{background:repeating-linear-gradient(90deg,#b5361f 0 4px,transparent 4px 7px)}
+.arw.red span::after{border-left-color:#b5361f}
+
+.brk{flex:1;border:2.2px dashed #b5361f;border-radius:9px;background:#fbeae6;
+  padding:9px 10px;display:flex;flex-direction:column;justify-content:center}
+.brk b{display:block;font-size:14px;font-weight:850;letter-spacing:.04em;
+  text-transform:uppercase;color:#b5361f;line-height:1.1}
+.brk p{font-size:12px;font-weight:600;color:#7a2716;margin-top:5px}
+
+.band{border-radius:9px;padding:8px 11px;flex:1;display:flex;flex-direction:column}
+.band .top{display:flex;align-items:baseline;justify-content:space-between}
+.band .pct{font-size:27px;font-weight:850;letter-spacing:-.025em;line-height:1}
+.band .cnt{font-size:12px;font-weight:800}
+.band .nm{font-size:14px;font-weight:800;margin-top:3px}
+.band .ds{font-size:12px;color:#4c4b48;margin-top:2px}
+.b-auto{background:#e7f0fb;border:2.6px solid #2a78d6}
+.b-auto .pct,.b-auto .cnt{color:#184f95}
+.b-mix{background:#fbf0d8;border:2px solid #c07a00}
+.b-mix .pct,.b-mix .cnt{color:#8a5800}
+.b-man{background:#f2f3f1;border:2px dotted #b9bdb7}
+.b-man .pct,.b-man .cnt{color:#5c605b}
+.split{margin-top:auto;border-top:1px solid rgba(11,11,11,.14);padding-top:5px;
+  display:flex;flex-direction:column;gap:3px}
+.split .it{font-size:12px;color:#4c4b48;display:flex;gap:7px;align-items:baseline}
+.split .it b{font-size:15px;font-weight:850;line-height:1;flex:none}
+.split .p b{color:#184f95}
+.split .o b{color:#6A4C93}
+</style>
+
+<div class="page">
+
+  <h1>Every building block is already established. The join was never published.</h1>
+  <p class="dek">What the Federal government has already built, what contractor systems already report, and the one statement never issued.</p>
+
+  <div class="flow">
+
+    <div class="col c1">
+      <div class="hd"><i>1</i><span>Published by the government</span></div>
+      <div class="stack">
+        <div class="card pub"><span class="tag">Published</span><span class="nm">SP 800-171 / 171A</span><span class="ds">The requirements and their 320 assessment objectives.</span></div>
+        <div class="card pub"><span class="tag">Published</span><span class="nm">Checklist Program</span><span class="ds">Hardening baselines in SCAP and XCCDF, designated as the configuration source.</span></div>
+        <div class="card pub"><span class="tag">Published &middot; Apr 2025</span><span class="nm">Parameter values</span><span class="ds">Thresholds, frequencies and response times, set by the Department.</span></div>
+        <div class="card pub"><span class="tag">Published</span><span class="nm">OSCAL</span><span class="ds">The schema NIST built so assessment data moves between tools.</span></div>
+      </div>
+    </div>
+
+    <div class="arw"><span></span></div>
+
+    <div class="col c2">
+      <div class="hd"><i>2</i><span>Required state, already reported</span></div>
+      <div class="stack">
+        <div class="card"><span class="tag">03.04.07<span class="more">+5 more</span></span><span class="nm">Endpoint</span><span class="ds">Nonessential programs, ports and services restricted.</span><span class="met">81 objectives</span></div>
+        <div class="card"><span class="tag">03.05.01<span class="more">+7 more</span></span><span class="nm">Enterprise</span><span class="ds">Identity, authentication and tenant policy for CUI.</span><span class="met">61 objectives</span></div>
+        <div class="card"><span class="tag">03.11.02<span class="more">+2 more</span></span><span class="nm">Vulnerability</span><span class="ds">Monthly scanning; remediation within 30 / 90 / 180 days.</span><span class="met">carried in endpoint</span></div>
+        <div class="card"><span class="tag">03.03.01<span class="more">+2 more</span></span><span class="nm">Audit</span><span class="ds">Records retained, with reduction and on-demand reporting.</span><span class="met">1 objective</span></div>
+      </div>
+    </div>
+
+    <div class="arw red"><span></span></div>
+
+    <div class="col cb">
+      <div class="hd"><span>The missing act</span></div>
+      <div class="brk">
+        <b>Not yet designated</b>
+        <p>No published artifact states which assessment objectives the Department will accept a machine-readable export for.</p>
+        <p>Absent it, the evidence to the left carries no compliance value and every objective to the right is established by interview.</p>
+      </div>
+    </div>
+
+    <div class="arw red"><span></span></div>
+
+    <div class="col c3">
+      <div class="hd"><i>3</i><span>All 320 objectives, by what the system emits</span></div>
+      <div class="stack">
+        <div class="band b-auto"><div class="top"><span class="pct">44.7%</span><span class="cnt">143 objectives</span></div><div class="nm">Automated validation</div><div class="ds">Emitted state reaches the objective&rsquo;s full parameter and is scored against a referent. No assessor.</div>
+          <div class="split">
+            <div class="it p"><b>100</b><span>scored against a referent the Federal government publishes.</span></div>
+            <div class="it o"><b>43</b><span>against a value the organization must define: valid, not comparable.</span></div>
+          </div>
+        </div>
+        <div class="band b-mix"><div class="top"><span class="pct">25.0%</span><span class="cnt">80 objectives</span></div><div class="nm">Combination</div><div class="ds">Emission falls short of the full parameter. The export narrows it; assessor judgement completes it.</div></div>
+        <div class="band b-man"><div class="top"><span class="pct">30.3%</span><span class="cnt">97 objectives</span></div><div class="nm">Manual validation</div><div class="ds">Nothing emits at any cost &mdash; conduct, judgement, and organization-defined process.</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Every building block is already established — the join was never published</title>
+<style>
+:root{
+  --page:#eef0ec; --surface:#fff; --ink:#0b0b0b; --ink2:#4c4b48; --muted:#8a8880;
+  --line:#e1e0d9; --grid:#d9dcd6;
+  --green:#0ca30c; --green-ink:#0a7a12; --green-wash:#e7f6e7; --green-line:#8fd68f;
+  --amber:#c07a00; --amber-ink:#8a5800; --amber-wash:#fbf0d8;
+  --blue:#2a78d6; --blue-deep:#184f95; --blue-wash:#e7f0fb; --blue-line:#9cc2f0;
+  --ind:#6A4C93; --ind-wash:#f1ebf8;
+  --break:#b5361f; --break-wash:#fbeae6;
+  --focus:#184f95;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--page);color:var(--ink);line-height:1.35;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.frame{width:1560px;max-width:100%;margin:0 auto;padding:34px 40px 30px}
+.eyebrow{font-size:13.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-deep);font-weight:800;margin-bottom:8px}
+h1{font-size:clamp(26px,3.4vw,40px);line-height:1.07;letter-spacing:-.02em;font-weight:850;margin-bottom:10px}
+h1 .g{color:var(--green)} h1 .r{color:var(--break)}
+.sub{font-size:16.5px;color:var(--ink2);max-width:110ch;margin-bottom:6px}
+.hint{font-size:12.5px;color:var(--muted);margin-top:10px}
+
+/* ---------- stage: control plane + diagram share one SVG ---------- */
+#stage{position:relative;margin-top:26px}
+svg.edges{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+
+/* ---------- control plane column ---------- */
+#oscal{position:relative;z-index:2;margin-top:10px;display:grid;grid-template-columns:auto 1fr;
+  gap:0 24px;align-items:center;border:2px solid var(--ind);border-radius:13px;
+  background:var(--ind-wash);padding:14px 18px;cursor:pointer;text-align:left;font:inherit;width:100%}
+#oscal:hover{box-shadow:0 3px 14px rgba(11,11,11,.09)}
+#oscal:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+#oscal .lbl{display:block;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--ind)}
+#oscal .nm{display:block;font-size:22px;font-weight:850;letter-spacing:-.015em;margin-top:3px;line-height:1}
+#oscal .bd{font-size:12.5px;color:var(--ink2);line-height:1.5}
+#oscal .bd b{color:var(--ink)}
+#oscal.dim{opacity:.26}
+.col.plane{background:linear-gradient(180deg,rgba(192,122,0,.07),rgba(192,122,0,.02));
+  border:1.5px dashed rgba(192,122,0,.45);border-radius:14px;padding:13px 14px 16px;margin-top:-13px}
+.col.plane .colhead{color:var(--amber-ink);border-bottom-color:rgba(192,122,0,.32)}
+.planenote{font-size:11.5px;color:var(--ink2);line-height:1.5;margin-top:4px;
+  border-top:1px dotted rgba(192,122,0,.4);padding-top:11px}
+.planenote b{color:var(--ink)}
+
+/* ---------- diagram ---------- */
+#diagram{position:relative;margin-top:8px;padding:52px 0 82px;display:grid;
+  grid-template-columns:.95fr .72fr 1.06fr 1.14fr .6fr;gap:0 38px;align-items:start}
+.col{position:relative;z-index:2;display:flex;flex-direction:column;gap:14px}
+.colhead{font-size:11.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);padding-bottom:10px;border-bottom:1px solid var(--grid);margin-bottom:4px}
+.colhead.g{color:var(--green-ink)} .colhead.r{color:var(--break)} .colhead.b{color:var(--blue-deep)}
+
+.node{position:relative;text-align:left;font:inherit;cursor:pointer;
+  background:var(--surface);border:1.6px solid rgba(11,11,11,.14);border-radius:12px;
+  padding:13px 15px;transition:transform .14s,box-shadow .14s,opacity .2s}
+.node:hover{transform:translateY(-1px);box-shadow:0 3px 14px rgba(11,11,11,.09)}
+.node:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.node .kicker{display:block;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.node .name{display:block;font-size:15.5px;font-weight:800;margin-top:5px;line-height:1.18}
+.node .desc{display:block;font-size:12px;color:var(--ink2);margin-top:5px}
+.node .export{display:block;font-size:11.5px;color:var(--muted);margin-top:7px;padding-top:7px;border-top:1px dashed rgba(11,11,11,.14);font-style:italic}
+.node .metric{display:block;font-size:12.5px;font-weight:900;margin-top:8px}
+.node.est{background:var(--green-wash);border-color:var(--green-line)}
+.node.est .kicker{color:var(--green-ink)} .node.est .metric{color:var(--green-ink)}
+.node.osc{background:var(--green-wash);border-color:var(--green-line);border-width:2px}
+.node.osc .kicker{color:var(--green-ink)}
+.node .pct{display:block;font-size:40px;font-weight:850;line-height:.96;letter-spacing:-.025em;margin-bottom:2px}
+.node .pct + .kicker{font-size:10.5px}
+.node.out .pct{color:var(--blue-deep)} .node.mix .pct{color:var(--amber-ink)} .node.man .pct{color:#5c605b}
+.node.out{background:var(--blue-wash);border-color:var(--blue);border-width:2.6px}
+.node.out .kicker{color:var(--blue-deep)}
+.node.mix{background:var(--amber-wash);border-color:var(--amber);border-width:2px;border-style:solid}
+.node.mix .kicker{color:var(--amber-ink)}
+.node.man{background:#f2f3f1;border-color:#b9bdb7;border-width:2px;border-style:dotted}
+.node.man .kicker{color:var(--ink2)}
+.node.rdr{border-color:var(--blue-line)}
+.node.rdr .kicker{color:var(--blue-deep)}
+.node .metric.mut{color:var(--muted);font-weight:800;font-size:11.5px}
+.node.dim{opacity:.26} .node.sel{box-shadow:0 0 0 2px var(--focus)}
+
+/* greyscale-safe band markers: full / half / empty */
+.band-mark{display:inline-block;width:13px;height:13px;border-radius:50%;vertical-align:-2px;
+  margin-right:7px;border:2px solid currentColor}
+.band-mark.full{background:currentColor}
+.band-mark.half{background:linear-gradient(90deg,currentColor 50%,transparent 50%)}
+.band-mark.empty{background:transparent}
+
+/* control-plane nodes */
+.node.pl{border-width:2.4px}
+.node.pl.done{background:var(--green-wash);border-color:var(--green-line)}
+.node.pl.done .kicker{color:var(--green-ink)}
+.node.pl.todo{background:var(--amber-wash);border-color:var(--amber);border-width:3px}
+.node.pl.todo .kicker{color:var(--amber-ink)}
+.node.pl.todo .name{font-size:18px;letter-spacing:-.015em}
+.spacer{height:26px;flex:none}
+.node .stamp{display:inline-block;margin-top:9px;font-size:9.5px;font-weight:900;letter-spacing:.09em;
+  text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1.5px solid currentColor}
+.stamp.ok{color:var(--green-ink);background:#fff}
+.stamp.no{color:var(--break);background:var(--break-wash);border-color:var(--break)}
+
+/* ---------- legend + notes ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:12px 26px;align-items:center;
+  margin-top:30px;border-top:1px solid var(--line);padding-top:16px}
+.lk{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--ink2)}
+.lk svg{flex:none}
+.note{font-size:13.5px;color:var(--ink2);max-width:112ch;margin-top:18px}
+.note b{color:var(--ink)}
+.src{margin-left:auto;font-size:11.5px;color:var(--muted);text-align:right}
+.src b{color:var(--ink2)}
+.caption{display:none}
+.prn{display:none}
+.edgegap{fill:var(--page)}
+button.reset{font:inherit;font-size:11.5px;font-weight:700;background:var(--surface);
+  border:1px solid var(--line);border-radius:5px;padding:5px 11px;cursor:pointer;color:var(--ink2);margin-left:10px}
+button.reset:hover{border-color:var(--ink2)}
+
+/* ---------- drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(11,11,11,.28);opacity:0;pointer-events:none;
+  transition:opacity .22s;z-index:40}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:440px;max-width:92vw;z-index:50;
+  background:var(--surface);border-left:1px solid var(--line);box-shadow:-8px 0 34px rgba(11,11,11,.13);
+  transform:translateX(102%);transition:transform .24s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;padding:26px 28px 40px}
+.drawer.open{transform:none}
+.drawer .top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.drawer .eye{font-size:10.5px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.drawer h2{font-size:22px;font-weight:850;line-height:1.16;margin-top:6px;letter-spacing:-.01em}
+.drawer .status{display:inline-block;margin-top:11px;font-size:10px;font-weight:900;letter-spacing:.1em;
+  text-transform:uppercase;padding:3.5px 10px;border-radius:4px;border:1px solid currentColor}
+.st-pub{color:var(--green-ink);background:var(--green-wash)}
+.st-req{color:var(--green-ink);background:var(--green-wash)}
+.st-miss{color:var(--break);background:var(--break-wash)}
+.st-out{color:var(--blue-deep);background:var(--blue-wash)}
+.st-mix{color:var(--amber-ink);background:var(--amber-wash)}
+.st-man{color:var(--ink2);background:#f2f3f1}
+.drawer .blurb{margin-top:15px;font-size:14px;line-height:1.62;color:var(--ink2)}
+.drawer .blurb b{color:var(--ink)}
+.watch{margin-top:15px;padding:12px 14px;border-radius:7px;font-size:12.5px;line-height:1.55;
+  border:1px solid rgba(181,54,31,.34);background:var(--break-wash);color:#7a2716}
+.watch b{color:var(--break)}
+.dhead{margin-top:24px;font-size:10.5px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:7px}
+.reflist{margin-top:10px;font-size:12.5px;line-height:1.6;color:var(--ink2)}
+.reflist div{padding:5px 0;border-bottom:1px dotted var(--line)}
+.reflist b{color:var(--ink);font-variant-numeric:tabular-nums}
+.dep{display:block;width:100%;text-align:left;font:inherit;cursor:pointer;background:none;
+  border:1px solid transparent;border-radius:7px;padding:11px 12px;margin-top:4px;transition:background .14s,border-color .14s}
+.dep:hover{background:var(--page);border-color:var(--line)}
+.dep:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.dep .rel{font-size:10px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.dep .rel i{width:16px;height:2.4px;border-radius:2px;flex:none;display:inline-block}
+.dep .who{font-size:13.5px;font-weight:800;margin-top:5px}
+.dep .dtxt{font-size:12.5px;color:var(--ink2);line-height:1.5;margin-top:3px}
+.xbtn{font:inherit;font-size:12px;font-weight:800;background:none;border:1px solid var(--line);
+  border-radius:5px;padding:5px 10px;cursor:pointer;color:var(--ink2);flex:none}
+.xbtn:hover{border-color:var(--ink2)}
+@media(max-width:620px){.drawer{width:100%;max-width:100%}}
+@media(prefers-reduced-motion:reduce){.drawer,.scrim{transition:none}}
+
+@media screen and (max-width:1080px){
+  #diagram{grid-template-columns:1fr 1fr;gap:22px}
+  svg.edges{display:none}
+}
+@media(prefers-reduced-motion:reduce){.node{transition:none}}
+
+/* ================= PRINT VARIANT — RFI: no text in a figure below 9pt ================= */
+@media print{
+  @page{size:letter landscape;margin:.45in}
+  body{background:#fff}
+  .frame{width:100%;max-width:100%;padding:4px 4px 4px 5px}
+  h1,.eyebrow,.sub,.hint,.note,.legend,.drawer,.scrim,button.reset{display:none !important}
+  #stage{margin-top:0}
+  .col.plane{padding:7px 8px 9px;margin-top:-7px}
+  .planenote{font-size:9pt;padding-top:7px;margin-top:3px}
+  .spacer{height:14px}
+  #oscal{margin-top:7px;padding:7px 10px;gap:0 14px;border-width:1.6px}
+  #oscal .lbl{font-size:9pt}
+  #oscal .nm{font-size:14pt;margin-top:1px}
+  #oscal .bd{font-size:9pt;line-height:1.35}
+  #diagram{margin-top:5px;padding:32px 0 48px}
+  .colhead{font-size:9pt;padding-bottom:4px;margin-bottom:1px;min-height:31px;letter-spacing:.04em}
+  .col{gap:6px}
+  .node{padding:5px 8px;border-radius:7px;break-inside:avoid}
+  .node .desc,.node .export{display:none !important}   /* descriptions come out */
+  .node .kicker{font-size:9pt;letter-spacing:.01em;line-height:1.2}
+  .node .name{font-size:10.5pt;margin-top:2px;line-height:1.15}
+  .node .metric{font-size:9pt;margin-top:3px;line-height:1.2}
+  .node .metric.mut{font-size:9pt}
+  .node .pct{font-size:19pt;margin-bottom:0}
+  .node .stamp{font-size:9pt;margin-top:4px}
+  .node.pl.todo .name{font-size:13pt}
+  .caption{display:block;font-size:9pt;color:#4c4b48;margin-top:8px;
+    border-top:1px solid #d9dcd6;padding-top:6px;line-height:1.38}
+  .caption b{color:#0b0b0b}
+  .edgegap{fill:#fff}
+  .scr{display:none !important}
+  .prn{display:inline !important}
+  .node,.node.pl{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  /* the print viewport is narrow enough to trip the mobile breakpoint — override it */
+  svg.edges{display:block !important}
+  #diagram{grid-template-columns:1.05fr .68fr 1.04fr 1.12fr .58fr !important;gap:0 14px !important}
+}
+</style>
+</head>
+<body>
+<div class="frame">
+
+<p class="eyebrow">Reforming CMMC · Machine-verifiable cybersecurity evidence for the DIB</p>
+<h1>Every building block is already <span class="g">established</span>.<br>The join <span class="r">was never published</span>.</h1>
+<p class="sub">The Federal government has published the referents that define conformance, and the standard already requires the defense contractor to maintain the system state those referents describe. That state is readable by machine, and NIST already built the schema to carry the results. What has never been published is the Department&rsquo;s list of the assessment objectives a machine export may satisfy.</p>
+<p class="hint">Select any component to trace its connections and read how they relate.<button class="reset" id="reset">Clear selection</button></p>
+
+<div id="stage">
+  <svg class="edges" id="edges" aria-hidden="true"></svg>
+
+  <!-- ============ diagram ============ -->
+  <div id="diagram">
+
+    <div class="col plane">
+      <div class="colhead">Department control plane</div>
+      <button class="node pl done" id="n-odp">
+        <span class="kicker"><span class="scr">Act one &middot; complete</span><span class="prn">Act one</span></span>
+        <span class="name">Parameter values</span>
+        <span class="desc">The values the standard leaves open &mdash; thresholds, frequencies, response times &mdash; selected by the Department and issued as a memorandum, April 2025.</span>
+        <span class="stamp ok">Published</span>
+      </button>
+      <div class="spacer"></div>
+      <button class="node pl todo" id="n-des">
+        <span class="kicker"><span class="scr">Act two &middot; one-time publication</span><span class="prn">Act two</span></span>
+        <span class="name">Designation</span>
+        <span class="desc">A published list of the assessment objectives a machine-readable export may satisfy, and of those it may only contribute evidence toward. No rulemaking. No appropriation. No new obligation on industry.</span>
+        <span class="stamp no">Not published</span>
+      </button>
+      <p class="planenote"><b><span class="scr">A civilian agency adopting these requirements under the FAR CUI rule has both boxes to fill. The Department has one.</span><span class="prn">A civilian agency under the FAR CUI rule fills both boxes. The Department has one.</span></b></p>
+    </div>
+
+    <div class="col">
+      <div class="colhead g">Published referents</div>
+      <button class="node est" id="n-cat"><span class="kicker">Established</span><span class="name">NIST SP 800-171 / 171A</span><span class="desc">Security requirements and 320 assessment objectives</span></button>
+      <button class="node est" id="n-ncp"><span class="kicker">Established</span><span class="name">National Checklist Program</span><span class="desc">Hardening baselines in SCAP, XCCDF and CCE &mdash; designated by the Department as the source of configuration settings</span></button>
+    </div>
+
+    <div class="col">
+      <div class="colhead g"><span class="scr">Contractor environment &mdash; required state</span><span class="prn">Required state</span></div>
+      <button class="node est" id="n-end"><span class="kicker">Required &middot; 03.04.07 +</span><span class="name">Endpoint</span><span class="desc">Nonessential programs, functions, ports, protocols and services restricted or disabled, over an enforced baseline configuration.</span><span class="export">Readable by benchmark scan or host configuration read</span><span class="metric">81 objectives</span></button>
+      <button class="node est" id="n-ten"><span class="kicker">Required &middot; 03.05.01 +</span><span class="name">Enterprise</span><span class="desc">Identity, authentication and tenant policy for the platform that holds CUI.</span><span class="export">Readable by configuration API or directory enumeration</span><span class="metric">61 objectives</span></button>
+      <button class="node est" id="n-vul"><span class="kicker">Required &middot; 03.11.02 +</span><span class="name">Vulnerability</span><span class="desc">Scanning at least monthly, definitions current within 24 hours of a scan, remediation within 30 / 90 / 180 days by risk level.</span><span class="export">Readable by scanner findings carrying severity and age</span><span class="metric mut"><span class="scr">Carried within endpoint coverage &mdash; not separately partitioned</span><span class="prn">Carried in the endpoint count</span></span></button>
+      <button class="node est" id="n-log"><span class="kicker">Required &middot; 03.03.01 +</span><span class="name">Audit</span><span class="desc">Records created and retained, with the reduction and on-demand reporting capability the standard requires.</span><span class="export">Readable by retained event query</span><span class="metric mut"><span class="scr">Customized automation possible &mdash; output not comparable without further specification</span><span class="prn">Customized automation possible</span></span></button>
+    </div>
+
+    <div class="col">
+      <div class="colhead b">Validation method</div>
+      <button class="node out" id="n-auto"><span class="pct">44.7%</span><span class="kicker"><span class="band-mark full"></span>of 320 &middot; no assessor</span><span class="name">Automated validation</span><span class="desc">The emitted state reaches the objective&rsquo;s full parameter and is scored against a referent, without assessor participation. <b>One hundred against a referent the Federal government publishes</b> &mdash; checklist content or a Department parameter value. <b>Forty-three against one the organization is required to define</b>, which validates correctly but is not comparable between suppliers. Submissible on a recurring basis at the cadence each control already requires and no more often.</span><span class="metric" style="color:var(--blue-deep)">143 objectives &middot; <span class="scr">100 externally published, 43 organization-defined</span><span class="prn">100 published, 43 org-defined</span></span></button>
+      <button class="node mix" id="n-mixed"><span class="pct">25.0%</span><span class="kicker"><span class="band-mark half"></span>of 320 &middot; partially automated</span><span class="name">Combination</span><span class="desc">Emission exists but does not reach the objective&rsquo;s full parameter, and no declared value closes the gap. These turn on human conduct, on a population that is asserted rather than emitted, or on coverage the mechanism does not reach. The export narrows what an assessor must establish; judgement completes it.</span><span class="metric" style="color:var(--amber-ink)">80 objectives</span></button>
+      <button class="node man" id="n-man"><span class="pct">30.3%</span><span class="kicker"><span class="band-mark empty"></span>of 320 &middot; assessor alone</span><span class="name">Manual validation</span><span class="desc">No mechanism emits at any cost. About half are organization-defined process objectives &mdash; what the supplier has defined, identified, documented or approved. The rest are conduct, judgement and physical acts. Concentrated in Incident Response (93% of the family) and Awareness &amp; Training (89%).</span><span class="metric" style="color:var(--ink2)">97 objectives</span></button>
+    </div>
+
+    <div class="col">
+      <div class="colhead b">Readers</div>
+      <button class="node rdr" id="n-dow"><span class="kicker">Reader</span><span class="name">Department</span><span class="desc">Scores against its own published values</span></button>
+      <button class="node rdr" id="n-pri"><span class="kicker">Reader</span><span class="name">Prime</span><span class="desc">Verifies flowdown</span></button>
+    </div>
+  </div>
+
+  <button id="oscal">
+    <span><span class="lbl">Expression layer &middot; established, federally funded</span><span class="nm">OSCAL</span></span>
+    <span class="bd"><span class="scr">The machine-readable schema NIST built so control and assessment data could move between tools without regard to vendor. Everything above is expressible in it: <b>the Department&rsquo;s parameter values as a profile, the environment&rsquo;s observed state as assessment results, and the submission as one artifact</b> that a Department, a prime, an assessor and the supplier&rsquo;s own tooling all read. And because a profile carries the declared value while assessment results carry the observation, a referent can never be silently inferred from the configuration it is meant to test.</span><span class="prn">One federally built schema carries all of it: <b>the parameter values as a profile, observed state as assessment results, and the submission as a single artifact</b> the Department, a prime, an assessor and the supplier all read.</span></span>
+  </button>
+</div>
+
+<p class="note"><b>Accept the artifact where it is offered; assess the remainder.</b> Of the 320 assessment objectives in SP 800-171A, <b>44.7%</b> fall to automated validation and need no assessor participation, <b>25.0%</b> are narrowed by the artifact but closed by judgement, and <b>30.3%</b> require manual validation by an assessor. Of the automated share, <b>31.2% of the standard</b> is scored against a referent the Federal government publishes and <b>13.4%</b> against one the organization is obliged to define but no one else can read. The three shares account for the whole standard. Nothing is removed from the requirement set; verification changes hands where the system can answer for itself.</p>
+
+<p class="note"><b>The standard requires the state, not the reading of it.</b> Nothing in SP 800-171 obliges a contractor to operate a scanner, query a configuration interface, or search a log store. What it obliges is the underlying condition &mdash; a hardened baseline, a configured tenant, scanned and remediated components, retained audit records &mdash; and that condition is already exposed in machine-readable form by the products that maintain it. This proposal adds no required component. It makes an existing required state reportable, for suppliers who choose to report it.</p>
+
+<p class="note"><b>The ask is one act, and it is a publication.</b> The Department publishes the list of assessment objectives a machine-readable export may satisfy, stating for each whether the export satisfies the objective outright &mdash; <i>automated validation</i> &mdash; or contributes evidence toward it &mdash; <i>combination</i>. Periodic exports then replace assessment for the listed objectives, at a cadence no more frequent than each control already requires. Nothing is asked of the Department beyond the list: how a supplier produces a conforming export is internal to the supplier. No Departmental tooling, no new system, no rulemaking &mdash; the April 2025 parameter values went out as a memorandum.</p>
+
+<div class="legend">
+  <span class="lk"><svg width="34" height="12"><line x1="1" y1="6" x2="33" y2="6" stroke="#0ca30c" stroke-width="2.4"/></svg>Established — required and readable today</span>
+  <span class="lk"><svg width="34" height="12"><line x1="1" y1="6" x2="33" y2="6" stroke="#b5361f" stroke-width="2.4" stroke-dasharray="9 6"/><path d="M13 6 L17 1 L20 11 L25 6" stroke="#b5361f" stroke-width="1.8" fill="none"/></svg>Not yet designated</span>
+  <span class="lk"><svg width="34" height="12"><line x1="1" y1="6" x2="33" y2="6" stroke="#c07a00" stroke-width="2.2" stroke-dasharray="3 4"/></svg>What designation would close</span>
+  <span class="lk"><svg width="34" height="12"><line x1="1" y1="6" x2="33" y2="6" stroke="#2a78d6" stroke-width="2.2"/></svg>Read by</span>
+  <span class="src"><b>Archstone Security</b> · classification of 320 SP 800-171A assessment objectives<br>against a single reference architecture · dataset v8.8</span>
+</div>
+
+<!-- print-only caption: carries attribution + the link that the drawers carry on screen -->
+<p class="caption"><b>Figure 1 &mdash; Every building block is already established; the join was never published.</b> Classification of all 320 assessment objectives in NIST SP 800-171A against a single test: does the system emit the evidence the objective requires? Identifiers follow SP 800-171A Rev 2 numbering; parameter values are the Department&rsquo;s April 2025 assignments. Method and row-level data: <b>archstonesecurity.com/research.html</b>. Archstone Security, dataset v8.8.</p>
+
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="false" aria-labelledby="dTitle" tabindex="-1">
+  <div class="top">
+    <div><div class="eye" id="dEye"></div><h2 id="dTitle"></h2></div>
+    <button class="xbtn" id="dClose">Close</button>
+  </div>
+  <div id="dStatus"></div>
+  <p class="blurb" id="dBlurb"></p>
+  <div id="dWatch"></div>
+  <div id="dRefs"></div>
+  <div id="dDeps"></div>
+</aside>
+
+<script>
+
+const NODEINFO = {
+ odp:{eye:'Department control plane · act one',title:'Parameter values',st:['st-pub','Published — April 2025'],
+   blurb:'Where the standard leaves a value open — a threshold, a frequency, a response time — the Department selected it and published the selection. Wherever a parameter is set, satisfaction becomes a <b>comparison</b> rather than a judgement. This is the prerequisite for everything downstream, and it is done.',
+   watch:'The parameter set was issued as a one-time act. There is no published revision process, cadence, or intake — which is why a correction today is nearly free and a correction after the values are contractually operative is not.'},
+ des:{eye:'Department control plane · act two',title:'Designation',st:['st-miss','Not published'],
+   blurb:'A published list stating which assessment objectives a machine-readable export may satisfy, and which it may only contribute evidence toward. Once published, a periodic export replaces assessment activity for the listed objectives, at a cadence no more frequent than each control already requires. It is a publication, not a system — the April 2025 parameter values went out as a memorandum.',
+   watch:'<b>The Department never needs to see how the export was produced.</b> It publishes the list; a supplier submits results stated against those objectives; the Department scores them against values it has already published. Translating a configuration setting into a per-objective result is internal to the producer and is not asked of the Department — which is why this requires no Departmental tooling and no technical programme.<br><br>Designation also does work it is not being asked to do: publishing <i>these objectives may be satisfied by a configuration export</i> is itself a statement of scope, and forecloses invented requirements on the same objectives permanently, at no cost.'},
+ cat:{eye:'Published referent',title:'NIST SP 800-171 / 171A',st:['st-pub','Published'],
+   blurb:'The security requirements and the 320 assessment objectives that define what must be true of a system handling CUI. This is the authority everything else in this diagram resolves against. It states <b>what</b> must be so; it does not state what evidence demonstrates it.'},
+ ncp:{eye:'Published referent',title:'National Checklist Program',st:['st-pub','Published'],
+   blurb:'Federally maintained hardening baselines expressed in SCAP, XCCDF and CCE — machine-consumable by construction. The Department already designates checklist content as the referent for configuration settings, and requires deviations from it to be identified, documented and approved. A conforming configuration therefore has a published definition, and a scan result has something to be scored against.',
+   watch:'<b>The Department has already made the designation move once.</b> Naming the National Checklist Program as the source of configuration settings is the same class of act as naming the objectives an export may satisfy — a published pointer to an external, machine-readable referent.'},
+ end:{eye:'Required state',title:'Endpoint',st:['st-req','Required · 03.04.07 +'],
+   blurb:'The standard requires nonessential programs, functions, ports, protocols and services to be restricted or disabled, over a baseline configuration held under configuration control with enforced settings. It does not require a scanner. The state itself is exposed by the operating system and its management tooling, so it can be read without adding anything to the environment.',
+   refs:[['03.04.07','Restrict, disable or prevent nonessential programs, functions, ports, protocols and services — 15 objectives, 8 fully reportable, all host-fed'],
+         ['03.04.02','Establish and enforce security configuration settings — the requirement whose parameter designates checklist content'],
+         ['03.04.01','Baseline configuration under configuration control'],
+         ['03.04.06','Least functionality'],
+         ['03.01.06','Use of non-privileged accounts for non-security functions'],
+         ['03.01.07','Prevention of privileged function execution by non-privileged users']],
+   watch:'Configuration is the cheapest evidence class to sustain: it does not change on its own, so the cost is a one-time hardening the standard already requires, after which the same export is produced on demand indefinitely. Rare drift is therefore <b>high-signal</b> drift.'},
+ ten:{eye:'Required state',title:'Enterprise',st:['st-req','Required · 03.05.01 +'],
+   blurb:'Identification and authentication of users, processes and devices, and the access and communications policy of the platform that holds CUI. Service-side configuration is queryable through the platform’s own management interfaces — the same interfaces the Federal government already uses to assess conformance in its own tenants.',
+   refs:[['03.05.01','Identify system users, processes acting on behalf of users, and devices'],
+         ['03.05.02','Authenticate the identities of users, processes and devices'],
+         ['03.05.03','Multifactor authentication'],
+         ['03.05.05','Identifier management'],
+         ['03.05.06','Identifier handling on status change'],
+         ['03.05.07','Password management — composition and complexity'],
+         ['03.05.08','Authenticator reuse'],
+         ['03.01.01','System account management']]},
+ vul:{eye:'Required state',title:'Vulnerability',st:['st-req','Required · 03.11.02 +'],
+   blurb:'Scanning and remediation is the one requirement where every element is already in place: the activity is required, the Department has published the frequency and the response times, the referent is external and public, and the output is natively structured and emitted by every scanner on the market.',
+   refs:[['03.11.02','Scan for vulnerabilities at least monthly, and when new vulnerabilities affecting the system are identified. Definitions of what is scanned for updated no more than 24 hours before a scan runs'],
+         ['03.11.03','Remediate vulnerabilities in accordance with risk assessments — the Department&rsquo;s response times run 30 / 90 / 180 days by risk level, <b>from the date of discovery</b>'],
+         ['03.14.01','Flaw remediation — a separate clock carrying the same 30 / 90 / 180 values, but running <b>from release of the update</b> rather than from discovery']],
+   watch:'<b>No objective count is shown here, deliberately.</b> Vulnerability findings and benchmark conformance currently share a single feed value in the classification, so these objectives are already carried inside the endpoint count. Splitting the feed vocabulary is a later increment; until it runs, a separate figure here would double-count.'},
+ log:{eye:'Required state',title:'Audit',st:['st-req','Required · 03.03.01 +'],
+   blurb:'Audit records must be created and retained to the extent needed for monitoring, analysis, investigation and reporting — and the standard separately requires the capability to reduce those records and generate reports on demand. So the query capability is required, not merely the records. The records exist and are queryable. What does not exist is a published statement of what they must show for an objective to be satisfied.',
+   refs:[['03.03.01','Create and retain audit records'],
+         ['03.03.06','Audit record reduction and on-demand report generation — the query capability is itself a requirement'],
+         ['03.03.08','Protection of audit information and tooling']],
+   watch:'<b>The exclusion here is output non-comparability, not absent capability.</b> Automation is possible and is routinely built, but it is customized per platform, and two suppliers&rsquo; outputs cannot be scored against each other or against anything published. Thirty-one objectives are reachable by log query and by nothing else. Exactly one of them reaches full automation; eighteen are partial and twelve emit nothing usable. The most operationally expensive collector in the environment yields a single fully automated objective.'},
+ oscal:{eye:'Expression layer',title:'OSCAL',st:['st-pub','Established \u00b7 federally funded'],
+   blurb:'The Open Security Controls Assessment Language \u2014 the machine-readable schema NIST built precisely so control catalogues, baselines and assessment results could move between tools without regard to vendor. The Department already funded it. It is drawn here as a layer rather than a step because it is not a stage in the flow: the referents, the parameter values, the observed state and the submission are all expressible in the same schema.',
+   watch:'<b>Portability is the property that matters, and it runs in three directions.</b> Across readers: one artifact is read by the Department, a prime, an assessor and the supplier\u2019s own tooling, instead of three re-descriptions of the same system in three formats. Across agencies: a supplier serving the Department and a civilian agency under the FAR CUI rule emits once. And across vendors: any product emitting valid OSCAL qualifies, so the specification advantages no vendor and locks in no supplier.<br><br><b>It also enforces the condition the organization-defined referents depend on.</b> Parameter assignments live in a profile; observed state lives in assessment results. Because those are separate structures, a declared value cannot be silently inferred from the configuration it is meant to test \u2014 which is the difference between a validation and a mirror.<br><br>Brilliant at the Basics asks the DIB to prioritise open standards and avoid proprietary lock-in. Compliance evidence is the one domain in which a supplier currently cannot follow that advice \u2014 and the schema that would fix it is already federally maintained.'},
+ auto:{eye:'Validation method',title:'Automated validation',st:['st-out','44.7% of 320'],
+   blurb:'One hundred and forty-three assessment objectives where the emitted state reaches the objective’s full parameter. Satisfaction is a comparison against a referent, not a judgement — so no assessor participation is required, and none is proposed. Carried in a signed OSCAL evidence artifact: inventory, baseline, per-objective result, deviations, boundary and provenance.<br><br><b>The referent is not always the same kind of thing.</b><br>• <b>89</b> resolve against the National Checklist Program — hardening baselines the Federal government publishes.<br>• <b>11</b> resolve against a Department parameter value from the April 2025 memorandum.<br>• <b>43</b> resolve against a value the standard obliges the <i>organization</i> to define, where SP 800-171A scores whether that definition exists.',
+   watch:'<b>The split between the referents is the ask.</b> One hundred objectives — 31.2% of the standard — are scored against something the Federal government publishes, so two suppliers’ results mean the same thing and can be read against each other. Forty-three — 13.4% — are scored against a value the organization declares. Each validates correctly; none is comparable. Publishing a value for those moves them across at no cost to any supplier, and preventing divergent implementation is the reason the Department gave for publishing parameter values in the first place.<br><br><b>One condition on the artifact.</b> Where the referent is organization-defined, the export must carry the declaration and the observation as two separate assertions. A value inferred from the configuration it is meant to test returns MET every time and is not a validation. OSCAL already separates the two — parameter assignments live in a profile, observed state in assessment results — so the structure exists and only needs to be specified.<br><br><b>Results can be submitted on a recurring basis</b>, at the cadence each control already requires and no more often, giving the Department a continuously current view of security state in place of a snapshot up to three years old. Cadence follows decay rate, which the standard already encodes: unlike a software bill of materials, which inventories composition and is stable, this inventories <b>state</b>, which decays.'},
+ mixed:{eye:'Validation method',title:'Combination',st:['st-mix','25.0% of 320'],
+   blurb:'Eighty objectives where emission exists but does not reach the objective’s full parameter, and where no declared value closes the gap. The blocking reason differs by row: the population is asserted rather than emitted, the referent addresses an adjacent decision, the objective turns partly on human conduct, or the mechanism does not cover the whole scope. The export reduces what has to be established; assessor judgement completes it.',
+   watch:'<b>This band is the residue after declared referents are taken into account, not before.</b> Objectives where the standard obliges the organization to define a value or identify a population now sit in automated validation, because the definition is a referent the standard itself designates. What remains here cannot be closed by anyone publishing anything — four rows were held back from that move specifically because their own scope is asserted rather than emitted, and that limit was applied rather than assumed away.<br><br>This band still needs its own acceptance rule. If the designation states only what an export <i>satisfies</i>, nothing tells an assessor what to do with an export that is partly responsive — which recreates the interpretive vacuum the submission diagnoses.'},
+ man:{eye:'Validation method',title:'Manual validation',st:['st-man','30.3% of 320'],
+   blurb:'Ninety-seven assessment objectives that emit nothing at any cost. Roughly half are <b>organization-defined process objectives</b> — what the supplier has defined, identified, documented, established or approved, which is customer-specific by construction and has no system-state equivalent. The remainder are conduct, judgement and physical acts. Two families are almost entirely here: Incident Response (93% of the family) and Awareness &amp; Training (89%). Media Protection is 67%, Audit &amp; Accountability 48%.',
+   watch:'<b>Nothing connects to this band from the contractor environment, and that is the point.</b> This is not residue left over after automation; it is a defined and durable share of the assessment surface, and it is where assessor judgement is irreplaceable. Note that Physical Protection is <i>not</i> predominantly here — only 44% of that family, because access control systems emit — and Personnel Security contributes just two objectives.'},
+ dow:{eye:'Reader',title:'The Department',st:['st-out','Consumer'],
+   blurb:'Scores the artifact against its own published parameter values, without sending anyone and without asking the supplier to re-describe what the system already reports. Machine evidence routes to Departmental intake; the contracting officer receives a derived status, not the feed.'},
+ pri:{eye:'Reader',title:'The prime contractor',st:['st-out','Consumer'],
+   blurb:'Verifies flowdown against the same artifact the Department reads, rather than by re-asking each subcontractor in its own format. One artifact, read by three parties, replaces three separate re-descriptions of the same system.'}
+};
+
+const RELTXT = {
+ 'cat>end':['Defines','What a conforming endpoint configuration must be'],
+ 'cat>ten':['Defines','What conforming identity and tenant configuration must be'],
+ 'cat>vul':['Defines','That the system is scanned and its vulnerabilities remediated'],
+ 'cat>log':['Defines','What audit records must capture, retain and be able to report'],
+ 'odp>end':['Parameterises','Supplies the threshold and frequency values the configuration is measured against'],
+ 'odp>ten':['Parameterises','Supplies the values tenant and identity policy settings are measured against'],
+ 'odp>vul':['Parameterises','Supplies the scan frequency, definition currency and remediation response times'],
+ 'odp>des':['Prerequisite for','Without published values there is nothing for an export to be scored against. This box is filled'],
+ 'ncp>end':['Baselines','Provides the machine-consumable hardening definition the endpoint is scanned against'],
+ 'end>auto':['Emits','Configuration state scored against checklist content without an assessor'],
+ 'ten>auto':['Emits','Identity and tenant state scored against a referent without an assessor'],
+ 'vul>auto':['Emits','Findings with severity and age, scored against the published response times'],
+ 'end>mixed':['Contributes','Configuration state that narrows what an assessor must establish'],
+ 'ten>mixed':['Contributes','Tenant state that narrows what an assessor must establish'],
+ 'log>auto':['Not yet designated','Records are readable and the query capability is required, but nothing published states what they must show'],
+ 'des>auto':['Would close it','Permits the artifact to satisfy the objective outright'],
+ 'des>mixed':['Would close it','Establishes that a partly responsive artifact counts as contributing evidence'],
+ 'auto>dow':['Read by','Scored against the Department’s own published values'],
+ 'auto>pri':['Read by','Used to verify flowdown without re-asking the supplier'],
+ 'mixed>dow':['Informs','Reduces what the Department must ask an assessor to establish']
+};
+const RELBACK = {
+ 'Defines':'Defined by','Parameterises':'Parameterised by','Baselines':'Baselined by',
+ 'Not yet designated':'Not yet designated','Would close it':'Closed by','Read by':'Reads',
+ 'Contributes':'Fed by','Informs':'Informed by','Emits':'Emitted by','Produces':'Produced by',
+ 'Prerequisite for':'Depends on'
+};
+const EDGECOLOR = {ok:'#0ca30c', broken:'#b5361f', fix:'#c07a00', read:'#2a78d6'};
+
+/* nodes living in the control-plane band route differently */
+const PLANE = new Set(['odp','des']);
+
+const EDGES = [
+  {from:'odp', to:'des', t:'ok'},
+  {from:'cat', to:'end', t:'ok'}, {from:'cat', to:'ten', t:'ok'},
+  {from:'cat', to:'vul', t:'ok'}, {from:'cat', to:'log', t:'ok'},
+  {from:'ncp', to:'end', t:'ok'},
+  {from:'odp', to:'end', t:'ok'}, {from:'odp', to:'ten', t:'ok'}, {from:'odp', to:'vul', t:'ok'},
+  {from:'end', to:'auto', t:'ok'}, {from:'ten', to:'auto', t:'ok'}, {from:'vul', to:'auto', t:'ok'},
+  {from:'end', to:'mixed', t:'ok'}, {from:'ten', to:'mixed', t:'ok'},
+  {from:'log', to:'auto', t:'broken'},
+  {from:'des', to:'auto', t:'fix'}, {from:'des', to:'mixed', t:'fix'},
+  {from:'auto', to:'dow', t:'read'}, {from:'auto', to:'pri', t:'read'},
+  {from:'mixed', to:'dow', t:'read'}
+];
+const STYLE = {
+  ok:    {stroke:'#0ca30c', w:2.2, dash:null,  op:.55},
+  broken:{stroke:'#b5361f', w:2.4, dash:'9 6', op:.9},
+  fix:   {stroke:'#c07a00', w:2.2, dash:'3 4', op:.85},
+  read:  {stroke:'#2a78d6', w:2.0, dash:null,  op:.6}
+};
+
+const stage = document.getElementById('stage');
+const diagram = document.getElementById('diagram');
+const svg = document.getElementById('edges');
+const NS = 'http://www.w3.org/2000/svg';
+let selected = null;
+
+function box(id){
+  const el = document.getElementById('n-'+id);
+  const r = el.getBoundingClientRect(), d = stage.getBoundingClientRect();
+  return {l:r.left-d.left, r:r.right-d.left, t:r.top-d.top, b:r.bottom-d.top,
+          cx:r.left-d.left+r.width/2, cy:r.top-d.top+r.height/2};
+}
+function mk(tag, attrs){
+  const e = document.createElementNS(NS, tag);
+  for(const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+/* orthogonal path with rounded corners, from a list of points */
+function ortho(pts, r){
+  let d = `M ${pts[0][0]} ${pts[0][1]}`;
+  for(let i=1;i<pts.length-1;i++){
+    const [px,py]=pts[i-1], [cx,cy]=pts[i], [nx,ny]=pts[i+1];
+    const d1=Math.hypot(cx-px,cy-py), d2=Math.hypot(nx-cx,ny-cy);
+    const rr=Math.max(0,Math.min(r,d1/2,d2/2));
+    const ax=cx-(cx-px)/(d1||1)*rr, ay=cy-(cy-py)/(d1||1)*rr;
+    const bx=cx+(nx-cx)/(d2||1)*rr, by=cy+(ny-cy)/(d2||1)*rr;
+    d += ` L ${ax} ${ay} Q ${cx} ${cy} ${bx} ${by}`;
+  }
+  const last=pts[pts.length-1];
+  d += ` L ${last[0]} ${last[1]}`;
+  return d;
+}
+
+function drawEdges(){
+  const d = stage.getBoundingClientRect();
+  if(d.width < 1) return;
+  svg.setAttribute('viewBox', `0 0 ${d.width} ${d.height}`);
+  svg.innerHTML = '<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" '
+    + 'markerWidth="6" markerHeight="6" orient="auto-start-reverse">'
+    + '<path d="M0,1 L9,5 L0,9 z" fill="#0ca30c"/></marker></defs>';
+  let planeIdx = 0;
+  let refBottom = 0;
+  document.querySelectorAll('#n-cat, #n-ncp').forEach(n=>{
+    refBottom = Math.max(refBottom, n.getBoundingClientRect().bottom - d.top);
+  });
+  /* the broken edge runs in a clear channel below the lowest node, so nodes never occlude it */
+  let lowest = 0;
+  diagram.querySelectorAll('.node').forEach(n=>{
+    lowest = Math.max(lowest, n.getBoundingClientRect().bottom - d.top);
+  });
+  const CH = lowest + 24;
+
+  EDGES.forEach(e=>{
+    const a = box(e.from), b = box(e.to), s = STYLE[e.t];
+    let dpath;
+
+    if(PLANE.has(e.from) && PLANE.has(e.to)){
+      dpath = `M ${a.cx} ${a.b + 3} L ${a.cx} ${b.t - 7}`;
+    } else if(e.from === 'odp'){
+      const lane = refBottom + 22 + (planeIdx % 3) * 8; planeIdx++;
+      dpath = ortho([[a.r + 3, a.cy], [a.r + 15, a.cy], [a.r + 15, lane],
+                     [b.l - 22, lane], [b.l - 22, b.cy], [b.l - 4, b.cy]], 10);
+    } else if(e.from === 'des'){
+      /* designation is not in the pipeline — it climbs the gutter and reaches over it */
+      const lane = 14 + (planeIdx % 2) * 10; planeIdx++;
+      const rise = a.r + 16;
+      dpath = ortho([[a.r + 3, a.cy], [rise, a.cy], [rise, lane], [b.l - 18, lane],
+                     [b.l - 18, b.cy], [b.l - 4, b.cy]], 10);
+    } else if(e.t === 'broken'){
+      const ch = CH;
+      const x1 = a.r + 4, x2 = b.l - 4;
+      dpath = `M ${x1} ${a.cy} C ${x1+34} ${a.cy}, ${x1+34} ${ch}, ${x1+72} ${ch}`
+            + ` L ${x2-72} ${ch}`
+            + ` C ${x2-34} ${ch}, ${x2-34} ${b.cy}, ${x2} ${b.cy}`;
+    } else {
+      const x1 = a.r + 4, x2 = b.l - 4, midX = (x1+x2)/2;
+      dpath = `M ${x1} ${a.cy} C ${midX} ${a.cy}, ${midX} ${b.cy}, ${x2} ${b.cy}`;
+    }
+
+    const p = mk('path', {d:dpath, fill:'none', stroke:s.stroke, 'stroke-width':s.w, opacity:s.op});
+    if(s.dash) p.setAttribute('stroke-dasharray', s.dash);
+    if(PLANE.has(e.from) && PLANE.has(e.to)){ p.setAttribute('marker-end','url(#ah)'); p.setAttribute('opacity','.9'); }
+    p.dataset.from = e.from; p.dataset.to = e.to;
+    p.classList.add('edge');
+    svg.appendChild(p);
+
+    if(e.t === 'broken'){
+      const x1 = a.r + 4, x2 = b.l - 4;
+      const mx = (x1+x2)/2, my = CH;
+      const gap = mk('rect', {x:mx-78, y:my-13, width:156, height:26});
+      gap.setAttribute('class','edgegap');
+      gap.dataset.from = e.from; gap.dataset.to = e.to; gap.classList.add('edge');
+      svg.appendChild(gap);
+      const g = mk('path', {
+        d:`M ${mx-19} ${my+9} L ${mx-6} ${my-11} L ${mx+6} ${my+11} L ${mx+19} ${my-9}`,
+        stroke:'#b5361f', 'stroke-width':2.6, fill:'none', 'stroke-linecap':'round'
+      });
+      g.dataset.from = e.from; g.dataset.to = e.to; g.classList.add('edge');
+      svg.appendChild(g);
+      const t = mk('text', {x:mx, y:my+32, 'text-anchor':'middle', fill:'#b5361f',
+        'font-size':'14', 'font-weight':'800', 'font-family':'system-ui,sans-serif',
+        'letter-spacing':'.08em'});
+      t.textContent = 'NOT YET DESIGNATED';
+      t.dataset.from = e.from; t.dataset.to = e.to; t.classList.add('edge');
+      svg.appendChild(t);
+    }
+  });
+  const ob = document.getElementById('oscal').getBoundingClientRect();
+  const otop = ob.top - d.top;
+  ['#n-odp','#n-end','#n-auto','#n-dow'].forEach(sel=>{
+    const el = document.querySelector(sel); if(!el) return;
+    const r = el.getBoundingClientRect();
+    const x = r.left - d.left + r.width/2;
+    const col = el.closest('.col');
+    const from = (col ? col.getBoundingClientRect().bottom - d.top : r.bottom - d.top) + 7;
+    if(otop - from < 8) return;
+    const q = mk('path', {d:`M ${x} ${from} L ${x} ${otop - 4}`, fill:'none',
+      stroke:'#6A4C93', 'stroke-width':1.8, 'stroke-dasharray':'2 5', opacity:.5});
+    q.dataset.from='oscal'; q.dataset.to='oscal'; q.classList.add('edge');
+    svg.appendChild(q);
+  });
+  if(selected) highlight(selected);
+}
+function related(id){
+  const s = new Set([id]);
+  EDGES.forEach(e=>{ if(e.from===id) s.add(e.to); if(e.to===id) s.add(e.from); });
+  return s;
+}
+function highlight(id){
+  const rel = related(id);
+  document.querySelectorAll('.node').forEach(n=>{
+    const nid = n.id.slice(2);
+    n.classList.toggle('dim', !rel.has(nid));
+    n.classList.toggle('sel', nid === id);
+  });
+  svg.querySelectorAll('.edge').forEach(p=>{
+    const on = p.dataset.from === id || p.dataset.to === id;
+    p.style.opacity = on ? 1 : .10;
+  });
+}
+function clearSel(){
+  selected = null;
+  document.querySelectorAll('.node').forEach(n=>n.classList.remove('dim','sel'));
+  svg.querySelectorAll('.edge').forEach(p=>{ p.style.opacity = ''; });
+}
+
+const drawer=document.getElementById('drawer'), scrim=document.getElementById('scrim');
+function relFor(e){ return RELTXT[e.from+'>'+e.to] || ['Connected','']; }
+function openDrawer(id){
+  const n = NODEINFO[id]; if(!n) return;
+  document.getElementById('dEye').textContent = n.eye;
+  document.getElementById('dTitle').textContent = n.title;
+  document.getElementById('dStatus').innerHTML = `<span class="status ${n.st[0]}">${n.st[1]}</span>`;
+  document.getElementById('dBlurb').innerHTML = n.blurb;
+  document.getElementById('dWatch').innerHTML = n.watch ? `<div class="watch">${n.watch}</div>` : '';
+
+  document.getElementById('dRefs').innerHTML = n.refs
+    ? '<div class="dhead">Requirements read here</div><div class="reflist">'
+      + n.refs.map(r=>`<div><b>${r[0]}</b> &mdash; ${r[1]}</div>`).join('') + '</div>'
+    : '';
+
+  const out = EDGES.filter(e=>e.from===id), inn = EDGES.filter(e=>e.to===id);
+  let html = '';
+  const row = (otherId, label, txt, type) => `
+    <button class="dep" data-goto="${otherId}">
+      <span class="rel"><i style="background:${EDGECOLOR[type]}"></i>${label}</span>
+      <span class="who">${NODEINFO[otherId].title}</span>
+      <span class="dtxt">${txt}</span>
+    </button>`;
+  if(out.length){
+    html += '<div class="dhead">This feeds</div>';
+    out.forEach(e=>{ const [l,t]=relFor(e); html += row(e.to, l, t, e.t); });
+  }
+  if(inn.length){
+    html += '<div class="dhead">This depends on</div>';
+    inn.forEach(e=>{ const [l,t]=relFor(e); html += row(e.from, RELBACK[l]||l, t, e.t); });
+  }
+  document.getElementById('dDeps').innerHTML = html;
+  document.querySelectorAll('.dep').forEach(dp=>dp.addEventListener('click',()=>{
+    const g=dp.dataset.goto; selected=g; highlight(g); openDrawer(g); drawer.scrollTop=0;
+  }));
+  drawer.classList.add('open'); scrim.classList.add('on');
+}
+function closeDrawer(){ drawer.classList.remove('open'); scrim.classList.remove('on'); clearSel(); }
+document.getElementById('dClose').addEventListener('click', closeDrawer);
+scrim.addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDrawer(); });
+
+document.getElementById('oscal').addEventListener('click', ()=>{
+  if(selected === 'oscal'){ closeDrawer(); } else { selected = 'oscal'; openDrawer('oscal'); }
+});
+document.querySelectorAll('.node').forEach(n=>{
+  n.addEventListener('click', ()=>{
+    const id = n.id.slice(2);
+    if(selected === id){ closeDrawer(); } else { selected = id; highlight(id); openDrawer(id); }
+  });
+});
+document.getElementById('reset').addEventListener('click', closeDrawer);
+
+drawEdges();
+window.addEventListener('resize', ()=>requestAnimationFrame(drawEdges));
+if(window.ResizeObserver) new ResizeObserver(()=>requestAnimationFrame(drawEdges)).observe(stage);
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>requestAnimationFrame(drawEdges));
+/* the print layout reflows the grid, so the measured edges must be recomputed for it */
+window.addEventListener('beforeprint', drawEdges);
+window.addEventListener('afterprint', ()=>requestAnimationFrame(drawEdges));
+if(window.matchMedia) try{ window.matchMedia('print').addEventListener('change', ()=>drawEdges()); }catch(_){}
+</script>
+
+</body>
+</html>
