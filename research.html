@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Research — Archstone Security</title>
+<meta name="description" content="Archstone Security research: machine-verifiable compliance against NIST SP 800-171A Rev 2. Full row-level classification of all 320 assessment objectives, published with reasoning.">
+<link rel="canonical" href="https://archstonesecurity.com/research.html">
 <style>
 :root{
   --page:#eef0ec; --surface:#fff; --ink:#0b0b0b; --ink2:#4c4b48; --muted:#8a8880;
@@ -86,90 +88,98 @@ footer a{color:var(--ink2)}
     <span><b>Method</b> single reference architecture, n=1</span>
   </div>
 
-  <div id="sections"></div>
+<!-- ============================================================
+     TO ADD AN ARTIFACT: copy one <a class="card"> block.
+     Kind classes: k-document (amber) · k-figure (green)
+                   k-interactive (blue) · k-data (indigo)
+     No href yet? use <div class="card soon"> with no arrow span.
+     ============================================================ -->
+
+  <h2>The submission</h2>
+  <p class="secnote">Response to the Department of War RFI on reforming CMMC, and the material that supports it.</p>
+  <div class="grid">
+
+    <!-- ⚠ CONFIRM FILENAME before deploy — this is the only guessed value on the page -->
+    <a class="card" href="cmmc-rfi-response-2026-08.pdf">
+      <span class="arrow" aria-hidden="true">↗</span>
+      <span class="kind k-document">Document</span>
+      <h3>Reforming CMMC — RFI response</h3>
+      <p>What the Federal government has already published, what contractor systems already report, and the one statement that has never been issued.</p>
+      <div class="foot"><span>August 2026</span><span>PDF</span></div>
+    </a>
+
+    <a class="card" href="rfi-figure.html">
+      <span class="arrow" aria-hidden="true">↗</span>
+      <span class="kind k-figure">Figure</span>
+      <h3>Figure 1 — Every building block is already established</h3>
+      <p>The published referents, the required state, the missing designation, and the three validation bands on one page.</p>
+      <div class="foot"><span>Static</span><span>9 × 6.5 in</span></div>
+    </a>
+
+  </div>
+
+  <h2>Exhibits</h2>
+  <p class="secnote">Interactive versions of the analysis. Each is a single self-contained file with the data embedded — nothing is fetched, and nothing is tracked.</p>
+  <div class="grid">
+
+    <a class="card" href="cmmc-evidence-flow-v4.html">
+      <span class="arrow" aria-hidden="true">↗</span>
+      <span class="kind k-interactive">Interactive</span>
+      <h3>Evidence flow</h3>
+      <p>How a published referent becomes a scored result, and where the chain breaks. Select any component to trace its connections.</p>
+      <div class="foot"><span>Dataset v8.8</span></div>
+    </a>
+
+    <a class="card" href="collector-mechanism-exhibit-v8_8.html">
+      <span class="arrow" aria-hidden="true">↗</span>
+      <span class="kind k-interactive">Interactive</span>
+      <h3>Which mechanism reads which objective</h3>
+      <p>All 320 objectives against five collection mechanisms. Add one collector class at a time and watch what the standard gives back.</p>
+      <div class="foot"><span>Dataset v8.8</span><span>Sortable</span></div>
+    </a>
+
+  </div>
+
+  <h2>Data</h2>
+  <p class="secnote">The row-level classification. Every figure in every artifact above resolves to a row in here.</p>
+  <div class="grid">
+
+    <a class="card" href="rfi-figure-dataset-v8_8.csv">
+      <span class="arrow" aria-hidden="true">↗</span>
+      <span class="kind k-data">Dataset</span>
+      <h3>320-objective classification, v8.8</h3>
+      <p>Objective, family, disposition, referent class, collection mechanism, rationale, and the change note for every revision a row has been through.</p>
+      <div class="foot"><span>CSV</span><span>320 rows</span></div>
+    </a>
+
+    <a class="card" href="cmmc-collector-data-v8_8.xlsx">
+      <span class="arrow" aria-hidden="true">↗</span>
+      <span class="kind k-data">Dataset</span>
+      <h3>Summary tables</h3>
+      <p>Collector ladder, family breakdown, mechanism coverage and referent split, as a workbook.</p>
+      <div class="foot"><span>XLSX</span><span>5 sheets</span></div>
+    </a>
+
+    <div class="card soon">
+      <span class="kind k-document">Method</span>
+      <h3>Classification method and change history</h3>
+      <p>The emission test, what separates a full call from a partial one, the scope-predicate rule, and what the study does not establish.</p>
+      <div class="foot"><span>In preparation</span></div>
+    </div>
+
+  </div>
 
   <p class="note"><b>What is published here, and what is not.</b> The classification is published in full &mdash; every objective, its disposition, the reasoning, and the change note for each revision it has been through. The implementation mapping is not: which specific configuration item, registry path or benchmark rule satisfies a given objective on a given platform is engineering work, it is platform-specific and perishable, and it is retained. That line is the same one the submission argues the Department should draw. Designation is a policy act performed once and inherited by everyone; mapping is not.</p>
 
   <p class="note"><b>On the numbers.</b> The classification is an existence proof, not a population estimate — it shows that a substantial share of the standard is machine-answerable using only components the standard already requires, in one environment. A different architecture would move rows. Where a figure changed between dataset versions, the change note in the row-level data says what changed and why.</p>
 
+  <p class="note"><b>Citing this work.</b> Every artifact carries its dataset version in the filename, so a citation to a specific file resolves to the content as it stood. This index is maintained and will change as material is added; cite the artifact, not the index.</p>
+
   <footer>
     <span>Archstone Security</span>
-    <span id="updated"></span>
-    <span><a href="mailto:">Corrections and disagreements welcome</a></span>
+    <span>Updated August 2026</span>
+    <span><a href="mailto:contact@archstonesecurity.com?subject=Research%20%E2%80%94%20correction">Corrections and disagreements welcome</a></span>
   </footer>
 </div>
-
-<script>
-/* ── Add an artifact by adding an object. `href` omitted renders as "in preparation". ── */
-const SECTIONS = [
-  {
-    title: 'The submission',
-    note: 'Response to the Department of War RFI on reforming CMMC, and the material that supports it.',
-    items: [
-      { kind:'document', label:'Document',
-        title:'Reforming CMMC — RFI response',
-        desc:'What the Federal government has already published, what contractor systems already report, and the one statement that has never been issued.',
-        meta:['August 2026','PDF'] },
-      { kind:'figure', label:'Figure',
-        title:'Figure 1 — Every building block is already established',
-        desc:'The published referents, the required state, the missing designation, and the three validation bands on one page.',
-        href:'rfi-figure.html', meta:['Static','9 × 6.5 in'] },
-    ]
-  },
-  {
-    title: 'Exhibits',
-    note: 'Interactive versions of the analysis. Each is a single self-contained file with the data embedded — nothing is fetched, and nothing is tracked.',
-    items: [
-      { kind:'interactive', label:'Interactive',
-        title:'Evidence flow',
-        desc:'How a published referent becomes a scored result, and where the chain breaks. Select any component to trace its connections.',
-        href:'cmmc-evidence-flow-v4.html', meta:['Dataset v8.8'] },
-      { kind:'interactive', label:'Interactive',
-        title:'Which mechanism reads which objective',
-        desc:'All 320 objectives against five collection mechanisms. Add one collector class at a time and watch what the standard gives back.',
-        href:'collector-mechanism-exhibit-v8_8.html', meta:['Dataset v8.8','Sortable'] },
-    ]
-  },
-  {
-    title: 'Data',
-    note: 'The row-level classification. Every figure in every artifact above resolves to a row in here.',
-    items: [
-      { kind:'data', label:'Dataset',
-        title:'320-objective classification, v8.8',
-        desc:'Objective, family, disposition, referent class, collection mechanism, rationale, and the change note for every revision a row has been through.',
-        href:'rfi-figure-dataset-v8_8.csv', meta:['CSV','320 rows'] },
-      { kind:'data', label:'Dataset',
-        title:'Summary tables',
-        desc:'Collector ladder, family breakdown, mechanism coverage and referent split, as a workbook.',
-        href:'cmmc-collector-data-v8_8.xlsx', meta:['XLSX','5 sheets'] },
-      { kind:'document', label:'Method',
-        title:'Classification method and change history',
-        desc:'The emission test, what separates a full call from a partial one, the scope-predicate rule, and what the study does not establish.',
-        meta:['In preparation'] },
-    ]
-  },
-];
-
-const ARROW = '<span class="arrow" aria-hidden="true">↗</span>';
-document.getElementById('sections').innerHTML = SECTIONS.map(s => `
-  <h2>${s.title}</h2>
-  ${s.note ? `<p class="secnote">${s.note}</p>` : ''}
-  <div class="grid">
-    ${s.items.map(i => {
-      const inner = `
-        <span class="kind k-${i.kind}">${i.label}</span>
-        <h3>${i.title}</h3>
-        <p>${i.desc}</p>
-        <div class="foot">${(i.meta||[]).map(m=>`<span>${m}</span>`).join('')}</div>`;
-      return i.href
-        ? `<a class="card" href="${i.href}">${ARROW}${inner}</a>`
-        : `<div class="card soon">${inner}</div>`;
-    }).join('')}
-  </div>`).join('');
-
-document.getElementById('updated').textContent =
-  'Updated ' + new Date(document.lastModified).toLocaleDateString('en-US',
-    {year:'numeric', month:'long'});
-</script>
 </body>
 </html>
