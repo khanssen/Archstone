@@ -2,8 +2,10 @@ node_modules/
 .DS_Store
 Thumbs.db
 old_index.html
-
 _trash_*
-
 Certificates/
 _trash_*/
+Cloudflare_*
+*.pem
+*.key
+.env

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where 320 assessment objectives actually get their evidence</title>
+<style>
+@font-face{font-family:'IBM Plex Sans';src:url('/font/IBMPlexSans-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'IBM Plex Sans';src:url('/font/IBMPlexSans-SemiBold.woff2') format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'IBM Plex Mono';src:url('/font/IBMPlexMono-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'IBM Plex Mono';src:url('/font/IBMPlexMono-Medium.woff2') format('woff2');font-weight:500;font-display:swap}
+:root{
+  --ink:#0A1315; --ink-2:#0F1D21; --line:#214248;
+  --paper:#EEF2F1; --muted:#8CA4A8;
+  --teal:#1F8C82; --teal-br:#4FE0CE; --amber:#D9A441; --gray:#5C7176;
+  --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--sans);line-height:1.6}
+.wrap{max-width:1220px;margin:0 auto;padding:clamp(1.5rem,4vw,3.5rem) clamp(1rem,4vw,2.5rem)}
+.eyebrow{font-family:var(--mono);font-size:.6875rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-br);display:flex;align-items:center;gap:.7rem;margin:0 0 1rem}
+.eyebrow::before{content:"";width:1.6rem;height:1px;background:currentColor}
+h1{font-size:clamp(1.7rem,1.2rem + 2vw,2.7rem);font-weight:600;letter-spacing:-.022em;line-height:1.14;margin:0;max-width:20ch}
+.lede{max-width:64ch;color:#B7C8CA;margin-top:1.25rem}
+
+.bar{margin-top:2.5rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;
+  font-family:var(--mono);font-size:.75rem}
+.crumb{color:var(--muted)}
+.btn{font:inherit;color:var(--paper);background:transparent;border:1px solid var(--line);
+  padding:.4rem .8rem;cursor:pointer;letter-spacing:.04em}
+.btn:hover{border-color:var(--teal-br);color:var(--teal-br)}
+.btn:focus-visible{outline:2px solid var(--teal-br);outline-offset:2px}
+.btn[hidden]{display:none}
+.hint{color:var(--muted)}
+
+.figure{margin-top:1rem;border:1px solid var(--line);background:linear-gradient(180deg,var(--ink-2),var(--ink));overflow-x:auto}
+svg{display:block;min-width:1040px;width:100%;height:auto}
+.s{fill:none;stroke-width:1.05;opacity:.34;transition:opacity .18s,stroke-width .18s}
+.fl{font-family:var(--sans);font-size:15.5px;fill:#C3D2D4;transition:fill .18s}
+.fn{font-family:var(--mono);font-size:12px;fill:var(--muted)}
+.nl{font-family:var(--sans);font-size:16px;font-weight:600;fill:var(--paper);dominant-baseline:middle}
+.nn{font-family:var(--mono);font-size:13px;fill:var(--muted)}
+.hd{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;fill:var(--teal-br)}
+.nd{transition:opacity .18s}
+.hit{fill:transparent;cursor:pointer}
+.hit:focus-visible{outline:2px solid var(--teal-br)}
+svg.dim .s{opacity:.05} svg.dim .s.on{opacity:.9;stroke-width:1.6}
+svg.dim .nd{opacity:.2} svg.dim .nd.on{opacity:1}
+svg.dim .fl{fill:#41585d} svg.dim .fl.on{fill:var(--paper)}
+svg.dim .nl{fill:#41585d} svg.dim .nl.on{fill:var(--paper)}
+.g-fam .fl{cursor:pointer}
+.g-fam .fl:hover{fill:var(--teal-br)}
+
+.cap{font-family:var(--mono);font-size:.75rem;color:var(--muted);padding:1rem 1.25rem;border-top:1px solid var(--line);line-height:1.7}
+.notes{margin-top:2.5rem;display:grid;gap:1.5rem}
+@media(min-width:800px){.notes{grid-template-columns:repeat(3,1fr)}}
+.note h3{font-size:1rem;margin:0 0 .4rem;font-weight:600}
+.note p{margin:0;font-size:.9rem;color:#A9BDC0}
+.big{font-family:var(--mono);font-size:2rem;color:var(--teal-br);display:block;line-height:1}
+.big.a{color:var(--amber)} .big.g{color:var(--muted)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Exhibit — evidence consolidation</p>
+  <h1>Where 320 assessment objectives actually get their evidence.</h1>
+  <p class="lede">Every objective in NIST SP 800-171A has to be evidenced by something. Grouped by what could produce that evidence, the objectives collapse into six machine-readable collection classes, one human class, and one bucket that no collector reaches. Select a family to see it on its own.</p>
+
+  <div class="bar">
+    <button class="btn" id="back" hidden>&larr; All families</button>
+    <span class="crumb" id="crumb">All families &middot; 322 strands</span>
+    <span class="hint" id="hint">Click a family to isolate it</span>
+  </div>
+
+  <div class="figure">
+    <svg id="sankey" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Assessment objectives grouped by evidence collection class"></svg>
+    <p class="cap">320 assessment objectives, 322 attributions — two objectives carry more than one designated primary and appear as more than one strand. Attributions derived from one reference architecture; in a different estate they must be re-derived, because the enforcement point for an objective depends on what is actually deployed.</p>
+  </div>
+
+  <div class="notes">
+    <div class="note"><span class="big a">85</span><h3>The largest single class is a person</h3><p>More objectives land in human assessment than in any automated collection class. Any tool claiming full automated coverage of 800-171 is either counting differently or overstating.</p></div>
+    <div class="note"><span class="big">208</span><h3>Reachable by machine</h3><p>Spread across six classes. Host configuration read is the largest at 78, followed by tenant API read at 57. No single feed comes close to majority coverage.</p></div>
+    <div class="note"><span class="big g">29</span><h3>No mechanism assigned</h3><p>Not policy objectives — technical ones with no collector designated. These are an engineering backlog, not a customer finding, and they are shown rather than dropped from the denominator.</p></div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---- data: family -> collection class -> strand count -------------------
+   Derived from the v1 figure. One strand per designated primary attribution.
+   Two objectives carry dual primaries, so strands (322) exceed objectives (320). */
+var DATA = {
+  "Access Control":                  {tenant:26, host:14, manual:13, none:12, cloud:4, log:1},
+  "Configuration Management":        {host:21, telem:11, manual:6, tenant:3, none:3},
+  "System & Comms Protection":       {host:11, cloud:9, none:8, manual:6, tenant:6, log:1},
+  "Audit & Accountability":          {log:14, host:7, telem:6, manual:2},
+  "Identification & Authentication": {tenant:15, host:10},
+  "System & Info Integrity":         {vuln:7, host:4, tenant:3, manual:2, none:2, log:1, telem:1},
+  "Media Protection":                {manual:8, host:4, cloud:3, tenant:2},
+  "Physical Protection":             {manual:16},
+  "Incident Response":               {manual:8, cloud:3, log:2, host:1},
+  "Security Assessment":             {manual:4, none:4, host:3, telem:2, vuln:1},
+  "Maintenance":                     {manual:7, tenant:2, host:1},
+  "Risk Assessment":                 {vuln:7, host:2},
+  "Awareness & Training":            {manual:9},
+  "Personnel Security":              {manual:4}
+};
+
+var CLASS_ORDER = ["host","tenant","telem","log","cloud","vuln","manual","none"];
+var CLASS_LABEL = {
+  host:"Host configuration read", tenant:"Tenant API read", telem:"Host telemetry",
+  log:"Log query", cloud:"Cloud infrastructure API", vuln:"Vulnerability scan",
+  manual:"Human assessment", none:"No mechanism assigned"
+};
+var PATH_OF = {
+  host:"auto", tenant:"auto", telem:"auto", log:"auto", cloud:"auto", vuln:"auto",
+  manual:"human", none:"unresolved"
+};
+var PATH_ORDER = ["auto","human","unresolved"];
+var PATH_LABEL = {auto:"Automated evidence generation", human:"Authored by a person", unresolved:"Unresolved — no mechanism"};
+var COLOR = {auto:"var(--teal-br)", human:"var(--amber)", unresolved:"var(--gray)"};
+
+var FAM_ORDER = Object.keys(DATA);
+var SHORT = {"Configuration Management":"Configuration Mgmt","Identification & Authentication":"Identification & Auth"};
+
+var W = 1520, FAM_X = 330, CLS_X = 790, PTH_X = 1160, NW = 12;
+var TOP = 72, BOT = 34, GAP = 11, TARGET = 880, PITCH_MIN = 2.4, PITCH_MAX = 15;
+
+var svg = document.getElementById("sankey");
+var back = document.getElementById("back");
+var crumb = document.getElementById("crumb");
+var hint = document.getElementById("hint");
+var current = null;
+
+function el(name, attrs, text){
+  var n = document.createElementNS("http://www.w3.org/2000/svg", name);
+  for (var k in attrs) n.setAttribute(k, attrs[k]);
+  if (text != null) n.textContent = text;
+  return n;
+}
+
+function build(famFilter){
+  var fams = famFilter ? [famFilter] : FAM_ORDER;
+
+  /* one record per strand */
+  var items = [];
+  fams.forEach(function(f){
+    CLASS_ORDER.forEach(function(c){
+      var n = DATA[f][c] || 0;
+      for (var i = 0; i < n; i++) items.push({f:f, c:c, p:PATH_OF[c]});
+    });
+  });
+  var N = items.length;
+
+  var famCounts = {}, clsCounts = {}, pthCounts = {};
+  items.forEach(function(it){
+    famCounts[it.f] = (famCounts[it.f]||0)+1;
+    clsCounts[it.c] = (clsCounts[it.c]||0)+1;
+    pthCounts[it.p] = (pthCounts[it.p]||0)+1;
+  });
+  var famKeys = fams.filter(function(f){return famCounts[f];});
+  var clsKeys = CLASS_ORDER.filter(function(c){return clsCounts[c];});
+  var pthKeys = PATH_ORDER.filter(function(p){return pthCounts[p];});
+
+  var maxGap = Math.max(famKeys.length, clsKeys.length, pthKeys.length) - 1;
+  var pitch = Math.max(PITCH_MIN, Math.min(PITCH_MAX, (TARGET - maxGap*GAP) / N));
+  var H = Math.round(N*pitch + maxGap*GAP + TOP + BOT);
+
+  /* stack node bands and hand out one slot per strand */
+  function bands(keys, counts){
+    var out = {}, y = TOP;
+    keys.forEach(function(k){
+      out[k] = {top:y, h:counts[k]*pitch, cursor:y};
+      y += counts[k]*pitch + GAP;
+    });
+    return out;
+  }
+  var fb = bands(famKeys, famCounts),
+      cb = bands(clsKeys, clsCounts),
+      pb = bands(pthKeys, pthCounts);
+
+  /* family order in each downstream band keeps ribbons from crossing needlessly */
+  var byCls = items.slice().sort(function(a,b){
+    return CLASS_ORDER.indexOf(a.c)-CLASS_ORDER.indexOf(b.c) || famKeys.indexOf(a.f)-famKeys.indexOf(b.f);
+  });
+  var byPth = items.slice().sort(function(a,b){
+    return PATH_ORDER.indexOf(a.p)-PATH_ORDER.indexOf(b.p) || CLASS_ORDER.indexOf(a.c)-CLASS_ORDER.indexOf(b.c);
+  });
+
+  items.forEach(function(it){ it.y1 = fb[it.f].cursor + pitch/2; fb[it.f].cursor += pitch; });
+  byCls.forEach(function(it){ it.y2 = cb[it.c].cursor + pitch/2; cb[it.c].cursor += pitch; });
+  byPth.forEach(function(it){ it.y3 = pb[it.p].cursor + pitch/2; pb[it.p].cursor += pitch; });
+
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  svg.classList.remove("dim");
+
+  function curve(x1,y1,x2,y2){
+    var dx = (x2-x1)*0.45;
+    return "M"+x1+","+y1.toFixed(2)+" C"+(x1+dx)+","+y1.toFixed(2)+" "+(x2-dx)+","+y2.toFixed(2)+" "+x2+","+y2.toFixed(2);
+  }
+
+  var gS = el("g");
+  items.forEach(function(it){
+    gS.appendChild(el("path", {"class":"s","data-f":it.f,"data-c":it.c,
+      d: curve(FAM_X+NW, it.y1, CLS_X, it.y2), stroke: COLOR[it.p]}));
+    gS.appendChild(el("path", {"class":"s","data-f":it.f,"data-c":it.c,
+      d: curve(CLS_X+NW, it.y2, PTH_X, it.y3), stroke: COLOR[it.p]}));
+  });
+  svg.appendChild(gS);
+
+  /* family column */
+  var gF = el("g", {"class":"g-fam"});
+  famKeys.forEach(function(f){
+    var b = fb[f], mid = b.top + b.h/2;
+    gF.appendChild(el("rect", {"class":"nd","data-f":f, x:FAM_X, y:b.top.toFixed(1),
+      width:NW, height:Math.max(1,b.h).toFixed(1), fill:"var(--line)"}));
+    var t = el("text", {"class":"fl","data-f":f, x:FAM_X-20, y:mid, "text-anchor":"end",
+      "dominant-baseline":"middle"}, SHORT[f] || f);
+    gF.appendChild(t);
+    gF.appendChild(el("text", {"class":"fn", x:FAM_X-20, y:mid+19, "text-anchor":"end"}, String(famCounts[f])));
+    if (!famFilter){
+      var hit = el("rect", {"class":"hit","data-drill":f, x:0, y:b.top.toFixed(1),
+        width:FAM_X, height:Math.max(12,b.h).toFixed(1), tabindex:"0", role:"button"});
+      hit.appendChild(el("title", {}, "Show " + f + " on its own"));
+      gF.appendChild(hit);
+    }
+  });
+  svg.appendChild(gF);
+
+  /* class column */
+  var gC = el("g");
+  clsKeys.forEach(function(c){
+    var b = cb[c], mid = b.top + b.h/2;
+    gC.appendChild(el("rect", {"class":"nd","data-c":c, x:CLS_X, y:b.top.toFixed(1),
+      width:NW, height:Math.max(1,b.h).toFixed(1), fill:COLOR[PATH_OF[c]]}));
+    gC.appendChild(el("text", {"class":"nl","data-c":c, x:CLS_X+22, y:mid}, CLASS_LABEL[c]));
+    gC.appendChild(el("text", {"class":"nn", x:CLS_X+22, y:mid+20}, String(clsCounts[c])));
+  });
+  svg.appendChild(gC);
+
+  /* evidence path column */
+  var gP = el("g");
+  pthKeys.forEach(function(p){
+    var b = pb[p], mid = b.top + b.h/2;
+    gP.appendChild(el("rect", {"class":"nd", x:PTH_X, y:b.top.toFixed(1),
+      width:NW, height:Math.max(1,b.h).toFixed(1), fill:COLOR[p]}));
+    gP.appendChild(el("text", {"class":"nl", x:PTH_X+22, y:mid}, PATH_LABEL[p]));
+    gP.appendChild(el("text", {"class":"nn", x:PTH_X+22, y:mid+20}, String(pthCounts[p])));
+  });
+  svg.appendChild(gP);
+
+  svg.appendChild(el("text", {"class":"hd", x:FAM_X-100, y:38, "text-anchor":"end"},
+    famFilter ? "Family" : "320 assessment objectives"));
+  svg.appendChild(el("text", {"class":"hd", x:CLS_X, y:38}, "Collection class"));
+  svg.appendChild(el("text", {"class":"hd", x:PTH_X, y:38}, "Evidence path"));
+
+  crumb.textContent = famFilter
+    ? famFilter + " · " + N + " attribution" + (N===1?"":"s")
+    : "320 objectives · " + N + " attributions";
+  back.hidden = !famFilter;
+  hint.textContent = famFilter ? "Hover a class to isolate it" : "Click a family to isolate it";
+  current = famFilter || null;
+}
+
+/* isolate on hover, drill on click */
+function clear(){
+  svg.classList.remove("dim");
+  svg.querySelectorAll(".on").forEach(function(e){ e.classList.remove("on"); });
+}
+function isolate(attr, val){
+  clear(); svg.classList.add("dim");
+  svg.querySelectorAll("[" + attr + "=\"" + (window.CSS && CSS.escape ? CSS.escape(val) : val) + "\"]")
+     .forEach(function(e){ e.classList.add("on"); });
+}
+
+svg.addEventListener("mouseover", function(ev){
+  var t = ev.target;
+  if (t.hasAttribute && t.hasAttribute("data-c")) return isolate("data-c", t.getAttribute("data-c"));
+  if (t.hasAttribute && t.hasAttribute("data-f")) return isolate("data-f", t.getAttribute("data-f"));
+});
+svg.addEventListener("mouseleave", clear);
+
+svg.addEventListener("click", function(ev){
+  var t = ev.target.closest ? ev.target.closest("[data-drill]") : null;
+  if (t) build(t.getAttribute("data-drill"));
+});
+svg.addEventListener("keydown", function(ev){
+  if (ev.key !== "Enter" && ev.key !== " ") return;
+  var t = ev.target.closest ? ev.target.closest("[data-drill]") : null;
+  if (t){ ev.preventDefault(); build(t.getAttribute("data-drill")); back.focus(); }
+});
+back.addEventListener("click", function(){ build(null); });
+document.addEventListener("keydown", function(ev){ if (ev.key === "Escape" && current) build(null); });
+
+build(null);
+})();
+</script>
+</body>
+</html>
