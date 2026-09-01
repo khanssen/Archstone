@@ -4,21 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Which mechanism reads which objective — SP 800-171A collector study</title>
-<!-- no external resources: fonts resolve from the system stack -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#FBFCFB; --grid:#E8ECE9; --ink:#1B2833; --ink-soft:#4A5A66;
-  --ref:#33586E; --ref-tint:#EAF0F4;
-  --yes:#0E7C61; --yes-tint:#E5F2EE;
-  --part:#B07C00; --part-tint:#F7EFDA;
-  --no:#8A929B; --no-tint:#EEF0F2;
-  --c1:#0E7C61; --c1-tint:#E5F2EE;
-  --c2:#33586E; --c2-tint:#EAF0F4;
-  --c3:#6A4C93; --c3-tint:#F1EBF8;
-  --line:#C6CFCB;
-  --mono:ui-monospace,SFMono-Regular,'SF Mono','Cascadia Mono','Segoe UI Mono',Menlo,Consolas,monospace;
-  --sans:system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  /* Archstone tokens — see tokens.css. Inlined so the file stays standalone. */
+  --paper:#FBFCFB; --grid:#E8ECE9; --rule:#C6CFCB;
+  --ink:#1B2833; --ink-soft:#4A5A66;
+  --referent:#33586E; --referent-fill:#EAF0F4;
+  --emitted:#0E7C61;  --emitted-fill:#E5F2EE;
+  --partial:#8A5F00;  --partial-fill:#F7EFDA;
+  --manual:#67707A;   --manual-fill:#EEF0F2;
+  --gap:#A8400F;      --gap-fill:#FBEDE4;
+  --accent:#6A4C93;   --accent-fill:#F1EBF8;
+  --line:var(--rule);
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,'SF Mono','Cascadia Mono','Segoe UI Mono',Menlo,Consolas,monospace;
+  --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
 }
+@font-face{font-family:'IBM Plex Sans';src:url('/fonts/IBMPlexSans-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'IBM Plex Sans';src:url('/fonts/IBMPlexSans-SemiBold.woff2') format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'IBM Plex Mono';src:url('/fonts/IBMPlexMono-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'IBM Plex Mono';src:url('/fonts/IBMPlexMono-Medium.woff2') format('woff2');font-weight:500;font-display:swap}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--sans);color:var(--ink);background:var(--paper);
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
@@ -33,16 +39,16 @@ h2{font-size:20px;font-weight:700;margin-bottom:6px}
 section{margin-top:56px}
 
 /* boundary notice */
-.boundary{margin-top:34px;border:1.6px solid var(--ref);background:var(--ref-tint);padding:20px 24px}
-.boundary .tag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ref);display:block;margin-bottom:8px}
+.boundary{margin-top:34px;border:1.6px solid var(--referent);background:var(--referent-fill);padding:20px 24px}
+.boundary .tag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--referent);display:block;margin-bottom:8px}
 .boundary p{font-size:14px;color:var(--ink);max-width:82ch}
 .boundary p+p{margin-top:8px;color:var(--ink-soft)}
 .boundary b{font-weight:600}
-.bsplit{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:16px;border:1px solid var(--ref)}
+.bsplit{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:16px;border:1px solid var(--referent)}
 .bsplit div{padding:12px 16px;background:#fff}
-.bsplit div+div{border-left:1px solid var(--ref);background:var(--no-tint)}
+.bsplit div+div{border-left:1px solid var(--referent);background:var(--manual-fill)}
 .bsplit h4{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px}
-.bsplit .shown h4{color:var(--yes)} .bsplit .held h4{color:var(--no)}
+.bsplit .shown h4{color:var(--emitted)} .bsplit .held h4{color:var(--manual)}
 .bsplit p{font-size:12.5px;color:var(--ink-soft)}
 
 /* ladder */
@@ -51,16 +57,18 @@ section{margin-top:56px}
   background:#fff;border:none;border-right:1px solid var(--line);padding:11px 18px;cursor:pointer;color:var(--ink-soft)}
 .ladder-ctl button:last-child{border-right:none}
 .ladder-ctl button[aria-pressed="true"]{background:var(--ink);color:#fff}
-.ladder-ctl button:focus-visible{outline:2px solid var(--ref);outline-offset:-2px}
+.ladder-ctl button:focus-visible{outline:2px solid var(--referent);outline-offset:-2px}
 .rungs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px}
 .rung{border:1.4px solid var(--line);background:#fff;padding:16px 18px;position:relative}
 .rung.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
 .rung .rl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
-.rung .rn{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;margin-top:10px;color:var(--yes)}
+.rung .rn{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;margin-top:10px;color:var(--emitted)}
 .rung .rd{font-size:12.5px;color:var(--ink-soft);margin-top:8px}
 .rung .rd b{color:var(--ink);font-weight:600}
 .rung .delta{font-family:var(--mono);font-size:12px;font-weight:600;margin-left:8px}
-.rung.k1{border-top:4px solid var(--c1)}.rung.k2{border-top:4px solid var(--c2)}.rung.k3{border-top:4px solid var(--c3)}
+.rung.k1{border-top:2px solid var(--accent)}
+.rung.k2{border-top:4px solid var(--accent)}
+.rung.k3{border-top:7px solid var(--accent)}
 
 /* dot grid */
 .gridwrap{background:#fff;border:1.4px solid var(--line);padding:20px 22px}
@@ -69,24 +77,27 @@ section{margin-top:56px}
 .famlab{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);padding-top:3px;line-height:1.4}
 .famlab b{color:var(--ink);font-weight:600;display:block;font-size:12px}
 .dots{display:flex;flex-wrap:wrap;gap:3px}
-.d{width:11px;height:11px;background:var(--no-tint);border:1px solid #DDE2E4;transition:background .28s ease,border-color .28s ease}
-.d.on-y{background:var(--yes);border-color:var(--yes)}
-.d.on-p{background:var(--part);border-color:var(--part)}
+.d{width:11px;height:11px;background:var(--manual-fill);border:1px dotted var(--manual);transition:background .28s ease,border-color .28s ease}
+.d.on-y{background:var(--emitted);border-color:var(--emitted)}
+.d.on-p{border-color:var(--partial);
+  background:repeating-linear-gradient(45deg,var(--partial) 0 2px,var(--partial-fill) 2px 4px)}
 .leg{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);margin-top:16px}
 .leg span{display:inline-flex;align-items:center;gap:7px}
 .sw{width:11px;height:11px;flex:none;display:inline-block;border:1px solid}
-.sw.y{background:var(--yes);border-color:var(--yes)}
-.sw.p{background:var(--part);border-color:var(--part)}
-.sw.n{background:var(--no-tint);border-color:#DDE2E4}
+.sw.y{background:var(--emitted);border-color:var(--emitted);border-style:solid}
+.sw.p{border-color:var(--partial);border-style:dashed;
+  background:repeating-linear-gradient(45deg,var(--partial) 0 2px,var(--partial-fill) 2px 4px)}
+.sw.n{background:var(--manual-fill);border-color:var(--manual);border-style:dotted}
 
 /* mechanism cards */
 .mechs{display:grid;grid-template-columns:repeat(auto-fit,minmax(206px,1fr));gap:14px}
 .mech{background:#fff;border:1.4px solid var(--line);padding:18px;border-top-width:4px}
-.mech.k1{border-top-color:var(--c1)}.mech.k2{border-top-color:var(--c2)}.mech.k3{border-top-color:var(--c3)}
+.mech{border-top-color:var(--accent)}
+.mech.k1{border-top-width:2px}.mech.k2{border-top-width:4px}.mech.k3{border-top-width:7px}
 .mech .cl{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
 .mech .mn{font-size:15px;font-weight:600;margin-top:7px}
 .mech .mnum{font-family:var(--mono);font-size:27px;font-weight:600;margin-top:12px;line-height:1}
-.mech.k1 .mnum{color:var(--c1)}.mech.k2 .mnum{color:var(--c2)}.mech.k3 .mnum{color:var(--c3)}
+.mech .mnum{color:var(--accent)}
 .mech .mlab{font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin-top:4px}
 .mech .mdesc{font-size:12.5px;color:var(--ink-soft);margin-top:12px;padding-top:12px;border-top:1px solid var(--grid)}
 .mech .msplit{font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin-top:8px}
@@ -105,7 +116,7 @@ table.mx tr:last-child td{border-bottom:none}
 
 /* finding callout */
 .finding{border:1.6px solid var(--ink);background:#fff;padding:24px 26px;display:grid;grid-template-columns:120px 1fr;gap:26px;align-items:start}
-.finding .fn{font-family:var(--mono);font-size:46px;font-weight:600;color:var(--c3);line-height:1}
+.finding .fn{font-family:var(--mono);font-size:46px;font-weight:600;color:var(--accent);line-height:1}
 .finding .fl{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
 .finding p{font-size:14px;color:var(--ink-soft);max-width:76ch}
 .finding p+p{margin-top:10px}
@@ -133,28 +144,30 @@ table.objs th{position:sticky;top:0;background:var(--ink);color:#fff;font-family
   letter-spacing:.07em;text-transform:uppercase;text-align:left;padding:10px 12px;cursor:pointer;user-select:none;white-space:nowrap}
 table.objs th:hover{background:#2C3E4C}
 table.objs td{padding:8px 12px;border-bottom:1px solid var(--grid);vertical-align:top}
-table.objs tr:hover td{background:var(--ref-tint)}
+table.objs tr:hover td{background:var(--referent-fill)}
 td.c-id{font-family:var(--mono);font-size:12px;white-space:nowrap}
 td.c-o{color:var(--ink-soft);max-width:400px}
 td.c-f{white-space:nowrap;font-size:12.5px}
-td.c-a{font-family:var(--mono);font-size:11px;color:var(--ref)}
+td.c-a{font-family:var(--mono);font-size:11px;color:var(--referent)}
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;white-space:nowrap}
 .pill .sw{width:9px;height:9px}
-.pill.y{color:var(--yes)}.pill.p{color:var(--part)}.pill.n{color:var(--no)}
+.pill.y{color:var(--emitted)}.pill.p{color:var(--partial)}.pill.n{color:var(--manual)}
 .mtag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.04em;padding:2px 6px;
   border:1px solid;margin:1px 3px 1px 0;white-space:nowrap}
-.mtag.k1{color:var(--c1);border-color:var(--c1);background:var(--c1-tint)}
-.mtag.k2{color:var(--c2);border-color:var(--c2);background:var(--c2-tint)}
-.mtag.k3{color:var(--c3);border-color:var(--c3);background:var(--c3-tint)}
-.mtag.none{color:var(--no);border-color:var(--no-tint);background:var(--no-tint)}
+.mtag.k1,.mtag.k2,.mtag.k3{color:var(--accent);border-color:var(--accent);background:var(--accent-fill)}
+.mtag.k1{border-width:1px}.mtag.k2{border-width:1.5px}.mtag.k3{border-width:2.5px}
+.mtag.none{color:var(--manual);border-color:var(--manual);border-style:dotted;background:var(--manual-fill)}
 
+.prov{font-family:var(--mono);font-size:11px;color:var(--ink-soft);border-top:1px solid var(--rule);
+  padding-top:8px;margin-top:14px;display:flex;flex-wrap:wrap;gap:4px 22px}
+.prov b{color:var(--ink);font-weight:500}
 footer{margin-top:52px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;
   gap:8px 28px;font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
 @media(prefers-reduced-motion:reduce){.d{transition:none}}
 @media(max-width:860px){
   .rungs{grid-template-columns:1fr}
   .band ul,.bsplit{grid-template-columns:1fr}
-  .bsplit div+div{border-left:none;border-top:1px solid var(--ref)}
+  .bsplit div+div{border-left:none;border-top:1px solid var(--referent)}
   .famrow{grid-template-columns:1fr}
   .finding{grid-template-columns:1fr;gap:12px}
   .filt{width:100%}
@@ -167,7 +180,15 @@ footer{margin-top:52px;padding-top:16px;border-top:1px solid var(--line);display
 
 <p class="eyebrow">Archstone Security · Research exhibit · SP 800-171A collector study</p>
 <h1>Which mechanism reads which objective.</h1>
-<p class="dek">Every assessment objective in NIST SP 800-171A that a system can answer for itself is answered by one of five collection mechanisms. All five are commodity capabilities the standard already obliges a contractor to operate. This exhibit classifies all <b>320 assessment objectives</b> by <b>which mechanism class can read them</b> — and by how much of the standard each class reaches on its own.</p>
+<p class="dek">Every assessment objective in NIST SP 800-171A Rev&nbsp;2 that a system can answer for itself is answered by one of five collection mechanisms. All five are commodity capabilities the standard already obliges a contractor to operate. This exhibit classifies all <b>320 Rev&nbsp;2 assessment objectives</b> by <b>which mechanism class can read them</b> — and by how much of the standard each class reaches on its own.</p>
+
+<p class="prov">
+  <span><b>Dataset</b> v8.8</span>
+  <span><b>Standard</b> NIST SP 800-171A Rev 2 &middot; 320 assessment objectives</span>
+  <span><b>Identifiers</b> OSCAL form, per NIST OSCAL guidance</span>
+  <span><b>Basis</b> single reference architecture, n=1</span>
+  <span><b>Resolves to</b> every figure below traces to a row in the table at the foot of this page</span>
+</p>
 
 <div class="boundary">
   <span class="tag">What this exhibit does and does not publish</span>
@@ -234,6 +255,8 @@ footer{margin-top:52px;padding-top:16px;border-top:1px solid var(--line);display
   <li><b>Seventeen emit but are still classified not observable.</b> A mechanism exists, but it lies outside the declared reference architecture or has no published referent to score against. These rows retain their mechanism value as a record of where emission would originate.</li>
   <li><b>Mechanism class is not tool selection.</b> Each class names a capability, not a product. Open implementations exist for all five and no commercial compliance platform is used anywhere in the reference environment.</li>
   <li><b>Partial is a real bucket, not a soft yes.</b> It means emission exists and does not reach the objective's full parameter. The credibility of the fully reportable column depends on this distinction being enforced.</li>
+  <li><b>The figures are Rev&nbsp;2 and do not carry to Rev&nbsp;3.</b> Rev&nbsp;3 has seventeen families to this study's fourteen and a different objective count, so every number here is revision-specific. The method transfers &mdash; the emission test, the disposition taxonomy, the collector ladder &mdash; and so does the finding that the referent gap, not the mechanism, is what limits machine reportability. The counts do not. A Rev&nbsp;3 cut is a separate study.</li>
+  <li><b>Eleven fully reportable objectives rest on DoD-published parameter values.</b> For an agency that has not published equivalents, those revert to organization-defined: referents comparable across suppliers fall from 100 to 89, and organization-defined rises from 43 to 54. The classification is otherwise agency-neutral &mdash; nothing in the collector ladder or the emission test is specific to one department.</li>
   <li><b>Multi-mechanism rows are treated disjunctively.</b> Where an objective lists more than one mechanism, any one of them is taken as sufficient. The classification records which are capable, not which are required together.</li>
 </ul>
 </div>
@@ -270,6 +293,7 @@ footer{margin-top:52px;padding-top:16px;border-top:1px solid var(--line);display
 <footer>
   <span>Dataset v8.8 · 320 objectives · 143 full / 80 partial / 97 none</span>
   <span>Source: NIST SP 800-171A Rev 2 assessment objectives</span>
+  <span>Identifiers: OSCAL form (nist_id carries the printed Rev 2 form)</span>
   <span>Reference architecture: Windows / Azure, FedRAMP Moderate backend</span>
   <span>Archstone Security</span>
 </footer>
@@ -300,7 +324,7 @@ function drawRungs(){
     const dy=s.y-prev.y;
     return `<div class="rung k${ix+1} ${step===ix+1?'on':''}">
       <div class="rl">${r.t}</div>
-      <div class="rn">${s.y}<span class="delta" style="color:${dy>0?'var(--yes)':'var(--no)'}">${ix?(dy>0?'+'+dy:'+0'):''}</span></div>
+      <div class="rn">${s.y}<span class="delta" style="color:${dy>0?'var(--emitted)':'var(--manual)'}">${ix?(dy>0?'+'+dy:'+0'):''}</span></div>
       <div class="rd"><b>${s.y}</b> fully reportable · <b>${s.y+s.p}</b> at least partial (<b>${s.alp}%</b>)</div>
       <div class="rd" style="margin-top:6px">${r.d}</div>
     </div>`;

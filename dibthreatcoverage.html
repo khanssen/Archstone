@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIB Top-10 Threats vs. Coverage Under Machine-Verifiable Compliance</title>
+<style>
+  :root{
+    color-scheme:light;
+    --page:#f4f4f1; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --line:#e1e0d9; --border:rgba(11,11,11,.10); --accent:#2a78d6; --accent-deep:#184f95;
+    --hi:#0ca30c; --hi-wash:#e7f6e7; --hi-ink:#0a7d18;
+    --pa:#c07a00; --pa-wash:#fbf0d8; --pa-ink:#8a5800;
+    --li:#c0392b; --li-wash:#fbe7e4; --li-ink:#9c2b20;
+    --shadow:0 1px 2px rgba(11,11,11,.05),0 10px 30px rgba(11,11,11,.06);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --page:#0d0d0d; --surface:#161615; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+      --line:#2c2c2a; --border:rgba(255,255,255,.12); --accent:#3987e5; --accent-deep:#9ec5f4;
+      --hi:#2bb32b; --hi-wash:rgba(12,163,12,.14); --hi-ink:#5cd05c;
+      --pa:#e0a640; --pa-wash:rgba(224,166,64,.14); --pa-ink:#eab963;
+      --li:#e0655a; --li-wash:rgba(208,57,43,.16); --li-ink:#ef8b80;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+  .wrap{max-width:1240px;margin:0 auto;padding:30px 22px 60px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-deep);font-weight:700;margin:0 0 10px}
+  h1{font-size:clamp(23px,3.4vw,33px);line-height:1.13;margin:0 0 12px;letter-spacing:-.02em;font-weight:800;max-width:24ch}
+  .approach{font-size:clamp(14px,1.5vw,16px);color:var(--ink2);max-width:88ch;margin:0 0 20px}
+  .approach b{color:var(--ink)}
+
+  .bar{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:13px 0;margin:0 0 4px}
+  .scale{display:flex;align-items:center;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+  .scale span{font-size:11.5px;font-weight:700;padding:5px 12px;color:#fff;letter-spacing:.02em}
+  .scale .s-hi{background:var(--hi)} .scale .s-pa{background:var(--pa)} .scale .s-li{background:var(--li)}
+  .tally{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink2)}
+  .tally b{font-size:15px}
+  .tally .k{display:inline-flex;align-items:center;gap:7px}
+  .glyph{font-size:14px;line-height:1}
+  .g-hi{color:var(--hi)} .g-pa{color:var(--pa)} .g-li{color:var(--li)}
+  .note{font-size:12.5px;color:var(--muted);margin:8px 0 0;max-width:92ch}
+  .note b{color:var(--ink2)}
+
+  .tblwrap{margin-top:18px;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  thead th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:left;padding:12px 16px;background:var(--page);border-bottom:1px solid var(--line)}
+  tbody td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  .rank{color:var(--muted);font-variant-numeric:tabular-nums;font-weight:700;width:26px;padding-right:0}
+
+  td.threat{border-left:5px solid var(--line);min-width:240px}
+  tr.hi td.threat{border-left-color:var(--hi);background:var(--hi-wash)}
+  tr.pa td.threat{border-left-color:var(--pa);background:var(--pa-wash)}
+  tr.li td.threat{border-left-color:var(--li);background:var(--li-wash)}
+  .tname{font-weight:750;font-size:14.5px;letter-spacing:-.01em;margin:0 0 5px}
+  .data{font-size:11.5px;color:var(--ink2);line-height:1.4;margin:0 0 9px}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;border-radius:999px;padding:3px 10px}
+  tr.hi .chip{color:var(--hi-ink);background:transparent;border:1.5px solid var(--hi)}
+  tr.pa .chip{color:var(--pa-ink);background:transparent;border:1.5px solid var(--pa)}
+  tr.li .chip{color:var(--li-ink);background:transparent;border:1.5px solid var(--li)}
+
+  td.inputs{color:var(--ink2);min-width:270px}
+  td.limits{color:var(--ink2);min-width:250px}
+  td.inputs b, td.limits b{color:var(--ink);font-weight:650}
+  .mono{font-variant-numeric:tabular-nums}
+
+  footer{margin-top:26px;border-top:1px solid var(--line);padding-top:18px;font-size:12px;color:var(--muted)}
+  footer p{margin:0 0 8px;max-width:100ch}
+  footer b{color:var(--ink2)}
+  a{color:var(--accent)}
+  @media(max-width:820px){ .tblwrap{overflow-x:auto} table{min-width:840px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">RFI Reference Companion · Threat coverage under machine-verifiable compliance</p>
+  <h1>The DIB's top 10 threats — and how much of each becomes machine-verifiable under this approach</h1>
+  <p class="approach">
+    <b>The approach evaluated:</b> harden every in-scope system to the NIST National Checklist Program baselines,
+    enforce the DoW's published ODP timelines and thresholds — defaulting to NIST checklist recommendations where the
+    DoW has not set a value — and accept machine-readable evidence for that entire set. Only a handful of administrative
+    and documentation processes are left to human review. The color on each threat is how comprehensively that evidence
+    set covers it.
+  </p>
+
+  <div class="bar">
+    <div class="scale" aria-label="coverage scale">
+      <span class="s-hi">● Comprehensive</span>
+      <span class="s-pa">◑ Partial</span>
+      <span class="s-li">○ Limited</span>
+    </div>
+    <div class="tally">
+      <span class="k"><span class="glyph g-hi">●</span><b>3</b>&nbsp;comprehensive</span>
+      <span class="k"><span class="glyph g-pa">◑</span><b>5</b>&nbsp;partial</span>
+      <span class="k"><span class="glyph g-li">○</span><b>2</b>&nbsp;limited</span>
+    </div>
+  </div>
+  <p class="note"><b>Read the two "limited" rows as the feature, not the bug:</b> supply-chain trust and business-email fraud are exactly the human-judgment residual this approach deliberately leaves to reviewers — not gaps it pretends to close.</p>
+
+  <div class="tblwrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="rank">#</th>
+          <th>Threat to the DIB &nbsp;·&nbsp; coverage</th>
+          <th>What provides the coverage (inputs)</th>
+          <th>Limitations &amp; residual</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="hi">
+          <td class="rank">1</td>
+          <td class="threat">
+            <p class="tname">Exploitation of unpatched internet-facing systems</p>
+            <p class="data">VPNs, email/Exchange, edge devices. Vuln exploitation +34% YoY — now the <b>top</b> entry point for critical infrastructure (DBIR 2025). DIB-VDP found 401 real vulns across 41 firms.</p>
+            <span class="chip">● Comprehensive</span>
+          </td>
+          <td class="inputs">SCAP configuration conformance (attack-surface reduction) <b>plus</b> the ODP patch clock — <span class="mono">30/90/180</span> days by severity (03.14.01) — <b>plus</b> monthly authenticated scanning (03.11.02.a) and 24-hour signature currency, all reported with CVE/CVSS and finding age.</td>
+          <td class="limits">Measures adherence to the published remediation clock, not immunity during the pre-patch window of a true zero-day. Coverage is only as complete as the scanned boundary.</td>
+        </tr>
+
+        <tr class="hi">
+          <td class="rank">2</td>
+          <td class="threat">
+            <p class="tname">Stolen or abused credentials</p>
+            <p class="data">Credential abuse = <b>22%</b> of breaches — the single top initial vector overall (DBIR 2025). "Access is the point of failure."</p>
+            <span class="chip">● Comprehensive</span>
+          </td>
+          <td class="inputs">Baseline enforces MFA-capable configuration, <b>disables legacy/basic auth</b> (the real MFA-bypass), account-lockout and minimum-password-length ODP thresholds, and Credential Guard — all readable from IdP and host config state.</td>
+          <td class="limits">Configuration cannot force MFA <b>enrollment</b> or IdP deployment (an architecture choice → human review), and cannot detect a stolen but valid session. Phishing-resistant vs. weak MFA is a design decision.</td>
+        </tr>
+
+        <tr class="pa">
+          <td class="rank">3</td>
+          <td class="threat">
+            <p class="tname">Spearphishing &amp; social engineering</p>
+            <p class="data">Human element in ~<b>60%</b> of breaches; social engineering = 22% of manufacturing breaches (DBIR 2025).</p>
+            <span class="chip">◑ Partial</span>
+          </td>
+          <td class="inputs">Payload-execution hardening is verifiable from the baseline: internet macros blocked, Attack-Surface-Reduction rules, PowerShell logging, Windows Script Host disabled. Training completion + curriculum carried as referenced (Tier 2) evidence.</td>
+          <td class="limits">Cannot observe whether a user clicks, or whether training content is <b>adequate</b> — both are human / artifact-quality judgments. Email-gateway efficacy is out of the host-evidence scope.</td>
+        </tr>
+
+        <tr class="pa">
+          <td class="rank">4</td>
+          <td class="threat">
+            <p class="tname">Ransomware</p>
+            <p class="data">Present in <b>44%</b> of breaches (+37%) — but <b>88%</b> of small-business breaches, and the DIB is ~200,000 mostly-SMB firms (DBIR 2025; DC3).</p>
+            <span class="chip">◑ Partial</span>
+          </td>
+          <td class="inputs">Lateral-movement containment is verifiable from the baseline: SMBv1 off, SMB signing, LAPS (unique local-admin), RDP restriction, anti-ransomware ASR — reinforced by the patch and credential layers upstream.</td>
+          <td class="limits">The outcome hinges on initial access (human) and on <b>backup/recovery adequacy</b> (contingency planning), which conformance evidence only partly reaches.</td>
+        </tr>
+
+        <tr class="li">
+          <td class="rank">5</td>
+          <td class="threat">
+            <p class="tname">Supply-chain / third-party compromise</p>
+            <p class="data">Third-party involvement <b>doubled to 30%</b> of breaches (DBIR 2025). SolarWinds is the defense-sector archetype.</p>
+            <span class="chip">○ Limited</span>
+          </td>
+          <td class="inputs">Component inventory currency, declared-vs-observed boundary reconciliation, FedRAMP / CMVP inheritance status, external-service-provider declaration (03.16.03), and the deviation register.</td>
+          <td class="limits">A <b>signed, malicious update from a trusted vendor</b> executes with legitimate trust. Detection is behavioral and boundary-level (Tier 3), not configuration conformance.</td>
+        </tr>
+
+        <tr class="pa">
+          <td class="rank">6</td>
+          <td class="threat">
+            <p class="tname">Web shells for persistence</p>
+            <p class="data">17 China Chopper web shells planted on a DIB organization's Exchange server (CISA AA22-277A).</p>
+            <span class="chip">◑ Partial</span>
+          </td>
+          <td class="inputs">Web/Exchange STIG conformance (least functionality, restricted script execution, constrained service-account privilege), the ODP patch clock for the entry vulnerability, and audit-log configuration + weekly review (03.03.05).</td>
+          <td class="limits">Detecting an <b>already-planted</b> shell is a monitoring/hunt function, not conformance. Coverage depends on the upstream vulnerability being patched within the clock.</td>
+        </tr>
+
+        <tr class="pa">
+          <td class="rank">7</td>
+          <td class="threat">
+            <p class="tname">Nation-state RATs &amp; custom exfiltration</p>
+            <p class="data">HyperBro, PlugX, CovalentStealer used to steal CUI (CISA AA22-277A). Espionage motive in manufacturing breaches jumped to <b>20%</b> from 3% (DBIR 2025).</p>
+            <span class="chip">◑ Partial</span>
+          </td>
+          <td class="inputs">Application allowlisting (WDAC / AppLocker) config, driver-signing enforcement, egress/boundary configuration, hardened persistence mechanisms, and audit logging — all part of the evidence set.</td>
+          <td class="limits">A determined actor with <b>valid credentials and signed tooling</b> evades configuration. Exfiltration detection is a boundary / DLP + Tier 3 function, not host conformance.</td>
+        </tr>
+
+        <tr class="pa">
+          <td class="rank">8</td>
+          <td class="threat">
+            <p class="tname">Living-off-the-land / legitimate-tool abuse</p>
+            <p class="data">Impacket (wmiexec, smbexec), WMI, and command shell used for lateral movement (CISA AA22-277A).</p>
+            <span class="chip">◑ Partial</span>
+          </td>
+          <td class="inputs">Baseline restricts remote WMI/WinRM, LAPS breaks the pass-the-hash these tools rely on, PowerShell script-block logging and a tiered-admin model are enforced — and abuse becomes an <b>audited</b> event.</td>
+          <td class="limits">Legitimate tools used by valid accounts still require <b>behavioral</b> detection. Config proves the constraints exist, not that no misuse occurred.</td>
+        </tr>
+
+        <tr class="hi">
+          <td class="rank">9</td>
+          <td class="threat">
+            <p class="tname">Misconfiguration &amp; exposed services</p>
+            <p class="data">Default creds, open management planes, RDP without NLA. The definitional gap — and a large share of what DIB-VDP researchers actually found.</p>
+            <span class="chip">● Comprehensive</span>
+          </td>
+          <td class="inputs">SCAP/XCCDF conformance against the NCP baseline (DoW ODP where set, defaulting to NIST checklist recommendations). This threat <b>is</b> the absence of the baseline, so conformance measures it directly.</td>
+          <td class="limits">Only as complete as the <b>declared boundary</b> — a host left out of scope is not checked. That gap is the Tier 3 boundary-validation residual.</td>
+        </tr>
+
+        <tr class="li">
+          <td class="rank">10</td>
+          <td class="threat">
+            <p class="tname">Business email compromise / pretexting</p>
+            <p class="data">The financially-motivated subset of social engineering; a meaningful slice of DBIR social-engineering cases.</p>
+            <span class="chip">○ Limited</span>
+          </td>
+          <td class="inputs">Email-authentication configuration (DMARC / SPF / DKIM) and MFA-on-email where in scope, plus training completion records.</td>
+          <td class="limits">Fundamentally an <b>identity / human / business-process</b> attack — not addressed by host baselines or 800-171 configuration controls, and largely outside the machine-evidence scope.</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    <p><b>How to read the coverage rating.</b> These are qualitative security-engineering assessments of the machine-verifiable evidence set (baseline conformance + ODP timelines/thresholds + registry queries) against each vector — not measured efficacy percentages. Every rating assumes the baseline is <b>enforced and current</b> and the assessment boundary is complete; both assumptions are exactly what continuous reporting verifies and what the Tier 3 boundary review protects.</p>
+    <p><b>Data caveats.</b> Threat figures are the Verizon 2025 DBIR (a 2026 edition now exists — lock final numbers before submission) and use <b>manufacturing / critical infrastructure as proxies for the DIB</b>, which the DBIR does not isolate. DIB-specific hard data is DC3's DIB-VDP and CISA advisory AA22-277A. ODP values are from the DoD CIO memo signed 10 April 2025.</p>
+    <p><b>Sources:</b> Verizon 2025 DBIR (via Industrial Cyber); DoD DC3 DIB-VDP results (DefenseScoop, SecurityWeek); CISA advisory AA22-277A (DIB organization intrusion); DoD CIO Organization-Defined Parameters for NIST SP 800-171 Rev 3 (10 Apr 2025). Offered without restriction as a starting draft, not a competing authority.</p>
+  </footer>
+
+</div>
+</body>
+</html>

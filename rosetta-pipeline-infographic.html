@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Every component already exists — the machine-evidence pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBFCFB;
+  --grid:#E8ECE9;
+  --ink:#1B2833;
+  --ink-soft:#4A5A66;
+  --ref:#33586E;          /* referents: steel blue */
+  --ref-tint:#EAF0F4;
+  --yes:#0E7C61;          /* machine-reportable */
+  --yes-tint:#E5F2EE;
+  --part:#B07C00;         /* partial */
+  --part-tint:#F7EFDA;
+  --no:#8A929B;           /* not reportable */
+  --no-tint:#EEF0F2;
+  --prop:#6A4C93;
+  --prop-tint:#F1EBF8;
+  --line:#C6CFCB;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --sans:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--sans);color:var(--ink);background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;
+  line-height:1.55;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:56px 28px 40px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--ink-soft);text-transform:uppercase}
+h1{font-size:clamp(30px,4.4vw,46px);line-height:1.08;font-weight:700;margin:14px 0 16px;max-width:19ch}
+.dek{font-size:17px;color:var(--ink-soft);max-width:64ch}
+.dek b{color:var(--ink);font-weight:600}
+
+/* pipeline */
+.pipe-shell{margin:44px -28px 0;padding:0 28px;overflow-x:auto}
+.pipe{min-width:980px}
+svg{display:block;width:100%;height:auto}
+.stagebar{display:flex;min-width:980px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px}
+.stagebar span{border-top:2px solid var(--line);padding-top:8px;margin-right:14px}
+.st1{width:24%}.st2{width:33%}.st3{width:22%}.st4{width:21%;margin-right:0!important}
+
+/* svg text + boxes */
+.t-lab{font-family:var(--mono);font-size:11px;fill:var(--ink-soft);letter-spacing:.08em}
+.t-name{font-family:var(--sans);font-size:14.5px;font-weight:600;fill:var(--ink)}
+.t-sub{font-family:var(--sans);font-size:11.5px;fill:var(--ink-soft)}
+.t-count{font-family:var(--mono);font-size:12px;font-weight:600;fill:var(--yes)}
+.t-white{fill:#fff}.t-white-soft{fill:#C8D2DA}
+.refbox{fill:var(--ref-tint);stroke:var(--ref);stroke-width:1.4}
+.feednode{stroke-width:1.3;transition:stroke-width .15s}
+.feednode.hot{stroke:var(--yes);stroke-width:2.4}
+.flow{stroke:var(--ink-soft);stroke-width:1.4;fill:none;marker-end:url(#arr)}
+.flow.emit{stroke:var(--yes)}
+.packet{fill:var(--yes)}
+@media (prefers-reduced-motion:reduce){.packet{display:none}}
+
+/* numbers strip */
+.numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:52px}
+.card{background:#fff;border:1.4px solid var(--line);padding:20px 20px 16px;position:relative}
+.card .n{font-family:var(--mono);font-size:38px;font-weight:600;line-height:1}
+.card .l{font-size:13px;font-weight:600;margin-top:8px}
+.card .d{font-size:12px;color:var(--ink-soft);margin-top:4px}
+.card.total{border-color:var(--ink)}
+.card.yes .n{color:var(--yes)}.card.yes{border-color:var(--yes);background:var(--yes-tint)}
+.card.part .n{color:var(--part)}.card.part{border-color:var(--part);background:var(--part-tint)}
+.card.no .n{color:var(--no)}.card.no{background:var(--no-tint)}
+
+/* feed bars */
+.feeds{margin-top:52px}
+.feeds h2,.band h2{font-size:20px;font-weight:700;margin-bottom:6px}
+.feeds .sub,.band .sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:18px;max-width:70ch}
+.bar-row{display:grid;grid-template-columns:210px 1fr 52px;align-items:center;gap:14px;margin-bottom:10px}
+.bar-row .fl{font-family:var(--mono);font-size:13px}
+.bar-track{background:#fff;border:1px solid var(--line);height:26px}
+.bar-fill{height:100%;background:var(--yes);opacity:.85;transition:opacity .15s}
+.bar-row.hot .bar-fill{opacity:1;background:var(--ink)}
+.bar-row .fn{font-family:var(--mono);font-size:13px;font-weight:600;text-align:right}
+
+/* honesty band */
+.band{margin-top:56px;border:1.4px solid var(--ink);background:#fff;padding:24px 26px}
+.band ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px 28px}
+.band li{font-size:13.5px;color:var(--ink-soft);padding-left:18px;position:relative}
+.band li::before{content:"—";position:absolute;left:0;color:var(--ink)}
+.band li b{color:var(--ink)}
+
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 28px;font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+
+@media(max-width:760px){
+  .numbers{grid-template-columns:1fr 1fr}
+  .band ul{grid-template-columns:1fr}
+  .bar-row{grid-template-columns:150px 1fr 46px}
+}
+
+/* clickable affordances */
+.feednode,.refbox{cursor:pointer}
+g[id^="n"]:focus{outline:none}
+g[id^="n"]:focus .feednode,g.reff:focus .refbox{stroke-width:2.6;stroke:var(--yes)}
+.card{cursor:pointer}
+.card:hover{transform:translateY(-1px)}
+.card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.bar-row{cursor:pointer}
+#ebomg{cursor:pointer}
+.hint{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);margin-top:10px;letter-spacing:.06em}
+/* panel */
+.panel{margin-top:26px;background:#fff;border:1.6px solid var(--ink);padding:22px 24px}
+.panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.panel-title{font-size:18px;font-weight:700}
+.panel-count{font-family:var(--mono);font-size:13px;color:var(--yes);margin-left:12px;font-weight:600}
+.panel-close{font-family:var(--mono);font-size:12px;background:none;border:1px solid var(--line);padding:5px 10px;cursor:pointer;color:var(--ink-soft)}
+.panel-close:hover{border-color:var(--ink);color:var(--ink)}
+.panel-sub{font-size:13px;color:var(--ink-soft);margin:6px 0 14px;max-width:80ch}
+.panel-body{max-height:420px;overflow-y:auto}
+.fam-h{font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft);margin:14px 0 6px;border-bottom:1px solid var(--grid);padding-bottom:4px}
+.obj{display:flex;align-items:baseline;gap:10px;padding:3px 0;font-size:13px}
+.obj .oid{font-family:var(--mono);font-size:12px;min-width:86px;color:var(--ink)}
+.obj .ot{color:var(--ink-soft)}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;position:relative;top:0}
+.dot.yes{background:var(--yes)}.dot.partial{background:var(--part)}.dot.no{background:var(--no)}
+.leg{display:flex;gap:18px;font-size:12px;color:var(--ink-soft);margin-bottom:4px;font-family:var(--mono)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+
+
+/* sortable table panel */
+.panel-tools{display:flex;gap:12px;align-items:center;margin:2px 0 10px;flex-wrap:wrap}
+.panel-filter{font-family:var(--mono);font-size:13px;border:1px solid var(--line);padding:7px 10px;width:260px;background:#fff;color:var(--ink)}
+.panel-filter:focus{outline:none;border-color:var(--ink)}
+.shown{font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+.tbl-wrap{max-height:440px;overflow-y:auto;border:1px solid var(--line)}
+table.objs{width:100%;border-collapse:collapse;font-size:13px}
+table.objs th{position:sticky;top:0;background:var(--ink);color:#fff;font-family:var(--mono);font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;text-align:left;padding:9px 12px;cursor:pointer;user-select:none;white-space:nowrap}
+table.objs th:hover{background:#2C3E4C}
+table.objs th .dir{opacity:.9;margin-left:5px}
+table.objs td{padding:7px 12px;border-bottom:1px solid var(--grid);vertical-align:top}
+table.objs tr:hover td{background:var(--ref-tint)}
+td.c-id{font-family:var(--mono);font-size:12px;white-space:nowrap}
+td.c-t{color:var(--ink-soft);max-width:420px}
+td.c-f{white-space:nowrap;font-size:12.5px}
+td.c-d{white-space:nowrap}
+td.c-fe{font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+td.c-a{font-family:var(--mono);font-size:11px;color:var(--ref);white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.pill .dot{top:0}
+.pill.yes{color:var(--yes)}.pill.partial{color:var(--part)}.pill.no{color:var(--no)}
+@media(max-width:760px){td.c-t{max-width:200px}.panel-filter{width:100%}}
+
+
+/* explainer block above table */
+.exp{background:var(--ref-tint);border:1px solid var(--ref);padding:16px 18px;margin-bottom:14px;font-size:13.5px;color:var(--ink);max-width:none}
+.exp p{color:var(--ink-soft);margin-top:6px}
+.exp b{color:var(--ink)}
+.exp-links{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:12px}
+.exp-links a{font-family:var(--mono);font-size:12px;color:var(--ref);text-decoration:none;border-bottom:1px solid var(--ref)}
+.exp-links a:hover{color:var(--ink);border-color:var(--ink)}
+
+
+/* scanner demo */
+.syn-tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;background:var(--part-tint);color:var(--part);border:1px solid var(--part);padding:3px 8px;margin-bottom:8px;text-transform:uppercase}
+table.demo{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0 4px;background:#fff}
+table.demo th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;text-align:left;padding:7px 10px;background:var(--ink);color:#fff;white-space:nowrap}
+table.demo td{padding:7px 10px;border-bottom:1px solid var(--grid);font-family:var(--mono);font-size:12px;white-space:nowrap}
+td.st-pass{color:var(--yes);font-weight:600}
+td.st-over{color:#A33B2E;font-weight:600}
+td.st-closed{color:var(--ink-soft)}
+.demo-note{font-size:12.5px;color:var(--ink-soft);margin:8px 0 0}
+pre.emit{background:var(--ink);color:#D9E2E8;font-family:var(--mono);font-size:11.5px;line-height:1.6;padding:14px 16px;overflow-x:auto;margin-top:12px}
+pre.emit .k{color:#8FBFAE}
+
+
+/* authority color coding */
+.apill{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;padding:2px 8px;border:1px solid;white-space:nowrap}
+.apill.desig{color:#fff;background:var(--ref);border-color:var(--ref)}
+.apill.pend{color:var(--part);background:var(--part-tint);border-color:var(--part)}
+.apill.art{color:var(--ink);background:#fff;border-color:var(--ink)}
+.apill.none{color:var(--no);background:var(--no-tint);border-color:var(--no-tint)}
+.aleg{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+
+
+.t-req{font-family:var(--mono);font-size:9.5px;fill:var(--ref);letter-spacing:.06em;font-weight:600}
+
+
+/* diagram status colors */
+.feednode{fill:var(--yes-tint);stroke:#2F7A64}
+.dleg{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);margin:26px 0 14px;min-width:980px}
+.dleg .it{display:inline-flex;align-items:center;gap:8px}
+.sw{width:15px;height:15px;display:inline-block;flex:none}
+.sw-pub{background:var(--ref-tint);border:1.6px solid var(--ref)}
+.sw-req{background:var(--yes-tint);border:1.6px solid #2F7A64}
+.sw-prop{background:var(--prop-tint);border:1.8px dashed var(--prop)}
+.sw-flow{width:22px;height:0;border-top:2px solid var(--yes)}
+.dleg b{color:var(--ink);font-weight:600}
+.stagebar .st1{border-top-color:var(--ref)}
+.stagebar .st2{border-top-color:#2F7A64}
+.stagebar .st3{border-top-color:var(--prop)}
+.stagebar .st4{border-top-color:var(--ink)}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="eyebrow">Archstone Security · Research exhibit · SP 800-171A machine-evidence study</p>
+<h1>Every component already exists.</h1>
+<p class="dek">The Department has published the referents that define what a conforming system looks like. Commercial environments already emit the evidence. The only artifact missing is the assembly: a signed, machine-readable bundle the Department can read once and score against its own published values. We classified all <b>320 assessment objectives</b> in NIST SP 800-171A by a single test — <b>does the system itself emit the evidence the objective requires?</b></p>
+
+<div class="pipe-shell"><div class="pipe">
+<div class="dleg">
+  <span class="it"><span class="sw sw-pub"></span><b>Published</b>&nbsp;— already designated by the Department</span>
+  <span class="it"><span class="sw sw-req"></span><b>Required &amp; operating</b>&nbsp;— commodity components already emitting</span>
+  <span class="it"><span class="sw sw-prop"></span><b>Proposed</b>&nbsp;— the Evidence Bill of Materials: this submission's ask</span>
+  <span class="it"><span class="sw sw-flow"></span><b>Evidence flow</b></span>
+</div>
+<svg viewBox="0 0 1160 470" role="img" aria-label="Pipeline diagram: published referents define conformance; the tenant emits evidence through five feed classes; evidence assembles into an Evidence Bill of Materials; the Department scores the output against its published values.">
+<defs>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4A5A66"/></marker>
+</defs>
+
+<!-- REFERENTS -->
+<text x="24" y="30" class="t-lab">PUBLISHED REFERENTS · ALREADY DESIGNATED</text>
+<g id="ref-ncp" class="reff" tabindex="0" role="button">
+<rect class="refbox" x="24" y="48" width="240" height="72" rx="2"/>
+<text x="40" y="76" class="t-name">NIST Checklist Repository</text>
+<text x="40" y="94" class="t-sub">component hardening requirements —</text>
+<text x="40" y="108" class="t-sub">designated referent under ODP 03.04.02</text>
+
+</g><g id="ref-cat" class="reff" tabindex="0" role="button"><rect class="refbox" x="24" y="136" width="240" height="72" rx="2"/>
+<text x="40" y="164" class="t-name">NIST SP 800-171 / 171A</text>
+<text x="40" y="182" class="t-sub">program security requirements —</text>
+<text x="40" y="196" class="t-sub">320 assessment objectives</text>
+
+</g><g id="ref-odp" class="reff" tabindex="0" role="button"><rect class="refbox" x="24" y="224" width="240" height="72" rx="2"/>
+<text x="40" y="252" class="t-name">Parameter Values (ODPs)</text>
+<text x="40" y="270" class="t-sub">Department-defined values —</text>
+<text x="40" y="284" class="t-sub">April 2025 memorandum</text>
+</g>
+<path class="flow" style="stroke:#33586E" d="M264 84 H316 V170 H332"/>
+<path class="flow" style="stroke:#33586E" d="M264 172 H332"/>
+<path class="flow" style="stroke:#33586E" d="M264 260 H316 V178 H332"/>
+<text x="286" y="152" class="t-lab" text-anchor="middle" fill="#33586E">define</text>
+
+<!-- TENANT -->
+<rect x="336" y="40" width="380" height="392" rx="4" fill="#fff" stroke="#1B2833" stroke-width="1.6" stroke-dasharray="7 5"/>
+<text x="356" y="68" class="t-lab">TENANT · DECLARED ASSESSMENT BOUNDARY</text>
+<text x="356" y="86" class="t-sub">components the standard already requires, sold as commodities</text>
+
+<g id="n1" tabindex="0" role="button"><rect class="feednode" x="356" y="102" width="340" height="52" rx="2"/>
+<text x="372" y="124" class="t-name">Pre-hardened images</text>
+<text x="372" y="142" class="t-sub">host config read · compliance scan vs baseline</text>
+<text x="682" y="124" class="t-count" text-anchor="end">111</text>
+<text x="682" y="142" class="t-req" text-anchor="end">REQUIRED · 03.04.01–02</text></g>
+
+<g id="n2" tabindex="0" role="button"><rect class="feednode" x="356" y="164" width="340" height="52" rx="2"/>
+<text x="372" y="186" class="t-name">SIEM</text>
+<text x="372" y="204" class="t-sub">structured log &amp; event query</text>
+<text x="682" y="186" class="t-count" text-anchor="end">73</text>
+<text x="682" y="204" class="t-req" text-anchor="end">REQUIRED · 03.03.06</text></g>
+
+<g id="n3" tabindex="0" role="button"><rect class="feednode" x="356" y="226" width="340" height="52" rx="2"/>
+<text x="372" y="248" class="t-name">Vulnerability scanner</text>
+<text x="372" y="266" class="t-sub">compliance &amp; CVE scan results</text>
+<text x="682" y="248" class="t-count" text-anchor="end">21</text>
+<text x="682" y="266" class="t-req" text-anchor="end">REQUIRED · 03.11.02</text></g>
+
+<g id="n4" tabindex="0" role="button"><rect class="feednode" x="356" y="288" width="340" height="52" rx="2"/>
+<text x="372" y="310" class="t-name">Identity &amp; directory</text>
+<text x="372" y="328" class="t-sub">directory / inventory enumeration</text>
+<text x="682" y="310" class="t-count" text-anchor="end">45</text>
+<text x="682" y="328" class="t-req" text-anchor="end">REQUIRED · 03.05.01</text></g>
+
+<g id="n5" tabindex="0" role="button"><rect class="feednode" x="356" y="350" width="340" height="52" rx="2"/>
+<text x="372" y="372" class="t-name">Cloud service configuration</text>
+<text x="372" y="390" class="t-sub">configuration API query</text>
+<text x="682" y="372" class="t-count" text-anchor="end">103</text>
+<text x="682" y="390" class="t-req" text-anchor="end">COMMODITY · EVERY CSP</text></g>
+
+<text x="356" y="424" class="t-sub">counts = objectives each feed class can report on (an objective may use several)</text>
+
+<!-- EMIT arrows -->
+<path class="flow emit" id="p1" d="M696 128 C760 128 760 210 806 218"/>
+<path class="flow emit" id="p2" d="M696 190 C756 190 760 216 806 224"/>
+<path class="flow emit" id="p3" d="M696 252 C756 252 760 240 806 236"/>
+<path class="flow emit" id="p4" d="M696 314 C760 314 760 250 806 242"/>
+<path class="flow emit" id="p5" d="M696 376 C764 376 764 258 806 250"/>
+<text x="752" y="160" class="t-lab" text-anchor="middle" fill="#0E7C61">emit</text>
+<circle class="packet" r="3.5"><animateMotion dur="3.2s" repeatCount="indefinite" rotate="0"><mpath href="#p1"/></animateMotion></circle>
+<circle class="packet" r="3.5"><animateMotion dur="2.7s" begin="0.9s" repeatCount="indefinite"><mpath href="#p3"/></animateMotion></circle>
+<circle class="packet" r="3.5"><animateMotion dur="2.9s" begin="1.6s" repeatCount="indefinite"><mpath href="#p5"/></animateMotion></circle>
+
+<!-- EBOM -->
+<text x="810" y="140" class="t-lab" fill="#6A4C93" style="font-weight:600">PROPOSED — THE MISSING ARTIFACT</text>
+<g id="ebomg" tabindex="0" role="button"><rect x="810" y="150" width="196" height="170" rx="3" fill="#F1EBF8" stroke="#6A4C93" stroke-width="2" stroke-dasharray="8 5"/>
+<text x="828" y="180" class="t-lab" fill="#6A4C93">SIGNED OSCAL BUNDLE</text>
+<text x="828" y="206" class="t-name" style="font-size:17px" fill="#4A3568">Evidence Bill</text>
+<text x="828" y="226" class="t-name" style="font-size:17px" fill="#4A3568">of Materials</text>
+<text x="828" y="252" class="t-sub">component definition</text>
+<text x="828" y="268" class="t-sub">assessment results</text>
+<text x="828" y="284" class="t-sub">deviation register</text>
+<text x="828" y="300" class="t-sub">boundary reference</text></g>
+
+<!-- OUTPUT -->
+<path class="flow" d="M1006 235 H1044"/>
+<rect x="1048" y="196" width="96" height="78" rx="2" fill="#fff" stroke="#1B2833" stroke-width="1.4"/>
+<text x="1096" y="228" class="t-name" text-anchor="middle" style="font-size:13px">Machine-</text>
+<text x="1096" y="244" class="t-name" text-anchor="middle" style="font-size:13px">readable</text>
+<text x="1096" y="260" class="t-name" text-anchor="middle" style="font-size:13px">output</text>
+
+<!-- score-back loop -->
+<path class="flow" d="M1096 274 V350 H286 V300"/>
+<text x="690" y="342" class="t-lab" text-anchor="middle">scored by the Department against its own published values — write once, read by many</text>
+</svg>
+
+<div class="stagebar">
+  <span class="st1">1 · Define — published once</span>
+  <span class="st2">2 · Emit — already happening</span>
+  <span class="st3">3 · Assemble — the missing artifact</span>
+  <span class="st4">4 · Score — a query, not a review</span>
+</div>
+<p class="hint">CLICK ANY BOX — feeds, referents, the EBOM, or the disposition cards — TO SEE THE OBJECTIVES BEHIND IT</p>
+</div></div>
+
+
+<div class="panel" id="panel" hidden>
+  <div class="panel-head">
+    <div><span class="panel-title" id="panel-title"></span><span class="panel-count" id="panel-count"></span></div>
+    <button class="panel-close" id="panel-close" aria-label="Close panel">close ×</button>
+  </div>
+  <p class="panel-sub" id="panel-sub"></p>
+  <div class="panel-tools" id="panel-tools" hidden>
+    <input class="panel-filter" id="panel-filter" type="text" placeholder="filter — id, title, family…" aria-label="Filter objectives">
+    <span class="shown" id="panel-shown"></span>
+    <span class="aleg"><span class="apill desig">DESIGNATED</span><span class="apill pend">PENDING ODP PASS</span><span class="apill art">ARTIFACT</span><span class="apill none">NO REFERENT</span></span>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+</div>
+
+<div class="numbers">
+  <div class="card total" tabindex="0" role="button" data-disp="all"><div class="n">320</div><div class="l">assessment objectives</div><div class="d">all 14 families present in scope, classified row by row</div></div>
+  <div class="card yes" tabindex="0" role="button" data-disp="yes"><div class="n">140</div><div class="l">fully machine-reportable</div><div class="d">every input the objective requires is emitted in structured form</div></div>
+  <div class="card part" tabindex="0" role="button" data-disp="partial"><div class="n">101</div><div class="l">partially reportable</div><div class="d">emission exists but is scope-conditioned, proxy, or awaits a published value</div></div>
+  <div class="card no" tabindex="0" role="button" data-disp="no"><div class="n">79</div><div class="l">not machine-reportable</div><div class="d">physical, procedural, or judgment-bound — correctly left to human review</div></div>
+</div>
+
+<div class="feeds">
+  <h2>Five feed classes carry the catalog</h2>
+  <p class="sub">Objectives each feed class can report on. The top three are interfaces present in stacks most contractors already operate — no specialized acquisition required for the bulk of coverage.</p>
+  <div class="bar-row" data-n="n5"><span class="fl">Config API</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="fn">103</span></div>
+  <div class="bar-row" data-n="n1"><span class="fl">Host config read</span><div class="bar-track"><div class="bar-fill" style="width:87%"></div></div><span class="fn">90</span></div>
+  <div class="bar-row" data-n="n2"><span class="fl">SIEM / log query</span><div class="bar-track"><div class="bar-fill" style="width:71%"></div></div><span class="fn">73</span></div>
+  <div class="bar-row" data-n="n4"><span class="fl">Directory enumeration</span><div class="bar-track"><div class="bar-fill" style="width:44%"></div></div><span class="fn">45</span></div>
+  <div class="bar-row" data-n="n3"><span class="fl">Compliance scan</span><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><span class="fn">21</span></div>
+</div>
+
+<div class="band">
+  <h2>Read the numbers with these limits</h2>
+  <p class="sub">Findings are emission claims, not compliance claims — they state what the system reports, not whether any organization conforms.</p>
+  <ul>
+    <li><b>One reference environment</b> (n = 1): Windows/Azure with a FedRAMP-Moderate backend. The method generalizes; the integers may not.</li>
+    <li><b>13 dispositions are pending</b> verification against the April 2025 ODP memorandum and are held at "partial" until a published value is confirmed.</li>
+    <li><b>Corrections are retained visibly</b> in per-objective rationales, including a boundary-assumption error affecting 16 Physical Protection objectives.</li>
+    <li><b>Definition-shaped objectives</b> count as reportable only where a published referent exists — an unfloored setting ratifies itself and reports nothing.</li>
+  </ul>
+</div>
+
+<footer>
+  <span>v0.1 · July 2026</span>
+  <span>dataset: rfi-figure-dataset v7 · 320 rows · rationale per row</span>
+  <span>license: CC BY 4.0</span>
+  <span>method &amp; classification published · implementation mappings retained</span>
+</footer>
+
+</div>
+<script>
+var DATA=[{"id":"03.03.01.a","t":"Create and retain system audit logs and records to the extent needed to enable t","f":"AU","d":"yes","fe":["Compliance scan","Host config read"],"a":"ODP"},{"id":"03.03.01.b","t":"Create and retain system audit logs and records to the extent needed to enable t","f":"AU","d":"partial","fe":["SIEM / log query"],"a":"customer-ODP (pending)"},{"id":"03.03.01.c","t":"Create and retain system audit logs and records to the extent needed to enable t","f":"AU","d":"yes","fe":["Host config read","SIEM / log query"],"a":""},{"id":"03.03.01.d","t":"Create and retain system audit logs and records to the extent needed to enable t","f":"AU","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.03.01.e","t":"Create and retain system audit logs and records to the extent needed to enable t","f":"AU","d":"partial","fe":["Config API"],"a":"customer-ODP (pending)"},{"id":"03.03.01.f","t":"Create and retain system audit logs and records to the extent needed to enable t","f":"AU","d":"yes","fe":["SIEM / log query","Config API"],"a":""},{"id":"03.03.02.a","t":"Ensure that the actions of individual system users can be uniquely traced to tho","f":"AU","d":"partial","fe":["SIEM / log query"],"a":"customer-ODP (pending)"},{"id":"03.03.02.b","t":"Ensure that the actions of individual system users can be uniquely traced to tho","f":"AU","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.03.03.a","t":"Review and update logged events.","f":"AU","d":"no","fe":[],"a":""},{"id":"03.03.03.b","t":"Review and update logged events.","f":"AU","d":"partial","fe":["Host config read"],"a":""},{"id":"03.03.03.c","t":"Review and update logged events.","f":"AU","d":"partial","fe":["Host config read"],"a":""},{"id":"03.03.04.a","t":"Alert in the event of an audit logging process failure.","f":"AU","d":"yes","fe":["Config API"],"a":""},{"id":"03.03.04.b","t":"Alert in the event of an audit logging process failure.","f":"AU","d":"partial","fe":["Config API"],"a":"customer-ODP (pending)"},{"id":"03.03.04.c","t":"Alert in the event of an audit logging process failure.","f":"AU","d":"yes","fe":["SIEM / log query","Config API"],"a":""},{"id":"03.03.05.a","t":"Correlate audit record review, analysis, and reporting processes for investigati","f":"AU","d":"no","fe":[],"a":"ODP (frequency only)"},{"id":"03.03.05.b","t":"Correlate audit record review, analysis, and reporting processes for investigati","f":"AU","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.03.06.a","t":"Provide audit record reduction and report generation to support on-demand analys","f":"AU","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.03.06.b","t":"Provide audit record reduction and report generation to support on-demand analys","f":"AU","d":"yes","fe":["SIEM / log query","Config API"],"a":""},{"id":"03.03.07.a","t":"Provide a system capability that compares and synchronizes internal system clock","f":"AU","d":"yes","fe":["Host config read"],"a":""},{"id":"03.03.07.b","t":"Provide a system capability that compares and synchronizes internal system clock","f":"AU","d":"partial","fe":["Host config read"],"a":"customer-ODP (pending)"},{"id":"03.03.07.c","t":"Provide a system capability that compares and synchronizes internal system clock","f":"AU","d":"yes","fe":["Host config read","SIEM / log query"],"a":""},{"id":"03.03.08.a","t":"Protect audit information and audit logging tools from unauthorized access, modi","f":"AU","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.03.08.b","t":"Protect audit information and audit logging tools from unauthorized access, modi","f":"AU","d":"yes","fe":["Host config read"],"a":""},{"id":"03.03.08.c","t":"Protect audit information and audit logging tools from unauthorized access, modi","f":"AU","d":"yes","fe":["Host config read"],"a":""},{"id":"03.03.08.d","t":"Protect audit information and audit logging tools from unauthorized access, modi","f":"AU","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.03.08.e","t":"Protect audit information and audit logging tools from unauthorized access, modi","f":"AU","d":"yes","fe":["Host config read"],"a":""},{"id":"03.03.08.f","t":"Protect audit information and audit logging tools from unauthorized access, modi","f":"AU","d":"yes","fe":["Host config read"],"a":""},{"id":"03.03.09.a","t":"Limit management of audit logging functionality to a subset of privileged users.","f":"AU","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.03.09.b","t":"Limit management of audit logging functionality to a subset of privileged users.","f":"AU","d":"yes","fe":["Directory enumeration","SIEM / log query"],"a":""},{"id":"03.08.01.a","t":"Protect (i.e., physically control and securely store) system media containing CU","f":"MP","d":"no","fe":[],"a":""},{"id":"03.08.01.b","t":"Protect (i.e., physically control and securely store) system media containing CU","f":"MP","d":"no","fe":[],"a":""},{"id":"03.08.01.c","t":"Protect (i.e., physically control and securely store) system media containing CU","f":"MP","d":"no","fe":[],"a":""},{"id":"03.08.01.d","t":"Protect (i.e., physically control and securely store) system media containing CU","f":"MP","d":"yes","fe":["Host config read","Config API"],"a":""},{"id":"03.08.02.a","t":"Limit access to CUI on system media to authorized users.","f":"MP","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.08.03.a","t":"Sanitize or destroy system media containing CUI before disposal or release for r","f":"MP","d":"no","fe":[],"a":""},{"id":"03.08.03.b","t":"Sanitize or destroy system media containing CUI before disposal or release for r","f":"MP","d":"no","fe":[],"a":""},{"id":"03.08.04.a","t":"Mark media with necessary CUI markings and distribution limitations.","f":"MP","d":"partial","fe":["Config API"],"a":""},{"id":"03.08.04.b","t":"Mark media with necessary CUI markings and distribution limitations.","f":"MP","d":"partial","fe":["Config API"],"a":""},{"id":"03.08.05.a","t":"Control access to media containing CUI and maintain accountability for media dur","f":"MP","d":"yes","fe":["Config API"],"a":""},{"id":"03.08.05.b","t":"Control access to media containing CUI and maintain accountability for media dur","f":"MP","d":"no","fe":[],"a":""},{"id":"03.08.06.a","t":"Implement cryptographic mechanisms to protect the confidentiality of CUI stored ","f":"MP","d":"yes","fe":["Host config read","Config API"],"a":""},{"id":"03.08.07.a","t":"Control the use of removable media on system components.","f":"MP","d":"yes","fe":["Host config read","Compliance scan"],"a":""},{"id":"03.08.08.a","t":"Prohibit the use of portable storage devices when such devices have no identifia","f":"MP","d":"yes","fe":["Host config read","Compliance scan"],"a":""},{"id":"03.08.09.a","t":"Protect the confidentiality of backup CUI at storage locations.","f":"MP","d":"yes","fe":["Config API"],"a":""},{"id":"03.07.01.a","t":"Perform maintenance on organizational systems.","f":"MA","d":"no","fe":[],"a":""},{"id":"03.07.02.a","t":"Provide controls on the tools, techniques, mechanisms, and personnel used to con","f":"MA","d":"partial","fe":["Host config read","Compliance scan"],"a":""},{"id":"03.07.02.b","t":"Provide controls on the tools, techniques, mechanisms, and personnel used to con","f":"MA","d":"no","fe":[],"a":""},{"id":"03.07.02.c","t":"Provide controls on the tools, techniques, mechanisms, and personnel used to con","f":"MA","d":"partial","fe":["Host config read"],"a":""},{"id":"03.07.02.d","t":"Provide controls on the tools, techniques, mechanisms, and personnel used to con","f":"MA","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.07.03.a","t":"Ensure equipment removed for off-site maintenance is sanitized of any CUI.","f":"MA","d":"no","fe":[],"a":""},{"id":"03.07.04.a","t":"Check media containing diagnostic and test programs for malicious code before th","f":"MA","d":"yes","fe":["Host config read","Config API"],"a":""},{"id":"03.07.05.a","t":"Require multifactor authentication to establish nonlocal maintenance sessions vi","f":"MA","d":"yes","fe":["Config API"],"a":""},{"id":"03.07.05.b","t":"Require multifactor authentication to establish nonlocal maintenance sessions vi","f":"MA","d":"partial","fe":["Config API"],"a":""},{"id":"03.07.06.a","t":"Supervise the maintenance activities of maintenance personnel without required a","f":"MA","d":"no","fe":[],"a":""},{"id":"03.06.01.a","t":"Establish an operational incident-handling capability for organizational systems","f":"IR","d":"no","fe":[],"a":""},{"id":"03.06.01.b","t":"Establish an operational incident-handling capability for organizational systems","f":"IR","d":"no","fe":[],"a":""},{"id":"03.06.01.c","t":"Establish an operational incident-handling capability for organizational systems","f":"IR","d":"yes","fe":["Config API","SIEM / log query"],"a":""},{"id":"03.06.01.d","t":"Establish an operational incident-handling capability for organizational systems","f":"IR","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.06.01.e","t":"Establish an operational incident-handling capability for organizational systems","f":"IR","d":"yes","fe":["Config API"],"a":""},{"id":"03.06.01.f","t":"Establish an operational incident-handling capability for organizational systems","f":"IR","d":"yes","fe":["Config API"],"a":""},{"id":"03.06.01.g","t":"Establish an operational incident-handling capability for organizational systems","f":"IR","d":"no","fe":[],"a":""},{"id":"03.06.02.a","t":"Track, document, and report incidents to designated officials and/or authorities","f":"IR","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.06.02.b","t":"Track, document, and report incidents to designated officials and/or authorities","f":"IR","d":"no","fe":[],"a":""},{"id":"03.06.02.c","t":"Track, document, and report incidents to designated officials and/or authorities","f":"IR","d":"no","fe":[],"a":"DFARS clause"},{"id":"03.06.02.d","t":"Track, document, and report incidents to designated officials and/or authorities","f":"IR","d":"yes","fe":["Config API"],"a":""},{"id":"03.06.02.e","t":"Track, document, and report incidents to designated officials and/or authorities","f":"IR","d":"no","fe":[],"a":"DFARS clause"},{"id":"03.06.02.f","t":"Track, document, and report incidents to designated officials and/or authorities","f":"IR","d":"yes","fe":["Config API","SIEM / log query"],"a":""},{"id":"03.06.03.a","t":"Test the organizational incident response capability.","f":"IR","d":"no","fe":[],"a":""},{"id":"03.10.01.a","t":"Limit physical access to organizational systems, equipment, and the respective o","f":"Physical Protection","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.10.01.b","t":"Limit physical access to organizational systems, equipment, and the respective o","f":"Physical Protection","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.10.01.c","t":"Limit physical access to organizational systems, equipment, and the respective o","f":"Physical Protection","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.10.01.d","t":"Limit physical access to organizational systems, equipment, and the respective o","f":"Physical Protection","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.10.02.a","t":"Protect and monitor the physical facility and support infrastructure for organiz","f":"Physical Protection","d":"no","fe":[],"a":""},{"id":"03.10.02.b","t":"Protect and monitor the physical facility and support infrastructure for organiz","f":"Physical Protection","d":"no","fe":[],"a":""},{"id":"03.10.02.c","t":"Protect and monitor the physical facility and support infrastructure for organiz","f":"Physical Protection","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.10.02.d","t":"Protect and monitor the physical facility and support infrastructure for organiz","f":"Physical Protection","d":"no","fe":[],"a":""},{"id":"03.10.03.a","t":"Escort visitors and monitor visitor activity.","f":"Physical Protection","d":"no","fe":[],"a":""},{"id":"03.10.03.b","t":"Escort visitors and monitor visitor activity.","f":"Physical Protection","d":"no","fe":[],"a":""},{"id":"03.10.04.a","t":"Maintain audit logs of physical access.","f":"Physical Protection","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.10.05.a","t":"Control and manage physical access devices.","f":"Physical Protection","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.10.05.b","t":"Control and manage physical access devices.","f":"Physical Protection","d":"partial","fe":["Directory enumeration","SIEM / log query"],"a":""},{"id":"03.10.05.c","t":"Control and manage physical access devices.","f":"Physical Protection","d":"partial","fe":["Directory enumeration"],"a":""},{"id":"03.10.06.a","t":"Enforce safeguarding measures for CUI at alternate work sites.","f":"Physical Protection","d":"no","fe":[],"a":""},{"id":"03.10.06.b","t":"Enforce safeguarding measures for CUI at alternate work sites.","f":"Physical Protection","d":"partial","fe":["Config API"],"a":""},{"id":"03.02.01.a","t":"Ensure that managers, systems administrators, and users of organizational system","f":"Awareness & Training","d":"no","fe":[],"a":""},{"id":"03.02.01.b","t":"Ensure that managers, systems administrators, and users of organizational system","f":"Awareness & Training","d":"no","fe":[],"a":""},{"id":"03.02.01.c","t":"Ensure that managers, systems administrators, and users of organizational system","f":"Awareness & Training","d":"no","fe":[],"a":""},{"id":"03.02.01.d","t":"Ensure that managers, systems administrators, and users of organizational system","f":"Awareness & Training","d":"no","fe":[],"a":""},{"id":"03.02.02.a","t":"Ensure that organizational personnel are adequately trained to carry out their a","f":"Awareness & Training","d":"no","fe":[],"a":""},{"id":"03.02.02.b","t":"Ensure that organizational personnel are adequately trained to carry out their a","f":"Awareness & Training","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.02.02.c","t":"Ensure that organizational personnel are adequately trained to carry out their a","f":"Awareness & Training","d":"no","fe":[],"a":""},{"id":"03.02.03.a","t":"Provide security awareness training on recognizing and reporting potential indic","f":"Awareness & Training","d":"no","fe":[],"a":""},{"id":"03.02.03.b","t":"Provide security awareness training on recognizing and reporting potential indic","f":"Awareness & Training","d":"no","fe":[],"a":""},{"id":"03.09.01.a","t":"Screen individuals prior to authorizing access to organizational systems contain","f":"Personnel Security","d":"no","fe":[],"a":""},{"id":"03.09.02.a","t":"Ensure that organizational systems containing CUI are protected during and after","f":"Personnel Security","d":"no","fe":[],"a":""},{"id":"03.09.02.b","t":"Ensure that organizational systems containing CUI are protected during and after","f":"Personnel Security","d":"partial","fe":["Directory enumeration","SIEM / log query"],"a":""},{"id":"03.09.02.c","t":"Ensure that organizational systems containing CUI are protected during and after","f":"Personnel Security","d":"partial","fe":["Directory enumeration","Config API"],"a":""},{"id":"03.05.01.a","t":"Identify system users, processes acting on behalf of users, and devices.","f":"Identification & Authentication","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.05.01.b","t":"Identify system users, processes acting on behalf of users, and devices.","f":"Identification & Authentication","d":"partial","fe":["Directory enumeration","SIEM / log query"],"a":""},{"id":"03.05.01.c","t":"Identify system users, processes acting on behalf of users, and devices.","f":"Identification & Authentication","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.05.02.a","t":"Authenticate or verify the identities of users, processes, or devices, as a prer","f":"Identification & Authentication","d":"yes","fe":["SIEM / log query","Config API"],"a":""},{"id":"03.05.02.b","t":"Authenticate or verify the identities of users, processes, or devices, as a prer","f":"Identification & Authentication","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.05.02.c","t":"Authenticate or verify the identities of users, processes, or devices, as a prer","f":"Identification & Authentication","d":"yes","fe":["Config API","SIEM / log query"],"a":""},{"id":"03.05.03.a","t":"Use multifactor authentication for local and network access to privileged accoun","f":"Identification & Authentication","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.05.03.b","t":"Use multifactor authentication for local and network access to privileged accoun","f":"Identification & Authentication","d":"partial","fe":["Host config read"],"a":""},{"id":"03.05.03.c","t":"Use multifactor authentication for local and network access to privileged accoun","f":"Identification & Authentication","d":"yes","fe":["Config API","SIEM / log query"],"a":""},{"id":"03.05.03.d","t":"Use multifactor authentication for local and network access to privileged accoun","f":"Identification & Authentication","d":"yes","fe":["Config API","SIEM / log query"],"a":""},{"id":"03.05.04.a","t":"Employ replay-resistant authentication mechanisms for network access to privileg","f":"Identification & Authentication","d":"yes","fe":["Config API"],"a":""},{"id":"03.05.05.a","t":"Prevent reuse of identifiers for a defined period.","f":"Identification & Authentication","d":"partial","fe":["Config API"],"a":"customer-ODP (pending)"},{"id":"03.05.05.b","t":"Prevent reuse of identifiers for a defined period.","f":"Identification & Authentication","d":"yes","fe":["Config API","Directory enumeration"],"a":""},{"id":"03.05.06.a","t":"Disable identifiers after a defined period of inactivity.","f":"Identification & Authentication","d":"partial","fe":["Config API"],"a":"customer-ODP (pending)"},{"id":"03.05.06.b","t":"Disable identifiers after a defined period of inactivity.","f":"Identification & Authentication","d":"yes","fe":["Directory enumeration","SIEM / log query"],"a":""},{"id":"03.05.07.a","t":"Enforce a minimum password complexity and change of characters when new password","f":"Identification & Authentication","d":"yes","fe":["Host config read","Config API"],"a":"NCP-designated"},{"id":"03.05.07.b","t":"Enforce a minimum password complexity and change of characters when new password","f":"Identification & Authentication","d":"yes","fe":["Host config read"],"a":""},{"id":"03.05.07.c","t":"Enforce a minimum password complexity and change of characters when new password","f":"Identification & Authentication","d":"yes","fe":["Host config read","SIEM / log query"],"a":""},{"id":"03.05.07.d","t":"Enforce a minimum password complexity and change of characters when new password","f":"Identification & Authentication","d":"yes","fe":["Host config read"],"a":""},{"id":"03.05.08.a","t":"Prohibit password reuse for a specified number of generations.","f":"Identification & Authentication","d":"yes","fe":["Host config read","Config API"],"a":"NCP-designated"},{"id":"03.05.08.b","t":"Prohibit password reuse for a specified number of generations.","f":"Identification & Authentication","d":"yes","fe":["Host config read"],"a":""},{"id":"03.05.09.a","t":"Allow temporary password use for system logons with an immediate change to a per","f":"Identification & Authentication","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.05.10.a","t":"Store and transmit only cryptographically-protected passwords.","f":"Identification & Authentication","d":"partial","fe":["Host config read"],"a":""},{"id":"03.05.10.b","t":"Store and transmit only cryptographically-protected passwords.","f":"Identification & Authentication","d":"yes","fe":["Host config read","Config API"],"a":""},{"id":"03.05.11.a","t":"Obscure feedback of authentication information.","f":"Identification & Authentication","d":"yes","fe":["Host config read"],"a":""},{"id":"03.14.01.a","t":"Identify, report, and correct system flaws in a timely manner.","f":"System & Info Integrity","d":"partial","fe":["Config API"],"a":"customer-ODP (pending)"},{"id":"03.14.01.b","t":"Identify, report, and correct system flaws in a timely manner.","f":"System & Info Integrity","d":"yes","fe":["SIEM / log query","Config API"],"a":""},{"id":"03.14.01.c","t":"Identify, report, and correct system flaws in a timely manner.","f":"System & Info Integrity","d":"no","fe":[],"a":""},{"id":"03.14.01.d","t":"Identify, report, and correct system flaws in a timely manner.","f":"System & Info Integrity","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.14.01.e","t":"Identify, report, and correct system flaws in a timely manner.","f":"System & Info Integrity","d":"no","fe":[],"a":""},{"id":"03.14.01.f","t":"Identify, report, and correct system flaws in a timely manner.","f":"System & Info Integrity","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.14.02.a","t":"Provide protection from malicious code at designated locations within organizati","f":"System & Info Integrity","d":"partial","fe":["Config API"],"a":""},{"id":"03.14.02.b","t":"Provide protection from malicious code at designated locations within organizati","f":"System & Info Integrity","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.14.03.a","t":"Monitor system security alerts and advisories and take action in response.","f":"System & Info Integrity","d":"no","fe":[],"a":""},{"id":"03.14.03.b","t":"Monitor system security alerts and advisories and take action in response.","f":"System & Info Integrity","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.14.03.c","t":"Monitor system security alerts and advisories and take action in response.","f":"System & Info Integrity","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.14.04.a","t":"Update malicious code protection mechanisms when new releases are available.","f":"System & Info Integrity","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.14.05.a","t":"Perform periodic scans of organizational systems and real-time scans of files fr","f":"System & Info Integrity","d":"partial","fe":["Config API"],"a":"customer-ODP (pending)"},{"id":"03.14.05.b","t":"Perform periodic scans of organizational systems and real-time scans of files fr","f":"System & Info Integrity","d":"yes","fe":["SIEM / log query","Config API"],"a":""},{"id":"03.14.05.c","t":"Perform periodic scans of organizational systems and real-time scans of files fr","f":"System & Info Integrity","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.14.06.a","t":"Monitor organizational systems, including inbound and outbound communications tr","f":"System & Info Integrity","d":"yes","fe":["Config API","SIEM / log query"],"a":""},{"id":"03.14.06.b","t":"Monitor organizational systems, including inbound and outbound communications tr","f":"System & Info Integrity","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.14.06.c","t":"Monitor organizational systems, including inbound and outbound communications tr","f":"System & Info Integrity","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.14.07.a","t":"Identify unauthorized use of organizational systems.","f":"System & Info Integrity","d":"no","fe":[],"a":""},{"id":"03.14.07.b","t":"Identify unauthorized use of organizational systems.","f":"System & Info Integrity","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.01.01.a","t":"Limit system access to authorized users, processes acting on behalf of authorize","f":"Access Control","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.01.01.b","t":"Limit system access to authorized users, processes acting on behalf of authorize","f":"Access Control","d":"partial","fe":["Directory enumeration","SIEM / log query"],"a":""},{"id":"03.01.01.c","t":"Limit system access to authorized users, processes acting on behalf of authorize","f":"Access Control","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.01.01.d","t":"Limit system access to authorized users, processes acting on behalf of authorize","f":"Access Control","d":"yes","fe":["Config API","SIEM / log query"],"a":""},{"id":"03.01.01.e","t":"Limit system access to authorized users, processes acting on behalf of authorize","f":"Access Control","d":"yes","fe":["Config API","Directory enumeration"],"a":""},{"id":"03.01.01.f","t":"Limit system access to authorized users, processes acting on behalf of authorize","f":"Access Control","d":"yes","fe":["Config API","Directory enumeration"],"a":"ODP"},{"id":"03.01.02.a","t":"Limit system access to the types of transactions and functions that authorized u","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.02.b","t":"Limit system access to the types of transactions and functions that authorized u","f":"Access Control","d":"partial","fe":["Config API"],"a":""},{"id":"03.01.03.a","t":"Control the flow of CUI in accordance with approved authorizations.","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.03.b","t":"Control the flow of CUI in accordance with approved authorizations.","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.03.c","t":"Control the flow of CUI in accordance with approved authorizations.","f":"Access Control","d":"partial","fe":["Directory enumeration","Config API"],"a":""},{"id":"03.01.03.d","t":"Control the flow of CUI in accordance with approved authorizations.","f":"Access Control","d":"partial","fe":["Config API"],"a":"artifact"},{"id":"03.01.03.e","t":"Control the flow of CUI in accordance with approved authorizations.","f":"Access Control","d":"yes","fe":["Config API","SIEM / log query"],"a":""},{"id":"03.01.04.a","t":"Separate the duties of individuals to reduce the risk of malevolent activity wit","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.04.b","t":"Separate the duties of individuals to reduce the risk of malevolent activity wit","f":"Access Control","d":"partial","fe":["Directory enumeration"],"a":""},{"id":"03.01.04.c","t":"Separate the duties of individuals to reduce the risk of malevolent activity wit","f":"Access Control","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.01.05.a","t":"Employ the principle of least privilege, including for specific security functio","f":"Access Control","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.01.05.b","t":"Employ the principle of least privilege, including for specific security functio","f":"Access Control","d":"partial","fe":["Directory enumeration"],"a":"ODP"},{"id":"03.01.05.c","t":"Employ the principle of least privilege, including for specific security functio","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.05.d","t":"Employ the principle of least privilege, including for specific security functio","f":"Access Control","d":"partial","fe":["Directory enumeration","Host config read"],"a":""},{"id":"03.01.06.a","t":"Use non-privileged accounts or roles when accessing nonsecurity functions.","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.06.b","t":"Use non-privileged accounts or roles when accessing nonsecurity functions.","f":"Access Control","d":"yes","fe":["Directory enumeration","Host config read"],"a":""},{"id":"03.01.07.a","t":"Prevent non-privileged users from executing privileged functions and capture the","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.07.b","t":"Prevent non-privileged users from executing privileged functions and capture the","f":"Access Control","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.01.07.c","t":"Prevent non-privileged users from executing privileged functions and capture the","f":"Access Control","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.01.07.d","t":"Prevent non-privileged users from executing privileged functions and capture the","f":"Access Control","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.01.08.a","t":"Limit unsuccessful logon attempts.","f":"Access Control","d":"yes","fe":["Config API","Host config read"],"a":"ODP"},{"id":"03.01.08.b","t":"Limit unsuccessful logon attempts.","f":"Access Control","d":"yes","fe":["Host config read","Config API"],"a":""},{"id":"03.01.09.a","t":"Provide privacy and security notices consistent with applicable CUI rules.","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.09.b","t":"Provide privacy and security notices consistent with applicable CUI rules.","f":"Access Control","d":"yes","fe":["Host config read","Config API"],"a":""},{"id":"03.01.10.a","t":"Use session lock with pattern-hiding displays to prevent access and viewing of d","f":"Access Control","d":"yes","fe":["Host config read"],"a":"ODP"},{"id":"03.01.10.b","t":"Use session lock with pattern-hiding displays to prevent access and viewing of d","f":"Access Control","d":"yes","fe":["Host config read"],"a":""},{"id":"03.01.10.c","t":"Use session lock with pattern-hiding displays to prevent access and viewing of d","f":"Access Control","d":"yes","fe":["Host config read"],"a":""},{"id":"03.01.11.a","t":"Terminate automatically a user session after a defined condition.","f":"Access Control","d":"yes","fe":["Config API","Host config read"],"a":"ODP"},{"id":"03.01.11.b","t":"Terminate automatically a user session after a defined condition.","f":"Access Control","d":"partial","fe":["Config API"],"a":""},{"id":"03.01.12.a","t":"Monitor and control remote access sessions.","f":"Access Control","d":"yes","fe":["Config API"],"a":""},{"id":"03.01.12.b","t":"Monitor and control remote access sessions.","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.12.c","t":"Monitor and control remote access sessions.","f":"Access Control","d":"yes","fe":["Config API","SIEM / log query"],"a":""},{"id":"03.01.12.d","t":"Monitor and control remote access sessions.","f":"Access Control","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.01.13.a","t":"Employ cryptographic mechanisms to protect the confidentiality of remote access ","f":"Access Control","d":"partial","fe":["Config API"],"a":""},{"id":"03.01.13.b","t":"Employ cryptographic mechanisms to protect the confidentiality of remote access ","f":"Access Control","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.01.14.a","t":"Route remote access via managed access control points.","f":"Access Control","d":"yes","fe":["Config API"],"a":""},{"id":"03.01.14.b","t":"Route remote access via managed access control points.","f":"Access Control","d":"partial","fe":["Config API","SIEM / log query"],"a":""},{"id":"03.01.15.a","t":"Authorize remote execution of privileged commands and remote access to security-","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.15.b","t":"Authorize remote execution of privileged commands and remote access to security-","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.15.c","t":"Authorize remote execution of privileged commands and remote access to security-","f":"Access Control","d":"partial","fe":["Directory enumeration"],"a":""},{"id":"03.01.15.d","t":"Authorize remote execution of privileged commands and remote access to security-","f":"Access Control","d":"partial","fe":["Directory enumeration","Config API"],"a":""},{"id":"03.01.16.a","t":"Authorize wireless access prior to allowing such connections.","f":"Access Control","d":"partial","fe":["Host config read"],"a":""},{"id":"03.01.16.b","t":"Authorize wireless access prior to allowing such connections.","f":"Access Control","d":"yes","fe":["Config API"],"a":""},{"id":"03.01.17.a","t":"Protect wireless access using authentication and encryption.","f":"Access Control","d":"yes","fe":["Host config read"],"a":""},{"id":"03.01.17.b","t":"Protect wireless access using authentication and encryption.","f":"Access Control","d":"partial","fe":["Config API"],"a":""},{"id":"03.01.18.a","t":"Control connection of mobile devices.","f":"Access Control","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.01.18.b","t":"Control connection of mobile devices.","f":"Access Control","d":"yes","fe":["Config API"],"a":""},{"id":"03.01.18.c","t":"Control connection of mobile devices.","f":"Access Control","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.01.19.a","t":"Encrypt CUI on mobile devices and mobile computing platforms.","f":"Access Control","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.01.19.b","t":"Encrypt CUI on mobile devices and mobile computing platforms.","f":"Access Control","d":"yes","fe":["Config API"],"a":""},{"id":"03.01.20.a","t":"Verify and control/limit connections to and use of external systems.","f":"Access Control","d":"partial","fe":["Config API","Directory enumeration"],"a":""},{"id":"03.01.20.b","t":"Verify and control/limit connections to and use of external systems.","f":"Access Control","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.01.20.c","t":"Verify and control/limit connections to and use of external systems.","f":"Access Control","d":"yes","fe":["Config API"],"a":""},{"id":"03.01.20.d","t":"Verify and control/limit connections to and use of external systems.","f":"Access Control","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.01.20.e","t":"Verify and control/limit connections to and use of external systems.","f":"Access Control","d":"yes","fe":["Config API"],"a":""},{"id":"03.01.20.f","t":"Verify and control/limit connections to and use of external systems.","f":"Access Control","d":"partial","fe":["Config API"],"a":""},{"id":"03.01.21.a","t":"Limit use of organizational portable storage devices on external systems.","f":"Access Control","d":"partial","fe":["Host config read"],"a":""},{"id":"03.01.21.b","t":"Limit use of organizational portable storage devices on external systems.","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.21.c","t":"Limit use of organizational portable storage devices on external systems.","f":"Access Control","d":"partial","fe":["Host config read"],"a":""},{"id":"03.01.22.a","t":"Control CUI posted or processed on publicly accessible systems.","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.22.b","t":"Control CUI posted or processed on publicly accessible systems.","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.22.c","t":"Control CUI posted or processed on publicly accessible systems.","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.22.d","t":"Control CUI posted or processed on publicly accessible systems.","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.01.22.e","t":"Control CUI posted or processed on publicly accessible systems.","f":"Access Control","d":"no","fe":[],"a":""},{"id":"03.04.01.a","t":"Establish and maintain baseline configurations and inventories of organizational","f":"Configuration Management","d":"yes","fe":["Compliance scan","Config API"],"a":"NCP-designated"},{"id":"03.04.01.b","t":"Establish and maintain baseline configurations and inventories of organizational","f":"Configuration Management","d":"partial","fe":["Directory enumeration","Compliance scan"],"a":""},{"id":"03.04.01.c","t":"Establish and maintain baseline configurations and inventories of organizational","f":"Configuration Management","d":"partial","fe":["Compliance scan","SIEM / log query"],"a":""},{"id":"03.04.01.d","t":"Establish and maintain baseline configurations and inventories of organizational","f":"Configuration Management","d":"yes","fe":["Directory enumeration"],"a":""},{"id":"03.04.01.e","t":"Establish and maintain baseline configurations and inventories of organizational","f":"Configuration Management","d":"partial","fe":["Directory enumeration"],"a":""},{"id":"03.04.01.f","t":"Establish and maintain baseline configurations and inventories of organizational","f":"Configuration Management","d":"yes","fe":["Directory enumeration","SIEM / log query"],"a":""},{"id":"03.04.02.a","t":"Establish and enforce security configuration settings for information technology","f":"Configuration Management","d":"yes","fe":["Compliance scan"],"a":"NCP-designated"},{"id":"03.04.02.b","t":"Establish and enforce security configuration settings for information technology","f":"Configuration Management","d":"yes","fe":["Compliance scan","Host config read"],"a":""},{"id":"03.04.03.a","t":"Track, review, approve or disapprove, and log changes to organizational systems.","f":"Configuration Management","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.04.03.b","t":"Track, review, approve or disapprove, and log changes to organizational systems.","f":"Configuration Management","d":"no","fe":[],"a":""},{"id":"03.04.03.c","t":"Track, review, approve or disapprove, and log changes to organizational systems.","f":"Configuration Management","d":"no","fe":[],"a":""},{"id":"03.04.03.d","t":"Track, review, approve or disapprove, and log changes to organizational systems.","f":"Configuration Management","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.04.04.a","t":"Analyze the security impact of changes prior to implementation.","f":"Configuration Management","d":"no","fe":[],"a":""},{"id":"03.04.05.a","t":"Define, document, approve, and enforce physical and logical access restrictions ","f":"Configuration Management","d":"no","fe":[],"a":""},{"id":"03.04.05.b","t":"Define, document, approve, and enforce physical and logical access restrictions ","f":"Configuration Management","d":"no","fe":[],"a":""},{"id":"03.04.05.c","t":"Define, document, approve, and enforce physical and logical access restrictions ","f":"Configuration Management","d":"no","fe":[],"a":""},{"id":"03.04.05.d","t":"Define, document, approve, and enforce physical and logical access restrictions ","f":"Configuration Management","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.04.05.e","t":"Define, document, approve, and enforce physical and logical access restrictions ","f":"Configuration Management","d":"partial","fe":["Directory enumeration"],"a":"artifact"},{"id":"03.04.05.f","t":"Define, document, approve, and enforce physical and logical access restrictions ","f":"Configuration Management","d":"partial","fe":["Directory enumeration"],"a":"artifact"},{"id":"03.04.05.g","t":"Define, document, approve, and enforce physical and logical access restrictions ","f":"Configuration Management","d":"partial","fe":["Directory enumeration"],"a":""},{"id":"03.04.05.h","t":"Define, document, approve, and enforce physical and logical access restrictions ","f":"Configuration Management","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.04.06.a","t":"Employ the principle of least functionality by configuring organizational system","f":"Configuration Management","d":"no","fe":[],"a":""},{"id":"03.04.06.b","t":"Employ the principle of least functionality by configuring organizational system","f":"Configuration Management","d":"yes","fe":["Compliance scan","Host config read"],"a":""},{"id":"03.04.07.a","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"partial","fe":["Host config read"],"a":"artifact"},{"id":"03.04.07.b","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"partial","fe":["Host config read"],"a":"artifact"},{"id":"03.04.07.c","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"yes","fe":["Host config read","SIEM / log query"],"a":""},{"id":"03.04.07.d","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"partial","fe":["Host config read"],"a":"artifact"},{"id":"03.04.07.e","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"partial","fe":["Host config read"],"a":"artifact"},{"id":"03.04.07.f","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"yes","fe":["Host config read"],"a":""},{"id":"03.04.07.g","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"partial","fe":["Host config read"],"a":"artifact"},{"id":"03.04.07.h","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"partial","fe":["Host config read"],"a":"artifact"},{"id":"03.04.07.i","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"yes","fe":["Host config read"],"a":""},{"id":"03.04.07.j","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"partial","fe":["Host config read"],"a":"artifact"},{"id":"03.04.07.k","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"yes","fe":["Host config read"],"a":"NCP-designated"},{"id":"03.04.07.l","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"yes","fe":["Host config read","Compliance scan"],"a":""},{"id":"03.04.07.m","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"yes","fe":["Host config read"],"a":"NCP-designated"},{"id":"03.04.07.n","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"yes","fe":["Host config read"],"a":"NCP-designated"},{"id":"03.04.07.o","t":"Restrict, disable, or prevent the use of nonessential programs, functions, ports","f":"Configuration Management","d":"yes","fe":["Host config read","Compliance scan"],"a":""},{"id":"03.04.08.a","t":"Apply deny-by-exception (blacklisting) policy to prevent the use of unauthorized","f":"Configuration Management","d":"partial","fe":["Host config read"],"a":"artifact"},{"id":"03.04.08.b","t":"Apply deny-by-exception (blacklisting) policy to prevent the use of unauthorized","f":"Configuration Management","d":"partial","fe":["Host config read"],"a":"artifact"},{"id":"03.04.08.c","t":"Apply deny-by-exception (blacklisting) policy to prevent the use of unauthorized","f":"Configuration Management","d":"yes","fe":["Host config read","SIEM / log query"],"a":""},{"id":"03.04.09.a","t":"Control and monitor user-installed software.","f":"Configuration Management","d":"no","fe":[],"a":""},{"id":"03.04.09.b","t":"Control and monitor user-installed software.","f":"Configuration Management","d":"yes","fe":["Host config read"],"a":""},{"id":"03.04.09.c","t":"Control and monitor user-installed software.","f":"Configuration Management","d":"yes","fe":["SIEM / log query","Directory enumeration"],"a":""},{"id":"03.13.01.a","t":"Monitor, control, and protect communications","f":"System & Comms Protection","d":"partial","fe":["Host config read","Config API"],"a":"artifact"},{"id":"03.13.01.b","t":"Monitor, control, and protect communications","f":"System & Comms Protection","d":"partial","fe":["Config API","Host config read"],"a":"artifact"},{"id":"03.13.01.c","t":"Monitor, control, and protect communications","f":"System & Comms Protection","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.13.01.d","t":"Monitor, control, and protect communications","f":"System & Comms Protection","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.13.01.e","t":"Monitor, control, and protect communications","f":"System & Comms Protection","d":"yes","fe":["Config API"],"a":""},{"id":"03.13.01.f","t":"Monitor, control, and protect communications","f":"System & Comms Protection","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.13.01.g","t":"Monitor, control, and protect communications","f":"System & Comms Protection","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.13.01.h","t":"Monitor, control, and protect communications","f":"System & Comms Protection","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.13.02.a","t":"Employ architectural designs, software development techniques, and systems engin","f":"System & Comms Protection","d":"no","fe":[],"a":""},{"id":"03.13.02.b","t":"Employ architectural designs, software development techniques, and systems engin","f":"System & Comms Protection","d":"no","fe":[],"a":""},{"id":"03.13.02.c","t":"Employ architectural designs, software development techniques, and systems engin","f":"System & Comms Protection","d":"no","fe":[],"a":""},{"id":"03.13.02.d","t":"Employ architectural designs, software development techniques, and systems engin","f":"System & Comms Protection","d":"partial","fe":["Config API"],"a":""},{"id":"03.13.02.e","t":"Employ architectural designs, software development techniques, and systems engin","f":"System & Comms Protection","d":"partial","fe":["Config API"],"a":""},{"id":"03.13.02.f","t":"Employ architectural designs, software development techniques, and systems engin","f":"System & Comms Protection","d":"no","fe":[],"a":""},{"id":"03.13.03.a","t":"Separate user functionality from system management functionality.","f":"System & Comms Protection","d":"no","fe":[],"a":""},{"id":"03.13.03.b","t":"Separate user functionality from system management functionality.","f":"System & Comms Protection","d":"no","fe":[],"a":""},{"id":"03.13.03.c","t":"Separate user functionality from system management functionality.","f":"System & Comms Protection","d":"yes","fe":["Directory enumeration","Host config read"],"a":""},{"id":"03.13.04.a","t":"Prevent unauthorized and unintended information transfer via shared system resou","f":"System & Comms Protection","d":"yes","fe":["Host config read","Compliance scan"],"a":""},{"id":"03.13.05.a","t":"Implement subnetworks for publicly accessible system components that are physica","f":"System & Comms Protection","d":"partial","fe":["Config API"],"a":""},{"id":"03.13.05.b","t":"Implement subnetworks for publicly accessible system components that are physica","f":"System & Comms Protection","d":"yes","fe":["Config API"],"a":""},{"id":"03.13.06.a","t":"Deny network communications traffic by default and allow network communications ","f":"System & Comms Protection","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.13.06.b","t":"Deny network communications traffic by default and allow network communications ","f":"System & Comms Protection","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.13.07.a","t":"Prevent remote devices from simultaneously establishing non-remote connections w","f":"System & Comms Protection","d":"no","fe":[],"a":""},{"id":"03.13.08.a","t":"Implement cryptographic mechanisms to prevent unauthorized disclosure of CUI dur","f":"System & Comms Protection","d":"no","fe":[],"a":""},{"id":"03.13.08.b","t":"Implement cryptographic mechanisms to prevent unauthorized disclosure of CUI dur","f":"System & Comms Protection","d":"no","fe":[],"a":""},{"id":"03.13.08.c","t":"Implement cryptographic mechanisms to prevent unauthorized disclosure of CUI dur","f":"System & Comms Protection","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.13.09.a","t":"Terminate network connections associated with communications sessions at the end","f":"System & Comms Protection","d":"partial","fe":["Config API"],"a":"customer-ODP (pending)"},{"id":"03.13.09.b","t":"Terminate network connections associated with communications sessions at the end","f":"System & Comms Protection","d":"partial","fe":["Config API","Host config read"],"a":""},{"id":"03.13.09.c","t":"Terminate network connections associated with communications sessions at the end","f":"System & Comms Protection","d":"partial","fe":["Config API","Host config read"],"a":""},{"id":"03.13.10.a","t":"Establish and manage cryptographic keys for cryptography employed in organizatio","f":"System & Comms Protection","d":"partial","fe":["Config API"],"a":""},{"id":"03.13.10.b","t":"Establish and manage cryptographic keys for cryptography employed in organizatio","f":"System & Comms Protection","d":"partial","fe":["Config API"],"a":""},{"id":"03.13.11.a","t":"Employ FIPS-validated cryptography when used to protect the confidentiality of C","f":"System & Comms Protection","d":"partial","fe":["Config API","Host config read"],"a":""},{"id":"03.13.12.a","t":"Employ FIPS-validated cryptography when used to protect the confidentiality of C","f":"System & Comms Protection","d":"partial","fe":["Directory enumeration"],"a":""},{"id":"03.13.12.b","t":"Employ FIPS-validated cryptography when used to protect the confidentiality of C","f":"System & Comms Protection","d":"yes","fe":["Host config read"],"a":""},{"id":"03.13.12.c","t":"Employ FIPS-validated cryptography when used to protect the confidentiality of C","f":"System & Comms Protection","d":"yes","fe":["Host config read"],"a":""},{"id":"03.13.13.a","t":"Control and monitor the use of mobile code.","f":"System & Comms Protection","d":"yes","fe":["Host config read"],"a":""},{"id":"03.13.13.b","t":"Control and monitor the use of mobile code.","f":"System & Comms Protection","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.13.14.a","t":"Control and monitor the use of Voice over Internet Protocol","f":"System & Comms Protection","d":"partial","fe":["Config API"],"a":""},{"id":"03.13.14.b","t":"Control and monitor the use of Voice over Internet Protocol","f":"System & Comms Protection","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.13.15.a","t":"Protect the authenticity of communications sessions","f":"System & Comms Protection","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.13.16.a","t":"Protect the confidentiality of CUI at rest.","f":"System & Comms Protection","d":"yes","fe":["Config API","Host config read"],"a":""},{"id":"03.12.01.a","t":"Periodically assess the security controls in organizational systems to determine","f":"Security Assessment","d":"partial","fe":["Config API"],"a":"customer-ODP (pending)"},{"id":"03.12.01.b","t":"Periodically assess the security controls in organizational systems to determine","f":"Security Assessment","d":"partial","fe":["Compliance scan","SIEM / log query"],"a":""},{"id":"03.12.02.a","t":"Develop and implement plans of action designed to correct deficiencies and reduc","f":"Security Assessment","d":"yes","fe":["Compliance scan","SIEM / log query"],"a":""},{"id":"03.12.02.b","t":"Develop and implement plans of action designed to correct deficiencies and reduc","f":"Security Assessment","d":"no","fe":[],"a":""},{"id":"03.12.02.c","t":"Develop and implement plans of action designed to correct deficiencies and reduc","f":"Security Assessment","d":"partial","fe":["Compliance scan","SIEM / log query"],"a":""},{"id":"03.12.03.a","t":"Monitor security controls on an ongoing basis to ensure the continued effectiven","f":"Security Assessment","d":"yes","fe":["Compliance scan","SIEM / log query"],"a":""},{"id":"03.12.04.a","t":"Develop, document, and periodically update system security plans that describe s","f":"Security Assessment","d":"no","fe":[],"a":""},{"id":"03.12.04.b","t":"Develop, document, and periodically update system security plans that describe s","f":"Security Assessment","d":"partial","fe":["Config API"],"a":""},{"id":"03.12.04.c","t":"Develop, document, and periodically update system security plans that describe s","f":"Security Assessment","d":"partial","fe":["Directory enumeration"],"a":""},{"id":"03.12.04.d","t":"Develop, document, and periodically update system security plans that describe s","f":"Security Assessment","d":"no","fe":[],"a":""},{"id":"03.12.04.e","t":"Develop, document, and periodically update system security plans that describe s","f":"Security Assessment","d":"no","fe":[],"a":""},{"id":"03.12.04.f","t":"Develop, document, and periodically update system security plans that describe s","f":"Security Assessment","d":"partial","fe":["Config API"],"a":""},{"id":"03.12.04.g","t":"Develop, document, and periodically update system security plans that describe s","f":"Security Assessment","d":"no","fe":[],"a":""},{"id":"03.12.04.h","t":"Develop, document, and periodically update system security plans that describe s","f":"Security Assessment","d":"no","fe":[],"a":""},{"id":"03.11.01.a","t":"Periodically assess the risk to organizational operations","f":"Risk Assessment","d":"partial","fe":["Config API"],"a":"customer-ODP (pending)"},{"id":"03.11.01.b","t":"Periodically assess the risk to organizational operations","f":"Risk Assessment","d":"partial","fe":["Compliance scan","SIEM / log query"],"a":""},{"id":"03.11.02.a","t":"Scan for vulnerabilities in organizational systems and applications periodically","f":"Risk Assessment","d":"partial","fe":["Config API"],"a":"customer-ODP (pending)"},{"id":"03.11.02.b","t":"Scan for vulnerabilities in organizational systems and applications periodically","f":"Risk Assessment","d":"yes","fe":["Compliance scan","SIEM / log query"],"a":""},{"id":"03.11.02.c","t":"Scan for vulnerabilities in organizational systems and applications periodically","f":"Risk Assessment","d":"partial","fe":["Compliance scan"],"a":""},{"id":"03.11.02.d","t":"Scan for vulnerabilities in organizational systems and applications periodically","f":"Risk Assessment","d":"yes","fe":["SIEM / log query"],"a":""},{"id":"03.11.02.e","t":"Scan for vulnerabilities in organizational systems and applications periodically","f":"Risk Assessment","d":"partial","fe":["SIEM / log query"],"a":""},{"id":"03.11.03.a","t":"Remediate vulnerabilities in accordance with risk assessments.","f":"Risk Assessment","d":"yes","fe":["Compliance scan","SIEM / log query"],"a":""},{"id":"03.11.03.b","t":"Remediate vulnerabilities in accordance with risk assessments.","f":"Risk Assessment","d":"partial","fe":["SIEM / log query"],"a":""}];
+var FEEDKEY={n1:["Host config read","Compliance scan"],n2:["SIEM / log query"],n3:["Compliance scan"],n4:["Directory enumeration"],n5:["Config API"]};
+var FEEDNAME={n1:"Pre-hardened images",n2:"SIEM",n3:"Vulnerability scanner",n4:"Identity & directory",n5:"Cloud service configuration"};
+var BARFEED={n1:"Host config read",n2:"SIEM / log query",n3:"Compliance scan",n4:"Directory enumeration",n5:"Config API"};
+var panel=document.getElementById('panel'),pt=document.getElementById('panel-title'),pc=document.getElementById('panel-count'),ps=document.getElementById('panel-sub'),pb=document.getElementById('panel-body');
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function AKIND(a){
+  if(!a)return 'none';
+  if(a==='customer-ODP (pending)')return 'pend';
+  if(a==='artifact')return 'art';
+  return 'desig'; /* ODP, ODP (frequency only), NCP-designated, DFARS clause */
+}
+function AORD(a){return {desig:0,pend:1,art:2,none:3}[AKIND(a)];}
+function apill(a){
+  var k=AKIND(a);
+  var label=a||'\u2014';
+  if(k==='desig')label=a.replace(' (frequency only)',' \u00B7 freq');
+  return '<span class="apill '+k+'">'+esc(label)+'</span>';
+}
+var CUR={items:[],key:'id',asc:true,q:''};
+var DORD={yes:0,partial:1,no:2};
+var COLS=[["id","Objective"],["t","Control"],["f","Family"],["d","Reportable"],["fe","Feeds"],["a","Authority"]];
+function sortItems(a){
+  var k=CUR.key,dir=CUR.asc?1:-1;
+  return a.slice().sort(function(x,y){
+    var xv,yv;
+    if(k==='d'){xv=DORD[x.d];yv=DORD[y.d];}
+    else if(k==='fe'){xv=x.fe.join(', ');yv=y.fe.join(', ');}
+    else if(k==='a'){xv=AORD(x.a);yv=AORD(y.a);}
+    else{xv=(x[k]||'').toLowerCase();yv=(y[k]||'').toLowerCase();}
+    return xv<yv?-dir:xv>yv?dir:0;
+  });
+}
+function drawTable(){
+  var q=CUR.q.toLowerCase();
+  var items=CUR.items.filter(function(o){
+    return !q || (o.id+' '+o.t+' '+o.f+' '+o.d+' '+o.fe.join(' ')+' '+o.a).toLowerCase().indexOf(q)>=0;
+  });
+  items=sortItems(items);
+  document.getElementById('panel-shown').textContent=items.length+' of '+CUR.items.length+' shown';
+  var h='<div class="tbl-wrap"><table class="objs"><thead><tr>';
+  COLS.forEach(function(c){
+    var dir=CUR.key===c[0]?('<span class="dir">'+(CUR.asc?'\u25B4':'\u25BE')+'</span>'):'';
+    h+='<th data-k="'+c[0]+'">'+c[1]+dir+'</th>';
+  });
+  h+='</tr></thead><tbody>';
+  items.forEach(function(o){
+    h+='<tr><td class="c-id">'+esc(o.id)+'</td><td class="c-t">'+esc(o.t)+'</td><td class="c-f">'+esc(o.f)+'</td>'
+      +'<td class="c-d"><span class="pill '+o.d+'"><span class="dot '+o.d+'"></span>'+o.d+'</span></td>'
+      +'<td class="c-fe">'+esc(o.fe.join(', ')||'\u2014')+'</td><td class="c-a">'+apill(o.a)+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  pb.innerHTML=(CUR.exp||'')+h;
+  pb.querySelectorAll('th').forEach(function(th){
+    th.addEventListener('click',function(){
+      var k=th.dataset.k;
+      if(CUR.key===k)CUR.asc=!CUR.asc;else{CUR.key=k;CUR.asc=true;}
+      drawTable();
+    });
+  });
+}
+function render(title,sub,items,expHtml){
+  pt.textContent=title;pc.textContent=items.length+' objectives';ps.textContent=sub;
+  CUR.items=items;CUR.q='';CUR.key='id';CUR.asc=true;CUR.exp=expHtml||'';
+  var tools=document.getElementById('panel-tools');tools.hidden=false;
+  var f=document.getElementById('panel-filter');f.value='';
+  drawTable();
+  panel.hidden=false;panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+document.getElementById('panel-filter').addEventListener('input',function(e){CUR.q=e.target.value;drawTable();});
+function explain(title,sub,html){document.getElementById('panel-tools').hidden=true;pt.textContent=title;pc.textContent='';ps.textContent=sub;pb.innerHTML=html;panel.hidden=false;panel.scrollIntoView({behavior:'smooth',block:'nearest'});}
+document.getElementById('panel-close').addEventListener('click',function(){panel.hidden=true;});
+
+function bind(el,fn){if(!el)return;el.addEventListener('click',fn);el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();fn();}});}
+
+/* tenant nodes */
+Object.keys(FEEDKEY).forEach(function(n){
+  bind(document.getElementById(n),function(){
+    var keys=FEEDKEY[n];
+    var items=DATA.filter(function(o){return o.fe.some(function(f){return keys.indexOf(f)>=0;});});
+    if(n==='n1'){
+      var exp='<div class="exp"><b>Hardening is a product, not a project.</b>'
+        +'<p>The component hardening SP 800-171 requires is available <b>pre-applied, off the shelf</b>. CIS publishes Hardened Images built to its Benchmarks for Windows Server, RHEL, Ubuntu, and dozens of other platforms \u2014 sold pay-as-you-go through the same commercial cloud marketplaces (Azure, AWS, GCP) the defense industrial base already procures from. DISA publishes its STIGs freely, and STIG-aligned images are available through the same channels. Both are reachable through the designated NIST Checklist Repository.</p>'
+        +'<p>The supplier\u2019s job collapses from <b>\u201Charden a host\u201D</b> to <b>\u201Cselect the designated image and don\u2019t break it\u201D</b> \u2014 and the compliance scan verifies the \u201Cdon\u2019t break it\u201D half continuously, against the same published baseline the image was built from.</p>'
+        +'<div class="exp-links">'
+        +'<a href="https://www.cisecurity.org/cis-hardened-images" target="_blank" rel="noopener">CIS Hardened Images \u2192</a>'
+        +'<a href="https://public.cyber.mil/stigs/" target="_blank" rel="noopener">DISA STIGs \u2192</a>'
+        +'<a href="https://ncp.nist.gov/repository" target="_blank" rel="noopener">NIST National Checklist Program \u2192</a>'
+        +'</div></div>';
+      explain(FEEDNAME[n],'Reports via host configuration read and compliance scan against the declared baseline \u2014 the evidence owner for '+items.length+' assessment objectives.',exp);
+      return;
+    }
+    if(n==='n3'){
+      var exp3='<div class="exp"><b>The scanner does three jobs \u2014 and one of them is waiting on a single published value.</b>'
+        +'<p>Baseline conformance (drift from the declared benchmark), vulnerability identification (03.11.02, 03.11.03 \u2014 the finding <b>is</b> the identification), and remediation-clock evidence: every finding carries a first-seen and last-seen timestamp, so <b>time-to-remediate is a query, not a review</b>. What follows is what that query looks like when scored against a declared window.</p></div>'
+        +'<span class="syn-tag">Synthetic data \u00B7 illustrative only \u00B7 not drawn from the reference environment</span>'
+        +'<table class="demo"><thead><tr><th>Finding</th><th>Severity</th><th>First observed</th><th>Age</th><th>Declared window</th><th>Status</th></tr></thead><tbody>'
+        +'<tr><td>CVE-20XX-11111</td><td>Critical</td><td>day 0</td><td>9 d</td><td>15 d</td><td class="st-pass">IN WINDOW</td></tr>'
+        +'<tr><td>CVE-20XX-22222</td><td>Critical</td><td>day \u221219</td><td>19 d</td><td>15 d</td><td class="st-over">OVERDUE +4 d</td></tr>'
+        +'<tr><td>CVE-20XX-33333</td><td>High</td><td>day \u221226</td><td>closed day 21</td><td>30 d</td><td class="st-closed">REMEDIATED \u00B7 21 d</td></tr>'
+        +'<tr><td>CVE-20XX-44444</td><td>High</td><td>day \u22128</td><td>8 d</td><td>30 d</td><td class="st-pass">IN WINDOW</td></tr>'
+        +'<tr><td>CVE-20XX-55555</td><td>Medium</td><td>day \u221241</td><td>41 d</td><td>90 d</td><td class="st-pass">IN WINDOW</td></tr>'
+        +'</tbody></table>'
+        +'<p class="demo-note">The <b>Status</b> column is arithmetic \u2014 age compared to window \u2014 not judgment. The comparison is possible only because a window value exists. In the reference environment that window exists only as prose in the system security plan (objective 03.14.01.e); no system setting encodes it, and no Department-published value floors it. <b>One published remediation window converts this entire column from self-declared to authoritative for every supplier at once</b> \u2014 the clearest single instance in the catalog of a publishable value unlocking automation that is otherwise already built.</p>'
+        +'<pre class="emit"><span class="k">// shape of the emission \u2014 illustrative, placeholder bindings</span>\n{\n  <span class="k">"observation"</span>: "vulnerability-remediation",\n  <span class="k">"objective"</span>: "{{objective-id}}",\n  <span class="k">"finding"</span>: "{{cve-id}}",\n  <span class="k">"first-observed"</span>: "{{timestamp}}",\n  <span class="k">"resolved"</span>: "{{timestamp|null}}",\n  <span class="k">"declared-window-days"</span>: {{value}},\n  <span class="k">"window-source"</span>: "{{ODP | SSP-declared}}",\n  <span class="k">"status"</span>: "computed"\n}</pre>';
+      explain(FEEDNAME[n],'Periodic scanning is itself required by 03.11.02 \u2014 the evidence owner for '+items.length+' assessment objectives, and the feed behind the remediation-clock finding.',exp3);
+      return;
+    }
+    var REQ={n2:' The capabilities this class delivers \u2014 retention, review, record reduction, report generation, correlation \u2014 are themselves assessment objectives under 03.03: the standard requires the platform in everything but name, and 03.03.06 names the job description: audit record reduction and report generation as explicit capability objectives.',n4:' User, device, and privileged-account identification under 03.05 and 03.01 are enumeration objectives \u2014 the directory is the required capability.',n5:''}; 
+    render(FEEDNAME[n],'Objectives this surface can report on, via '+keys.join(' and ')+'. Counts include objectives reachable by more than one feed.'+(REQ[n]||''),items);
+  });
+});
+/* bars mirror the single feed */
+document.querySelectorAll('.bar-row').forEach(function(row){
+  bind(row,function(){
+    var feed=BARFEED[row.dataset.n];
+    render(feed,'Objectives reportable via '+feed+'.',DATA.filter(function(o){return o.fe.indexOf(feed)>=0;}));
+  });
+  var node=document.getElementById(row.dataset.n);
+  row.addEventListener('mouseenter',function(){row.classList.add('hot');if(node)node.querySelector('.feednode').classList.add('hot');});
+  row.addEventListener('mouseleave',function(){row.classList.remove('hot');if(node)node.querySelector('.feednode').classList.remove('hot');});
+  if(node){
+    node.addEventListener('mouseenter',function(){row.classList.add('hot');node.querySelector('.feednode').classList.add('hot');});
+    node.addEventListener('mouseleave',function(){row.classList.remove('hot');node.querySelector('.feednode').classList.remove('hot');});
+  }
+});
+/* disposition cards */
+document.querySelectorAll('.card').forEach(function(c){
+  bind(c,function(){
+    var d=c.dataset.disp;
+    if(d==='all'){render('All 320 assessment objectives','Every objective in the 14 families present in scope, with its disposition.',DATA);}
+    else{
+      var label={yes:'Fully machine-reportable',partial:'Partially reportable',no:'Not machine-reportable'}[d];
+      var sub={yes:'Every input the objective requires is emitted by the system in structured form.',
+               partial:'Emission exists but is scope-conditioned, a proxy for the objective, or awaits a published value.',
+               no:'Physical, procedural, or judgment-bound — no system emission reports on the objective.'}[d];
+      render(label,sub,DATA.filter(function(o){return o.d===d;}));
+    }
+  });
+});
+/* referents */
+bind(document.getElementById('ref-ncp'),function(){
+  render('NIST Checklist Repository','Objectives whose definition is currently floored by designated checklist content in this classification. The designation reaches further; these are the rows where it is recorded as the operative authority.',DATA.filter(function(o){return o.a==='NCP-designated';}));
+});
+bind(document.getElementById('ref-odp'),function(){
+  render('Department parameter values (ODPs)','Rows where a Department-published value floors the objective (including one frequency-scope annotation), plus 13 held at partial pending verification against the April 2025 memorandum.',DATA.filter(function(o){return o.a.indexOf('ODP')===0||o.a==='customer-ODP (pending)';}));
+});
+bind(document.getElementById('ref-cat'),function(){
+  explain('NIST SP 800-171 / 171A','The assessment catalog itself — the unit of analysis for the entire study.',
+  '<p style="font-size:13.5px;color:var(--ink-soft);max-width:78ch">Every count on this page is stated at the level of the <b>assessment objective</b> in SP 800-171A — not the requirement. 320 objectives across the 14 families present in the reference scope, each classified individually with a recorded rationale. Click any other box to see slices of the catalog.</p>');
+});
+/* ebom */
+bind(document.getElementById('ebomg'),function(){
+  explain('Evidence Bill of Materials','The one artifact in this diagram that does not yet exist as a designated format.',
+  '<p style="font-size:13.5px;color:var(--ink-soft);max-width:78ch">A signed OSCAL bundle — Component Definition plus Assessment Results — extending to compliance state the bill-of-materials pattern the Department already applies to software. For each component it carries the baseline measured against (by checklist and version), the result per assessment objective with its evidence source, a deviation register, and a boundary reference. Because it is an open format, any tool that emits valid OSCAL qualifies and no vendor is advantaged by the specification. A supplier writes it once; the Department and every prime read the same artifact and verify the signature independently.</p>');
+});
+</script>
+</body>
+</html>

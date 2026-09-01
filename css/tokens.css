@@ -1,0 +1,203 @@
+/* ==========================================================================
+   Archstone Security — design tokens
+   Single source of truth. Artifacts import this; nothing defines its own hex.
+
+   Roles are named for what they MEAN, not what colour they are. If the palette
+   is ever repainted, only this file changes.
+   ========================================================================== */
+
+/* --- Fonts ---------------------------------------------------------------
+   IBM Plex Sans + Mono, self-hosted. SIL Open Font License 1.1.
+   Source: github.com/IBM/plex — take the woff2 files from the release,
+   or subset with pyftsubset to latin + numerals to cut ~60% of the weight.
+   Expected at /font/. Four files, no external requests, no preconnect.
+   -------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('/font/IBMPlexSans-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('/font/IBMPlexSans-SemiBold.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/font/IBMPlexMono-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/font/IBMPlexMono-Medium.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+
+  /* --- Surface ---------------------------------------------------------- */
+  --paper:            #FBFCFB;   /* page */
+  --surface:          #FFFFFF;   /* cards, tables, figure grounds */
+  --grid:             #E8ECE9;   /* 28px graph rule — background only */
+  --rule:             #C6CFCB;   /* hairline borders */
+  --rule-strong:      #A8B3AE;   /* table heads, emphasised divisions */
+
+  /* --- Text ------------------------------------------------------------- */
+  --ink:              #1B2833;   /* 14.6:1 — headings, primary body */
+  --ink-soft:         #4A5A66;   /*  6.9:1 — secondary body, captions */
+
+  /* --- Semantic roles ---------------------------------------------------
+     Each role has a -text value (AA at 11px and up on --paper) and a -fill
+     value (background tint only — never set type directly on a fill without
+     using the matching -text colour).
+     ---------------------------------------------------------------------- */
+
+  /* Referent: something the government has published and can be pointed at */
+  --referent:         #33586E;   /* 7.4:1 */
+  --referent-fill:    #EAF0F4;
+
+  /* Emitted: the system produces this state; no assessor required */
+  --emitted:          #0E7C61;   /* 5.0:1 */
+  --emitted-fill:     #E5F2EE;
+
+  /* Partial: emission narrows the objective but does not close it */
+  --partial:          #8A5F00;   /* 5.5:1 — was #B07C00, failed AA */
+  --partial-fill:     #F7EFDA;
+
+  /* Manual: nothing emits at any cost — conduct, judgement, process */
+  --manual:           #67707A;   /* 4.9:1 — was #8A929B, failed AA */
+  --manual-fill:      #EEF0F2;
+
+  /* Gap: the act that has not been performed. The thesis colour. */
+  --gap:              #A8400F;   /* 6.0:1 */
+  --gap-fill:         #FBEDE4;
+
+  /* Accent: Archstone's own contribution, distinct from federal content */
+  --accent:           #6A4C93;   /* 6.7:1 */
+  --accent-fill:      #F1EBF8;
+
+  /* --- Type ------------------------------------------------------------- */
+  --sans:  'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono:  'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --t-display:  clamp(30px, 4.4vw, 46px);
+  --t-title:    22px;
+  --t-lede:     17px;
+  --t-body:     15px;
+  --t-small:    13px;
+  --t-micro:    11px;   /* floor — nothing smaller, anywhere */
+
+  --lh-tight:   1.08;
+  --lh-body:    1.55;
+
+  /* --- Space ------------------------------------------------------------ */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 14px; --s-4: 22px;
+  --s-5: 34px; --s-6: 56px; --s-7: 88px;
+
+  --measure: 66ch;   /* prose */
+  --measure-wide: 82ch;   /* notes, method statements */
+}
+
+/* --- Base ----------------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 28px 28px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  font-variant-numeric: tabular-nums;
+}
+
+h1, h2, h3 { font-weight: 600; letter-spacing: -0.015em; line-height: var(--lh-tight); }
+h1 { font-size: var(--t-display); max-width: 20ch; }
+h2 { font-size: var(--t-title); }
+
+p { max-width: var(--measure); }
+
+a { color: var(--referent); text-underline-offset: 2px; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* --- Eyebrow -------------------------------------------------------------
+   Mono, letterspaced, used for section kickers and artifact kinds only.
+   Sentence case is the house rule everywhere EXCEPT here.
+   -------------------------------------------------------------------------- */
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* --- Disposition ---------------------------------------------------------
+   The three-way classification appears in every artifact. Colour is NEVER the
+   only cue: border style carries the same information, so the encoding
+   survives red-green colour vision deficiency, greyscale print, and photocopy.
+
+   solid  = emitted     dashed = partial     dotted = manual
+   -------------------------------------------------------------------------- */
+
+.disp            { border-width: 2px; border-style: solid; border-radius: 9px;
+                   padding: var(--s-2) var(--s-3); background: var(--surface); }
+.disp--emitted   { border-style: solid;  border-color: var(--emitted);
+                   background: var(--emitted-fill); color: var(--emitted); }
+.disp--partial   { border-style: dashed; border-color: var(--partial);
+                   background: var(--partial-fill); color: var(--partial); }
+.disp--manual    { border-style: dotted; border-color: var(--manual);
+                   background: var(--manual-fill); color: var(--manual); }
+.disp--gap       { border-style: dashed; border-color: var(--gap);
+                   background: var(--gap-fill); color: var(--gap); }
+
+/* SVG equivalents — same three cues, for hand-authored figures. */
+.s-emitted { stroke: var(--emitted); stroke-dasharray: none; }
+.s-partial { stroke: var(--partial); stroke-dasharray: 6 4; }
+.s-manual  { stroke: var(--manual);  stroke-dasharray: 1.5 3.5; }
+.s-gap     { stroke: var(--gap);     stroke-dasharray: 6 4; }
+
+/* --- Provenance ----------------------------------------------------------
+   The signature element. Every published figure, table and number carries one:
+   dataset version, sample basis, and the row identifier the figure resolves to.
+   If a figure cannot carry a provenance line, it is not ready to publish.
+   -------------------------------------------------------------------------- */
+
+.prov {
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  color: var(--ink-soft);
+  border-top: 1px solid var(--rule);
+  padding-top: var(--s-2);
+  margin-top: var(--s-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-4);
+}
+.prov b { color: var(--ink); font-weight: 500; }
+
+/* --- Quality floor -------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+@media print {
+  body { background-image: none; background: #fff; }
+  .disp { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+@media (max-width: 640px) {
+  :root { --s-6: 38px; --s-7: 56px; }
+  body { background-size: 22px 22px; }
+}
