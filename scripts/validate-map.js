@@ -69,7 +69,15 @@ if (metaBuild) {
 }
 
 // -------------------------------------------------- 3. script + parse
-const blocks = [...src.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+let blocks = [];
+try {
+  const { JSDOM } = require('jsdom');
+  const dom = new JSDOM(src);
+  blocks = Array.from(dom.window.document.querySelectorAll('script')).map(el => el.textContent || '');
+} catch (_) {
+  // Fallback keeps core checks dependency-free.
+  blocks = [...src.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\b[^>]*>/gi)].map(m => m[1]);
+}
 if (!blocks.length) {
   bad('no <script> block found');
   process.exit(1);
