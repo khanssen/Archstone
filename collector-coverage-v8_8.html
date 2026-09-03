@@ -61,6 +61,16 @@ svg.dim .nl{fill:#3d5257} svg.dim .nl.on{fill:var(--paper)}
 .note p{margin:0;font-size:.9rem;color:#A9BDC0}
 .big{font-family:var(--mono);font-size:2rem;color:var(--teal-br);display:block;line-height:1}
 .big.a{color:var(--amber)} .big.g{color:var(--gray)}
+
+/* methodology */
+.method{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--line);max-width:78ch}
+.method h2{font-size:1.15rem;font-weight:600;letter-spacing:-.01em;margin:0 0 1rem}
+.method p{margin:0 0 1rem;font-size:.95rem;color:#B7C8CA}
+.method p:last-child{margin-bottom:0}
+.method ul{margin:0 0 1rem;padding:0;list-style:none}
+.method li{position:relative;padding-left:1.5rem;margin-bottom:.75rem;font-size:.95rem;color:#B7C8CA}
+.method li::before{content:"";position:absolute;left:0;top:.75em;width:.85rem;height:1px;background:var(--teal-br)}
+.method b{color:var(--paper);font-weight:500}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -93,6 +103,18 @@ svg.dim .nl{fill:#3d5257} svg.dim .nl.on{fill:var(--paper)}
     <div class="note"><span class="big a">80</span><h3>Partially reportable</h3><p>A collector reaches part of what the objective asks for. The remainder needs a person. Partial is not a rounding error toward full — it is its own state, and it is reported as one.</p></div>
     <div class="note"><span class="big g">97</span><h3>Not reached</h3><p>Of these, 80 have no mechanism assigned at all. They are overwhelmingly definitional — policies defined, roles identified, processes established — which is the honest ceiling on automated evidence, not a backlog.</p></div>
   </div>
+
+  <section class="method">
+    <h2>Methodology</h2>
+    <p>The study was conducted against a fully compliant SP 800-171 Rev&nbsp;2 enclave built to a single reference architecture: hardened Windows&nbsp;11, Windows Server&nbsp;2025 and Ubuntu&nbsp;24.04 hosts, a Wazuh&nbsp;4.14 manager, and an Entra/M365 tenant read through the Graph API. Every component is a commonly available building block of enterprise IT. Hardening on the hosts was enforced by script-applied local policy at build time, with Wazuh SCA acting as the drift detector afterward. Each of the 320 assessment objectives in SP 800-171A Rev&nbsp;2 was evaluated individually, with the objective's determination-statement prose in view rather than its identifier, against a single question: can a collector in the reference architecture read the evidence this objective requires?</p>
+    <p>The evaluation proceeded in two passes.</p>
+    <ul>
+      <li><b>The first pass used observed hardening data.</b> The reference architecture was scanned, and every configuration check that returned a result was traced to the objective whose prose it satisfies. Those traces are the host-configuration and tenant-configuration attributions, and each was made from an actual scan result.</li>
+      <li><b>The second pass covered the remaining collector mechanisms running in the same architecture</b> - log collection, file-integrity monitoring, vulnerability detection, system inventory, and active response - and asked, for each objective not already reached, whether the output those mechanisms were producing constitutes the evidence the objective's prose calls for. These mechanisms were deployed and returning data during the study; what distinguishes these attributions from the first pass is that the binding from output to objective was made by examining the data against the determination statement, rather than by a pre-existing scored check.</li>
+    </ul>
+    <p>Each attribution was judged as an assessor would evaluate it: would the evidence this mechanism produces satisfy an examiner reading the determination statement literally, with no inference from adjacent controls and no credit for what the mechanism could be configured to read but is not? Where the answer was yes for part of a statement and no for the rest, the objective was recorded as partial. The evaluation was made from both sides of that exchange - knowing what the mechanism actually emits and what an examiner would accept as evidence of it - which is why partials were not rounded up and why the 80 unreached definitional objectives are recorded as a ceiling rather than a backlog.</p>
+    <p>Attributions are recorded per mechanism class, not per host, so they carry to any enclave where the same class is deployed, and only to such an enclave. An enclave with no tenant configuration API cannot claim the 104 attributions that class provides here. Conversely, an enclave that deploys a mechanism this architecture does not - an EDR, a DLP engine, a PAM broker - may reach objectives this study records as not reached.</p>
+  </section>
 </div>
 
 <script>
