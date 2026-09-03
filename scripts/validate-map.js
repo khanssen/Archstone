@@ -76,7 +76,7 @@ try {
   blocks = Array.from(dom.window.document.querySelectorAll('script')).map(el => el.textContent || '');
 } catch (_) {
   // Fallback keeps core checks dependency-free.
-  blocks = [...src.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi)].map(m => m[1]);
+  blocks = [...src.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\b[^>]*>/gi)].map(m => m[1]);
 }
 if (!blocks.length) {
   bad('no <script> block found');
