@@ -1443,8 +1443,29 @@
 				element.css('opacity', 1);
 				this.leave('pre-loading');
 				!this.is('pre-loading') && !this.is('initializing') && this.refresh();
-			}, this)).attr('src', element.attr('src') || element.attr('data-src') || element.attr('data-src-retina'));
+			}, this)).attr('src', this._sanitizeImageSource(element.attr('src') || element.attr('data-src') || element.attr('data-src-retina')));
 		}, this));
+	};
+
+	/**
+	 * Validates image source URLs read from DOM attributes.
+	 * @protected
+	 * @param {String} src - Candidate source URL.
+	 * @returns {String} Sanitized source URL or an empty string.
+	 */
+	Owl.prototype._sanitizeImageSource = function(src) {
+		src = (src || '').toString().replace(/^\s+|\s+$/g, '');
+		return this._isSafeImageSource(src) ? src : '';
+	};
+
+	/**
+	 * Checks whether an image source uses an allowed URL form/scheme.
+	 * @protected
+	 * @param {String} src - Candidate source URL.
+	 * @returns {Boolean} Whether the source is safe to assign to `img.src`.
+	 */
+	Owl.prototype._isSafeImageSource = function(src) {
+		return /^(https?:|\/\/|\/|\.\/|\.\.\/|blob:|data:image\/)/i.test(src);
 	};
 
 	/**
