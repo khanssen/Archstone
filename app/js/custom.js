@@ -362,6 +362,8 @@ const states = [
   "Washington", "West Virginia", "Wisconsin", "Wyoming"
 ];
 
+const allowedStateValues = new Set(states.map(state => state.toLowerCase()));
+
 states.forEach(state => {
   const option = document.createElement("option");
   option.value = state.toLowerCase(); // Use lowercase as value for consistency
@@ -371,6 +373,9 @@ states.forEach(state => {
 
 dropdown.addEventListener("change", function() {
   const selectedValue = dropdown.value;
+  if (!allowedStateValues.has(selectedValue)) {
+    return;
+  }
   // Redirect to the respective state page
   window.location.href = `${selectedValue}.html`;
 });
