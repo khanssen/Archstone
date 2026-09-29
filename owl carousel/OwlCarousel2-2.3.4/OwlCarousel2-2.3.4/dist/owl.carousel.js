@@ -1961,7 +1961,7 @@
 	// Helper to sanitize a url to prevent javascript: scheme, etc.
 	
 	function sanitizeUrl(url) {
-		var parser;
+		var parsed;
 
 		if (typeof url !== 'string') {
 			return '';
@@ -1988,12 +1988,15 @@
 			return '';
 		}
 
-		// Parse and allow only explicit http/https URLs.
-		parser = document.createElement('a');
-		parser.href = url;
+		// Parse as URL data (not via DOM) and allow only explicit http/https URLs.
+		try {
+			parsed = new URL(url, window.location.href);
+		} catch (e) {
+			return '';
+		}
 
-		if (parser.protocol === 'http:' || parser.protocol === 'https:') {
-			return parser.href;
+		if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+			return parsed.href;
 		}
 
 		return '';
