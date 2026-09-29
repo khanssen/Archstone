@@ -371,6 +371,9 @@ states.forEach(state => {
 
 dropdown.addEventListener("change", function() {
   const selectedValue = dropdown.value;
-  // Redirect to the respective state page
-  window.location.href = `${selectedValue}.html`;
+  // Validate the value against the allowed state list
+  const validStates = states.map(state => state.toLowerCase());
+  if (validStates.includes(selectedValue)) {
+    window.location.href = `${selectedValue}.html`;
+  } // else ignore invalid selection
 });
