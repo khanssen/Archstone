@@ -1430,20 +1430,46 @@
 	};
 
 	/**
+	 * Sanitizes an image source URL before assigning it to DOM attributes.
+	 * @protected
+	 * @param {String} url - The candidate URL.
+	 * @returns {String} A safe URL or an empty string.
+	 */
+	Owl.prototype.sanitizeImageSource = function(url) {
+		if (typeof url !== 'string') {
+			return '';
+		}
+
+		url = $.trim(url);
+
+		// Allow common safe URL forms for image loading:
+		// - absolute http(s)
+		// - protocol-relative URLs
+		// - root-relative or relative paths
+		if (/^(https?:)?\/\//i.test(url) || /^[\/.]/.test(url) || /^[a-z0-9_\-]/i.test(url)) {
+			return url;
+		}
+
+		return '';
+	};
+
+	/**
 	 * Preloads images with auto width.
 	 * @todo Replace by a more generic approach
 	 * @protected
 	 */
 	Owl.prototype.preloadAutoWidthImages = function(images) {
 		images.each($.proxy(function(i, element) {
+			var source;
 			this.enter('pre-loading');
 			element = $(element);
+			source = this.sanitizeImageSource(element.attr('src') || element.attr('data-src') || element.attr('data-src-retina'));
 			$(new Image()).one('load', $.proxy(function(e) {
 				element.attr('src', e.target.src);
 				element.css('opacity', 1);
 				this.leave('pre-loading');
 				!this.is('pre-loading') && !this.is('initializing') && this.refresh();
-			}, this)).attr('src', element.attr('src') || element.attr('data-src') || element.attr('data-src-retina'));
+			}, this)).attr('src', source);
 		}, this));
 	};
 
@@ -1961,11 +1987,36 @@
 	// Helper to sanitize a url to prevent javascript: scheme, etc.
 	
 	function sanitizeUrl(url) {
-		if (typeof url !== 'string') return '';
+		if (typeof url !== 'string') {
+			return '';
+		}
+
 		url = url.trim();
-		// Allow http, https, // (protocol-relative), or data:image/
-		if (/^(https?:|\/\/)/i.test(url)) return url;
-		if (/^data:image\//i.test(url)) return url;
+
+		if (!url) {
+			return '';
+		}
+
+		// Reject characters that can alter parsing context in HTML/CSS/URL sinks.
+		if (/[\u0000-\u001F\u007F\s<>"'`\\(),]/.test(url)) {
+			return '';
+		}
+
+		// Allow only strict base64-encoded data images.
+		if (/^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(url)) {
+			return url;
+		}
+
+		// Disallow protocol-relative URLs; require explicit safe protocol.
+		if (/^\/\//.test(url)) {
+			return '';
+		}
+
+		// Allow only absolute http/https URLs with a conservative character set.
+		if (/^https?:\/\/[a-z0-9\-._~:/?#[\]@!$&*+;=%]+$/i.test(url)) {
+			return url;
+		}
+
 		return '';
 	}
 	Lazy.prototype.load = function(position) {
@@ -1980,6 +2031,10 @@
 			var $element = $(element), image,
                 rawUrl = (window.devicePixelRatio > 1 && $element.attr('data-src-retina')) || $element.attr('data-src') || $element.attr('data-srcset'),
                 url = sanitizeUrl(rawUrl);
+
+			if (!url) {
+				return;
+			}
 
 			this._core.trigger('load', { element: $element, url: url }, 'lazy');
 
