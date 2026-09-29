@@ -1987,8 +1987,6 @@
 	// Helper to sanitize a url to prevent javascript: scheme, etc.
 	
 	function sanitizeUrl(url) {
-		var parser;
-
 		if (typeof url !== 'string') {
 			return '';
 		}
@@ -2014,12 +2012,9 @@
 			return '';
 		}
 
-		// Parse and allow only explicit http/https URLs.
-		parser = document.createElement('a');
-		parser.href = url;
-
-		if (parser.protocol === 'http:' || parser.protocol === 'https:') {
-			return parser.href;
+		// Allow only absolute http/https URLs without reparsing through DOM APIs.
+		if (/^https?:\/\/[^\s]+$/i.test(url)) {
+			return url;
 		}
 
 		return '';
