@@ -32,6 +32,7 @@ module.exports = [
         ...globals.browser,
         ...globals.jquery,
         WOW: "readonly",
+        google: "readonly",
       },
     },
     rules: {
@@ -41,44 +42,15 @@ module.exports = [
       "no-redeclare": "warn",
     },
   },
-];
-
-  // Browser + jQuery code
-  {
-    files: ["**/*.js"],
-      languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "script",
-      globals: {
-        ...globals.browser,
-        ...globals.jquery,
-        WOW: "readonly",
-        google: "readonly"
-      }
-    },
-    rules: {
-      semi: ["error", "always"],
-      no-undef: "off",
-      "no-unused-vars": ["warn", { args: "none" }],
-      "no-redeclare": "warn"
-    }
-  },
-
-  // Node build scripts (gulpfile)
+  // Node build scripts (gulpfile, *.cjs)
   {
     files: ["**/gulpfile.js", "**/*.cjs"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "script",
       globals: {
-        ...globals.node
-      }
+        ...globals.node,
+      },
     },
-    rules: {
-      semi: ["error", "always"],
-      no-undef: "off",
-      "no-unused-vars": ["warn", { args: "none" }],
-      "no-redeclare": "warn"
-    }
-  }
+  },
 ];
