@@ -1997,13 +1997,13 @@
 			return '';
 		}
 
-		// Reject control/meta characters that can alter parsing context.
-		if (/[\u0000-\u001F\u007F<>"'`\\\r\n]/.test(url)) {
+		// Reject characters that can alter parsing context in HTML/CSS/URL sinks.
+		if (/[\u0000-\u001F\u007F\s<>"'`\\(),]/.test(url)) {
 			return '';
 		}
 
 		// Allow only strict base64-encoded data images.
-		if (/^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=\s]+$/i.test(url)) {
+		if (/^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(url)) {
 			return url;
 		}
 
@@ -2012,8 +2012,8 @@
 			return '';
 		}
 
-		// Allow only absolute http/https URLs without reparsing through DOM APIs.
-		if (/^https?:\/\/[^\s]+$/i.test(url)) {
+		// Allow only absolute http/https URLs with a conservative character set.
+		if (/^https?:\/\/[a-z0-9\-._~:/?#[\]@!$&*+;=%]+$/i.test(url)) {
 			return url;
 		}
 
@@ -2031,6 +2031,10 @@
 			var $element = $(element), image,
                 rawUrl = (window.devicePixelRatio > 1 && $element.attr('data-src-retina')) || $element.attr('data-src') || $element.attr('data-srcset'),
                 url = sanitizeUrl(rawUrl);
+
+			if (!url) {
+				return;
+			}
 
 			this._core.trigger('load', { element: $element, url: url }, 'lazy');
 
