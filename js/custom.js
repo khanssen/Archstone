@@ -19,7 +19,11 @@
   if ($.fn.owlCarousel) {
     // Home 2
     const $home2 = $('.home-slide-2');
-    if ($home2.length) {
+    // Only run the carousel when there is more than one slide. A single slide
+    // renders as plain HTML; turning it into a looping carousel clones it and
+    // fades the headline in and out on every autoplay tick.
+    if ($home2.length && $home2.children('.single-slide').length > 1) {
+      $home2.addClass('owl-carousel');   // Owl's layout CSS is scoped to .owl-carousel
       $home2.owlCarousel({
         items: 1,
         nav: false,
