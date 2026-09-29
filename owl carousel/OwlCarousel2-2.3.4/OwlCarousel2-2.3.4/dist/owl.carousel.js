@@ -1973,9 +1973,19 @@
 			return '';
 		}
 
+		// Reject control/meta characters that can alter parsing context.
+		if (/[\u0000-\u001F\u007F<>"'`\\\r\n]/.test(url)) {
+			return '';
+		}
+
 		// Allow only strict base64-encoded data images.
 		if (/^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=\s]+$/i.test(url)) {
 			return url;
+		}
+
+		// Disallow protocol-relative URLs; require explicit safe protocol.
+		if (/^\/\//.test(url)) {
+			return '';
 		}
 
 		// Parse and allow only explicit http/https URLs.
