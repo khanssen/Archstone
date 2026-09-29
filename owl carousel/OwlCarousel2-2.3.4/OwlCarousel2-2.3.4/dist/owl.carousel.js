@@ -1430,20 +1430,46 @@
 	};
 
 	/**
+	 * Sanitizes an image source URL before assigning it to DOM attributes.
+	 * @protected
+	 * @param {String} url - The candidate URL.
+	 * @returns {String} A safe URL or an empty string.
+	 */
+	Owl.prototype.sanitizeImageSource = function(url) {
+		if (typeof url !== 'string') {
+			return '';
+		}
+
+		url = $.trim(url);
+
+		// Allow common safe URL forms for image loading:
+		// - absolute http(s)
+		// - protocol-relative URLs
+		// - root-relative or relative paths
+		if (/^(https?:)?\/\//i.test(url) || /^[\/.]/.test(url) || /^[a-z0-9_\-]/i.test(url)) {
+			return url;
+		}
+
+		return '';
+	};
+
+	/**
 	 * Preloads images with auto width.
 	 * @todo Replace by a more generic approach
 	 * @protected
 	 */
 	Owl.prototype.preloadAutoWidthImages = function(images) {
 		images.each($.proxy(function(i, element) {
+			var source;
 			this.enter('pre-loading');
 			element = $(element);
+			source = this.sanitizeImageSource(element.attr('src') || element.attr('data-src') || element.attr('data-src-retina'));
 			$(new Image()).one('load', $.proxy(function(e) {
 				element.attr('src', e.target.src);
 				element.css('opacity', 1);
 				this.leave('pre-loading');
 				!this.is('pre-loading') && !this.is('initializing') && this.refresh();
-			}, this)).attr('src', element.attr('src') || element.attr('data-src') || element.attr('data-src-retina'));
+			}, this)).attr('src', source);
 		}, this));
 	};
 
