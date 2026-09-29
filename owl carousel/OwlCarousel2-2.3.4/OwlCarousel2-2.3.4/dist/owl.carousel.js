@@ -1961,11 +1961,31 @@
 	// Helper to sanitize a url to prevent javascript: scheme, etc.
 	
 	function sanitizeUrl(url) {
-		if (typeof url !== 'string') return '';
+		var parser;
+
+		if (typeof url !== 'string') {
+			return '';
+		}
+
 		url = url.trim();
-		// Allow http, https, // (protocol-relative), or data:image/
-		if (/^(https?:|\/\/)/i.test(url)) return url;
-		if (/^data:image\//i.test(url)) return url;
+
+		if (!url) {
+			return '';
+		}
+
+		// Allow only strict base64-encoded data images.
+		if (/^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=\s]+$/i.test(url)) {
+			return url;
+		}
+
+		// Parse and allow only explicit http/https URLs.
+		parser = document.createElement('a');
+		parser.href = url;
+
+		if (parser.protocol === 'http:' || parser.protocol === 'https:') {
+			return parser.href;
+		}
+
 		return '';
 	}
 	Lazy.prototype.load = function(position) {
