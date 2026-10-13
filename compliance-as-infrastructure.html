@@ -107,7 +107,7 @@
             <div class="col-lg-8">
 
                 <h2>Compliance as Infrastructure&trade;</h2>
-                <p>Most CMMC work is writing about your systems and hoping an assessor agrees. We take the opposite approach: we make compliance a property of the systems themselves &mdash; hardened by default, verified by machine, and documented from the system's real state rather than authored on the side.</p>
+                <p>Most CMMC work is writing about your systems and hoping an assessor agrees. We take the opposite approach: we make compliance a property of the systems themselves: hardened by default, verified by machine, and documented from the system's real state rather than authored on the side.</p>
                 <p>Build the system right, and the compliance follows.</p>
 
                 <section class="cai-series" id="series" aria-labelledby="series-title">
@@ -147,11 +147,11 @@
 
                 <h3>The problem nobody says out loud</h3>
                 <p>Compliance feels like a paperwork problem. It isn't. It's a knowledge problem wearing paperwork's clothes.</p>
-                <p>Behind every requirement sit four layers that almost no one connects end to end: what the framework says you must do, how that requirement is actually measured, which controls satisfy it, and the specific registry keys, configuration files, and API states that prove the control is real. The framework works top-down. Your systems work bottom-up. The gap in the middle is where compliance projects go to die &mdash; and it is why this work has always demanded expensive consultants who carry the mapping around in their heads.</p>
-                <p>So you assemble evidence by hand, across every operating system and cloud service you run, for 110 requirements and their hundreds of underlying objectives. Then you hand it to an assessor who &mdash; through no fault of their own &mdash; cannot fully see a modern environment in the time they have, and falls back on a mental template of how things "should" look. Correct-but-unfamiliar setups get dinged. Familiar-but-weak ones pass. You are not bad at compliance. The model is broken.</p>
+                <p>Behind every requirement sit four layers that almost no one connects end to end: what the framework says you must do, how that requirement is actually measured, which controls satisfy it, and the specific registry keys, configuration files, and API states that prove the control is real. The framework works top-down. Your systems work bottom-up. The gap in the middle is where compliance projects go to die, and it is why this work has always demanded expensive consultants who carry the mapping around in their heads.</p>
+                <p>So you assemble evidence by hand, across every operating system and cloud service you run, for 110 requirements and their hundreds of underlying objectives. Then you hand it to an assessor who, through no fault of their own, cannot fully see a modern environment in the time they have, and falls back on a mental template of how things "should" look. Correct-but-unfamiliar setups get dinged. Familiar-but-weak ones pass. You are not bad at compliance. The model is broken.</p>
 
                 <h3>A different model</h3>
-                <p>Archstone's Rosetta platform inverts the usual order. Instead of building a system and then writing documents that argue it is compliant, we build the system <strong>right first</strong> &mdash; hardened to a defensible baseline &mdash; and treat compliance as something <strong>computed from the system's actual state</strong>, not authored after the fact.</p>
+                <p>Archstone's Rosetta platform inverts the usual order. Instead of building a system and then writing documents that argue it is compliant, we build the system <strong>right first</strong>, hardened to a defensible baseline, and treat compliance as something <strong>computed from the system's actual state</strong>, not authored after the fact.</p>
                 <p>The configuration <em>is</em> the definition. The scan result <em>is</em> the source of truth. When the system changes, the evidence changes with it. Compliance stops being a project you survive every few years and becomes a property of the infrastructure you run every day. That is the whole idea: make the system the evidence.</p>
 
                 <figure style="margin:2.5rem 0; text-align:center;">
@@ -176,14 +176,14 @@
                         <text x="340" y="258" text-anchor="middle" dominant-baseline="central" fill="#7e8283" font-size="12.5">what you configure</text>
 
                         <rect x="200" y="292" width="280" height="56" rx="8" fill="#455359" stroke="#455359" stroke-width="1"/>
-                        <text x="340" y="314" text-anchor="middle" dominant-baseline="central" fill="#ffffff" font-size="15" font-weight="600">System state &#8212; live scan</text>
+                        <text x="340" y="314" text-anchor="middle" dominant-baseline="central" fill="#ffffff" font-size="15" font-weight="600">System state: live scan</text>
                         <text x="340" y="332" text-anchor="middle" dominant-baseline="central" fill="#c5d2da" font-size="12.5">the source of truth</text>
 
                         <line x1="165" y1="82" x2="165" y2="283" stroke="#b7c0c4" stroke-width="1.5" stroke-dasharray="5 5" fill="none" marker-end="url(#cai-down)"/>
                         <text x="92" y="170" text-anchor="middle" fill="#909598" font-size="14" font-weight="600">the old way</text>
                         <text x="92" y="190" text-anchor="middle" fill="#909598" font-size="12.5">claims written</text>
-                        <text x="92" y="206" text-anchor="middle" fill="#909598" font-size="12.5">top-down &#8212;</text>
-                        <text x="92" y="222" text-anchor="middle" fill="#909598" font-size="12.5">never meets reality</text>
+                        <text x="92" y="206" text-anchor="middle" fill="#909598" font-size="12.5">top-down,</text>
+                        <text x="92" y="222" text-anchor="middle" fill="#909598" font-size="12.5">never meeting reality</text>
 
                         <line x1="515" y1="336" x2="515" y2="82" stroke="#455359" stroke-width="2.5" fill="none" marker-end="url(#cai-up)"/>
                         <text x="592" y="168" text-anchor="middle" fill="#455359" font-size="14" font-weight="600">Compliance as</text>
@@ -191,15 +191,15 @@
                         <text x="592" y="204" text-anchor="middle" fill="#5f6e74" font-size="12.5">evidence computed</text>
                         <text x="592" y="220" text-anchor="middle" fill="#5f6e74" font-size="12.5">bottom-up</text>
                     </svg>
-                    <figcaption style="font-size:12.5px; color:#7e8283; margin-top:0.5rem;">Verified system state drives compliance upward &mdash; instead of documentation pushing down.</figcaption>
+                    <figcaption style="font-size:12.5px; color:#7e8283; margin-top:0.5rem;">Verified system state drives compliance upward, instead of documentation pushing down.</figcaption>
                 </figure>
 
                 <h3>How it works</h3>
                 <ul>
-                    <li><strong>Start from hardened images.</strong> Your endpoints and servers deploy from images hardened to an industry baseline (CIS Level 2) plus Rosetta's own opinionated extensions &mdash; the configuration choices that make the result genuinely defensible, not just "passes a checklist."</li>
-                    <li><strong>Verify continuously, by machine.</strong> Every control is checked by an automated, machine-readable scan &mdash; not a human attestation. If a setting drifts, you see it. The scan result is authoritative. We would rather fail loudly than pass quietly.</li>
-                    <li><strong>Map all four layers.</strong> Rosetta connects each system setting up through the controls, the assessment objectives, and the framework requirement it satisfies &mdash; an explicit, traceable thread from "this setting is configured" to "this 800-171 objective is met."</li>
-                    <li><strong>Documentation from the same source of truth.</strong> Because the system's real state drives everything, your compliance artifacts are designed to be generated from the evidence that runs your machines &mdash; not maintained as a separate, ever-stale parallel universe.</li>
+                    <li><strong>Start from hardened images.</strong> Your endpoints and servers deploy from images hardened to an industry baseline (CIS Level 2) plus Rosetta's own opinionated extensions: the configuration choices that make the result genuinely defensible, not just "passes a checklist."</li>
+                    <li><strong>Verify continuously, by machine.</strong> Every control is checked by an automated, machine-readable scan, not a human attestation. If a setting drifts, you see it. The scan result is authoritative. We would rather fail loudly than pass quietly.</li>
+                    <li><strong>Map all four layers.</strong> Rosetta connects each system setting up through the controls, the assessment objectives, and the framework requirement it satisfies. It is an explicit, traceable thread from "this setting is configured" to "this 800-171 objective is met."</li>
+                    <li><strong>Documentation from the same source of truth.</strong> Because the system's real state drives everything, your compliance artifacts are designed to be generated from the evidence that runs your machines, not maintained as a separate, ever-stale parallel universe.</li>
                 </ul>
 
                 <br>
@@ -208,9 +208,9 @@
                 <ul>
                     <li><strong>Versus a compliance consultant:</strong> their knowledge lives in one person's head and walks out the door when the engagement ends. Rosetta's lives in your infrastructure and stays.</li>
                     <li><strong>Versus a checklist / GRC tool:</strong> those track what you <em>claim</em>. Rosetta verifies what your systems <em>actually do</em>, down to the setting, and shows its work.</li>
-                    <li><strong>Versus a point-in-time audit:</strong> a passing assessment is a photograph. Rosetta is the live feed &mdash; evidence stays current because it is generated from running systems.</li>
+                    <li><strong>Versus a point-in-time audit:</strong> a passing assessment is a photograph. Rosetta is the live feed: evidence stays current because it is generated from running systems.</li>
                 </ul>
-                <p>No proprietary black box, either: the foundations are open standards and open source (CIS, Wazuh, OSCAL). You can read every check. The value is not lock-in &mdash; it is a security posture built on infrastructure that is genuinely better.</p>
+                <p>No proprietary black box, either: the foundations are open standards and open source (CIS, Wazuh, OSCAL). You can read every check. The value is not lock-in. It is a security posture built on infrastructure that is genuinely better.</p>
 
                 <h3>Built for the DIB, on purpose</h3>
                 <p>Rosetta is focused on the organizations getting squeezed hardest: small and mid-size defense contractors facing CMMC Level 2 and NIST SP 800-171 with a fraction of the security staff the primes have. You don't need a bigger compliance team. You need systems that arrive compliant and prove it on their own.</p>
