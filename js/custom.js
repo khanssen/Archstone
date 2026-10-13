@@ -47,6 +47,12 @@
         $home2.trigger('stop.owl.autoplay');
       });
 
+      // A video that slides out of view would keep playing with no visible
+      // control, so stop it the moment the carousel starts to move.
+      $home2.on('translate.owl.carousel', function () {
+        if (window.caiPlayer) window.caiPlayer.reset($home2[0]);
+      });
+
       $home2.on('translate.owl.carousel', function () {
         $('.banner-title').removeClass('animated fadeInLeft').css('opacity', '0');
         $('.slide-txt p, .slide-txt span').removeClass('animated fadeInLeft').css('opacity', '0');
