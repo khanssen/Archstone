@@ -18,6 +18,7 @@
     frame.allowFullscreen = true;
 
     player.replaceChildren(frame);
+    document.dispatchEvent(new CustomEvent('cai:play', { detail: { id: id } }));
     frame.focus();
   }
 
