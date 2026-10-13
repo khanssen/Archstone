@@ -1,0 +1,16 @@
+/* Framework pages (NIST SP 800-171 and siblings). Loads after style.css. */
+.framework-page h1 { margin-bottom: 18px; }
+.framework-page h2 { font-size: 26px; margin: 36px 0 12px; }
+.framework-page .lead-in { font-size: 19px; line-height: 1.55; }
+.framework-page p, .framework-page li { font-size: 17px; line-height: 1.65; }
+.framework-page .work-list { padding-left: 1.1rem; }
+.framework-page .work-list li { margin-bottom: 12px; }
+.framework-page .custom-btn { margin-top: 18px; }
+
+.framework-page .glance { background: #f6f8f9; border-top: 4px solid #bdced7; padding: 24px 26px; margin-top: 12px; }
+.framework-page .glance h2 { font-size: 20px; margin: 0 0 14px; }
+.framework-page .glance dl { margin: 0; }
+.framework-page .glance dt { font-weight: 700; font-size: 14px; color: #455359; margin-top: 12px; }
+.framework-page .glance dd { margin: 2px 0 0; font-size: 16px; }
+.framework-page .glance .checked { font-size: 13px; color: #5f6e74; margin: 18px 0 0; }
+@media (max-width: 991px) { .framework-page .glance { margin-top: 40px; } }
