@@ -1,0 +1,21 @@
+/* Research index. Layout only: the page text and every link are unchanged
+   from the August 2026 version (the URL is cited in a federal submission). */
+
+.hero .eyebrow { margin: 0 0 var(--s-3); }
+.hero .lede b { color: var(--ink); font-weight: 600; }
+.secnote { color: var(--ink-soft); margin: 0 0 var(--s-4); }
+
+.artifacts { list-style: none; margin: 0; padding: 0; }
+.artifacts li { display: grid; grid-template-columns: 14rem 1fr; gap: var(--s-2) var(--s-5); padding: var(--s-4) 0; border-top: 1px solid var(--rule); }
+.artifacts li:last-child { border-bottom: 1px solid var(--rule); }
+.art-meta { display: flex; flex-direction: column; gap: var(--s-1); font-family: var(--mono); font-size: var(--t-micro); color: var(--ink-soft); }
+.artifacts h3 { font-size: var(--t-lede); line-height: 1.3; margin: 0 0 var(--s-2); }
+.artifacts p { margin: 0; }
+
+.notes p { max-width: var(--measure-wide); margin: 0 0 var(--s-4); }
+.notes p b { font-weight: 600; }
+.notes .prov { margin-top: var(--s-5); }
+
+@media (max-width: 760px) {
+  .artifacts li { grid-template-columns: 1fr; }
+}
