@@ -51,3 +51,14 @@ VALIDATE_HTML: true
 VALIDATE_CSS: true
 VALIDATE_BASH: true
 VALIDATE_DOCKERFILE: true
+---
+
+### Site header
+
+Every page's top navigation comes from **`partials/header.html`**. To change the menu, edit that file, then run:
+
+```
+python scripts/apply-header.py
+```
+
+That copies the header into every page. `python scripts/apply-header.py --check` lists any page whose header has drifted. Research exhibits and `/research` keep their own mastheads and are never touched.

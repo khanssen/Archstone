@@ -39,3 +39,4 @@
 
 # Server-side code GitHub Pages cannot run (it would be served as plain text)
 *.php
+/partials/

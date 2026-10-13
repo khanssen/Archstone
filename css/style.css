@@ -9103,3 +9103,26 @@ input::placeholder, textarea::placeholder, .form-control::placeholder{ color:#9a
   background: linear-gradient(to bottom, #ffffff 0%, #ffffff 25%, #bdced7 100%);
   border-bottom: 3px solid #455359;
 }
+
+/* ---------- Main nav sizing (2026-10)
+   Five items with two long labels: keep each on one line, trim the
+   template's 30px side padding, and step the size down on narrower desktops.
+   Below 992px the menu collapses behind the toggle. */
+.header .navbar .navbar-brand img { width: 220px; max-width: 100%; height: auto; }
+@media (min-width: 992px) {
+  .header .navbar.navbar-light .nav-item .nav-link { white-space: nowrap; padding: 30px 14px; }
+  .header .navbar.navbar-light .nav-item.dropdown > .nav-link { padding-right: 34px; }
+}
+@media (min-width: 992px) and (max-width: 1299px) {
+  .header .navbar .navbar-brand img { width: 170px; }
+  .header .navbar.navbar-light .nav-item .nav-link { font-size: 17px; padding: 26px 10px; }
+  .header .navbar.navbar-light .nav-item.dropdown > .nav-link { padding-right: 28px; }
+}
+@media (max-width: 991px) {
+  .header .navbar .navbar-brand img { width: 170px; }
+  /* In the collapsed menu, submenus open in place instead of floating over the next item. */
+  .header .navbar.navbar-light .nav-item .dropdown-menu { position: static; float: none; box-shadow: none; border: 0; padding-left: 16px; transform: none; }
+  .header .navbar.navbar-light .nav-item .dropdown-menu:not(.show) { display: none; }
+}
+/* The last dropdown opens leftward so it never runs off the right edge. */
+.header .navbar .dropdown-menu.dropdown-menu-end { left: auto; right: 0; }
