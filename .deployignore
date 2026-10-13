@@ -1,0 +1,41 @@
+# Paths in this repo that are NOT part of the public site.
+# The Pages workflow copies the repo into _site/ minus everything listed here.
+# rsync --exclude-from syntax: a leading / anchors to the repo root.
+
+# Repo and tooling internals
+/.git/
+/.github/
+/.githooks/
+/.gitattributes
+/.gitignore
+/.eslintrc.json
+/.eslintignore
+/.deployignore
+/eslint.config.cjs
+/package.json
+/package-lock.json
+/scripts/
+/*.md
+
+# Template sources and leftovers
+/Archive/
+/Content/
+/HTML Template/
+/documentation/
+/app/
+/owl carousel/
+/test.html
+/index new.html
+/index-PRODUCTION-BACKUP-*.html
+/styles reference.html
+/faqs_new.html
+/missing.txt
+
+# Working files
+/Colors.xlsx
+/services blurbs.docx
+/favicon.zip
+*.psd
+
+# Server-side code GitHub Pages cannot run (it would be served as plain text)
+/mailer.php
