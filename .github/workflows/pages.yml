@@ -27,7 +27,7 @@ jobs:
           rsync -a --exclude-from=.deployignore ./ _site/
           echo "Publishing $(find _site -type f | wc -l) files"
       - name: Upload static site
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
