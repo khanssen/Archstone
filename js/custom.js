@@ -24,18 +24,27 @@
     // fades the headline in and out on every autoplay tick.
     if ($home2.length && $home2.children('.single-slide').length > 1) {
       $home2.addClass('owl-carousel');   // Owl's layout CSS is scoped to .owl-carousel
+      // Respect reduced-motion: slides stay put, the dots still work.
+      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       $home2.owlCarousel({
         items: 1,
         nav: false,
         loop: true,
-        dots: false,
+        dots: true,
         smartSpeed: 450,
-        autoplay: true,
+        autoplay: !reduceMotion,
+        autoplayTimeout: 8000,       // long enough to read a slide
+        autoplayHoverPause: true,
         animateOut: 'fadeOut',
         navText: [
           "<i class='flaticon-left-arrow'></i>",
           "<i class='flaticon-next-1'></i>"
         ]
+      });
+
+      // Once someone presses play on a video slide, stop rotating for good.
+      document.addEventListener('cai:play', function () {
+        $home2.trigger('stop.owl.autoplay');
       });
 
       $home2.on('translate.owl.carousel', function () {

@@ -1,0 +1,34 @@
+/* Homepage hero carousel additions. Loads after style.css and series.css. */
+
+/* Slides 2 and 3 use <h2> (one <h1> per page); give them the hero headline style. */
+.home-slide-2 .single-slide .slide-txt h2.banner-title {
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  letter-spacing: normal;
+  font-size: 80px;
+  line-height: 1;
+  margin: 15px 0;
+  color: #455359;
+  text-transform: none;
+  text-align: inherit;
+}
+@media only screen and (min-width: 768px) and (max-width: 1200px) {
+  .home-slide-2 .single-slide .slide-txt h2.banner-title { font-size: 65px; }
+}
+@media only screen and (max-width: 767px) {
+  .home-slide-2 .single-slide .slide-txt h2.banner-title { font-size: 40px; }
+}
+
+/* Video slide: the player sits where the slide image normally goes. */
+.home-slide-2 .slide-video .slide-img.cai-series { margin: 0; width: 100%; max-width: 560px; }
+.home-slide-2 .slide-video .cai-player { box-shadow: 0 10px 30px rgba(27, 40, 51, 0.18); }
+.home-slide-2 .slide-video .cai-player__name { font-size: 26px; }
+
+/* Carousel dots: give them room below the slide and a visible focus ring. */
+.home-slide-2.owl-carousel .owl-dots { text-align: center; padding: 0 0 24px; position: relative; z-index: 2; }
+.home-slide-2.owl-carousel .owl-dot:focus-visible { outline: 2px solid #0a5879; outline-offset: 3px; }
+
+/* The template colours every span inside a slide #455359, which hides the
+   poster text on the dark player; style.css sets that with !important. */
+.home-slide-2 .single-slide .cai-player__poster span { color: #ffffff !important; }
+.home-slide-2 .single-slide .cai-player__poster .cai-player__num { color: #c5d2da !important; }
