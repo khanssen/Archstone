@@ -9090,7 +9090,16 @@ input::placeholder, textarea::placeholder, .form-control::placeholder{ color:#9a
   .talk-section .talk-bg{ background-attachment: scroll; }
 }
 
-/* ---------- hover animations: prefer transform only */
-.serv
 
 
+
+/* ---------- Header gradient (2026-10)
+   White at the top shading down to the hero blue/grey (#bdced7), finished
+   with a hard slate edge. Applies to the resting and the sticky header. */
+.header .primary-navigation,
+.header .primary-navigation.sticky-header.scroll-on,
+.header.header-2 .primary-navigation.sticky-header.scroll-on,
+.header.header-3 .primary-navigation.sticky-header.scroll-on {
+  background: linear-gradient(to bottom, #ffffff 0%, #ffffff 25%, #bdced7 100%);
+  border-bottom: 3px solid #455359;
+}
