@@ -5,6 +5,8 @@
 (function () {
   'use strict';
 
+  var posters = new WeakMap();   // player element -> its original poster nodes
+
   function load(button) {
     var player = button.closest('.cai-player');
     var id = player && player.getAttribute('data-video-id');
@@ -17,19 +19,20 @@
     frame.referrerPolicy = 'strict-origin-when-cross-origin';
     frame.allowFullscreen = true;
 
-    // Keep the poster so the player can be put back (see reset below).
-    if (!player.hasAttribute('data-poster')) player.setAttribute('data-poster', player.innerHTML);
+    // Keep the poster's own nodes so the player can be put back (see reset).
+    if (!posters.has(player)) posters.set(player, Array.prototype.slice.call(player.childNodes));
     player.replaceChildren(frame);
     document.dispatchEvent(new CustomEvent('cai:play', { detail: { id: id } }));
     frame.focus();
   }
 
-  // Stop any playing video inside root by swapping the poster back in.
-  // Removing the iframe is the only reliable way to silence a YouTube embed
-  // without loading YouTube's player API.
+  // Stop any playing video inside root by putting the original poster nodes
+  // back. Removing the iframe is the only reliable way to silence a YouTube
+  // embed without loading YouTube's player API. No HTML strings are parsed.
   function reset(root) {
-    (root || document).querySelectorAll('.cai-player[data-poster]').forEach(function (player) {
-      if (player.querySelector('iframe')) player.innerHTML = player.getAttribute('data-poster');
+    (root || document).querySelectorAll('.cai-player').forEach(function (player) {
+      var nodes = posters.get(player);
+      if (nodes && player.querySelector('iframe')) player.replaceChildren.apply(player, nodes);
     });
   }
   window.caiPlayer = { reset: reset };
