@@ -3,9 +3,11 @@
   'use strict';
 
   /* ---------- Preloader ---------- */
-  $(window).on('load', function () {
-    $('#preloader').delay(350).fadeOut('slow');
-    $('body').delay(350).css({ overflow: 'visible' });
+  // Hide on DOM ready, not window load: 'load' waits for every image and
+  // third-party asset, so one slow file kept whole pages blank.
+  $(function () {
+    $('#preloader').fadeOut('fast');
+    $('body').css({ overflow: 'visible' });
   });
 
   /* ---------- Sticky Header ---------- */
