@@ -1,21 +1,14 @@
 # Security Policy
 
-## Supported Versions
+This repository is the static source for archstonesecurity.com. There are no
+versioned releases; only the current `main` branch is deployed and supported.
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+## Reporting a vulnerability
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+Email **karen.stanford@archstonesecurity.com** with "Security" in the subject line.
+Please include the affected URL, what you observed, and steps to reproduce.
 
-## Reporting a Vulnerability
+Please do not open a public GitHub issue for security reports.
 
-Use this section to tell people how to report a vulnerability.
-
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+You can expect an acknowledgement within five business days. Confirmed issues are
+fixed on `main` and deploy automatically.

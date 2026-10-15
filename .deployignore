@@ -39,3 +39,15 @@
 
 # Server-side code GitHub Pages cannot run (it would be served as plain text)
 *.php
+
+# Unreferenced leftovers (security sweep 2026-10-14) - kept in the repo, not served.
+# backup/new custom.js still carry the template author's Mailchimp list URL.
+/js/script.js
+/js/backup custom.js
+/js/new_custom.js
+/js/Archive/
+/js/custom.js.map
+/css/style backup.css
+/css/style_alt.css
+/css/xstyle.css
+/font/flaticon.html

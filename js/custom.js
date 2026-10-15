@@ -301,40 +301,4 @@
     });
   });
 
-  /* ---------- Mailchimp ---------- */
-  if ($.fn.ajaxChimp) {
-    const $mailchimp = $('.mailchimp-sform');
-    if ($mailchimp.length) {
-      $mailchimp.ajaxChimp({
-        language: 'es',
-        callback: mailchimpCallback,
-        // Replace with your own Mailchimp post URL:
-        url: 'https://facebook.us17.list-manage.com/subscribe/post?u=e8c07b57e07350179b0d6325b&amp;id=437442d4eb'
-      });
-    }
-
-    function mailchimpCallback(resp) {
-      if (resp.result === 'success') {
-        $('.subscription-success')
-          .html('<i class="fa fa-check"></i><br/>' + resp.msg)
-          .fadeIn(1500);
-        $('.subscription-error').fadeOut(500);
-      } else if (resp.result === 'error') {
-        $('.subscription-error')
-          .html('<i class="fa fa-times"></i><br/>' + resp.msg)
-          .fadeIn(1500);
-      }
-    }
-
-    $.ajaxChimp.translations.es = {
-      submit: 'Submitting...',
-      0: 'We have sent you a confirmation email',
-      1: 'Please enter a value',
-      2: 'An email address must contain a single @',
-      3: 'The domain portion of the email address is invalid (the portion after the @: )',
-      4: 'The username portion of the email address is invalid (the portion before the @: )',
-      5: 'This email address looks fake or invalid. Please enter a real email address'
-    };
-  }
-
 })(jQuery);
