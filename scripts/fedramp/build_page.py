@@ -271,7 +271,24 @@ def analyse(rows: list[dict], snap: str) -> dict:
     rev5_durs = [days(r["tl"]["start"], r["tl"]["first_cert"]) for r in since
                  if r["track"] == "Rev5" and r["tl"]["start"] and r["tl"]["first_cert"]
                  and r["tl"]["first_cert"] >= first]
+    def quart(xs):
+        xs = sorted(xs)
+        if len(xs) < 4:
+            return None, None
+        import statistics
+        q = statistics.quantiles(xs, n=4)
+        return q[0], q[2]
+
+    for d in tl_rows:
+        d["elapsed"] = days(d["start"], snap)
+    r5_q1, r5_q3 = quart(rev5_durs)
+    r5_med = median(rev5_durs)
+    pil_wait = [d for d in tl_rows if d["r"]["cert_type"] == "20x Pilot" and d["r"]["n_agencies"] == 0]
     timing = {
+        "rev5_q1": r5_q1, "rev5_q3": r5_q3,
+        "pilot_elapsed_median": median([d["elapsed"] for d in pil_wait]),
+        "pilot_wait_n": len(pil_wait),
+        "pilot_past_rev5": sum(1 for d in pil_wait if r5_med is not None and d["elapsed"] > r5_med),
         "x20_median": median([d["to_auth"] for d in tl_rows if d["r"]["cert_type"] != "20x Pilot"]),
         "x20_n": sum(1 for d in tl_rows if d["r"]["cert_type"] != "20x Pilot"),
         "pilot_median": median([d["to_auth"] for d in tl_rows if d["r"]["cert_type"] == "20x Pilot"]),
@@ -530,6 +547,12 @@ td.ck{text-align:center;font-family:var(--mono)}
 .tl .tick{fill:var(--ink-soft);font-size:11px}
 .tl .tln{fill:var(--ink);font-size:12px}
 .proc{fill:var(--manual)}
+.r5band{fill:var(--referent-fill)}
+.r5med{stroke:var(--referent);stroke-width:2}
+.tl .r5lab{fill:var(--referent);font-size:12px;font-weight:600}
+.tl .r5sub{fill:var(--referent);font-size:11px}
+.endpt{fill:var(--gap)}
+.endpt.has{fill:var(--referent)}
 .proc.pil{fill:var(--manual-fill);stroke:var(--manual);stroke-width:1}
 .tl .tlg{fill:var(--ink);font-size:12px;font-weight:600;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase}
 .tl .tlgl{stroke:var(--rule-strong);stroke-width:1}
@@ -537,7 +560,7 @@ td.ck{text-align:center;font-family:var(--mono)}
 .tail{stroke:var(--gap);stroke-width:2;stroke-dasharray:5 4}
 .tail-has{stroke:var(--referent);stroke-width:3}
 .recert{stroke:var(--ink);stroke-width:2}
-.tl .tlv{fill:var(--gap);font-size:11px;font-weight:600}
+.tl .tlv{fill:var(--gap);font-size:11px;font-weight:600;paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
 .tl .tlv.has{fill:var(--referent)}
 .tl .tlhit{fill:transparent}
 .tl .tlr:hover .tlhit,.tl .tlr:focus .tlhit{fill:var(--ink);fill-opacity:.04}
@@ -596,41 +619,37 @@ def timeline_chart(a: dict) -> str:
     rows = a["tl_rows"]
     if not rows:
         return "<p>No 20x products have both a start and an authorization date in their status history.</p>"
-    snap = a["snapshot"]
-    lo = min(d["start"] for d in rows)
-    lo = lo[:7] + "-01"
-    W, rh, ml, mr, mt, mb = 1000, 24, 220, 118, 30, 10
+    tm = a["timing"]
     groups = [("Open 20x", [d for d in rows if d["r"]["cert_type"] != "20x Pilot"]),
               ("20x Pilot · invitation-only", [d for d in rows if d["r"]["cert_type"] == "20x Pilot"])]
     groups = [g for g in groups if g[1]]
-    gh = 30
+    W, rh, gh, ml, mr, mt, mb = 1000, 24, 30, 220, 118, 52, 44
     H = mt + rh * len(rows) + gh * len(groups) + mb
-    t0, t1 = date.fromisoformat(lo).toordinal(), date.fromisoformat(snap).toordinal()
+    top_days = max([d["elapsed"] for d in rows] + [tm["rev5_q3"] or 0])
+    top_days = int(-(-top_days // 90) * 90)
     xw = W - ml - mr
 
-    def x(d):
-        return ml + (date.fromisoformat(d).toordinal() - t0) / (t1 - t0) * xw
+    def x(v):
+        return ml + v / top_days * xw
 
     out = [f'<svg class="tl" viewBox="0 0 {W} {H}" width="100%" role="img" aria-labelledby="tl-t">'
-           f'<title id="tl-t">Time from entering the 20x process to authorization, and time since, for '
-           f'{len(rows)} products</title>']
-    for mo in months_between(lo, snap):
-        if mo[5:7] in ("01", "04", "07", "10"):
-            xx = x(mo + "-01")
-            out.append(f'<line x1="{xx:.1f}" x2="{xx:.1f}" y1="{mt - 8}" y2="{H - mb}" class="gridline"/>'
-                       f'<text x="{xx:.1f}" y="{mt - 14}" text-anchor="middle" class="tick">'
-                       f'{fmt_month(mo)}{" " + mo[:4] if mo[5:7] == "01" or mo == months_between(lo, snap)[0] else ""}</text>')
-    xt = x(snap)
-    out.append(f'<line x1="{xt:.1f}" x2="{xt:.1f}" y1="{mt - 8}" y2="{H - mb}" class="today"/>'
-               f'<text x="{xt + 4:.1f}" y="{mt - 14}" class="tick">Today</text>')
-    layout = []
-    yy = mt
+           f'<title id="tl-t">Days since each 20x product entered the process: time to authorization, then time '
+           f'without an agency, against the usual Rev5 time to an agency-backed authorization</title>']
+    if tm["rev5_q1"] is not None:
+        x1, x3 = x(tm["rev5_q1"]), x(tm["rev5_q3"])
+        out.append(f'<rect x="{x1:.1f}" y="{mt - 8}" width="{x3 - x1:.1f}" height="{H - mb - mt + 8}" class="r5band"/>')
+    if tm["rev5_median"] is not None:
+        xm = x(tm["rev5_median"])
+        out.append(f'<line x1="{xm:.1f}" x2="{xm:.1f}" y1="{mt - 8}" y2="{H - mb}" class="r5med"/>'
+                   f'<text x="{xm:.1f}" y="{mt - 30}" text-anchor="middle" class="r5lab">Rev5 median: {round(tm["rev5_median"])} days</text>'
+                   f'<text x="{xm:.1f}" y="{mt - 17}" text-anchor="middle" class="r5sub">to an authorization with an agency behind it</text>')
+    for v in range(0, top_days + 1, 90):
+        out.append(f'<line x1="{x(v):.1f}" x2="{x(v):.1f}" y1="{mt - 8}" y2="{H - mb}" class="gridline"/>')
+    layout, yy = [], mt
     for gname, gl in groups:
-        layout.append(("hdr", gname, yy))
-        yy += gh
+        layout.append(("hdr", gname, yy)); yy += gh
         for d in gl:
-            layout.append(("row", d, yy))
-            yy += rh
+            layout.append(("row", d, yy)); yy += rh
     for kind, d, top in layout:
         if kind == "hdr":
             out.append(f'<text x="0" y="{top + gh - 9:.1f}" class="tlg">{esc(d)}</text>'
@@ -639,28 +658,34 @@ def timeline_chart(a: dict) -> str:
         r = d["r"]
         pilot = r["cert_type"] == "20x Pilot"
         cy = top + rh / 2
-        xs, xa = x(d["start"]), x(d["auth"])
+        xa, xe = x(d["to_auth"]), x(d["elapsed"])
         has = r["n_agencies"] > 0
-        tip = (f'{r["product"]} ({r["csp"]}). Entered the process {fmt_date(d["start"])}; authorized '
-               f'{fmt_date(d["auth"])} after {d["to_auth"]} days. '
-               + (f'Agency ATOs: {", ".join(r["agencies"])}.' if has else f'No agency ATO in the {d["since"]} days since.')
+        tip = (f'{r["product"]} ({r["csp"]}). Entered the process {fmt_date(d["start"])}; authorized after '
+               f'{d["to_auth"]} days ({fmt_date(d["auth"])}). {d["elapsed"]} days since entering. '
+               + (f'Agency ATOs: {", ".join(r["agencies"])}.' if has else 'No agency ATO.')
                + (f' Listing re-certified {", ".join(fmt_date(z) for z in d["recert"])}.' if d["recert"] else ""))
         name = r["product"] if len(r["product"]) <= 30 else r["product"][:29] + "…"
         out.append(f'<g class="tlr{" has" if has else ""}" tabindex="0"><title>{esc(tip)}</title>'
                    f'<rect x="0" y="{cy - rh / 2:.1f}" width="{W}" height="{rh}" class="tlhit"/>'
                    f'<text x="{ml - 10}" y="{cy:.1f}" dy="0.32em" text-anchor="end" class="tln">{esc(name)}</text>'
-                   f'<line x1="{xa:.1f}" x2="{xt:.1f}" y1="{cy:.1f}" y2="{cy:.1f}" class="{"tail-has" if has else "tail"}"/>'
-                   f'<rect x="{xs:.1f}" y="{cy - 5:.1f}" width="{max(xa - xs, 2):.1f}" height="10" rx="2" class="{"proc pil" if pilot else "proc"}"/>'
-                   f'<circle cx="{xa:.1f}" cy="{cy:.1f}" r="4.5" class="auth"/>')
+                   f'<line x1="{xa:.1f}" x2="{xe:.1f}" y1="{cy:.1f}" y2="{cy:.1f}" class="{"tail-has" if has else "tail"}"/>'
+                   f'<rect x="{ml:.1f}" y="{cy - 5:.1f}" width="{max(xa - ml, 2):.1f}" height="10" rx="2" class="{"proc pil" if pilot else "proc"}"/>'
+                   f'<circle cx="{xa:.1f}" cy="{cy:.1f}" r="4.5" class="auth"/>'
+                   f'<circle cx="{xe:.1f}" cy="{cy:.1f}" r="2.5" class="{"endpt has" if has else "endpt"}"/>')
         for z in d["recert"]:
-            xz = x(z)
+            xz = x(days_between(d["start"], z))
             out.append(f'<line x1="{xz:.1f}" x2="{xz:.1f}" y1="{cy - 7:.1f}" y2="{cy + 7:.1f}" class="recert"/>')
-        lab = f'{len(r["agencies"])} agency' + ("" if len(r["agencies"]) == 1 else " ATOs") if has else f'{d["since"]} days, no agency'
-        if has and len(r["agencies"]) == 1:
-            lab = "1 agency ATO"
-        out.append(f'<text x="{xt + 8:.1f}" y="{cy:.1f}" dy="0.32em" class="{"tlv has" if has else "tlv"}">{lab}</text></g>')
+        lab = (f'{len(r["agencies"])} agency ATO' + ("" if len(r["agencies"]) == 1 else "s")) if has else f'{d["elapsed"]} days, no agency'
+        out.append(f'<text x="{max(xe, x(top_days * 0.0)) + 8:.1f}" y="{cy:.1f}" dy="0.32em" class="{"tlv has" if has else "tlv"}">{lab}</text></g>')
+    for v in range(0, top_days + 1, 90):
+        out.append(f'<text x="{x(v):.1f}" y="{H - mb + 16}" text-anchor="middle" class="tick">{v}</text>')
+    out.append(f'<text x="{ml + xw / 2:.1f}" y="{H - mb + 34}" text-anchor="middle" class="tick">Days since entering the process</text>')
     out.append("</svg>")
     return "".join(out)
+
+
+def days_between(a_: str, b_: str) -> int:
+    return (date.fromisoformat(b_) - date.fromisoformat(a_)).days
 
 
 def legend_swatch(kind: str) -> str:
@@ -670,6 +695,8 @@ def legend_swatch(kind: str) -> str:
         return '<svg width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6" class="mk has"/></svg>'
     if kind == "tl-proc":
         return '<svg width="22" height="12" aria-hidden="true"><rect x="1" y="1" width="20" height="10" rx="2" class="proc"/></svg>'
+    if kind == "tl-band":
+        return '<svg width="22" height="14" aria-hidden="true"><rect x="1" y="1" width="20" height="12" class="r5band"/><line x1="11" x2="11" y1="0" y2="14" class="r5med"/></svg>'
     if kind == "tl-pil":
         return '<svg width="22" height="12" aria-hidden="true"><rect x="1" y="1" width="20" height="10" rx="2" class="proc pil"/></svg>'
     if kind == "tl-auth":
@@ -850,8 +877,8 @@ def render(a: dict, digest: str, built: str) -> str:
                       + track_col("FedRAMP 20x", a["grc_by_track"]["20x"]))
 
     fmt_days = lambda v: "—" if v is None else f"{round(v):,}"
-    tm_x20, tm_pil, tm_r5, tm_wait = (fmt_days(a["timing"]["x20_median"]), fmt_days(a["timing"]["pilot_median"]),
-                                      fmt_days(a["timing"]["rev5_median"]), fmt_days(a["timing"]["waiting_median"]))
+    tm_x20, tm_r5, tm_pel = (fmt_days(a["timing"]["x20_median"]), fmt_days(a["timing"]["rev5_median"]),
+                             fmt_days(a["timing"]["pilot_elapsed_median"]))
 
     rev5_since = a["rev5_since"]
     shared_txt = (f' The {esc(shared[0])} appears on all {len(a["adopters"])}.' if len(shared) == 1 else "")
@@ -984,17 +1011,17 @@ def render(a: dict, digest: str, built: str) -> str:
     </section>
 
     <section class="fig wide" id="timeline">
-      <h2>Fast to authorize. Then nothing.</h2>
-      <p class="note">Each 20x product from the date its marketplace listing entered the process to its first authorization, then from authorization to today. Dates come from each listing's status history. Pilot products are drawn for context but left out of the figures below: the pilot was invitation-only and its timing does not reflect the open process.</p>
+      <h2>20x moved the certificate, not the finish line.</h2>
+      <p class="note">Every row starts on the day the product's marketplace listing entered the process. The grey bar runs to its 20x authorization; the dashed line runs from there to today. The shaded band is where a Rev5 authorization usually lands, middle half of products, measured the same way from the listing date. A Rev5 agency-path authorization comes with its sponsoring agency, so it is the point where an agency is relying on the product. For 20x that point has not arrived.</p>
       <div class="stats3">
-        <div><span class="num">{tm_x20}<small>days</small></span><span class="lbl">median to an open 20x authorization ({a["timing"]["x20_n"]} products)</span></div>
-        <div><span class="num">{tm_r5}<small>days</small></span><span class="lbl">median from Agency Authorization In Process to a Rev5 authorization, same window</span></div>
-        <div><span class="num gap">{tm_wait}<small>days</small></span><span class="lbl">median time since authorization for the {a["timing"]["waiting_n"]} open 20x products with no agency ATO</span></div>
+        <div><span class="num">{tm_x20}<small>days</small></span><span class="lbl">median to an open 20x authorization ({a["timing"]["x20_n"]} products; pilots excluded because the pilot was invitation-only)</span></div>
+        <div><span class="num">{tm_r5}<small>days</small></span><span class="lbl">median to a Rev5 authorization, which arrives with its sponsoring agency</span></div>
+        <div><span class="num gap">{tm_pel}<small>days</small></span><span class="lbl">median time since entering for the {a["timing"]["pilot_wait_n"]} pilot products still without an agency; {a["timing"]["pilot_past_rev5"]} are past the Rev5 median</span></div>
       </div>
-      <div class="legend"><span>{legend_swatch("tl-proc")}In process</span><span>{legend_swatch("tl-pil")}In process, pilot</span><span>{legend_swatch("tl-auth")}Authorized</span><span>{legend_swatch("tl-tail")}Since authorization, no agency ATO</span><span>{legend_swatch("tl-has")}Has an agency ATO</span><span>{legend_swatch("tl-recert")}Listing re-certified</span></div>
+      <div class="legend"><span>{legend_swatch("tl-proc")}In process</span><span>{legend_swatch("tl-pil")}In process, pilot</span><span>{legend_swatch("tl-auth")}Authorized</span><span>{legend_swatch("tl-tail")}Since authorization, no agency ATO</span><span>{legend_swatch("tl-has")}Has an agency ATO</span><span>{legend_swatch("tl-recert")}Listing re-certified</span><span>{legend_swatch("tl-band")}Rev5, middle half of products</span></div>
       <div class="scroll">{timeline_chart(a)}</div>
-      <p class="note" style="margin-top:var(--s-3)">{len(a["tw_cert"]) - len(a["tl_rows"])} authorized 20x {"product is" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "products are"} left out because {"its" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "their"} status history starts at authorization. Agency ATO dates are not in the export, so a filled tail means an agency relies on the product now, not since the date it was authorized.</p>
-      {prov(a, digest, f'status history of {len(a["tl_rows"])} 20x and {a["timing"]["rev5_n"]} Rev5 listings authorized since {fmt_date(a["first"])}')}
+      <p class="note" style="margin-top:var(--s-3)">{len(a["tw_cert"]) - len(a["tl_rows"])} authorized 20x {"product is" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "products are"} left out because {"its" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "their"} status history starts at authorization. Agency ATO dates are not in the export, so a filled tail means an agency relies on the product now, not since the date it was authorized. Pilots are included here because the question is how long agency adoption takes, which the invitation did not shorten. Both tracks are timed from the marketplace listing; preparation before a listing appears is not visible on either.</p>
+      {prov(a, digest, f'status history of {len(a["tl_rows"])} 20x and {a["timing"]["rev5_n"]} Rev5 listings authorized since {fmt_date(a["first"])}; days counted from each listing\'s first In Process status (Agency Authorization In Process for Rev5)')}
     </section>
 
     <section class="fig wide" id="compare">
