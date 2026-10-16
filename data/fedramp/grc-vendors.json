@@ -1,5 +1,6 @@
 {
-  "_about": "Cloud service providers counted as GRC / compliance-automation vendors on the 20x adoption page. Matched case-insensitively against the marketplace 'csp' field, so every product a listed provider holds is included, on either track. This is an editorial classification: add or remove names here and the page rebuilds on the next run. Spell the provider exactly as the marketplace does; some appear under more than one spelling.",
+  "_about": "GRC provider classification feed for the 20x adoption page. Providers listed here are counted as GRC / compliance-automation vendors, matched case-insensitively against the marketplace 'csp' field on either track. Spell providers exactly as the marketplace does; some appear under more than one spelling. Change 'updated' whenever the list changes: the page cites it as the feed date.",
+  "updated": "2026-10-16",
   "providers": [
     "A-LIGN",
     "Anecdotes",

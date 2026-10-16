@@ -226,7 +226,7 @@ def analyse(rows: list[dict], snap: str) -> dict:
     rev5_cert = [r for r in cert if r["track"] == "Rev5"]
     grc_share = [
         {"label": "20x authorized", "sub": "self-declared GRC tag", "kind": "tag", **share(tw_cert, "grc_tag")},
-        {"label": "20x authorized", "sub": "Archstone provider list", "kind": "list", **share(tw_cert, "grc")},
+        {"label": "20x authorized", "sub": "GRC classification feed", "kind": "list", **share(tw_cert, "grc")},
         {"label": "20x in process", "sub": "self-declared GRC tag", "kind": "tag", **share(pipeline, "grc_tag")},
         {"label": f"Rev5 authorized since {fmt_date(first)}", "sub": "self-declared GRC tag", "kind": "tag",
          **share([r for r in since if r["track"] == "Rev5"], "grc_tag")},
@@ -748,19 +748,19 @@ def render(a: dict, digest: str, built: str) -> str:
 
     <section class="fig wide" id="grc-share">
       <h2>How much of 20x is GRC tooling</h2>
-      <p class="note">Share of products that are governance, risk and compliance tools, counted two ways. The <b>self-declared tag</b> is the "Governance, Risk, and Compliance (GRC)" business category providers choose for their own marketplace listing; it applies to both tracks the same way. The <b>Archstone list</b> is an editorial classification of providers whose product is compliance automation, and catches vendors that did not tag themselves. It is applied to authorized 20x products only.</p>
+      <p class="note">Share of products that are governance, risk and compliance tools, counted two ways. The <b>self-declared tag</b> is the "Governance, Risk, and Compliance (GRC)" business category providers choose for their own marketplace listing; it applies to both tracks the same way. The <b>classification feed</b> is a separately maintained list of providers whose product is compliance automation (feed data as of {fmt_date(a["grc_date"])}); it catches vendors that did not tag themselves, and is applied here to authorized 20x products only.</p>
       <div class="cls">{grc_rows}</div>
       <h3 class="sub">Authorized 20x products counted as GRC, by either method</h3>
       <div class="tbl"><table>
-        <thead><tr><th>Product</th><th class="hide-sm">Provider</th><th class="n">Authorized</th><th class="ck">Self-tagged</th><th class="ck">Archstone list</th><th class="n">Agencies</th></tr></thead>
+        <thead><tr><th>Product</th><th class="hide-sm">Provider</th><th class="n">Authorized</th><th class="ck">Self-tagged</th><th class="ck">Classified</th><th class="n">Agencies</th></tr></thead>
         <tbody>{grc_prod_rows}</tbody>
       </table></div>
-      {prov(a, digest, "business categories each provider chose for its listing; Archstone provider list")}
+      {prov(a, digest, f'business categories each provider chose for its listing; GRC classification feed, {fmt_date(a["grc_date"])}')}
     </section>
 
     <section class="fig wide" id="grc-adoption">
       <h2>Which ATOs do agencies prefer for GRC tools?</h2>
-      <p class="note">GRC products are those from providers on the Archstone list, applied identically to both tracks. Agency ATOs exclude the FedRAMP PMO.</p>
+      <p class="note">GRC products are those from providers in the GRC classification feed (data as of {fmt_date(a["grc_date"])}), applied identically to both tracks. Agency ATOs exclude the FedRAMP PMO.</p>
       <h3 class="sub">GRC tool adoption by authorization type</h3>
       <p class="note">One block per authorized GRC product, on a common scale. Filled blocks have at least one agency ATO; open blocks have none. A Rev5 agency-path authorization has a sponsoring agency by definition, so that row is filled by construction. Hover a block for the product.</p>
       <div class="legend"><span>{legend_swatch("sb-has")}With an agency ATO</span><span>{legend_swatch("sb-none")}No agency ATO</span></div>
@@ -768,7 +768,7 @@ def render(a: dict, digest: str, built: str) -> str:
       <h3 class="sub">Every GRC product, one square per agency ATO</h3>
       <p class="note">Hover a square for the agency.</p>
       <div class="tracks">{grc_track_html}</div>
-      {prov(a, digest, "FedRAMP Certified products from providers on the Archstone GRC list")}
+      {prov(a, digest, f'FedRAMP Certified products from providers in the GRC classification feed, {fmt_date(a["grc_date"])}')}
     </section>
 
     <section class="fig" id="headline">
@@ -778,7 +778,7 @@ def render(a: dict, digest: str, built: str) -> str:
         <div><span class="num">{grc["n"]}</span><span class="lbl">20x authorizations held by GRC vendors</span></div>
       </div>
       <p class="note">The companies selling 20x readiness hold {grc["n"]} 20x authorizations between them. {"None has" if grc["with"] == 0 else f'{grc["with"]} {"has" if grc["with"] == 1 else "have"}'} an agency customer on it. Vendors counted: {grc_list}.</p>
-      {prov(a, digest, "20x products with FedRAMP Certified status, provider on the GRC list")}
+      {prov(a, digest, f'20x products with FedRAMP Certified status, provider in the GRC classification feed, {fmt_date(a["grc_date"])}')}
     </section>
 
     <section class="fig" id="pipeline">
@@ -845,7 +845,7 @@ def render(a: dict, digest: str, built: str) -> str:
       <li><b>Source.</b> The FedRAMP Marketplace's own JSON export, downloaded on a schedule and kept as dated snapshots. The page is rebuilt whenever the export changes.</li>
       <li><b>Agency ATO</b> means an agency other than the FedRAMP PMO listed on the product. The PMO records an agency use on every 20x authorization, so the marketplace's own authorization count shows at least one for every 20x product. That entry is removed everywhere on this page.</li>
       <li><b>Authorization date</b> is the marketplace's certification date for the product. The export lists the agencies on each product but not the date each agency signed, so this measures reliance as it stands today, not when it happened.</li>
-      <li><b>GRC and compliance vendors</b> is an editorial classification, kept as a list of providers in this site's repository and applied by provider name.</li>
+      <li><b>GRC and compliance vendors</b> are identified from a separately maintained provider classification feed (data as of {fmt_date(a["grc_date"])}), matched by provider name, and shown alongside the GRC business category providers choose for their own marketplace listings.</li>
       <li><b>Reclassification.</b> No 20x record in the current export carries status history from before 2025 or an agency ATO inherited from a Rev5 authorization. Products the marketplace lists on both tracks are shown above; their agencies count toward Rev5. Snapshots are kept so that a record converted in place will show up when two exports are compared.</li>
       <li><b>Limits.</b> Withdrawn and expired products are not in the export. Class A 20x entries without an authorization date are included in totals and left out of anything plotted by date.</li>
     </ul>
@@ -910,10 +910,12 @@ def main() -> None:
 
     products, digest = load_snapshot(args.snapshot)
     snap = snapshot_date(args.snapshot)
-    grc = {s.strip().lower() for s in json.loads(args.grc.read_text())["providers"]}
+    grc_feed = json.loads(args.grc.read_text())
+    grc = {s.strip().lower() for s in grc_feed["providers"]}
     rows = [normalise(p, grc) for p in products]
     a = analyse(rows, snap)
     a["checked"] = args.checked or snap
+    a["grc_date"] = grc_feed.get("updated") or snap
 
     built = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     args.out.mkdir(parents=True, exist_ok=True)
