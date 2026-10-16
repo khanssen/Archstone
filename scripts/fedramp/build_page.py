@@ -194,6 +194,15 @@ def analyse(rows: list[dict], snap: str) -> dict:
                 dual.append({"rev5": r, "x20": t})
     dual.sort(key=lambda d: (-d["rev5"]["n_agencies"], d["x20"]["product"].lower()))
 
+    by_class = []
+    order = ["Class A", "Class B", "Class C", "Class D"]
+    present = sorted({r["cls"] for r in tw_cert}, key=lambda c: order.index(c) if c in order else 99)
+    for c in present:
+        ps = [r for r in tw_cert if r["cls"] == c]
+        impacts = Counter(r["impact"] for r in ps)
+        by_class.append({"cls": c if c in order else "Class not listed",
+                         "impacts": impacts, **stats(ps)})
+
     adopters = [r for r in tw_cert if r["n_agencies"] > 0]
     adopter_agencies = Counter(a for r in adopters for a in r["agencies"])
 
@@ -206,6 +215,7 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "tw_dated": tw_dated,
         "tw_undated": [r for r in tw_cert if not r["date"]],
         "tw_stats": stats(tw_cert),
+        "by_class": by_class,
         "grc_cert": grc_cert,
         "grc_stats": stats(grc_cert),
         "grc_providers": grc_providers,
@@ -361,6 +371,18 @@ h1{margin:0}
 .big .num{font-size:var(--t-display);font-weight:600;line-height:1;letter-spacing:-0.02em}
 .big .num.gap{color:var(--gap)}
 .big .lbl{font-size:var(--t-small);color:var(--ink-soft);max-width:22ch}
+.cls{display:grid;gap:var(--s-3);margin:var(--s-2) 0 0}
+.cls-row{display:grid;grid-template-columns:minmax(7.5rem,10rem) 1fr 12.5rem;gap:var(--s-2) var(--s-4);align-items:center}
+.cls-row.total{border-top:1px solid var(--rule);padding-top:var(--s-3)}
+.cls-name{font-weight:600}
+.cls-name small{display:block;font-weight:400;font-size:var(--t-small);color:var(--ink-soft)}
+.track{height:28px;background:var(--gap-fill);border:1px solid var(--gap);border-radius:4px;position:relative;overflow:hidden}
+.fill{position:absolute;inset:0 auto 0 0;background:var(--referent)}
+.cls-val{display:flex;align-items:baseline;gap:var(--s-2);font-variant-numeric:tabular-nums}
+.cls-val .pc{font-size:var(--t-title);font-weight:600;min-width:3.2ch;text-align:right}
+.cls-val .pc.zero{color:var(--gap)}
+.cls-val .of{font-size:var(--t-small);color:var(--ink-soft)}
+@media (max-width:640px){.cls-row{grid-template-columns:1fr auto}.cls-row .track{grid-column:1/-1;grid-row:2}}
 .legend{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);font-size:var(--t-small);color:var(--ink-soft);margin:0 0 var(--s-3)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend svg{flex:none}
@@ -472,6 +494,27 @@ def render(a: dict, digest: str, built: str) -> str:
             f'<td class="hide-sm">{esc("; ".join(p["agencies"])) or "—"}</td>'
             f'<td class="hide-sm">{esc(p["assessor"]) or "—"}</td></tr>')
 
+    def class_row(name, sub, st, total=False):
+        share = st["share"] or 0
+        z = " zero" if st["with"] == 0 else ""
+        return (f'<div class="cls-row{" total" if total else ""}"><div class="cls-name">{esc(name)}<small>{esc(sub)}</small></div>'
+                f'<div class="track" role="img" aria-label="{st["with"]} of {st["n"]} with an agency ATO">'
+                f'<div class="fill" style="width:{share * 100:.1f}%"></div></div>'
+                f'<div class="cls-val"><span class="pc{z}">{share:.0%}</span>'
+                f'<span class="of">{st["with"]} of {st["n"]} {"product" if st["n"] == 1 else "products"}</span></div></div>')
+
+    def impact_txt(imp):
+        known = {k: v for k, v in imp.items() if k and k != "Unknown"}
+        if not known:
+            return "impact level not listed"
+        if len(known) == 1 and sum(known.values()) == sum(imp.values()):
+            return f"all {next(iter(known))}"
+        return ", ".join(f"{v} {k}" for k, v in sorted(known.items(), key=lambda x: -x[1])) + (
+            f", {imp.get('Unknown', 0)} not listed" if imp.get("Unknown") else "")
+
+    class_rows = "".join(class_row(c["cls"], impact_txt(c["impacts"]), c) for c in a["by_class"])
+    class_rows += class_row("All 20x", f'{a["tw_stats"]["n"]} authorized', a["tw_stats"], total=True)
+
     rev5_since = a["rev5_since"]
     shared_txt = (f' The {esc(shared[0])} appears on all {len(a["adopters"])}.' if len(shared) == 1 else "")
     grc_list = ", ".join(esc(x) for x in a["grc_providers"])
@@ -514,6 +557,13 @@ def render(a: dict, digest: str, built: str) -> str:
   </div>
 
   <div class="figs">
+    <section class="fig wide" id="by-class">
+      <h2>Agency adoption of 20x, by class</h2>
+      <p class="note">Share of authorized 20x products in each class with at least one agency ATO besides the FedRAMP PMO. The filled part of each bar is agency adoption; the rest is authorizations no agency has relied on.</p>
+      <div class="cls">{class_rows}</div>
+      {prov(a, digest, f'{len(a["tw_cert"])} 20x products with FedRAMP Certified status, by marketplace class')}
+    </section>
+
     <section class="fig" id="headline">
       <p class="eyebrow">GRC and compliance vendors</p>
       <div class="big">
