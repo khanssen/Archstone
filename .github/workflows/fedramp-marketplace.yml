@@ -56,6 +56,7 @@ jobs:
             --grc data/fedramp/grc-vendors.json \
             --out fedramp-20x-adoption \
             --history data/fedramp/history.csv \
+            --raw-dir data/fedramp/raw \
             --checked "$(date -u +%Y-%m-%d)"
 
       - name: Commit if anything changed

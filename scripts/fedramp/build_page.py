@@ -887,6 +887,32 @@ def render(a: dict, digest: str, built: str) -> str:
     amb_txt = (f' <b>The count may be low.</b> Another {n_amb} {"listing is" if n_amb == 1 else "listings are"} in the same Initial Implementation intake status but labeled Rev5, with no sponsoring agency. One of them describes its own trust center as a FedRAMP 20x trust center, and the same provider also has a separate 20x listing, so the marketplace\'s track label for listings in intake is not reliable.'
                if n_amb else "")
 
+    removed_html = ""
+    if a.get("removed"):
+        rm = a["removed"]
+        rm20 = [r for r in rm if r["track"] == "20x"]
+        rm20c = [r for r in rm20 if r["certified"]]
+        rows_rm = "".join(
+            f'<tr><td>{esc(r["product"])}<br><span class="hide-sm" style="color:var(--ink-soft)">{esc(r["csp"])}</span></td>'
+            f'<td>{esc(r["cert_type"])}</td><td>{esc(r["status"])}</td><td class="n">{r["date"] or "—"}</td>'
+            f'<td class="n{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</td><td class="n">{r["last_seen"]}</td></tr>'
+            for r in rm)
+        removed_html = f"""<section class="fig wide" id="removed">
+      <h2>Removed from the marketplace</h2>
+      <div class="big">
+        <div><span class="num gap">{len(rm20)}</span><span class="lbl">20x listings removed since tracking began</span></div>
+        <div><span class="num">{len(rm20c)}</span><span class="lbl">of them had been authorized</span></div>
+        <div><span class="num">{sum(1 for r in rm20c if r["n_agencies"] == 0)}</span><span class="lbl">authorized, removed, never relied on by an agency</span></div>
+      </div>
+      <p class="note">Listings that appeared in an earlier snapshot of the marketplace export and are missing from the current one, with their status as last seen. The export does not say why a listing was removed.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Product</th><th>Track</th><th>Status when last seen</th><th class="n">Authorized</th><th class="n">Agencies</th><th class="n">Last seen</th></tr></thead>
+        <tbody>{rows_rm}</tbody>
+      </table></div>
+      {prov(a, digest, "comparison of dated marketplace snapshots")}
+    </section>
+"""
+
     rev5_since = a["rev5_since"]
     shared_txt = (f' The {esc(shared[0])} appears on all {len(a["adopters"])}.' if len(shared) == 1 else "")
     grc_list = ", ".join(esc(x) for x in a["grc_providers"])
@@ -1031,6 +1057,7 @@ def render(a: dict, digest: str, built: str) -> str:
       {prov(a, digest, f'status history of {len(a["tl_rows"])} 20x and {a["timing"]["rev5_n"]} Rev5 listings authorized since {fmt_date(a["first"])}; days counted from each listing\'s first In Process status (Agency Authorization In Process for Rev5)')}
     </section>
 
+    {removed_html}
     <section class="fig wide" id="compare">
       <h2>The obvious objections, answered from the same data</h2>
       <p class="note">"It's too new" and "20x is mostly Low" are the two replies this gets. Both are checked below against Rev5 authorizations issued in the same window. Rev5 agency-path authorizations start with a sponsor by design, so the Rev5 share is close to 100% by construction; the comparison that matters is how far 20x sits from it after the same amount of time.</p>
@@ -1088,6 +1115,31 @@ def render(a: dict, digest: str, built: str) -> str:
 """
 
 
+def find_removed(raw_dir: Path, current: Path, products: list[dict], grc: set[str]) -> list[dict]:
+    """Listings present in an earlier snapshot and absent from the current one, with their last-seen state."""
+    now_ids = {p["id"] for p in products}
+    cur_date = snapshot_date(current)
+    last_seen: dict[str, tuple[str, dict]] = {}
+    for f in sorted(raw_dir.glob("products-*.json.gz")):
+        d = snapshot_date(f)
+        if d >= cur_date:
+            continue
+        try:
+            prods, _ = load_snapshot(f)
+        except SystemExit:
+            continue
+        for p in prods:
+            if p["id"] not in now_ids:
+                last_seen[p["id"]] = (d, p)
+    out = []
+    for pid, (d, p) in last_seen.items():
+        r = normalise(p, grc)
+        r["last_seen"] = d
+        out.append(r)
+    out.sort(key=lambda r: (r["track"] != "20x", not r["certified"], r["product"].lower()))
+    return out
+
+
 def write_csv(a: dict, path: Path) -> None:
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\n")
@@ -1103,7 +1155,7 @@ def write_csv(a: dict, path: Path) -> None:
 def update_history(a: dict, digest: str, path: Path) -> None:
     fields = ["snapshot", "sha256", "records", "x20_authorized", "x20_with_agency", "x20_agency_atos",
               "grc_authorized", "grc_with_agency", "x20_in_process", "rev5_since_first_20x",
-              "rev5_since_with_agency"]
+              "rev5_since_with_agency", "x20_removed_total"]
     rows = []
     if path.exists():
         with path.open(newline="", encoding="utf-8") as f:
@@ -1114,6 +1166,7 @@ def update_history(a: dict, digest: str, path: Path) -> None:
         "x20_agency_atos": a["tw_stats"]["atos"], "grc_authorized": a["grc_stats"]["n"],
         "grc_with_agency": a["grc_stats"]["with"], "x20_in_process": a["pipeline"]["n"],
         "rev5_since_first_20x": a["rev5_since"]["n"], "rev5_since_with_agency": a["rev5_since"]["with"],
+        "x20_removed_total": sum(1 for r in a.get("removed", []) if r["track"] == "20x"),
     })
     rows.sort(key=lambda r: r["snapshot"])
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -1129,6 +1182,7 @@ def main() -> None:
     ap.add_argument("--grc", required=True, type=Path)
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--history", type=Path)
+    ap.add_argument("--raw-dir", type=Path, help="directory of earlier snapshots, to find listings removed since")
     ap.add_argument("--checked", help="date the marketplace was last checked (YYYY-MM-DD); defaults to the snapshot date")
     args = ap.parse_args()
 
@@ -1140,6 +1194,7 @@ def main() -> None:
     a = analyse(rows, snap)
     a["checked"] = args.checked or snap
     a["grc_date"] = grc_feed.get("updated") or snap
+    a["removed"] = find_removed(args.raw_dir, args.snapshot, products, grc) if args.raw_dir else []
 
     built = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     args.out.mkdir(parents=True, exist_ok=True)
