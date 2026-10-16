@@ -15,6 +15,10 @@
 /package.json
 /package-lock.json
 /scripts/
+/data/fedramp/raw/
+/data/fedramp/inbox/
+/data/fedramp/grc-vendors.json
+/data/fedramp/README.md
 /*.md
 
 # Template sources and leftovers

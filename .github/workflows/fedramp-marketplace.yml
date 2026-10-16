@@ -1,0 +1,86 @@
+name: FedRAMP marketplace snapshot
+
+# Downloads the FedRAMP Marketplace product export, keeps a dated snapshot when
+# it changes, rebuilds /fedramp-20x-adoption/, and redeploys the site.
+#
+# Manual fallback: export JSON from the marketplace yourself, commit it to
+# data/fedramp/inbox/, and push. This workflow picks it up instead of the browser.
+
+on:
+  schedule:
+    - cron: "17 11 * * *"   # daily, 07:17 Eastern (11:17 UTC)
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "data/fedramp/inbox/**"
+      - "data/fedramp/grc-vendors.json"
+      - "scripts/fedramp/**"
+
+permissions:
+  contents: write   # commit snapshots and the rebuilt page
+  actions: write    # start the Pages deploy (pushes made with GITHUB_TOKEN don't trigger it)
+
+concurrency:
+  group: fedramp-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Playwright and Chromium
+        run: |
+          python -m pip install --quiet playwright==1.56.0
+          python -m playwright install --with-deps chromium
+
+      - name: Download marketplace export
+        id: fetch
+        continue-on-error: true
+        run: python scripts/fedramp/fetch_marketplace.py --raw data/fedramp/raw --inbox data/fedramp/inbox
+
+      - name: Rebuild page from latest snapshot
+        run: |
+          SNAP=$(ls data/fedramp/raw/products-*.json.gz | sort | tail -n 1)
+          python scripts/fedramp/build_page.py \
+            --snapshot "$SNAP" \
+            --grc data/fedramp/grc-vendors.json \
+            --out fedramp-20x-adoption \
+            --history data/fedramp/history.csv \
+            --checked "$(date -u +%Y-%m-%d)"
+
+      - name: Commit if anything changed
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fedramp fedramp-20x-adoption
+          if git diff --cached --quiet; then
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing changed."
+          else
+            git commit -m "FedRAMP marketplace snapshot $(date -u +%Y-%m-%d)"
+            git push
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy site
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
+
+      - name: Report a failed download
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          echo "::error::The marketplace export could not be downloaded. The page was rebuilt from the last snapshot. If this keeps failing, export JSON by hand and commit it to data/fedramp/inbox/."
+          exit 1
