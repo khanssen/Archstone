@@ -445,6 +445,12 @@ td.ck{text-align:center;font-family:var(--mono)}
 .units{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px;min-height:14px}
 .u{width:14px;height:14px;border-radius:3px;background:var(--referent)}
 .u.none{width:auto;height:auto;background:none;border:0;font-size:var(--t-micro);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--gap)}
+.b-r5{fill:var(--referent)}
+.b-20{fill:var(--gap)}
+.gb .val{font-size:15px;font-weight:600;fill:var(--ink)}
+.gb .val.zero{fill:var(--gap)}
+.gb .glabel{font-size:13px;font-weight:600;fill:var(--ink)}
+.gbwrap{max-width:760px;margin-bottom:var(--s-4)}
 .legend{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);font-size:var(--t-small);color:var(--ink-soft);margin:0 0 var(--s-3)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend svg{flex:none}
@@ -618,6 +624,38 @@ def render(a: dict, digest: str, built: str) -> str:
                 f'<span><b{z(n_atos)}>{n_atos}</b> agency ATOs</span><span><b{z(n_ag)}>{n_ag}</b> distinct agencies</span></p>'
                 f'{rows_html or "<p>No GRC products on this track.</p>"}</div>')
 
+    def grc_bars():
+        stats_ = {}
+        for t in ("Rev5", "20x"):
+            ps = a["grc_by_track"][t]
+            stats_[t] = [len(ps), sum(r["n_agencies"] for r in ps), len({g for r in ps for g in r["agencies"]})]
+        groups = ["GRC products", "Agency ATOs", "Distinct agencies"]
+        W, H, ml, mr, mt, mb = 760, 280, 34, 8, 26, 44
+        top = max(max(stats_["Rev5"] + stats_["20x"]), 1)
+        top = -(-top // 5) * 5
+        pw, ph = W - ml - mr, H - mt - mb
+        gw = pw / len(groups)
+        bw = min(64, gw * 0.3)
+        y = lambda v: mt + ph - v / top * ph
+        out = [f'<svg class="bars gb" viewBox="0 0 {W} {H}" width="100%" role="img" aria-labelledby="gb-t">'
+               f'<title id="gb-t">GRC products, agency ATOs and distinct agencies: Rev5 '
+               f'{", ".join(map(str, stats_["Rev5"]))}; 20x {", ".join(map(str, stats_["20x"]))}</title>']
+        for v in range(0, top + 1, 5):
+            out.append(f'<line x1="{ml}" x2="{W - mr}" y1="{y(v):.1f}" y2="{y(v):.1f}" class="gridline"/>'
+                       f'<text x="{ml - 6}" y="{y(v):.1f}" dy="0.32em" text-anchor="end" class="tick">{v}</text>')
+        for gi, g in enumerate(groups):
+            cx = ml + gi * gw + gw / 2
+            for ti, (t, cls) in enumerate((("Rev5", "b-r5"), ("20x", "b-20"))):
+                v = stats_[t][gi]
+                x = cx + (ti - 1) * (bw + 6) + 3
+                if v:
+                    out.append(f'<rect x="{x:.1f}" y="{y(v):.1f}" width="{bw:.1f}" height="{y(0) - y(v):.1f}" class="{cls}"/>')
+                vcls = "val zero" if v == 0 else "val"
+                out.append(f'<text x="{x + bw / 2:.1f}" y="{y(v) - 7:.1f}" text-anchor="middle" class="{vcls}">{v}</text>')
+            out.append(f'<text x="{cx:.1f}" y="{H - mb + 22}" text-anchor="middle" class="glabel">{g}</text>')
+        out.append(f'<line x1="{ml}" x2="{W - mr}" y1="{y(0):.1f}" y2="{y(0):.1f}" class="axis"/></svg>')
+        return "".join(out)
+
     grc_track_html = (track_col("Traditional FedRAMP (Rev5)", a["grc_by_track"]["Rev5"])
                       + track_col("FedRAMP 20x", a["grc_by_track"]["20x"]))
 
@@ -704,6 +742,8 @@ def render(a: dict, digest: str, built: str) -> str:
     <section class="fig wide" id="grc-adoption">
       <h2>Agencies buy GRC tools. Not through 20x.</h2>
       <p class="note">Every authorized GRC product on each track, with one square per agency ATO (FedRAMP PMO excluded). GRC products are those from providers on the Archstone list, applied identically to both tracks. Hover a square for the agency.</p>
+      <div class="legend"><span>{legend_swatch("b-r5")}Traditional FedRAMP (Rev5)</span><span>{legend_swatch("b-20")}FedRAMP 20x</span></div>
+      <div class="scroll gbwrap">{grc_bars()}</div>
       <div class="tracks">{grc_track_html}</div>
       {prov(a, digest, "FedRAMP Certified products from providers on the Archstone GRC list")}
     </section>
