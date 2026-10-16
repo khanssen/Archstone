@@ -740,7 +740,7 @@ def render(a: dict, digest: str, built: str) -> str:
     </section>
 
     <section class="fig wide" id="grc-adoption">
-      <h2>Agencies buy GRC tools. Not through 20x.</h2>
+      <h2>Which ATOs do agencies prefer for GRC tools?</h2>
       <p class="note">Every authorized GRC product on each track, with one square per agency ATO (FedRAMP PMO excluded). GRC products are those from providers on the Archstone list, applied identically to both tracks. Hover a square for the agency.</p>
       <div class="legend"><span>{legend_swatch("b-r5")}Traditional FedRAMP (Rev5)</span><span>{legend_swatch("b-20")}FedRAMP 20x</span></div>
       <div class="scroll gbwrap">{grc_bars()}</div>
