@@ -356,7 +356,7 @@ h1{margin:0}
 .fig.wide{grid-column:1/-1}
 .fig h2{margin:0 0 var(--s-2)}
 .fig .note{margin:0 0 var(--s-3);color:var(--ink-soft);font-size:var(--t-small);max-width:var(--measure-wide)}
-.big{display:flex;flex-wrap:wrap;gap:var(--s-3) var(--s-5);align-items:flex-end;margin:var(--s-2) 0 var(--s-2)}
+.big{display:flex;flex-wrap:wrap;gap:var(--s-3) var(--s-5);align-items:flex-start;margin:var(--s-2) 0 var(--s-2)}
 .big div{display:grid;gap:2px}
 .big .num{font-size:var(--t-display);font-weight:600;line-height:1;letter-spacing:-0.02em}
 .big .num.gap{color:var(--gap)}
