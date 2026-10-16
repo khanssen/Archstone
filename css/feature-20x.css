@@ -67,6 +67,7 @@
 @media (max-width: 640px) { .x20-slide { grid-template-columns: 1fr; padding: 26px 22px 24px; min-height: 0; } }
 .x20-big { white-space: nowrap; font-size: clamp(44px, 6vw, 68px); font-weight: 600; line-height: .95; letter-spacing: -0.03em; color: var(--x-ink); }
 .x20-big.gap { color: var(--x-gap); }
+.x20-big.pos { color: var(--x-referent); }
 .x20-big small { white-space: normal; display: block; font-size: 14px; font-weight: 400; letter-spacing: 0; color: var(--x-ink-soft); margin-top: 10px; line-height: 1.35; }
 .x20-slide h3 { font-size: 21px; margin: 0 0 8px; }
 .x20-slide p { font-size: 15px; color: var(--x-ink-soft); margin: 0 0 12px; }

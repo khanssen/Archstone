@@ -122,6 +122,7 @@ def normalise(p: dict, grc: set[str]) -> dict:
         "assessor": assessor,
         "grc": (p.get("csp") or "").strip().lower() in grc,
         "grc_tag": GRC_TAG in (p.get("business_categories") or []),
+        "ai_tag": "Artificial Intelligence (AI)" in (p.get("business_categories") or []),
     }
 
 
@@ -343,6 +344,12 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "comparisons": comparisons,
         "monthly": monthly,
         "pipeline": stats(pipeline),
+        "pipeline_recent": sum(1 for r in pipeline if r["tl"]["start"] and days(r["tl"]["start"], snap) <= 30),
+        "pipeline_ai": sum(1 for r in pipeline if r["ai_tag"]),
+        "new_since": {t: sum(1 for r in since if r["track"] == t) for t in ("Rev5", "20x")},
+        "x20_moderate": [r for r in tw_cert if r["impact"] == "Moderate"],
+        "market": {"products": len(cert), "atos": sum(r["n_agencies"] for r in cert),
+                   "top": max(cert, key=lambda r: r["n_agencies"])},
         "ambiguous": ambiguous,
         "dual": dual,
         "adopters": adopters,
@@ -1184,51 +1191,71 @@ def render_feature(a: dict) -> str:
     tw, grc = a["tw_stats"], a["grc_stats"]
     page = PAGE_PATH
     asof = fmt_date(a["snapshot"])
-    gs = {g["label"] + "|" + g["sub"]: g for g in a["grc_share"]}
-    g_tag = gs.get("20x authorized|self-declared GRC tag")
-    g_r5 = next((g for g in a["grc_share"] if g["label"].startswith("Rev5 authorized since")), None)
     tm = a["timing"]
-    slides = [
-        (f'{tw["with"]} of {tw["n"]}', "20x authorizations with an agency ATO",
-         "Agency adoption",
-         f'Agencies other than the FedRAMP PMO rely on {tw["with"]} of the {tw["n"]} products FedRAMP has authorized under 20x. '
-         f'Authorization is not the same as an agency customer.', "by-class", tw["with"] == 0 or (tw["share"] or 0) < .25),
-        (f'{len(a["agency_adopters"])} of {a["n_agencies_total"]}', "agencies relying on any 20x product",
-         "Which agencies",
-         f'Of the {a["n_agencies_total"]} agencies with a FedRAMP ATO on the marketplace, {len(a["agency_adopters"])} '
-         f'{"relies" if len(a["agency_adopters"]) == 1 else "rely"} on a 20x product.', "agencies", True),
-        (f'{grc["with"]} of {grc["n"]}', "GRC vendors' 20x authorizations with an agency customer",
-         "GRC tools",
-         f'The compliance-automation vendors selling 20x readiness hold {grc["n"]} 20x authorizations. '
-         f'{"None has" if grc["with"] == 0 else str(grc["with"]) + (" has" if grc["with"] == 1 else " have")} an agency customer on it.',
-         "grc-adoption", grc["with"] == 0),
-    ]
-    if g_tag and g_tag["share"] is not None:
-        r5txt = f' against {g_r5["share"]:.0%} of Rev5 authorizations in the same period' if g_r5 and g_r5["share"] is not None else ""
-        slides.append((f'{g_tag["share"]:.0%}', "of 20x authorizations are GRC tools, by the vendors' own tags",
-                       "What 20x is authorizing",
-                       f'{g_tag["k"]} of {g_tag["n"]} authorized 20x products are tagged GRC by their own providers{r5txt}.',
-                       "grc-share", False))
-    if tm.get("pilot_elapsed_median") is not None and tm.get("rev5_median") is not None:
-        slides.append((f'{round(tm["pilot_elapsed_median"])} days', "and counting, with no agency",
-                       "Certificate early, finish line unmoved",
-                       f'20x pilot products still without an agency entered the process a median {round(tm["pilot_elapsed_median"])} days ago. '
-                       f'A Rev5 authorization, which arrives with its sponsoring agency, takes a median {round(tm["rev5_median"])}.',
-                       "timeline", True))
-    slides.append((f'{a["pipeline"]["with"]} of {a["pipeline"]["n"]}', "20x products in process with an agency named",
-                   "The queue", f'{a["pipeline"]["n"]} products are in the 20x queue. {a["pipeline"]["with"]} name a sponsoring agency.',
-                   "pipeline", a["pipeline"]["with"] == 0))
+    P, N, A = "pos", "", "gap"   # favourable, neutral, critical
+    pipe, ns, mk = a["pipeline"], a["new_since"], a["market"]
+    first = fmt_date(a["first"])
+    slides = []
+    open_rows = [d for d in a["tl_rows"] if d["r"]["cert_type"] != "20x Pilot"]
+    if tm.get("x20_median") and tm.get("rev5_median"):
+        ratio = tm["rev5_median"] / tm["x20_median"]
+        slides.append((f'{round(tm["x20_median"])} days', "median to a 20x authorization", "Accreditation speed", P,
+                       f'Open 20x authorizations take a median {round(tm["x20_median"])} days from the marketplace listing, '
+                       f'about {round(ratio)} times faster than the {round(tm["rev5_median"])} days a Rev5 authorization takes.',
+                       "timeline"))
+    if open_rows:
+        f_ = min(open_rows, key=lambda d: d["to_auth"])
+        slides.append((f'{f_["to_auth"]} days', "fastest 20x authorization", "Fastest to authorize", P,
+                       f'{f_["r"]["product"]} went from marketplace listing to 20x authorization in {f_["to_auth"]} days.',
+                       "timeline"))
+    slides.append((f'{pipe["n"]}', "products in the 20x queue", "Demand", P,
+                   f'{pipe["n"]} cloud products are working toward a 20x authorization, '
+                   f'{a["pipeline_recent"]} of them added in the last 30 days.', "pipeline"))
+    tot_new = ns["Rev5"] + ns["20x"]
+    if tot_new:
+        share = ns["20x"] / tot_new
+        frac = "1 in 4" if .22 <= share < .28 else ("1 in 3" if .3 <= share < .37 else ("1 in 5" if .18 <= share < .22 else f'{share:.0%}'))
+        slides.append((frac, "new FedRAMP authorizations came through 20x", "Share of new authorizations", P,
+                       f'{ns["20x"]} of the {tot_new} products authorized since {first} took the 20x route.', "compare"))
+    mod = a["x20_moderate"]
+    if mod:
+        n_open = sum(1 for r in mod if r["cert_type"] != "20x Pilot")
+        slides.append((f'{len(mod)}', "20x authorizations at Moderate", "Beyond Low", P,
+                       f'20x is not only for Low-impact systems: {len(mod)} products hold a Moderate 20x authorization'
+                       + (f', {n_open} of them outside the pilot.' if n_open else '.'), "by-class"))
+    ad = a["agency_adopters"]
+    if ad:
+        heavy = max(ad, key=lambda d: d["rev5"])
+        others = [d["agency"] for d in ad if d is not heavy]
+        slides.append((f'{len(ad)}', "agencies already rely on 20x products", "First agency adopters", P,
+                       f'The {heavy["agency"]}, the heaviest FedRAMP user on the marketplace with {heavy["rev5"]} Rev5 ATOs, '
+                       f'relies on a 20x product' + (f', as {"does" if len(others) == 1 else "do"} '
+                                                     f'{" and ".join("the " + o for o in others)}.' if others else '.'),
+                       "agencies"))
+    if pipe["n"]:
+        slides.append((f'{a["pipeline_ai"]} of {pipe["n"]}', "products in the 20x queue are AI", "What is coming", N,
+                       f'Providers tag {a["pipeline_ai"]} of the {pipe["n"]} products in the 20x queue as artificial intelligence. '
+                       f'The first wave of 20x was dominated by compliance tools.', "pipeline"))
+    slides.append((f'{grc["with"]} of {grc["n"]}', "GRC vendors' 20x authorizations with an agency customer", "GRC tools",
+                   A if grc["with"] == 0 else N,
+                   f'The compliance-automation vendors selling 20x readiness hold {grc["n"]} 20x authorizations. '
+                   f'{"None has" if grc["with"] == 0 else str(grc["with"]) + (" has" if grc["with"] == 1 else " have")} an agency customer on it yet.',
+                   "grc-adoption"))
+    top = mk["top"]
+    slides.append((f'{mk["atos"]:,}', f'agency ATOs across {mk["products"]} authorized products', "FedRAMP at scale", N,
+                   f'The most relied-on product on the marketplace is {top["product"]} ({top["csp"]}), '
+                   f'with {top["n_agencies"]} agencies.', "agencies"))
     rm20 = [r for r in a.get("removed", []) if r["track"] == "20x"]
     if rm20:
-        slides.append((str(len(rm20)), "20x listings removed from the marketplace",
-                       "Attrition", f'{len(rm20)} 20x listings have dropped off the marketplace since tracking began, '
-                       f'{sum(1 for r in rm20 if r["certified"])} of them after authorization.', "removed", True))
+        slides.append((str(len(rm20)), "20x listings removed from the marketplace", "Attrition", A,
+                       f'{len(rm20)} 20x listings have dropped off the marketplace since tracking began, '
+                       f'{sum(1 for r in rm20 if r["certified"])} of them after authorization.', "removed"))
 
     items = []
-    for i, (big, sub, title, body, anchor, alert) in enumerate(slides):
+    for i, (big, sub, title, tone, body, anchor) in enumerate(slides):
         items.append(
             f'<div class="x20-slide" role="group" aria-roledescription="slide" aria-label="{i + 1} of {len(slides)}">'
-            f'<div class="x20-big{" gap" if alert else ""}">{esc(big)}<small>{esc(sub)}</small></div>'
+            f'<div class="x20-big{" " + tone if tone else ""}">{esc(big)}<small>{esc(sub)}</small></div>'
             f'<div><h3>{esc(title)}</h3><p>{esc(body)}</p>'
             f'<p><a href="{page}#{anchor}">See the data</a></p>'
             f'<p class="x20-src">FedRAMP Marketplace export · as of {asof}</p></div></div>')
