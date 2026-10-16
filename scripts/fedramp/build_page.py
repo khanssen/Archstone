@@ -277,8 +277,9 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "pilot_median": median([d["to_auth"] for d in tl_rows if d["r"]["cert_type"] == "20x Pilot"]),
         "pilot_n": sum(1 for d in tl_rows if d["r"]["cert_type"] == "20x Pilot"),
         "rev5_median": median(rev5_durs), "rev5_n": len(rev5_durs),
-        "waiting_median": median([d["since"] for d in tl_rows if d["r"]["n_agencies"] == 0]),
-        "waiting_n": sum(1 for d in tl_rows if d["r"]["n_agencies"] == 0),
+        "waiting_median": median([d["since"] for d in tl_rows
+                                  if d["r"]["n_agencies"] == 0 and d["r"]["cert_type"] != "20x Pilot"]),
+        "waiting_n": sum(1 for d in tl_rows if d["r"]["n_agencies"] == 0 and d["r"]["cert_type"] != "20x Pilot"),
     }
     grc_share = [
         {"label": "20x authorized", "sub": "self-declared GRC tag", "kind": "tag", **share(tw_cert, "grc_tag")},
@@ -984,12 +985,11 @@ def render(a: dict, digest: str, built: str) -> str:
 
     <section class="fig wide" id="timeline">
       <h2>Fast to authorize. Then nothing.</h2>
-      <p class="note">Each 20x product from the date its marketplace listing entered the process to its first authorization, then from authorization to today. Dates come from each listing's status history.</p>
+      <p class="note">Each 20x product from the date its marketplace listing entered the process to its first authorization, then from authorization to today. Dates come from each listing's status history. Pilot products are drawn for context but left out of the figures below: the pilot was invitation-only and its timing does not reflect the open process.</p>
       <div class="stats3">
         <div><span class="num">{tm_x20}<small>days</small></span><span class="lbl">median to an open 20x authorization ({a["timing"]["x20_n"]} products)</span></div>
-        <div><span class="num">{tm_pil}<small>days</small></span><span class="lbl">median to a 20x Pilot authorization ({a["timing"]["pilot_n"]} products, invitation-only)</span></div>
         <div><span class="num">{tm_r5}<small>days</small></span><span class="lbl">median from Agency Authorization In Process to a Rev5 authorization, same window</span></div>
-        <div><span class="num gap">{tm_wait}<small>days</small></span><span class="lbl">median time since authorization for the {a["timing"]["waiting_n"]} 20x products, pilot or open, with no agency ATO</span></div>
+        <div><span class="num gap">{tm_wait}<small>days</small></span><span class="lbl">median time since authorization for the {a["timing"]["waiting_n"]} open 20x products with no agency ATO</span></div>
       </div>
       <div class="legend"><span>{legend_swatch("tl-proc")}In process</span><span>{legend_swatch("tl-pil")}In process, pilot</span><span>{legend_swatch("tl-auth")}Authorized</span><span>{legend_swatch("tl-tail")}Since authorization, no agency ATO</span><span>{legend_swatch("tl-has")}Has an agency ATO</span><span>{legend_swatch("tl-recert")}Listing re-certified</span></div>
       <div class="scroll">{timeline_chart(a)}</div>
