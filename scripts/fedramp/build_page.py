@@ -249,6 +249,10 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "tw_stats": stats(tw_cert),
         "by_class": by_class,
         "grc_share": grc_share,
+        "grc_by_track": {
+            t: sorted([r for r in cert if r["track"] == t and r["grc"]],
+                      key=lambda r: (-r["n_agencies"], r["date"] or "9999", r["product"].lower()))
+            for t in ("Rev5", "20x")},
         "grc_products": grc_products,
         "n_agencies_total": len(all_agencies),
         "agency_adopters": agency_adopters,
@@ -427,6 +431,20 @@ h3.sub{font-size:var(--t-body);margin:var(--s-4) 0 var(--s-2)}
 .track.grc{background:var(--manual-fill);border-color:var(--rule-strong)}
 .cls-row.sep{border-top:1px solid var(--rule);padding-top:var(--s-3)}
 td.ck{text-align:center;font-family:var(--mono)}
+.tracks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s-4) var(--s-5);margin-top:var(--s-3)}
+@media (max-width:720px){.tracks{grid-template-columns:1fr}}
+.trk h3{margin:0 0 var(--s-1);font-size:var(--t-title)}
+.trk .tot{display:flex;flex-wrap:wrap;gap:var(--s-1) var(--s-4);font-size:var(--t-small);color:var(--ink-soft);margin:0 0 var(--s-3);padding-bottom:var(--s-2);border-bottom:1px solid var(--rule-strong)}
+.trk .tot b{font-size:var(--t-lede);color:var(--ink);font-weight:600}
+.trk .tot b.zero{color:var(--gap)}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px var(--s-3);padding:var(--s-2) 0;border-bottom:1px solid var(--rule)}
+.prow .pn{font-weight:600;font-size:var(--t-small);min-width:0}
+.prow .pn small{display:block;font-weight:400;color:var(--ink-soft)}
+.prow .pc{font-variant-numeric:tabular-nums;font-weight:600;align-self:start}
+.prow .pc.zero{color:var(--gap)}
+.units{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px;min-height:14px}
+.u{width:14px;height:14px;border-radius:3px;background:var(--referent)}
+.u.none{width:auto;height:auto;background:none;border:0;font-size:var(--t-micro);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--gap)}
 .legend{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);font-size:var(--t-small);color:var(--ink-soft);margin:0 0 var(--s-3)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend svg{flex:none}
@@ -584,6 +602,25 @@ def render(a: dict, digest: str, built: str) -> str:
         f'<td class="ck">{"✓" if r["grc_tag"] else "–"}</td><td class="ck">{"✓" if r["grc"] else "–"}</td>'
         f'<td class="n{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</td></tr>' for r in a["grc_products"])
 
+    def track_col(title, ps):
+        n_atos = sum(r["n_agencies"] for r in ps)
+        n_ag = len({ag for r in ps for ag in r["agencies"]})
+        z = lambda v: ' class="zero"' if v == 0 else ""
+        rows_html = ""
+        for r in ps:
+            units = "".join(f'<span class="u" title="{esc(ag)}"></span>' for ag in r["agencies"]) or '<span class="u none">No agency</span>'
+            rows_html += (f'<div class="prow"><div class="pn">{esc(r["product"])}<small>{esc(r["csp"])} · '
+                          f'{esc(r["impact"]) if r["impact"] != "Unknown" else "impact not listed"} · '
+                          f'{fmt_date(r["date"]) if r["date"] else "no date"}</small></div>'
+                          f'<div class="pc{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</div>'
+                          f'<div class="units" aria-label="{esc("; ".join(r["agencies"]) or "No agency ATO")}">{units}</div></div>')
+        return (f'<div class="trk"><h3>{title}</h3><p class="tot"><span><b>{len(ps)}</b> GRC products</span>'
+                f'<span><b{z(n_atos)}>{n_atos}</b> agency ATOs</span><span><b{z(n_ag)}>{n_ag}</b> distinct agencies</span></p>'
+                f'{rows_html or "<p>No GRC products on this track.</p>"}</div>')
+
+    grc_track_html = (track_col("Traditional FedRAMP (Rev5)", a["grc_by_track"]["Rev5"])
+                      + track_col("FedRAMP 20x", a["grc_by_track"]["20x"]))
+
     rev5_since = a["rev5_since"]
     shared_txt = (f' The {esc(shared[0])} appears on all {len(a["adopters"])}.' if len(shared) == 1 else "")
     grc_list = ", ".join(esc(x) for x in a["grc_providers"])
@@ -662,6 +699,13 @@ def render(a: dict, digest: str, built: str) -> str:
         <tbody>{grc_prod_rows}</tbody>
       </table></div>
       {prov(a, digest, "business categories each provider chose for its listing; Archstone provider list")}
+    </section>
+
+    <section class="fig wide" id="grc-adoption">
+      <h2>Agencies buy GRC tools. Not through 20x.</h2>
+      <p class="note">Every authorized GRC product on each track, with one square per agency ATO (FedRAMP PMO excluded). GRC products are those from providers on the Archstone list, applied identically to both tracks. Hover a square for the agency.</p>
+      <div class="tracks">{grc_track_html}</div>
+      {prov(a, digest, "FedRAMP Certified products from providers on the Archstone GRC list")}
     </section>
 
     <section class="fig" id="headline">

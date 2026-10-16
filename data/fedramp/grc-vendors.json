@@ -1,17 +1,23 @@
 {
-  "_about": "Cloud service providers counted as GRC / compliance-automation vendors on the 20x adoption page. Matched case-insensitively against the marketplace 'csp' field, so every product a listed provider holds is included. This is an editorial classification: add or remove names here and the page rebuilds on the next run.",
+  "_about": "Cloud service providers counted as GRC / compliance-automation vendors on the 20x adoption page. Matched case-insensitively against the marketplace 'csp' field, so every product a listed provider holds is included, on either track. This is an editorial classification: add or remove names here and the page rebuilds on the next run. Spell the provider exactly as the marketplace does; some appear under more than one spelling.",
   "providers": [
     "A-LIGN",
     "Anecdotes",
     "Anitian",
     "ASSYST",
+    "Diligent, Inc.",
     "Drata",
     "IntelliGRC, Inc.",
     "Longevity Consulting",
     "Mycroft Technologies Inc",
+    "Onspring Technologies, LLC",
     "Paramify",
+    "RegScale",
+    "RegScale, Inc.",
     "Secureframe",
     "stackArmor",
+    "TalaTek, LLC",
+    "Telos Corporation",
     "Vanta"
   ]
 }
