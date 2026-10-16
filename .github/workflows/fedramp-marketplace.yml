@@ -1,7 +1,8 @@
 name: FedRAMP marketplace snapshot
 
 # Downloads the FedRAMP Marketplace product export, keeps a dated snapshot when
-# it changes, rebuilds /fedramp-20x-adoption/, and redeploys the site.
+# it changes, rebuilds /fedramp-20x-adoption/ and the dated 20x carousel on
+# fedramp.html, and redeploys the site.
 #
 # Manual fallback: export JSON from the marketplace yourself, commit it to
 # data/fedramp/inbox/, and push. This workflow picks it up instead of the browser.
@@ -16,6 +17,7 @@ on:
       - "data/fedramp/inbox/**"
       - "data/fedramp/grc-vendors.json"
       - "scripts/fedramp/**"
+      - "fedramp.html"
 
 permissions:
   contents: write   # commit snapshots and the rebuilt page
@@ -57,6 +59,7 @@ jobs:
             --out fedramp-20x-adoption \
             --history data/fedramp/history.csv \
             --raw-dir data/fedramp/raw \
+            --feature-target fedramp.html \
             --checked "$(date -u +%Y-%m-%d)"
 
       - name: Commit if anything changed
@@ -64,7 +67,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/fedramp fedramp-20x-adoption
+          git add data/fedramp fedramp-20x-adoption fedramp.html
           if git diff --cached --quiet; then
             echo "pushed=false" >> "$GITHUB_OUTPUT"
             echo "Nothing changed."
