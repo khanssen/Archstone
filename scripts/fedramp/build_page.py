@@ -197,6 +197,8 @@ def analyse(rows: list[dict], snap: str) -> dict:
     grc_cert = [r for r in tw_cert if r["grc"]]
     grc_providers = sorted({r["csp"] for r in grc_cert}, key=str.lower)
 
+    ambiguous = [r for r in rows if r["track"] == "Rev5" and r["status"] == "Initial Implementation"
+                 and not r["agencies"]]
     pipeline = [r for r in rows if r["track"] == "20x" and not r["certified"]
                 and r["status"] not in ("Legacy FedRAMP Ready", "Unknown")]
 
@@ -341,6 +343,7 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "comparisons": comparisons,
         "monthly": monthly,
         "pipeline": stats(pipeline),
+        "ambiguous": ambiguous,
         "dual": dual,
         "adopters": adopters,
         "adopter_agencies": adopter_agencies,
@@ -880,6 +883,10 @@ def render(a: dict, digest: str, built: str) -> str:
     tm_x20, tm_r5, tm_pel = (fmt_days(a["timing"]["x20_median"]), fmt_days(a["timing"]["rev5_median"]),
                              fmt_days(a["timing"]["pilot_elapsed_median"]))
 
+    n_amb = len(a["ambiguous"])
+    amb_txt = (f' <b>The count may be low.</b> Another {n_amb} {"listing is" if n_amb == 1 else "listings are"} in the same Initial Implementation intake status but labeled Rev5, with no sponsoring agency. One of them describes its own trust center as a FedRAMP 20x trust center, and the same provider also has a separate 20x listing, so the marketplace\'s track label for listings in intake is not reliable.'
+               if n_amb else "")
+
     rev5_since = a["rev5_since"]
     shared_txt = (f' The {esc(shared[0])} appears on all {len(a["adopters"])}.' if len(shared) == 1 else "")
     grc_list = ", ".join(esc(x) for x in a["grc_providers"])
@@ -989,7 +996,7 @@ def render(a: dict, digest: str, built: str) -> str:
         <div><span class="num">{a["pipeline"]["n"]}</span><span class="lbl">20x products in process</span></div>
         <div><span class="num gap">{a["pipeline"]["with"]}</span><span class="lbl">with an agency named</span></div>
       </div>
-      <p class="note">Products in Initial Implementation or In Process on the 20x track. A Rev5 agency-path authorization needs a sponsoring agency before it starts; a 20x one does not, and so far none in the queue has one.</p>
+      <p class="note">Products in Initial Implementation or In Process on the 20x track. A Rev5 agency-path authorization needs a sponsoring agency before it starts; a 20x one does not, and so far none in the queue has one.{amb_txt}</p>
       {prov(a, digest, "20x products not yet certified, excluding Legacy FedRAMP Ready")}
     </section>
 
@@ -1063,6 +1070,7 @@ def render(a: dict, digest: str, built: str) -> str:
       <li><b>Authorization date</b> is the marketplace's certification date for the product. The export lists the agencies on each product but not the date each agency signed, so this measures reliance as it stands today, not when it happened.</li>
       <li><b>GRC and compliance vendors</b> are identified from a separately maintained provider classification feed (data as of {fmt_date(a["grc_date"])}), matched by provider name, and shown alongside the GRC business category providers choose for their own marketplace listings.</li>
       <li><b>Reclassification.</b> No 20x record in the current export carries status history from before 2025 or an agency ATO inherited from a Rev5 authorization. Products the marketplace lists on both tracks are shown above; their agencies count toward Rev5. Snapshots are kept so that a record converted in place will show up when two exports are compared.</li>
+      <li><b>Track labels for new listings.</b> Listings in the Initial Implementation intake status carry a Rev5 or 20x label that does not always match the program the provider is pursuing, and at least one provider is listed twice, once on each track. Authorized products and agency ATOs are not affected; counts of products still in process should be read as approximate.</li>
       <li><b>Limits.</b> Withdrawn and expired products are not in the export. Class A 20x entries without an authorization date are included in totals and left out of anything plotted by date.</li>
     </ul>
   </section>
