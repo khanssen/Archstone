@@ -33,6 +33,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 PMO = "Federal Risk and Authorization Management Program"
+GRC_TAG = "Governance, Risk, and Compliance (GRC)"
 REQUIRED_FIELDS = {"id", "csp", "cso", "status", "cert_type", "cert_date",
                    "cert_path", "cert_class", "impact_level",
                    "agency_authorizations", "independent_assessor"}
@@ -98,6 +99,7 @@ def normalise(p: dict, grc: set[str]) -> dict:
         "n_agencies": len(agencies),
         "assessor": assessor,
         "grc": (p.get("csp") or "").strip().lower() in grc,
+        "grc_tag": GRC_TAG in (p.get("business_categories") or []),
     }
 
 
@@ -216,6 +218,23 @@ def analyse(rows: list[dict], snap: str) -> dict:
     top_rev5 = [{"agency": ag, "rev5": n, "x20": len(x20_by_agency.get(ag, []))}
                 for ag, n in rev5_by_agency.most_common(10)]
 
+    def share(ps, key):
+        n = len(ps)
+        k = sum(1 for r in ps if r[key])
+        return {"n": n, "k": k, "share": (k / n) if n else None}
+
+    rev5_cert = [r for r in cert if r["track"] == "Rev5"]
+    grc_share = [
+        {"label": "20x authorized", "sub": "self-declared GRC tag", "kind": "tag", **share(tw_cert, "grc_tag")},
+        {"label": "20x authorized", "sub": "Archstone provider list", "kind": "list", **share(tw_cert, "grc")},
+        {"label": "20x in process", "sub": "self-declared GRC tag", "kind": "tag", **share(pipeline, "grc_tag")},
+        {"label": f"Rev5 authorized since {fmt_date(first)}", "sub": "self-declared GRC tag", "kind": "tag",
+         **share([r for r in since if r["track"] == "Rev5"], "grc_tag")},
+        {"label": "Rev5 authorized, all", "sub": "self-declared GRC tag", "kind": "tag", **share(rev5_cert, "grc_tag")},
+    ]
+    grc_products = sorted([r for r in tw_cert if r["grc"] or r["grc_tag"]],
+                          key=lambda r: (not (r["grc"] and r["grc_tag"]), r["date"] or "9999"))
+
     adopters = [r for r in tw_cert if r["n_agencies"] > 0]
     adopter_agencies = Counter(a for r in adopters for a in r["agencies"])
 
@@ -229,6 +248,8 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "tw_undated": [r for r in tw_cert if not r["date"]],
         "tw_stats": stats(tw_cert),
         "by_class": by_class,
+        "grc_share": grc_share,
+        "grc_products": grc_products,
         "n_agencies_total": len(all_agencies),
         "agency_adopters": agency_adopters,
         "top_rev5": top_rev5,
@@ -402,6 +423,10 @@ h1{margin:0}
 .cls-val .of{font-size:var(--t-small);color:var(--ink-soft)}
 @media (max-width:640px){.cls-row{grid-template-columns:1fr auto}.cls-row .track{grid-column:1/-1;grid-row:2}}
 h3.sub{font-size:var(--t-body);margin:var(--s-4) 0 var(--s-2)}
+.fill.grc{background:var(--gap)}
+.track.grc{background:var(--manual-fill);border-color:var(--rule-strong)}
+.cls-row.sep{border-top:1px solid var(--rule);padding-top:var(--s-3)}
+td.ck{text-align:center;font-family:var(--mono)}
 .legend{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);font-size:var(--t-small);color:var(--ink-soft);margin:0 0 var(--s-3)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend svg{flex:none}
@@ -545,6 +570,20 @@ def render(a: dict, digest: str, built: str) -> str:
         gsa_txt = (f' The General Services Administration, which runs FedRAMP, relies on {a["gsa_rev5"]} '
                    f'Rev5 products and {a["gsa_x20"]} 20x {"product" if a["gsa_x20"] == 1 else "products"}.')
 
+    grc_rows = ""
+    for i, g in enumerate(a["grc_share"]):
+        sh = g["share"] or 0
+        sep = " sep" if g["label"] != a["grc_share"][i - 1]["label"] and i else ""
+        grc_rows += (f'<div class="cls-row{sep}"><div class="cls-name">{esc(g["label"])}<small>{esc(g["sub"])}</small></div>'
+                     f'<div class="track grc" role="img" aria-label="{g["k"]} of {g["n"]} are GRC tools">'
+                     f'<div class="fill grc" style="width:{sh * 100:.1f}%"></div></div>'
+                     f'<div class="cls-val"><span class="pc">{sh:.0%}</span>'
+                     f'<span class="of">{g["k"]} of {g["n"]} {"product" if g["n"] == 1 else "products"}</span></div></div>')
+    grc_prod_rows = "".join(
+        f'<tr><td>{esc(r["product"])}</td><td class="hide-sm">{esc(r["csp"])}</td><td class="n">{r["date"] or "—"}</td>'
+        f'<td class="ck">{"✓" if r["grc_tag"] else "–"}</td><td class="ck">{"✓" if r["grc"] else "–"}</td>'
+        f'<td class="n{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</td></tr>' for r in a["grc_products"])
+
     rev5_since = a["rev5_since"]
     shared_txt = (f' The {esc(shared[0])} appears on all {len(a["adopters"])}.' if len(shared) == 1 else "")
     grc_list = ", ".join(esc(x) for x in a["grc_providers"])
@@ -611,6 +650,18 @@ def render(a: dict, digest: str, built: str) -> str:
         <tbody>{top_rows}</tbody>
       </table></div>
       {prov(a, digest, "Agencies listed on FedRAMP Certified products; each agency counted once per product")}
+    </section>
+
+    <section class="fig wide" id="grc-share">
+      <h2>How much of 20x is GRC tooling</h2>
+      <p class="note">Share of products that are governance, risk and compliance tools, counted two ways. The <b>self-declared tag</b> is the "Governance, Risk, and Compliance (GRC)" business category providers choose for their own marketplace listing; it applies to both tracks the same way. The <b>Archstone list</b> is an editorial classification of providers whose product is compliance automation, and catches vendors that did not tag themselves. It is applied to authorized 20x products only.</p>
+      <div class="cls">{grc_rows}</div>
+      <h3 class="sub">Authorized 20x products counted as GRC, by either method</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Product</th><th class="hide-sm">Provider</th><th class="n">Authorized</th><th class="ck">Self-tagged</th><th class="ck">Archstone list</th><th class="n">Agencies</th></tr></thead>
+        <tbody>{grc_prod_rows}</tbody>
+      </table></div>
+      {prov(a, digest, "business categories each provider chose for its listing; Archstone provider list")}
     </section>
 
     <section class="fig" id="headline">
@@ -710,10 +761,10 @@ def write_csv(a: dict, path: Path) -> None:
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\n")
     w.writerow(["snapshot", "id", "provider", "product", "cert_type", "status", "class", "impact",
-                "authorized", "grc_vendor", "agency_count", "agencies", "assessor"])
+                "authorized", "grc_vendor", "grc_self_tagged", "agency_count", "agencies", "assessor"])
     for p in sorted(a["tw_cert"], key=lambda r: (r["date"] or "9999", r["product"].lower())):
         w.writerow([a["snapshot"], p["id"], p["csp"], p["product"], p["cert_type"], p["status"], p["cls"],
-                    p["impact"], p["date"], "yes" if p["grc"] else "no", p["n_agencies"],
+                    p["impact"], p["date"], "yes" if p["grc"] else "no", "yes" if p["grc_tag"] else "no", p["n_agencies"],
                     "; ".join(p["agencies"]), p["assessor"]])
     path.write_text(buf.getvalue(), encoding="utf-8")
 
