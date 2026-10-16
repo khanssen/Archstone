@@ -451,6 +451,20 @@ td.ck{text-align:center;font-family:var(--mono)}
 .gb .val.zero{fill:var(--gap)}
 .gb .glabel{font-size:13px;font-weight:600;fill:var(--ink)}
 .gbwrap{margin-bottom:var(--s-5)}
+.sbs{display:grid;gap:var(--s-3)}
+.sb-row{display:grid;grid-template-columns:minmax(8rem,12rem) 1fr 13rem;gap:var(--s-2) var(--s-4);align-items:center}
+.sb-row.total{border-top:1px solid var(--rule);padding-top:var(--s-3)}
+.sb-track{min-width:0}
+.sb{display:flex;gap:3px;height:34px}
+.sb .seg{flex:1 1 0;border-radius:3px;min-width:0}
+.sb .seg.has,.sb-has{fill:var(--referent);background:var(--referent)}
+.sb .seg.none{background:var(--gap-fill);box-shadow:inset 0 0 0 1.5px var(--gap)}
+.sb-none{fill:var(--gap-fill);stroke:var(--gap);stroke-width:1.5}
+.sb-val{font-size:var(--t-small);color:var(--ink-soft);line-height:1.35}
+.sb-val b{font-size:var(--t-title);color:var(--ink);font-weight:600;margin-right:4px}
+.sb-val .zero{color:var(--gap);font-weight:600}
+.sb-val small{display:block;font-size:var(--t-micro);font-family:var(--mono)}
+@media (max-width:640px){.sb-row{grid-template-columns:1fr auto}.sb-row .sb-track{grid-column:1/-1;grid-row:2}}
 .legend{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);font-size:var(--t-small);color:var(--ink-soft);margin:0 0 var(--s-3)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend svg{flex:none}
@@ -630,20 +644,35 @@ def render(a: dict, digest: str, built: str) -> str:
                  ("20x Pilot", "Program", "20x Pilot", "authorized by the FedRAMP PMO"),
                  ("20x", "Program", "20x", "authorized by the FedRAMP PMO")]
         ps_all = a["grc_by_track"]["Rev5"] + a["grc_by_track"]["20x"]
-        out = ""
+        rows_ = []
         for ctype, path, name, sub in order:
             ps = [r for r in ps_all if r["cert_type"] == ctype and r["path"] == path]
-            if not ps:
-                continue
+            if ps:
+                rows_.append((name, sub, ps, False))
+        x20 = a["grc_by_track"]["20x"]
+        if len({r["cert_type"] for r in x20}) > 1:
+            rows_.append(("All 20x", "Pilot and current combined", x20, True))
+        top = max(len(r[2]) for r in rows_)
+        out = ""
+        for name, sub, ps, total in rows_:
+            ps = sorted(ps, key=lambda r: -r["n_agencies"])
+            w = f"{len(ps) / top * 100:.2f}%"
+            segs = "".join(
+                f'<span class="seg {"has" if r["n_agencies"] else "none"}" '
+                f'title="{esc(r["product"])}: {r["n_agencies"]} agency {"ATO" if r["n_agencies"] == 1 else "ATOs"}"></span>'
+                for r in ps)
             st = stats(ps)
-            sh = st["share"] or 0
-            z = " zero" if st["with"] == 0 else ""
-            out += (f'<div class="cls-row"><div class="cls-name">{esc(name)}<small>{esc(sub)}</small></div>'
-                    f'<div class="track" role="img" aria-label="{st["with"]} of {st["n"]} GRC products with an agency ATO">'
-                    f'<div class="fill" style="width:{sh * 100:.1f}%"></div></div>'
-                    f'<div class="cls-val"><span class="pc{z}">{sh:.0%}</span>'
-                    f'<span class="of">{st["with"]} of {st["n"]} · {st["atos"]} '
-                    f'{"ATO" if st["atos"] == 1 else "ATOs"}</span></div></div>')
+            if st["with"] == st["n"]:
+                txt = f'all {st["n"]} with an agency ATO'
+            elif st["with"] == 0:
+                txt = f'none with an agency ATO'
+            else:
+                txt = f'{st["with"]} with an agency ATO'
+            out += (f'<div class="sb-row{" total" if total else ""}"><div class="cls-name">{esc(name)}<small>{esc(sub)}</small></div>'
+                    f'<div class="sb-track"><div class="sb" style="width:{w}" role="img" '
+                    f'aria-label="{st["n"]} GRC products, {st["with"]} with an agency ATO">{segs}</div></div>'
+                    f'<div class="sb-val"><b>{st["n"]}</b> <span class="{"zero" if st["with"] == 0 else ""}">{txt}</span>'
+                    f'<small>{st["atos"]} agency {"ATO" if st["atos"] == 1 else "ATOs"}</small></div></div>')
         return out
 
     grc_track_html = (track_col("Traditional FedRAMP (Rev5)", a["grc_by_track"]["Rev5"])
@@ -733,8 +762,9 @@ def render(a: dict, digest: str, built: str) -> str:
       <h2>Which ATOs do agencies prefer for GRC tools?</h2>
       <p class="note">GRC products are those from providers on the Archstone list, applied identically to both tracks. Agency ATOs exclude the FedRAMP PMO.</p>
       <h3 class="sub">GRC tool adoption by authorization type</h3>
-      <p class="note">Share of authorized GRC products of each type with at least one agency ATO. A Rev5 agency-path authorization has a sponsoring agency by definition, so that row is full by construction; the point is that no 20x GRC product has picked up an agency since.</p>
-      <div class="cls gbwrap">{grc_by_type()}</div>
+      <p class="note">One block per authorized GRC product, on a common scale. Filled blocks have at least one agency ATO; open blocks have none. A Rev5 agency-path authorization has a sponsoring agency by definition, so that row is filled by construction. Hover a block for the product.</p>
+      <div class="legend"><span>{legend_swatch("sb-has")}With an agency ATO</span><span>{legend_swatch("sb-none")}No agency ATO</span></div>
+      <div class="sbs gbwrap">{grc_by_type()}</div>
       <h3 class="sub">Every GRC product, one square per agency ATO</h3>
       <p class="note">Hover a square for the agency.</p>
       <div class="tracks">{grc_track_html}</div>
