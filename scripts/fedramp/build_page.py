@@ -203,6 +203,19 @@ def analyse(rows: list[dict], snap: str) -> dict:
         by_class.append({"cls": c if c in order else "Class not listed",
                          "impacts": impacts, **stats(ps)})
 
+    rev5_by_agency = Counter(a for r in cert if r["track"] == "Rev5" for a in set(r["agencies"]))
+    x20_by_agency = defaultdict(list)
+    for r in tw_cert:
+        for ag in set(r["agencies"]):
+            x20_by_agency[ag].append(r)
+    all_agencies = set(rev5_by_agency) | set(x20_by_agency)
+    agency_adopters = sorted(
+        ({"agency": ag, "x20": sorted(ps, key=lambda r: r["date"]), "rev5": rev5_by_agency.get(ag, 0)}
+         for ag, ps in x20_by_agency.items()),
+        key=lambda d: (-len(d["x20"]), -d["rev5"], d["agency"]))
+    top_rev5 = [{"agency": ag, "rev5": n, "x20": len(x20_by_agency.get(ag, []))}
+                for ag, n in rev5_by_agency.most_common(10)]
+
     adopters = [r for r in tw_cert if r["n_agencies"] > 0]
     adopter_agencies = Counter(a for r in adopters for a in r["agencies"])
 
@@ -216,6 +229,11 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "tw_undated": [r for r in tw_cert if not r["date"]],
         "tw_stats": stats(tw_cert),
         "by_class": by_class,
+        "n_agencies_total": len(all_agencies),
+        "agency_adopters": agency_adopters,
+        "top_rev5": top_rev5,
+        "gsa_rev5": rev5_by_agency.get("General Services Administration"),
+        "gsa_x20": len(x20_by_agency.get("General Services Administration", [])),
         "grc_cert": grc_cert,
         "grc_stats": stats(grc_cert),
         "grc_providers": grc_providers,
@@ -383,6 +401,7 @@ h1{margin:0}
 .cls-val .pc.zero{color:var(--gap)}
 .cls-val .of{font-size:var(--t-small);color:var(--ink-soft)}
 @media (max-width:640px){.cls-row{grid-template-columns:1fr auto}.cls-row .track{grid-column:1/-1;grid-row:2}}
+h3.sub{font-size:var(--t-body);margin:var(--s-4) 0 var(--s-2)}
 .legend{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);font-size:var(--t-small);color:var(--ink-soft);margin:0 0 var(--s-3)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend svg{flex:none}
@@ -515,6 +534,17 @@ def render(a: dict, digest: str, built: str) -> str:
     class_rows = "".join(class_row(c["cls"], impact_txt(c["impacts"]), c) for c in a["by_class"])
     class_rows += class_row("All 20x", f'{a["tw_stats"]["n"]} authorized', a["tw_stats"], total=True)
 
+    adopter_rows = "".join(
+        f'<tr><td>{esc(d["agency"])}</td><td>{esc(", ".join(r["product"] for r in d["x20"]))}</td>'
+        f'<td class="n">{len(d["x20"])}</td><td class="n">{d["rev5"]}</td></tr>' for d in a["agency_adopters"])
+    top_rows = "".join(
+        f'<tr><td>{esc(d["agency"])}</td><td class="n">{d["rev5"]}</td>'
+        f'<td class="n{" zero" if d["x20"] == 0 else ""}">{d["x20"]}</td></tr>' for d in a["top_rev5"])
+    gsa_txt = ""
+    if a["gsa_rev5"] is not None:
+        gsa_txt = (f' The General Services Administration, which runs FedRAMP, relies on {a["gsa_rev5"]} '
+                   f'Rev5 products and {a["gsa_x20"]} 20x {"product" if a["gsa_x20"] == 1 else "products"}.')
+
     rev5_since = a["rev5_since"]
     shared_txt = (f' The {esc(shared[0])} appears on all {len(a["adopters"])}.' if len(shared) == 1 else "")
     grc_list = ", ".join(esc(x) for x in a["grc_providers"])
@@ -562,6 +592,25 @@ def render(a: dict, digest: str, built: str) -> str:
       <p class="note">Share of authorized 20x products in each class with at least one agency ATO besides the FedRAMP PMO. The filled part of each bar is agency adoption; the rest is authorizations no agency has relied on.</p>
       <div class="cls">{class_rows}</div>
       {prov(a, digest, f'{len(a["tw_cert"])} 20x products with FedRAMP Certified status, by marketplace class')}
+    </section>
+
+    <section class="fig wide" id="agencies">
+      <h2>Which agencies have relied on 20x</h2>
+      <div class="big">
+        <div><span class="num gap">{len(a["agency_adopters"])}</span><span class="lbl">agencies with any 20x ATO</span></div>
+        <div><span class="num">{a["n_agencies_total"]}</span><span class="lbl">agencies with any FedRAMP ATO on the marketplace</span></div>
+      </div>
+      <p class="note">Agencies as the marketplace names them, so departments and their components count separately. FedRAMP PMO excluded.{gsa_txt}</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Agency</th><th>20x products it relies on</th><th class="n">20x ATOs</th><th class="n">Rev5 ATOs</th></tr></thead>
+        <tbody>{adopter_rows or '<tr><td colspan="4">No agency other than the FedRAMP PMO is listed on any 20x product.</td></tr>'}</tbody>
+      </table></div>
+      <h3 class="sub">The ten heaviest Rev5 users</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Agency</th><th class="n">Rev5 ATOs</th><th class="n">20x ATOs</th></tr></thead>
+        <tbody>{top_rows}</tbody>
+      </table></div>
+      {prov(a, digest, "Agencies listed on FedRAMP Certified products; each agency counted once per product")}
     </section>
 
     <section class="fig" id="headline">
