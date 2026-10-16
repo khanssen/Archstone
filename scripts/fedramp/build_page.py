@@ -78,6 +78,27 @@ def snapshot_date(path: Path) -> str:
 # Normalisation
 # --------------------------------------------------------------------------
 
+def status_target(desc: str) -> str:
+    if " to " in desc and desc.startswith("Status changed from"):
+        return desc.rsplit(" to ", 1)[1].strip()
+    return desc.replace("Status set to", "").strip()
+
+
+def timeline(p: dict, rev5: bool) -> dict:
+    """Start of process, first authorization and later re-certifications from the status log."""
+    ev = sorted((e for e in (p.get("event_log") or []) if e.get("date") and e.get("description")),
+                key=lambda e: e["date"])
+    certs = [e["date"][:10] for e in ev if status_target(e["description"]).startswith("FedRAMP Certified")]
+    if rev5:
+        starts = [e["date"][:10] for e in ev if status_target(e["description"]) == "Agency Authorization In Process"]
+    else:
+        starts = [e["date"][:10] for e in ev if not status_target(e["description"]).startswith("FedRAMP Certified")]
+    first_cert = certs[0] if certs else ""
+    start = next((d for d in starts if not first_cert or d <= first_cert), "")
+    return {"start": start, "first_cert": first_cert,
+            "recert": [d for d in certs[1:] if d != first_cert]}
+
+
 def normalise(p: dict, grc: set[str]) -> dict:
     agencies = [a for a in (p.get("agency_authorizations") or []) if a and a != PMO]
     assessor = (p.get("independent_assessor") or "").strip()
@@ -95,6 +116,7 @@ def normalise(p: dict, grc: set[str]) -> dict:
         "cls": p.get("cert_class") or "",
         "impact": p.get("impact_level") or "",
         "date": (p.get("cert_date") or "")[:10],
+        "tl": timeline(p, p.get("cert_type") == "Rev5"),
         "agencies": agencies,
         "n_agencies": len(agencies),
         "assessor": assessor,
@@ -224,6 +246,37 @@ def analyse(rows: list[dict], snap: str) -> dict:
         return {"n": n, "k": k, "share": (k / n) if n else None}
 
     rev5_cert = [r for r in cert if r["track"] == "Rev5"]
+
+    def days(a_, b_):
+        return (date.fromisoformat(b_) - date.fromisoformat(a_)).days
+
+    def median(xs):
+        xs = sorted(xs)
+        if not xs:
+            return None
+        m = len(xs) // 2
+        return xs[m] if len(xs) % 2 else (xs[m - 1] + xs[m]) / 2
+
+    tl_rows = []
+    for r in tw_cert:
+        t = r["tl"]
+        if t["start"] and t["first_cert"]:
+            recert = list(t["recert"])
+            if r["date"] and r["date"] > t["first_cert"] and r["date"] not in recert:
+                recert.append(r["date"])
+            tl_rows.append({"r": r, "start": t["start"], "auth": t["first_cert"], "recert": sorted(recert),
+                            "to_auth": days(t["start"], t["first_cert"]),
+                            "since": days(t["first_cert"], snap)})
+    tl_rows.sort(key=lambda d: (d["start"], d["auth"]))
+    rev5_durs = [days(r["tl"]["start"], r["tl"]["first_cert"]) for r in since
+                 if r["track"] == "Rev5" and r["tl"]["start"] and r["tl"]["first_cert"]
+                 and r["tl"]["first_cert"] >= first]
+    timing = {
+        "x20_median": median([d["to_auth"] for d in tl_rows]),
+        "rev5_median": median(rev5_durs), "rev5_n": len(rev5_durs),
+        "waiting_median": median([d["since"] for d in tl_rows if d["r"]["n_agencies"] == 0]),
+        "waiting_n": sum(1 for d in tl_rows if d["r"]["n_agencies"] == 0),
+    }
     grc_share = [
         {"label": "20x authorized", "sub": "self-declared GRC tag", "kind": "tag", **share(tw_cert, "grc_tag")},
         {"label": "20x authorized", "sub": "GRC classification feed", "kind": "list", **share(tw_cert, "grc")},
@@ -249,6 +302,8 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "tw_stats": stats(tw_cert),
         "by_class": by_class,
         "grc_share": grc_share,
+        "tl_rows": tl_rows,
+        "timing": timing,
         "grc_by_track": {
             t: sorted([r for r in cert if r["track"] == t and r["grc"]],
                       key=lambda r: (-r["n_agencies"], r["date"] or "9999", r["product"].lower()))
@@ -465,6 +520,28 @@ td.ck{text-align:center;font-family:var(--mono)}
 .sb-val .zero{color:var(--gap);font-weight:600}
 .sb-val small{display:block;font-size:var(--t-micro);font-family:var(--mono)}
 @media (max-width:640px){.sb-row{grid-template-columns:1fr auto}.sb-row .sb-track{grid-column:1/-1;grid-row:2}}
+.tl text{font-family:var(--sans)}
+.tl .gridline{stroke:var(--grid);stroke-width:1}
+.tl .today{stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:2 3}
+.tl .tick{fill:var(--ink-soft);font-size:11px}
+.tl .tln{fill:var(--ink);font-size:12px}
+.proc{fill:var(--manual)}
+.auth{fill:var(--ink)}
+.tail{stroke:var(--gap);stroke-width:2;stroke-dasharray:5 4}
+.tail-has{stroke:var(--referent);stroke-width:3}
+.recert{stroke:var(--ink);stroke-width:2}
+.tl .tlv{fill:var(--gap);font-size:11px;font-weight:600}
+.tl .tlv.has{fill:var(--referent)}
+.tl .tlhit{fill:transparent}
+.tl .tlr:hover .tlhit,.tl .tlr:focus .tlhit{fill:var(--ink);fill-opacity:.04}
+.tl .tlr:focus{outline:none}
+.scroll .tl{min-width:760px;display:block}
+.stats3{display:flex;flex-wrap:wrap;gap:var(--s-3) var(--s-6);margin:var(--s-2) 0 var(--s-3)}
+.stats3 div{display:grid;gap:2px;max-width:16rem;align-content:start}
+.stats3 .num{font-size:var(--t-display);font-weight:600;line-height:1;letter-spacing:-.02em}
+.stats3 .num small{font-size:var(--t-lede);font-weight:600;margin-left:3px}
+.stats3 .num.gap{color:var(--gap)}
+.stats3 .lbl{font-size:var(--t-small);color:var(--ink-soft)}
 .legend{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);font-size:var(--t-small);color:var(--ink-soft);margin:0 0 var(--s-3)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend svg{flex:none}
@@ -508,11 +585,75 @@ footer a{color:var(--ink-soft)}
 """
 
 
+def timeline_chart(a: dict) -> str:
+    rows = a["tl_rows"]
+    if not rows:
+        return "<p>No 20x products have both a start and an authorization date in their status history.</p>"
+    snap = a["snapshot"]
+    lo = min(d["start"] for d in rows)
+    lo = lo[:7] + "-01"
+    W, rh, ml, mr, mt, mb = 1000, 24, 220, 118, 30, 10
+    H = mt + rh * len(rows) + mb
+    t0, t1 = date.fromisoformat(lo).toordinal(), date.fromisoformat(snap).toordinal()
+    xw = W - ml - mr
+
+    def x(d):
+        return ml + (date.fromisoformat(d).toordinal() - t0) / (t1 - t0) * xw
+
+    out = [f'<svg class="tl" viewBox="0 0 {W} {H}" width="100%" role="img" aria-labelledby="tl-t">'
+           f'<title id="tl-t">Time from entering the 20x process to authorization, and time since, for '
+           f'{len(rows)} products</title>']
+    for mo in months_between(lo, snap):
+        if mo[5:7] in ("01", "04", "07", "10"):
+            xx = x(mo + "-01")
+            out.append(f'<line x1="{xx:.1f}" x2="{xx:.1f}" y1="{mt - 8}" y2="{H - mb}" class="gridline"/>'
+                       f'<text x="{xx:.1f}" y="{mt - 14}" text-anchor="middle" class="tick">'
+                       f'{fmt_month(mo)}{" " + mo[:4] if mo[5:7] == "01" or mo == months_between(lo, snap)[0] else ""}</text>')
+    xt = x(snap)
+    out.append(f'<line x1="{xt:.1f}" x2="{xt:.1f}" y1="{mt - 8}" y2="{H - mb}" class="today"/>'
+               f'<text x="{xt + 4:.1f}" y="{mt - 14}" class="tick">Today</text>')
+    for i, d in enumerate(rows):
+        r = d["r"]
+        cy = mt + i * rh + rh / 2
+        xs, xa = x(d["start"]), x(d["auth"])
+        has = r["n_agencies"] > 0
+        tip = (f'{r["product"]} ({r["csp"]}). Entered the process {fmt_date(d["start"])}; authorized '
+               f'{fmt_date(d["auth"])} after {d["to_auth"]} days. '
+               + (f'Agency ATOs: {", ".join(r["agencies"])}.' if has else f'No agency ATO in the {d["since"]} days since.')
+               + (f' Listing re-certified {", ".join(fmt_date(z) for z in d["recert"])}.' if d["recert"] else ""))
+        name = r["product"] if len(r["product"]) <= 30 else r["product"][:29] + "…"
+        out.append(f'<g class="tlr{" has" if has else ""}" tabindex="0"><title>{esc(tip)}</title>'
+                   f'<rect x="0" y="{cy - rh / 2:.1f}" width="{W}" height="{rh}" class="tlhit"/>'
+                   f'<text x="{ml - 10}" y="{cy:.1f}" dy="0.32em" text-anchor="end" class="tln">{esc(name)}</text>'
+                   f'<line x1="{xa:.1f}" x2="{xt:.1f}" y1="{cy:.1f}" y2="{cy:.1f}" class="{"tail-has" if has else "tail"}"/>'
+                   f'<rect x="{xs:.1f}" y="{cy - 5:.1f}" width="{max(xa - xs, 2):.1f}" height="10" rx="2" class="proc"/>'
+                   f'<circle cx="{xa:.1f}" cy="{cy:.1f}" r="4.5" class="auth"/>')
+        for z in d["recert"]:
+            xz = x(z)
+            out.append(f'<line x1="{xz:.1f}" x2="{xz:.1f}" y1="{cy - 7:.1f}" y2="{cy + 7:.1f}" class="recert"/>')
+        lab = f'{len(r["agencies"])} agency' + ("" if len(r["agencies"]) == 1 else " ATOs") if has else f'{d["since"]} days, no agency'
+        if has and len(r["agencies"]) == 1:
+            lab = "1 agency ATO"
+        out.append(f'<text x="{xt + 8:.1f}" y="{cy:.1f}" dy="0.32em" class="{"tlv has" if has else "tlv"}">{lab}</text></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
 def legend_swatch(kind: str) -> str:
     if kind == "dot-none":
         return '<svg width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6" class="mk none"/></svg>'
     if kind == "dot-has":
         return '<svg width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6" class="mk has"/></svg>'
+    if kind == "tl-proc":
+        return '<svg width="22" height="12" aria-hidden="true"><rect x="1" y="1" width="20" height="10" rx="2" class="proc"/></svg>'
+    if kind == "tl-auth":
+        return '<svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" class="auth"/></svg>'
+    if kind == "tl-tail":
+        return '<svg width="26" height="12" aria-hidden="true"><line x1="1" x2="25" y1="6" y2="6" class="tail"/></svg>'
+    if kind == "tl-has":
+        return '<svg width="26" height="12" aria-hidden="true"><line x1="1" x2="25" y1="6" y2="6" class="tail-has"/></svg>'
+    if kind == "tl-recert":
+        return '<svg width="10" height="14" aria-hidden="true"><line x1="5" x2="5" y1="0" y2="14" class="recert"/></svg>'
     if kind == "sq":
         return '<svg width="16" height="16" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="2" class="mk none"/></svg>'
     return (f'<svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" '
@@ -678,6 +819,10 @@ def render(a: dict, digest: str, built: str) -> str:
     grc_track_html = (track_col("Traditional FedRAMP (Rev5)", a["grc_by_track"]["Rev5"])
                       + track_col("FedRAMP 20x", a["grc_by_track"]["20x"]))
 
+    fmt_days = lambda v: "—" if v is None else f"{round(v):,}"
+    tm_x20, tm_r5, tm_wait = (fmt_days(a["timing"]["x20_median"]), fmt_days(a["timing"]["rev5_median"]),
+                              fmt_days(a["timing"]["waiting_median"]))
+
     rev5_since = a["rev5_since"]
     shared_txt = (f' The {esc(shared[0])} appears on all {len(a["adopters"])}.' if len(shared) == 1 else "")
     grc_list = ", ".join(esc(x) for x in a["grc_providers"])
@@ -806,6 +951,20 @@ def render(a: dict, digest: str, built: str) -> str:
       <div class="legend"><span>{legend_swatch("seg-grc")}GRC / compliance vendors, no agency</span><span>{legend_swatch("seg-other")}Other providers, no agency</span><span>{legend_swatch("seg-agency")}With an agency ATO</span></div>
       <div class="scroll">{bar_chart(a)}</div>
       {prov(a, digest, f'{dated} dated 20x authorizations, {dated_with} with an agency ATO')}
+    </section>
+
+    <section class="fig wide" id="timeline">
+      <h2>Fast to authorize. Then nothing.</h2>
+      <p class="note">Each 20x product from the date its marketplace listing entered the process to its first authorization, then from authorization to today. Dates come from each listing's status history.</p>
+      <div class="stats3">
+        <div><span class="num">{tm_x20}<small>days</small></span><span class="lbl">median from entering the process to a 20x authorization</span></div>
+        <div><span class="num">{tm_r5}<small>days</small></span><span class="lbl">median from Agency Authorization In Process to a Rev5 authorization, same window</span></div>
+        <div><span class="num gap">{tm_wait}<small>days</small></span><span class="lbl">median time since authorization for the {a["timing"]["waiting_n"]} with no agency ATO</span></div>
+      </div>
+      <div class="legend"><span>{legend_swatch("tl-proc")}In process</span><span>{legend_swatch("tl-auth")}Authorized</span><span>{legend_swatch("tl-tail")}Since authorization, no agency ATO</span><span>{legend_swatch("tl-has")}Has an agency ATO</span><span>{legend_swatch("tl-recert")}Listing re-certified</span></div>
+      <div class="scroll">{timeline_chart(a)}</div>
+      <p class="note" style="margin-top:var(--s-3)">{len(a["tw_cert"]) - len(a["tl_rows"])} authorized 20x {"product is" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "products are"} left out because {"its" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "their"} status history starts at authorization. Agency ATO dates are not in the export, so a filled tail means an agency relies on the product now, not since the date it was authorized.</p>
+      {prov(a, digest, f'status history of {len(a["tl_rows"])} 20x and {a["timing"]["rev5_n"]} Rev5 listings authorized since {fmt_date(a["first"])}')}
     </section>
 
     <section class="fig wide" id="compare">
