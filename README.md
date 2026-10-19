@@ -1,53 +1,50 @@
-# Super Duper Linter Splinter
+# archstonesecurity.com
 
-[![Super Duper Linter Splinter](https://github.com/khanssen/Archstone/actions/workflows/linter.yml/badge.svg)](https://github.com/khanssen/Archstone/actions/workflows/linter.yml)
+Source for [archstonesecurity.com](https://archstonesecurity.com), the site of Archstone Security LLC: federal cybersecurity compliance engineering for NIST SP 800-171, FedRAMP, FISMA and GovRAMP.
 
-**Super Duper Linter Splinter** is an automated quality-control workflow for this repository.  
-It runs continuous linting and syntax validation across all supported file types in parallel, ensuring consistent style, secure code hygiene, and clean configuration files before merge.
+The site is static HTML, CSS and JavaScript. There is no CMS and no build step for the pages themselves.
+
+## Deployment
+
+Pushes to `main` deploy to GitHub Pages through `.github/workflows/pages.yml`. The workflow copies the repository into `_site/`, minus everything listed in `.deployignore`, and publishes that. Anything that should stay in the repository but off the public site (templates, working files, raw data, tooling) belongs in `.deployignore`.
+
+GitHub Pages cannot issue server-side redirects. Retired pages are kept as `noindex` stubs that forward with a meta refresh and declare the new page as canonical. `stateramp.html` and `states/*.html` are stubs of this kind, pointing at `govramp.html`.
+
+## Layout
+
+| Path | Contents |
+|---|---|
+| `*.html` | Site pages. Framework pages (`nist-800-171.html`, `fedramp.html`, `fisma.html`, `govramp.html`) share `css/framework.css`. |
+| `research.html` and exhibit pages | Published research. See "Research exhibits" below. |
+| `cui-regulatory-map/` | Interactive map of the federal CUI regulatory stack. |
+| `fedramp-20x-adoption/` | FedRAMP 20x adoption page, rebuilt automatically from FedRAMP Marketplace data. |
+| `data/fedramp/` | Marketplace snapshots and history behind the adoption page. See `data/fedramp/README.md`. |
+| `scripts/` | Build and validation scripts. Not deployed. |
+| `css/`, `js/`, `font/`, `images/` | Site assets. `css/tokens.css` holds the design tokens. |
+
+## Automation
+
+- **FedRAMP marketplace snapshot** (`.github/workflows/fedramp-marketplace.yml`). Runs daily. Downloads the FedRAMP Marketplace export, keeps a dated snapshot when it changes, rebuilds `/fedramp-20x-adoption/` and the dated 20x carousel on `fedramp.html`, commits the result and triggers a deploy. If the download fails, commit a JSON export by hand to `data/fedramp/inbox/` and push; the workflow uses it instead.
+- **CodeQL and Dependabot** are configured under `.github/`.
+
+## Pre-push validation
+
+`.githooks/pre-push` runs `scripts/validate-map.js` whenever a push includes changes to `cui-regulatory-map/index.html`, and blocks the push if the map fails validation. Enable the hook once per clone:
+
+```sh
+git config core.hooksPath .githooks
+```
+
+The validator needs Node. Its jsdom smoke test runs when jsdom is installed (`npm install`) and is skipped otherwise.
+
+## Research exhibits
+
+Research has been cited in a federal submission. The URLs and the data of published exhibits are frozen: do not rename, move or change them. Their presentation can be restyled. New research goes under the GRC Lab path rather than `/research`.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for how to report a vulnerability.
 
 ---
 
-###  What It Does
-- **JavaScript / TypeScript linting**  
-  Uses ESLint (flat config) to enforce modern JavaScript standards and detect logic or formatting errors.
-- **Metadata validation**  
-  Runs YAML, Markdown, and JSON linting to prevent broken syntax in workflows, docs, and configuration files.
-- **Parallel job execution**  
-  Splits linting tasks into multiple concurrent runners for faster checks.
-- **Step summaries**  
-  Publishes a detailed Markdown summary of rule violations (if any) directly in the pull request view.
-- **Caching**  
-  Uses GitHub’s npm cache to speed up dependency installs.
-
----
-
-This workflow is defined in  
-[`./.github/workflows/super-linter.yml`](.github/workflows/super-linter.yml)
-
-
-
-It triggers automatically on:
-- Pushes to `main`
-- Pull requests
-- Manual runs via “Run workflow” in the Actions tab
-
-Each job spins up a lightweight Ubuntu runner, installs dependencies, and executes Super-Linter v7.4.0 with project-specific rules.
-
----
-
-###  Why It Matters
-By catching errors early in CI, Super Duper Linter Splinter:
-- Keeps the main branch deploy-ready
-- Enforces consistent formatting across contributors
-- Detects potential misconfigurations in YAML and Markdown files
-- Reduces time spent on manual code review and style correction
-
----
-
-###  Extend It
-To expand validation:
-```yaml
-VALIDATE_HTML: true
-VALIDATE_CSS: true
-VALIDATE_BASH: true
-VALIDATE_DOCKERFILE: true
+&copy; 2026 Archstone Security LLC. Compliance as Infrastructure&trade; is a trademark of Archstone Security LLC.
