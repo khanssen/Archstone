@@ -47,11 +47,6 @@ Tags: consultation, template, business, bootstrap 5, agency
 1. General
 ========================================*/
 
-/* TEMP: sanity check */
-.flaticon-linkedin::before { content: "L" !important; }
-.flaticon-play-button::before { content: "Y" !important; }
-
-
 body {
   font-family: "Poppins", sans-serif;
   background-color: #fff;

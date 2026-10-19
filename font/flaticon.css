@@ -1,32 +1,89 @@
-﻿@charset "UTF-8";
-/* Flaticon – rebuilt clean */
+@charset "UTF-8";
+/*
+ * Flaticon icon font. Class map generated from the glyph names inside
+ * Flaticon.ttf itself (codepoints U+F101-U+F13B), so it cannot drift from the font.
+ * URLs are relative to this file, so pages work at any depth and in local preview.
+ */
 @font-face {
   font-family: "Flaticon";
-  src: url("/font/Flaticon.woff2") format("woff2"),
-       url("/font/Flaticon.woff")  format("woff"),
-       url("/font/Flaticon.ttf")   format("truetype"),
-       url("/font/Flaticon.eot"); /* legacy */
+  src: url("Flaticon.woff2") format("woff2"),
+       url("Flaticon.woff") format("woff"),
+       url("Flaticon.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
-/* Always render pseudo-elements with this font */
 [class^="flaticon-"]::before,
 [class*=" flaticon-"]::before {
   font-family: "Flaticon" !important;
-  font-style: normal !important;
+  font-style: normal;
   font-weight: normal !important;
-  speak: never;
-  display: inline-block;
-  text-decoration: inherit;
+  font-variant: normal;
   text-transform: none;
   line-height: 1;
+  display: inline-block;
+  speak: never;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Use the exact classes + hex from flaticon.html */
-.flaticon-linkedin::before { content: "\f10b"; }        /* REPLACE with your hex */
-.flaticon-youtube::before,
-.flaticon-play-button::before { content: "\f103"; }     /* REPLACE with your hex */
+.flaticon-planning::before { content: "\f101"; }
+.flaticon-project::before { content: "\f102"; }
+.flaticon-play-button::before { content: "\f103"; }
+.flaticon-chat::before { content: "\f104"; }
+.flaticon-down-arrow::before { content: "\f105"; }
+.flaticon-email::before { content: "\f106"; }
+.flaticon-facebook::before { content: "\f107"; }
+.flaticon-stock-market::before { content: "\f108"; }
+.flaticon-idea::before { content: "\f109"; }
+.flaticon-instagram::before { content: "\f10a"; }
+.flaticon-linkedin::before { content: "\f10b"; }
+.flaticon-magnifier::before { content: "\f10c"; }
+.flaticon-next::before { content: "\f10d"; }
+.flaticon-next-1::before { content: "\f10e"; }
+.flaticon-left-arrow::before { content: "\f10f"; }
+.flaticon-previous::before { content: "\f110"; }
+.flaticon-open-24-hours::before { content: "\f111"; }
+.flaticon-phone-call::before { content: "\f112"; }
+.flaticon-pin::before { content: "\f113"; }
+.flaticon-pinterest::before { content: "\f114"; }
+.flaticon-quote::before { content: "\f115"; }
+.flaticon-select::before { content: "\f116"; }
+.flaticon-technical-support::before { content: "\f117"; }
+.flaticon-twitter::before { content: "\f118"; }
+.flaticon-up-arrow::before { content: "\f119"; }
+.flaticon-up-arrow-1::before { content: "\f11a"; }
+.flaticon-plus::before { content: "\f11b"; }
+.flaticon-remove::before { content: "\f11c"; }
+.flaticon-loupe::before { content: "\f11d"; }
+.flaticon-portfolio::before { content: "\f11e"; }
+.flaticon-save-money::before { content: "\f11f"; }
+.flaticon-growth::before { content: "\f120"; }
+.flaticon-international-business::before { content: "\f121"; }
+.flaticon-presentation::before { content: "\f122"; }
+.flaticon-money::before { content: "\f123"; }
+.flaticon-darts::before { content: "\f124"; }
+.flaticon-stats::before { content: "\f125"; }
+.flaticon-salary::before { content: "\f126"; }
+.flaticon-checked::before { content: "\f127"; }
+.flaticon-star::before { content: "\f128"; }
+.flaticon-star-1::before { content: "\f129"; }
+.flaticon-play::before { content: "\f12a"; }
+.flaticon-analytics::before { content: "\f12b"; }
+.flaticon-review::before { content: "\f12c"; }
+.flaticon-certificate::before { content: "\f12d"; }
+.flaticon-experience::before { content: "\f12e"; }
+.flaticon-like::before { content: "\f12f"; }
+.flaticon-conversation::before { content: "\f130"; }
+.flaticon-share::before { content: "\f131"; }
+.flaticon-phone-call-1::before { content: "\f132"; }
+.flaticon-right-quotation-mark::before { content: "\f133"; }
+.flaticon-quote-left::before { content: "\f134"; }
+.flaticon-technology::before { content: "\f135"; }
+.flaticon-plane::before { content: "\f136"; }
+.flaticon-promotion::before { content: "\f137"; }
+.flaticon-safe::before { content: "\f138"; }
+.flaticon-insurance::before { content: "\f139"; }
+.flaticon-share-1::before { content: "\f13a"; }
+.flaticon-investment::before { content: "\f13b"; }
