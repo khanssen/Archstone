@@ -1,0 +1,96 @@
+/* ==========================================================================
+   FedRAMP 20x feature (fedramp.html)
+   Scoped under .x20 so it can sit inside the legacy template without
+   restyling it. Colours and type use the tokens.css names; the values after
+   each comma are fallbacks for pages that do not load tokens.css yet, and
+   can be dropped once fedramp.html moves onto tokens.css.
+   ========================================================================== */
+
+@font-face { font-family: 'IBM Plex Sans'; src: url('/font/IBMPlexSans-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('/font/IBMPlexSans-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url('/font/IBMPlexMono-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url('/font/IBMPlexMono-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+
+.x20 {
+  --x-ink: var(--ink, #1B2833);
+  --x-ink-soft: var(--ink-soft, #4A5A66);
+  --x-rule: var(--rule, #C6CFCB);
+  --x-surface: var(--surface, #FFFFFF);
+  --x-paper: var(--paper, #FBFCFB);
+  --x-referent: var(--referent, #33586E);
+  --x-referent-fill: var(--referent-fill, #EAF0F4);
+  --x-gap: var(--gap, #A8400F);
+  --x-gap-fill: var(--gap-fill, #FBEDE4);
+  --x-accent: var(--accent, #6A4C93);
+  --x-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --x-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--x-sans);
+  color: var(--x-ink);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.x20 *, .x20 *::before, .x20 *::after { box-sizing: border-box; }
+.x20 h1, .x20 h2, .x20 h3 { font-family: var(--x-sans); color: var(--x-ink); font-weight: 600; letter-spacing: -0.015em; line-height: 1.12; }
+.x20 h2:hover { color: var(--x-ink); }
+.x20 h1, .x20 h2, .x20 h3, .x20 h4 { text-transform: none; }
+.x20 p { max-width: 68ch; }
+.x20 a { color: var(--x-referent); text-underline-offset: 2px; }
+.x20 :focus-visible { outline: 2px solid var(--x-accent); outline-offset: 3px; }
+
+.x20-eyebrow { font-family: var(--x-mono); font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--x-ink-soft); margin: 0 0 12px; }
+
+/* --- Hero / offer --------------------------------------------------------- */
+.x20-hero { padding: 8px 0 8px; }
+.x20-hero h1 { font-size: clamp(30px, 4.4vw, 46px); max-width: 18ch; margin: 0 0 18px; }
+.x20-lede { font-size: 18px; color: var(--x-ink-soft); margin: 0 0 26px; }
+.x20-lede b { color: var(--x-ink); font-weight: 600; }
+.x20-cta { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; margin: 0 0 8px; }
+.x20-btn { display: inline-block; background: var(--x-referent); color: #fff !important; text-decoration: none; font-weight: 600; padding: 12px 20px; border-radius: 6px; }
+.x20-btn:hover { filter: brightness(1.1); }
+.x20-link { font-weight: 600; }
+
+.x20-services { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 18px; margin: 34px 0 0; padding: 0; list-style: none; }
+.x20-services li { background: var(--x-surface); border: 1px solid var(--x-rule); border-radius: 10px; padding: 20px 22px; }
+.x20-services h3 { font-size: 17px; margin: 0 0 8px; }
+.x20-services p { font-size: 15px; color: var(--x-ink-soft); margin: 0; }
+
+/* --- Carousel --------------------------------------------------------------- */
+.x20-data { margin: 56px 0 0; }
+.x20-data-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 24px; margin: 0 0 16px; }
+.x20-data-head h2 { font-size: 24px; margin: 0; }
+.x20-asof { font-family: var(--x-mono); font-size: 12px; color: var(--x-ink-soft); }
+.x20-carousel { position: relative; }
+.x20-track { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; border: 1px solid var(--x-rule); border-radius: 12px; background: var(--x-surface); }
+.x20-track::-webkit-scrollbar { display: none; }
+@media (prefers-reduced-motion: reduce) { .x20-track { scroll-behavior: auto; } }
+.x20-slide { scroll-snap-align: start; padding: 34px 38px 30px; display: grid; grid-template-columns: minmax(0, 19rem) minmax(0, 1fr); gap: 10px 36px; align-items: center; min-height: 230px; }
+@media (max-width: 640px) { .x20-slide { grid-template-columns: 1fr; padding: 26px 22px 24px; min-height: 0; } }
+.x20-big { white-space: nowrap; font-size: clamp(44px, 6vw, 68px); font-weight: 600; line-height: .95; letter-spacing: -0.03em; color: var(--x-ink); }
+.x20-big.gap { color: var(--x-gap); }
+.x20-big.pos { color: var(--x-referent); }
+.x20-big small { white-space: normal; display: block; font-size: 14px; font-weight: 400; letter-spacing: 0; color: var(--x-ink-soft); margin-top: 10px; line-height: 1.35; }
+.x20-slide h3 { font-size: 21px; margin: 0 0 8px; }
+.x20-slide p { font-size: 15px; color: var(--x-ink-soft); margin: 0 0 12px; }
+.x20-slide .x20-src { font-family: var(--x-mono); font-size: 11px; color: var(--x-ink-soft); margin: 0; }
+.x20-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0 0; }
+.x20-dots { display: flex; gap: 8px; flex-wrap: wrap; }
+.x20-dots button { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--x-referent); background: transparent; padding: 0; cursor: pointer; }
+.x20-dots button[aria-current="true"] { background: var(--x-referent); }
+.x20-nav { display: flex; gap: 8px; }
+.x20-nav button { font: inherit; font-size: 14px; font-weight: 600; color: var(--x-referent); background: var(--x-surface); border: 1px solid var(--x-rule); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+.x20-nav button:hover { border-color: var(--x-referent); }
+.x20-more { margin: 14px 0 0; font-size: 15px; }
+
+/* --- Follow / reuse --------------------------------------------------------- */
+.x20-reuse { margin: 56px 0 0; padding: 26px 28px; background: var(--x-referent-fill); border-radius: 12px; }
+.x20-reuse h2 { font-size: 22px; margin: 0 0 8px; }
+.x20-reuse p { margin: 0 0 14px; color: var(--x-ink-soft); }
+.x20-reuse ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.x20-reuse li { font-size: 15px; }
+.x20-reuse li b { font-weight: 600; color: var(--x-ink); }
+
+/* --- Rev5 ------------------------------------------------------------------- */
+.x20-rev5 { margin: 56px 0 0; }
+.x20-rev5 h2 { font-size: 22px; margin: 0 0 10px; }
+.x20-rev5 ul { padding-left: 1.1rem; display: grid; gap: 8px; max-width: 80ch; color: var(--x-ink-soft); font-size: 15px; }
+.x20-rev5 li b { color: var(--x-ink); font-weight: 600; }

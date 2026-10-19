@@ -1,0 +1,24 @@
+{
+  "_about": "GRC provider classification feed for the 20x adoption page. Providers listed here are counted as GRC / compliance-automation vendors, matched case-insensitively against the marketplace 'csp' field on either track. Spell providers exactly as the marketplace does; some appear under more than one spelling. Change 'updated' whenever the list changes: the page cites it as the feed date.",
+  "updated": "2026-10-16",
+  "providers": [
+    "A-LIGN",
+    "Anecdotes",
+    "Anitian",
+    "ASSYST",
+    "Diligent, Inc.",
+    "Drata",
+    "IntelliGRC, Inc.",
+    "Longevity Consulting",
+    "Mycroft Technologies Inc",
+    "Onspring Technologies, LLC",
+    "Paramify",
+    "RegScale",
+    "RegScale, Inc.",
+    "Secureframe",
+    "stackArmor",
+    "TalaTek, LLC",
+    "Telos Corporation",
+    "Vanta"
+  ]
+}
