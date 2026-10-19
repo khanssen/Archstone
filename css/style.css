@@ -8977,14 +8977,6 @@ th, td {
   text-align: left; /* Adjust text alignment as needed */
 }
 
-/* FINAL overrides — use the exact classes + hex from flaticon.html */
-.flaticon-linkedin::before,
-.flaticon-linkedin-1::before { content: "\f10b" !important; }  /* example hex */
-
-.flaticon-play-button::before,
-.flaticon-youtube::before { content: "\f103" !important; }     /* example hex */
-
-
 /* Consulpro fixes – safe overrides (place AFTER the theme CSS)
    - fixes invalid color, improves contrast & focus, reduces motion,
      removes risky global object-fit, and avoids layout shift on hover
@@ -9075,10 +9067,6 @@ input::placeholder, textarea::placeholder, .form-control::placeholder{ color:#9a
   outline:2px solid var(--text-strong);
   outline-offset:2px;
 }
-
-/* ---------- remove temporary icon hacks if still present (defensive) */
-.flaticon-linkedin::before,
-.flaticon-play-button::before{ content: unset !important; }
 
 /* ---------- parallax/janky backgrounds: tame on mobile */
 @media (max-width: 767px){
