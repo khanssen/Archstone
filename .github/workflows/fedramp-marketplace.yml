@@ -73,8 +73,19 @@ jobs:
             echo "Nothing changed."
           else
             git commit -m "FedRAMP marketplace snapshot $(date -u +%Y-%m-%d)"
-            git push
-            echo "pushed=true" >> "$GITHUB_OUTPUT"
+            # main may have moved since checkout (a merge or a push from VS Code
+            # landing mid-run). Rebase onto it and retry rather than fail.
+            for attempt in 1 2 3; do
+              if git push; then
+                echo "pushed=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+              echo "Push rejected (attempt $attempt); rebasing onto origin/main."
+              git pull --rebase origin main
+              sleep $((attempt * 5))
+            done
+            echo "::error::Could not push the snapshot after 3 attempts."
+            exit 1
           fi
 
       - name: Deploy site
