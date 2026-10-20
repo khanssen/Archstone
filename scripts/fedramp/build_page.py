@@ -957,7 +957,7 @@ def render(a: dict, digest: str, built: str) -> str:
   <div class="meta">
     <span><b>Data</b> FedRAMP Marketplace, {fmt_date(a["snapshot"])}</span>
     <span><b>Records</b> {a["records"]:,}</span>
-    <span><b>Last checked</b> {fmt_date(a["checked"])}</span>
+    <span data-checked="{esc(a["checked"])}"><b>Last checked</b> {fmt_date(a["checked"])}</span>
     <span><a href="20x-products.csv">Download the 20x rows (CSV)</a></span>
   </div>
 
