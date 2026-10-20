@@ -957,11 +957,25 @@ def render(a: dict, digest: str, built: str) -> str:
   <div class="meta">
     <span><b>Data</b> FedRAMP Marketplace, {fmt_date(a["snapshot"])}</span>
     <span><b>Records</b> {a["records"]:,}</span>
-    <span><b>Last checked</b> {fmt_date(a["checked"])}</span>
+    <span data-checked="{esc(a["checked"])}"><b>Last checked</b> {fmt_date(a["checked"])}</span>
     <span><a href="20x-products.csv">Download the 20x rows (CSV)</a></span>
   </div>
 
   <div class="figs">
+    <section class="fig wide" id="timeline">
+      <h2>20x moved the certificate, not the finish line.</h2>
+      <p class="note">Every row starts on the day the product's marketplace listing entered the process. The grey bar runs to its 20x authorization; the dashed line runs from there to today. The shaded band is where a Rev5 authorization usually lands, middle half of products, measured the same way from the listing date. A Rev5 agency-path authorization comes with its sponsoring agency, so it is the point where an agency is relying on the product. For 20x that point has not arrived.</p>
+      <div class="stats3">
+        <div><span class="num">{tm_x20}<small>days</small></span><span class="lbl">median to an open 20x authorization ({a["timing"]["x20_n"]} products; pilots excluded because the pilot was invitation-only)</span></div>
+        <div><span class="num">{tm_r5}<small>days</small></span><span class="lbl">median to a Rev5 authorization, which arrives with its sponsoring agency</span></div>
+        <div><span class="num gap">{tm_pel}<small>days</small></span><span class="lbl">median time since entering for the {a["timing"]["pilot_wait_n"]} pilot products still without an agency; {a["timing"]["pilot_past_rev5"]} are past the Rev5 median</span></div>
+      </div>
+      <div class="legend"><span>{legend_swatch("tl-proc")}In process</span><span>{legend_swatch("tl-pil")}In process, pilot</span><span>{legend_swatch("tl-auth")}Authorized</span><span>{legend_swatch("tl-tail")}Since authorization, no agency ATO</span><span>{legend_swatch("tl-has")}Has an agency ATO</span><span>{legend_swatch("tl-recert")}Listing re-certified</span><span>{legend_swatch("tl-band")}Rev5, middle half of products</span></div>
+      <div class="scroll">{timeline_chart(a)}</div>
+      <p class="note" style="margin-top:var(--s-3)">{len(a["tw_cert"]) - len(a["tl_rows"])} authorized 20x {"product is" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "products are"} left out because {"its" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "their"} status history starts at authorization. Agency ATO dates are not in the export, so a filled tail means an agency relies on the product now, not since the date it was authorized. Pilots are included here because the question is how long agency adoption takes, which the invitation did not shorten. Both tracks are timed from the marketplace listing; preparation before a listing appears is not visible on either.</p>
+      {prov(a, digest, f'status history of {len(a["tl_rows"])} 20x and {a["timing"]["rev5_n"]} Rev5 listings authorized since {fmt_date(a["first"])}; days counted from each listing\'s first In Process status (Agency Authorization In Process for Rev5)')}
+    </section>
+
     <section class="fig wide" id="by-class">
       <h2>Agency adoption of 20x, by class and program</h2>
       <p class="note">Share of authorized 20x products in each class with at least one agency ATO besides the FedRAMP PMO. The filled part of each bar is agency adoption; the rest is authorizations no agency has relied on.</p>
@@ -1048,20 +1062,6 @@ def render(a: dict, digest: str, built: str) -> str:
       <div class="legend"><span>{legend_swatch("seg-grc")}GRC / compliance vendors, no agency</span><span>{legend_swatch("seg-other")}Other providers, no agency</span><span>{legend_swatch("seg-agency")}With an agency ATO</span></div>
       <div class="scroll">{bar_chart(a)}</div>
       {prov(a, digest, f'{dated} dated 20x authorizations, {dated_with} with an agency ATO')}
-    </section>
-
-    <section class="fig wide" id="timeline">
-      <h2>20x moved the certificate, not the finish line.</h2>
-      <p class="note">Every row starts on the day the product's marketplace listing entered the process. The grey bar runs to its 20x authorization; the dashed line runs from there to today. The shaded band is where a Rev5 authorization usually lands, middle half of products, measured the same way from the listing date. A Rev5 agency-path authorization comes with its sponsoring agency, so it is the point where an agency is relying on the product. For 20x that point has not arrived.</p>
-      <div class="stats3">
-        <div><span class="num">{tm_x20}<small>days</small></span><span class="lbl">median to an open 20x authorization ({a["timing"]["x20_n"]} products; pilots excluded because the pilot was invitation-only)</span></div>
-        <div><span class="num">{tm_r5}<small>days</small></span><span class="lbl">median to a Rev5 authorization, which arrives with its sponsoring agency</span></div>
-        <div><span class="num gap">{tm_pel}<small>days</small></span><span class="lbl">median time since entering for the {a["timing"]["pilot_wait_n"]} pilot products still without an agency; {a["timing"]["pilot_past_rev5"]} are past the Rev5 median</span></div>
-      </div>
-      <div class="legend"><span>{legend_swatch("tl-proc")}In process</span><span>{legend_swatch("tl-pil")}In process, pilot</span><span>{legend_swatch("tl-auth")}Authorized</span><span>{legend_swatch("tl-tail")}Since authorization, no agency ATO</span><span>{legend_swatch("tl-has")}Has an agency ATO</span><span>{legend_swatch("tl-recert")}Listing re-certified</span><span>{legend_swatch("tl-band")}Rev5, middle half of products</span></div>
-      <div class="scroll">{timeline_chart(a)}</div>
-      <p class="note" style="margin-top:var(--s-3)">{len(a["tw_cert"]) - len(a["tl_rows"])} authorized 20x {"product is" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "products are"} left out because {"its" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "their"} status history starts at authorization. Agency ATO dates are not in the export, so a filled tail means an agency relies on the product now, not since the date it was authorized. Pilots are included here because the question is how long agency adoption takes, which the invitation did not shorten. Both tracks are timed from the marketplace listing; preparation before a listing appears is not visible on either.</p>
-      {prov(a, digest, f'status history of {len(a["tl_rows"])} 20x and {a["timing"]["rev5_n"]} Rev5 listings authorized since {fmt_date(a["first"])}; days counted from each listing\'s first In Process status (Agency Authorization In Process for Rev5)')}
     </section>
 
     {removed_html}

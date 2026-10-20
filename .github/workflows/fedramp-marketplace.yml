@@ -22,6 +22,7 @@ on:
 permissions:
   contents: write   # commit snapshots and the rebuilt page
   actions: write    # start the Pages deploy (pushes made with GITHUB_TOKEN don't trigger it)
+  issues: write     # open an issue when the data behind the page changes
 
 concurrency:
   group: fedramp-snapshot
@@ -51,8 +52,18 @@ jobs:
         run: python scripts/fedramp/fetch_marketplace.py --raw data/fedramp/raw --inbox data/fedramp/inbox
 
       - name: Rebuild page from latest snapshot
+        env:
+          FETCHED: ${{ steps.fetch.outcome }}
         run: |
           SNAP=$(ls data/fedramp/raw/products-*.json.gz | sort | tail -n 1)
+          # Only claim today's check if today's download actually worked;
+          # otherwise keep the last successful check date already on the page.
+          if [ "$FETCHED" = "success" ]; then
+            CHECKED=$(date -u +%Y-%m-%d)
+          else
+            CHECKED=$(grep -o 'data-checked="[0-9-]*"' fedramp-20x-adoption/index.html | head -1 | cut -d'"' -f2)
+            CHECKED=${CHECKED:-$(basename "$SNAP" | grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}')}
+          fi
           python scripts/fedramp/build_page.py \
             --snapshot "$SNAP" \
             --grc data/fedramp/grc-vendors.json \
@@ -60,7 +71,20 @@ jobs:
             --history data/fedramp/history.csv \
             --raw-dir data/fedramp/raw \
             --feature-target fedramp.html \
-            --checked "$(date -u +%Y-%m-%d)"
+            --checked "$CHECKED"
+
+      - name: Compare with the previous snapshot
+        id: diff
+        if: steps.fetch.outputs.changed == 'true'
+        run: |
+          PREV=$(ls data/fedramp/raw/products-*.json.gz | sort | tail -n 2 | head -n 1)
+          NEW=$(ls data/fedramp/raw/products-*.json.gz | sort | tail -n 1)
+          if [ "$PREV" = "$NEW" ]; then echo "First snapshot; nothing to compare."; exit 0; fi
+          python scripts/fedramp/diff_snapshots.py \
+            --old "$PREV" --new "$NEW" \
+            --grc data/fedramp/grc-vendors.json \
+            --history data/fedramp/history.csv \
+            --body "$RUNNER_TEMP/issue.md"
 
       - name: Commit if anything changed
         id: commit
@@ -94,8 +118,34 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run pages.yml --ref main
 
+      - name: Open an issue for the change
+        if: steps.diff.outputs.material == 'true' && steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: ${{ steps.diff.outputs.title }}
+          HEADLINE: ${{ steps.diff.outputs.headline }}
+        run: |
+          gh label create marketplace-update --color 1D76DB --description "FedRAMP marketplace data changed" 2>/dev/null || true
+          gh label create headline-claim --color B60205 --description "A claim in the page's prose may no longer hold" 2>/dev/null || true
+          LABELS=marketplace-update
+          [ "$HEADLINE" = "true" ] && LABELS="$LABELS,headline-claim"
+          gh issue create --title "$TITLE" --body-file "$RUNNER_TEMP/issue.md" --label "$LABELS"
+
       - name: Report a failed download
         if: steps.fetch.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          # One open issue per outage, with a comment per failed day, rather than a new issue every morning.
+          gh label create marketplace-fetch-failed --color FBCA04 --description "Daily marketplace download failed" 2>/dev/null || true
+          RUN="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          OPEN=$(gh issue list --label marketplace-fetch-failed --state open --json number --jq '.[0].number')
+          if [ -n "$OPEN" ]; then
+            gh issue comment "$OPEN" --body "Failed again $(date -u +%Y-%m-%d): $RUN"
+          else
+            gh issue create --label marketplace-fetch-failed \
+              --title "Marketplace download failing — 20x page is serving the last good snapshot" \
+              --body "The daily download failed $(date -u +%Y-%m-%d): $RUN. The page still shows the last snapshot, and its 'Last checked' date is frozen at the last successful download. Fix the fetcher, or export JSON by hand into data/fedramp/inbox/ and push."
+          fi
           echo "::error::The marketplace export could not be downloaded. The page was rebuilt from the last snapshot. If this keeps failing, export JSON by hand and commit it to data/fedramp/inbox/."
           exit 1
