@@ -99,7 +99,7 @@ def timeline(p: dict, rev5: bool) -> dict:
             "recert": [d for d in certs[1:] if d != first_cert]}
 
 
-def normalise(p: dict, grc: set[str]) -> dict:
+def normalise(p: dict, grc: set[str], ai: set[str] | None = None) -> dict:
     agencies = [a for a in (p.get("agency_authorizations") or []) if a and a != PMO]
     assessor = (p.get("independent_assessor") or "").strip()
     if len(assessor) > 80:          # free-text notes have appeared in this field
@@ -123,6 +123,9 @@ def normalise(p: dict, grc: set[str]) -> dict:
         "grc": (p.get("csp") or "").strip().lower() in grc,
         "grc_tag": GRC_TAG in (p.get("business_categories") or []),
         "ai_tag": "Artificial Intelligence (AI)" in (p.get("business_categories") or []),
+        # AI classification list applies to the 20x track only: some listed providers
+        # (Google) also hold non-AI Rev5 authorizations.
+        "ai": p.get("cert_type") != "Rev5" and (p.get("csp") or "").strip().lower() in (ai or set()),
     }
 
 
@@ -217,7 +220,8 @@ def analyse(rows: list[dict], snap: str) -> dict:
         if base != t["id"] and base in by_id and by_id[base] not in matches:
             matches.append(by_id[base])
         for r in matches:
-            if r["certified"] or t["certified"]:
+            # Both must be authorizations: a "Ready" listing can't carry an agency ATO.
+            if r["certified"] and t["certified"]:
                 dual.append({"rev5": r, "x20": t})
     dual.sort(key=lambda d: (-d["rev5"]["n_agencies"], d["x20"]["product"].lower()))
 
@@ -355,6 +359,9 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "adopters": adopters,
         "adopter_agencies": adopter_agencies,
         "rev5_since": stats([r for r in since if r["track"] == "Rev5"]),
+        "nongrc_stats": stats([r for r in tw_cert if not r["grc"]]),
+        "rev5_since_tag": share([r for r in since if r["track"] == "Rev5"], "grc_tag"),
+        "tw_tag": share(tw_cert, "grc_tag"),
     }
 
 
@@ -394,33 +401,6 @@ def words(n: int) -> str:
 # --------------------------------------------------------------------------
 # SVG figures
 # --------------------------------------------------------------------------
-
-def dot_chart(a: dict) -> str:
-    items = a["tw_dated"] + a["tw_undated"]
-    cols = 12
-    cell = 34
-    r = 11
-    rows_n = (len(items) + cols - 1) // cols
-    w, h = cols * cell, rows_n * cell
-    parts = [f'<svg class="dots" viewBox="0 0 {w} {h}" width="100%" role="img" '
-             f'aria-labelledby="dots-title"><title id="dots-title">{len(items)} FedRAMP 20x '
-             f'authorizations; {a["tw_stats"]["with"]} with an agency ATO</title>']
-    for i, p in enumerate(items):
-        cx = (i % cols) * cell + cell / 2
-        cy = (i // cols) * cell + cell / 2
-        cls = "has" if p["n_agencies"] else "none"
-        tip = (f'{p["product"]} ({p["csp"]}). {fmt_date(p["date"])}. '
-               + (f'Agencies: {", ".join(p["agencies"])}' if p["agencies"] else "No agency ATO")
-               + (". GRC / compliance vendor" if p["grc"] else ""))
-        if p["grc"]:
-            shape = (f'<rect x="{cx - r + 1:.1f}" y="{cy - r + 1:.1f}" width="{2 * r - 2}" '
-                     f'height="{2 * r - 2}" rx="2" class="mk {cls}"/>')
-        else:
-            shape = f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r - 1}" class="mk {cls}"/>'
-        parts.append(f'<g tabindex="0"><title>{esc(tip)}</title>{shape}</g>')
-    parts.append("</svg>")
-    return "".join(parts)
-
 
 def bar_chart(a: dict) -> str:
     data = a["monthly"]
@@ -487,6 +467,8 @@ CSS = """
 h1{margin:0}
 .lede{font-size:var(--t-lede);color:var(--ink-soft);margin:var(--s-4) 0 0;max-width:68ch}
 .lede b{color:var(--ink);font-weight:600}
+.intro{color:var(--ink-soft);margin:var(--s-3) 0 0;max-width:68ch}
+.intro b{color:var(--ink);font-weight:600}
 .meta{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-5);margin-top:var(--s-4);padding-top:var(--s-3);border-top:1px solid var(--rule);font-size:var(--t-small);color:var(--ink-soft)}
 .meta b{color:var(--ink);font-weight:600}
 .figs{display:grid;gap:var(--s-4);grid-template-columns:repeat(2,minmax(0,1fr));margin-top:var(--s-5)}
@@ -494,7 +476,7 @@ h1{margin:0}
 .fig{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:var(--s-4);min-width:0}
 .fig.wide{grid-column:1/-1}
 .fig h2{margin:0 0 var(--s-2)}
-.fig .note{margin:0 0 var(--s-3);color:var(--ink-soft);font-size:var(--t-small);max-width:var(--measure-wide)}
+.fig .note{margin:0 0 var(--s-3);color:var(--ink-soft);font-size:var(--t-small);max-width:none}
 .big{display:flex;flex-wrap:wrap;gap:var(--s-3) var(--s-5);align-items:flex-start;margin:var(--s-2) 0 var(--s-2)}
 .big div{display:grid;gap:2px}
 .big .num{font-size:var(--t-display);font-weight:600;line-height:1;letter-spacing:-0.02em}
@@ -586,14 +568,8 @@ td.ck{text-align:center;font-family:var(--mono)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend svg{flex:none}
 svg text{font-family:var(--sans)}
-.dots{max-width:560px;display:block}
 .scroll{overflow-x:auto}
 .scroll .bars{min-width:560px;display:block}
-.mk{stroke-width:2}
-.mk.none{fill:var(--surface);stroke:var(--gap)}
-.mk.has{fill:var(--referent);stroke:var(--referent)}
-.dots g:focus{outline:none}
-.dots g:focus .mk,.dots g:hover .mk{stroke:var(--ink);stroke-width:3}
 .bars .gridline{stroke:var(--grid);stroke-width:1}
 .bars .axis{stroke:var(--rule-strong);stroke-width:1}
 .bars .tick{fill:var(--ink-soft);font-size:11px}
@@ -617,7 +593,7 @@ tr.grp td{font-weight:600;color:var(--ink);border-bottom-color:var(--rule-strong
 .list th{position:sticky;top:0;background:var(--surface)}
 section.read{margin-top:var(--s-6)}
 section.read h2{margin:0 0 var(--s-3)}
-section.read ul{margin:0;padding-left:1.1rem;display:grid;gap:var(--s-2);max-width:var(--measure-wide);color:var(--ink-soft)}
+section.read ul{margin:0;padding-left:1.1rem;display:grid;gap:var(--s-2);color:var(--ink-soft)}
 section.read li b{color:var(--ink);font-weight:600}
 footer{margin-top:var(--s-6);padding-top:var(--s-3);border-top:1px solid var(--rule);font-size:var(--t-small);color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-5)}
 footer a{color:var(--ink-soft)}
@@ -699,10 +675,6 @@ def days_between(a_: str, b_: str) -> int:
 
 
 def legend_swatch(kind: str) -> str:
-    if kind == "dot-none":
-        return '<svg width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6" class="mk none"/></svg>'
-    if kind == "dot-has":
-        return '<svg width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6" class="mk has"/></svg>'
     if kind == "tl-proc":
         return '<svg width="22" height="12" aria-hidden="true"><rect x="1" y="1" width="20" height="10" rx="2" class="proc"/></svg>'
     if kind == "tl-band":
@@ -717,8 +689,6 @@ def legend_swatch(kind: str) -> str:
         return '<svg width="26" height="12" aria-hidden="true"><line x1="1" x2="25" y1="6" y2="6" class="tail-has"/></svg>'
     if kind == "tl-recert":
         return '<svg width="10" height="14" aria-hidden="true"><line x1="5" x2="5" y1="0" y2="14" class="recert"/></svg>'
-    if kind == "sq":
-        return '<svg width="16" height="16" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="2" class="mk none"/></svg>'
     return (f'<svg width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" '
             f'class="{kind}"/></svg>')
 
@@ -737,13 +707,76 @@ def render(a: dict, digest: str, built: str) -> str:
     h1 = ("Agencies are not relying on FedRAMP 20x." if low
           else "How many agencies rely on FedRAMP 20x.")
     shared = [ag for ag, c in a["adopter_agencies"].items() if c == len(a["adopters"]) and c > 1]
-    adopters_txt = ", ".join(r["product"] for r in a["adopters"]) or "none"
 
     lede = (f'FedRAMP has issued <b>{tw["n"]} 20x authorizations</b> in the {a["days"]} days since '
             f'the first, on {fmt_date(a["first"])}. <b>{tw["with"]} of them</b> have an agency '
             f'authorization from anyone other than the FedRAMP PMO, which records one on every 20x '
             f'listing. Of the {grc["n"]} held by GRC and compliance-automation vendors, '
             f'<b>{words(grc["with"])} {"has" if grc["with"] == 1 else "have"} an agency customer</b>.')
+
+    # Timeline title: only claim "doesn't shorten" while most waiting pilots are past the Rev5 median.
+    tm = a["timing"]
+    if tm["pilot_wait_n"] and tm["pilot_past_rev5"] * 2 > tm["pilot_wait_n"]:
+        tl_title = ("20x changes where in the process certification is granted "
+                    "but doesn't shorten the adoption timeline.")
+    else:
+        tl_title = "How long 20x takes to reach an agency."
+
+    # Intro blurb: GRC over-representation, the skew, AI adoption, and the counterweight.
+    ng, ttag, rtag = a["nongrc_stats"], a["tw_tag"], a["rev5_since_tag"]
+    r5grc = a["grc_by_track"]["Rev5"]
+    r5grc_with = sum(1 for r in r5grc if r["n_agencies"])
+    intro = []
+    if grc["n"]:
+        intro.append(
+            f'That headline understates the program. GRC and compliance-automation vendors are heavily '
+            f'over-represented: they hold <b>{grc["n"]} of the {tw["n"]}</b> 20x authorizations ({pct(grc["n"] / tw["n"])}). '
+            f'By the category providers choose for their own listings, GRC tools are {pct(ttag["share"])} of 20x '
+            f'authorizations against {pct(rtag["share"])} of Rev5 authorizations issued over the same period.')
+        if grc["with"] == 0:
+            have = (f'all {len(r5grc)} GRC products' if r5grc_with == len(r5grc)
+                    else f'{r5grc_with} of the {len(r5grc)} GRC products')
+            agencies_buy = (f' Agencies do buy GRC tools — {have} authorized the traditional way have an agency '
+                            f'behind them — just not through 20x, where the wave of GRC listings tracks vendors '
+                            f'selling 20x readiness more than agency demand.' if r5grc else "")
+            intro.append(f'None of those {grc["n"]} has an agency customer.{agencies_buy}')
+        intro.append(f'Set the GRC vendors aside and <b>{ng["with"]} of the remaining {ng["n"]}</b> have an agency '
+                     f'({pct(ng["share"])}), not {pct(tw["share"])}.')
+    if a["adopters"]:
+        ai_ad = [r for r in a["adopters"] if r["ai"]]
+        names = [r["product"] for r in sorted(a["adopters"], key=lambda r: r["date"] or "9999")]
+        names_txt = names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+        n_ag = len(a["adopter_agencies"])
+        narrow = (f' It is narrow: {words(n_ag)} {"agency" if n_ag == 1 else "agencies"}'
+                  + (f', one of them on all {words(len(names))}.' if len(names) > 1 and shared else '.'))
+        if len(ai_ad) == len(a["adopters"]):
+            intro.append(f'The adoption 20x does have is AI platforms: {esc(names_txt)}.{narrow}')
+        elif ai_ad:
+            intro.append(f'{len(ai_ad)} of the {len(names)} products with an agency are AI platforms.{narrow}')
+    if grc["n"] and ng["share"] is not None and ng["share"] < 0.5:
+        intro.append(f'Even at {pct(ng["share"])}, 20x remains far from the traditional path, where every '
+                     f'agency-path authorization starts with a sponsor.')
+    intro_html = f'<p class="intro">{" ".join(intro)}</p>' if intro else ""
+
+    # Products authorized on both tracks, folded into the objections section.
+    dual_txt = ""
+    if a["dual"]:
+        bits = []
+        for d in a["dual"]:
+            r, t = d["rev5"], d["x20"]
+            later = ""
+            if r["date"] and t["date"] and r["date"] > t["date"]:
+                dd = days_between(t["date"], r["date"])
+                mo = int(dd // 30.44)
+                gap = f'more than {mo} months' if mo >= 1 else f'{dd} days'
+                later = f' (the Rev5 authorization came {gap} after the 20x one)'
+            ag = lambda n: f'{n} {"agency" if n == 1 else "agencies"}'
+            bits.append(f'{esc(t["product"])} ({esc(t["csp"])}): {ag(r["n_agencies"])} on its Rev5 '
+                        f'{esc(r["impact"])} authorization, {ag(t["n_agencies"])} on its 20x one{later}')
+        n = len(a["dual"])
+        dual_txt = (f'<p class="note" style="margin-top:var(--s-3)"><b>Same product, both tracks.</b> '
+                    f'{words(n).capitalize()} {"product is" if n == 1 else "products are"} authorized on both. '
+                    + "; ".join(bits) + '. Where agencies use these products, they use the Rev5 authorization.</p>')
 
     # comparison table
     comp_rows = []
@@ -755,16 +788,6 @@ def render(a: dict, digest: str, built: str) -> str:
             comp_rows.append(
                 f'<tr><td>{t}</td><td class="n">{s["n"]}</td><td{zero}>{s["with"]} ({pct(s["share"])})</td>'
                 f'<td class="n">{s["atos"]}</td><td class="n">{dec(s["mean"])}</td></tr>')
-
-    dual_rows = []
-    for d in a["dual"]:
-        r, t = d["rev5"], d["x20"]
-        dual_rows.append(
-            f'<tr><td>{esc(t["product"])}<br><span class="hide-sm" style="color:var(--ink-soft)">{esc(t["csp"])}</span></td>'
-            f'<td>{esc(r["status"])}<br><span style="color:var(--ink-soft)">{esc(r["impact"])} · {fmt_date(r["date"]) if r["date"] else "not authorized"}</span></td>'
-            f'<td class="n">{r["n_agencies"]}</td>'
-            f'<td>{esc(t["status"])}<br><span style="color:var(--ink-soft)">{esc(t["impact"])} · {fmt_date(t["date"]) if t["date"] else "not authorized"}</span></td>'
-            f'<td class="n{" zero" if t["n_agencies"] == 0 else ""}">{t["n_agencies"]}</td></tr>')
 
     list_rows = []
     ordered = sorted(a["tw_cert"], key=lambda r: (r["n_agencies"] == 0, r["date"] == "", r["date"]))
@@ -804,6 +827,8 @@ def render(a: dict, digest: str, built: str) -> str:
     class_rows += class_row("20x Pilot", "invitation-only, all classes", stats(pil), total=True)
     class_rows += class_row("Open 20x", "all classes", stats(opn))
     class_rows += class_row("All 20x", f'{a["tw_stats"]["n"]} authorized', a["tw_stats"], total=True)
+    ng = a["nongrc_stats"]
+    class_rows += class_row("20x excluding GRC vendors", f'{ng["n"]} authorized, GRC classification feed removed', ng)
 
     adopter_rows = "".join(
         f'<tr><td>{esc(d["agency"])}</td><td>{esc(", ".join(r["product"] for r in d["x20"]))}</td>'
@@ -921,7 +946,6 @@ def render(a: dict, digest: str, built: str) -> str:
 """
 
     rev5_since = a["rev5_since"]
-    shared_txt = (f' The {esc(shared[0])} appears on all {len(a["adopters"])}.' if len(shared) == 1 else "")
     grc_list = ", ".join(esc(x) for x in a["grc_providers"])
     title = "FedRAMP 20x agency adoption"
     desc = (f'{tw["n"]} FedRAMP 20x authorizations, {tw["with"]} with an agency ATO. '
@@ -954,6 +978,7 @@ def render(a: dict, digest: str, built: str) -> str:
   <p class="eyebrow">Archstone Security · Research · FedRAMP</p>
   <h1>{esc(h1)}</h1>
   <p class="lede">{lede}</p>
+  {intro_html}
   <div class="meta">
     <span><b>Data</b> FedRAMP Marketplace, {fmt_date(a["snapshot"])}</span>
     <span><b>Records</b> {a["records"]:,}</span>
@@ -963,7 +988,7 @@ def render(a: dict, digest: str, built: str) -> str:
 
   <div class="figs">
     <section class="fig wide" id="timeline">
-      <h2>20x moved the certificate, not the finish line.</h2>
+      <h2>{esc(tl_title)}</h2>
       <p class="note">Every row starts on the day the product's marketplace listing entered the process. The grey bar runs to its 20x authorization; the dashed line runs from there to today. The shaded band is where a Rev5 authorization usually lands, middle half of products, measured the same way from the listing date. A Rev5 agency-path authorization comes with its sponsoring agency, so it is the point where an agency is relying on the product. For 20x that point has not arrived.</p>
       <div class="stats3">
         <div><span class="num">{tm_x20}<small>days</small></span><span class="lbl">median to an open 20x authorization ({a["timing"]["x20_n"]} products; pilots excluded because the pilot was invitation-only)</span></div>
@@ -1047,15 +1072,6 @@ def render(a: dict, digest: str, built: str) -> str:
       {prov(a, digest, "20x products not yet certified, excluding Legacy FedRAMP Ready")}
     </section>
 
-    <section class="fig wide" id="dots">
-      <h2>Every 20x authorization, one mark each</h2>
-      <p class="note">Filled marks have at least one agency ATO besides the FedRAMP PMO. Squares are GRC and compliance vendors. Ordered by authorization date; undated Class A entries last. Hover or focus a mark for the product.</p>
-      <div class="legend"><span>{legend_swatch("dot-has")}Agency ATO</span><span>{legend_swatch("dot-none")}No agency ATO</span><span>{legend_swatch("sq")}GRC / compliance vendor</span></div>
-      {dot_chart(a)}
-      <p class="note" style="margin-top:var(--s-3)">With an agency ATO: {esc(adopters_txt)}.{shared_txt}</p>
-      {prov(a, digest, f'{len(a["tw_cert"])} 20x products with FedRAMP Certified status ({dated} dated, {len(a["tw_undated"])} undated)')}
-    </section>
-
     <section class="fig wide" id="monthly">
       <h2>20x authorizations per month</h2>
       <p class="note">By marketplace authorization date, from the first 20x authorization to {fmt_date(a["snapshot"])}. GRC vendors are a large share of what the program has authorized; agency reliance barely registers.</p>
@@ -1072,17 +1088,8 @@ def render(a: dict, digest: str, built: str) -> str:
         <thead><tr><th>Track</th><th class="n">Authorized</th><th class="n">With agency ATO</th><th class="n">Agency ATOs</th><th class="n">Per authorization</th></tr></thead>
         <tbody>{"".join(comp_rows)}</tbody>
       </table></div>
+      {dual_txt}
       {prov(a, digest, "FedRAMP Certified products with an authorization date; FedRAMP PMO excluded from agency counts")}
-    </section>
-
-    <section class="fig wide" id="dual">
-      <h2>Same product, both tracks</h2>
-      <p class="note">Products that hold a listing on each track. Where agencies are relying on one of these products, they are relying on its Rev5 authorization.</p>
-      <div class="tbl"><table>
-        <thead><tr><th>Product</th><th>Rev5 listing</th><th class="n">Rev5 agencies</th><th>20x listing</th><th class="n">20x agencies</th></tr></thead>
-        <tbody>{"".join(dual_rows) or '<tr><td colspan="5">No products are listed on both tracks in this export.</td></tr>'}</tbody>
-      </table></div>
-      {prov(a, digest, "Matched on provider and product name, or 20x record ID equal to the Rev5 ID plus a suffix")}
     </section>
 
     <section class="fig wide" id="list">
@@ -1103,7 +1110,8 @@ def render(a: dict, digest: str, built: str) -> str:
       <li><b>Agency ATO</b> means an agency other than the FedRAMP PMO listed on the product. The PMO records an agency use on every 20x authorization, so the marketplace's own authorization count shows at least one for every 20x product. That entry is removed everywhere on this page.</li>
       <li><b>Authorization date</b> is the marketplace's certification date for the product. The export lists the agencies on each product but not the date each agency signed, so this measures reliance as it stands today, not when it happened.</li>
       <li><b>GRC and compliance vendors</b> are identified from a separately maintained provider classification feed (data as of {fmt_date(a["grc_date"])}), matched by provider name, and shown alongside the GRC business category providers choose for their own marketplace listings.</li>
-      <li><b>Reclassification.</b> No 20x record in the current export carries status history from before 2025 or an agency ATO inherited from a Rev5 authorization. Products the marketplace lists on both tracks are shown above; their agencies count toward Rev5. Snapshots are kept so that a record converted in place will show up when two exports are compared.</li>
+      <li><b>AI platforms</b> are identified from a short provider list maintained alongside the GRC feed and applied to 20x products only. The marketplace's own "Artificial Intelligence (AI)" category is not used here: several AI products, including ChatGPT and Gemini, are not tagged with it.</li>
+      <li><b>Reclassification.</b> No 20x record in the current export carries status history from before 2025 or an agency ATO inherited from a Rev5 authorization. Products authorized on both tracks are noted under the objections table; their agencies count toward Rev5. A listing that is only FedRAMP Ready on one track is not counted as a match, since Ready is not an authorization. Snapshots are kept so that a record converted in place will show up when two exports are compared.</li>
       <li><b>Track labels for new listings.</b> Listings in the Initial Implementation intake status carry a Rev5 or 20x label that does not always match the program the provider is pursuing, and at least one provider is listed twice, once on each track. Authorized products and agency ATOs are not affected; counts of products still in process should be read as approximate.</li>
       <li><b>Limits.</b> Withdrawn and expired products are not in the export. Class A 20x entries without an authorization date are included in totals and left out of anything plotted by date.</li>
     </ul>
@@ -1329,6 +1337,7 @@ def main() -> None:
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--history", type=Path)
     ap.add_argument("--feature-target", type=Path, help="page to write the dated 20x carousel into (between markers)")
+    ap.add_argument("--ai", type=Path, help="AI provider classification list (applied to 20x only)")
     ap.add_argument("--raw-dir", type=Path, help="directory of earlier snapshots, to find listings removed since")
     ap.add_argument("--checked", help="date the marketplace was last checked (YYYY-MM-DD); defaults to the snapshot date")
     args = ap.parse_args()
@@ -1337,7 +1346,11 @@ def main() -> None:
     snap = snapshot_date(args.snapshot)
     grc_feed = json.loads(args.grc.read_text())
     grc = {s.strip().lower() for s in grc_feed["providers"]}
-    rows = [normalise(p, grc) for p in products]
+    ai: set[str] = set()
+    if args.ai:
+        ai_feed = json.loads(args.ai.read_text())
+        ai = {s.strip().lower() for s in ai_feed["providers"]}
+    rows = [normalise(p, grc, ai) for p in products]
     a = analyse(rows, snap)
     a["checked"] = args.checked or snap
     a["grc_date"] = grc_feed.get("updated") or snap

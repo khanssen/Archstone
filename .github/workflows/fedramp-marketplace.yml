@@ -16,6 +16,7 @@ on:
     paths:
       - "data/fedramp/inbox/**"
       - "data/fedramp/grc-vendors.json"
+      - "data/fedramp/ai-vendors.json"
       - "scripts/fedramp/**"
       - "fedramp.html"
 
@@ -70,6 +71,7 @@ jobs:
           python scripts/fedramp/build_page.py \
             --snapshot "$SNAP" \
             --grc data/fedramp/grc-vendors.json \
+            --ai data/fedramp/ai-vendors.json \
             --out fedramp-20x-adoption \
             --history data/fedramp/history.csv \
             --raw-dir data/fedramp/raw \

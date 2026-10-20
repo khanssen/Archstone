@@ -1,0 +1,12 @@
+{
+  "updated": "2026-10-20",
+  "note": "Providers whose 20x product is an AI platform. Applied to the 20x track only (Google, for example, also holds non-AI Rev5 authorizations). Matched case-insensitively on the marketplace provider name. Aeroplicity self-tags as AI but is not listed here pending review.",
+  "providers": [
+    "OpenAI",
+    "Google",
+    "Perplexity AI",
+    "Eleven Labs Inc.",
+    "Bland AI",
+    "Entratus"
+  ]
+}
