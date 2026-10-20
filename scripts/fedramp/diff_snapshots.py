@@ -26,12 +26,12 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_page import load_snapshot, normalise, snapshot_date  # noqa: E402
+from build_page import load_snapshot, normalise, provider_key, snapshot_date  # noqa: E402
 
 PAGE = "https://archstonesecurity.com/fedramp-20x-adoption/"
 
 # Fields whose change moves something on the page.
-WATCH = [("status", "Status"), ("cert_type", "Track"), ("cls", "Class"),
+WATCH = [("status", "Status"), ("csp", "Provider name"), ("cls", "Class"),
          ("impact", "Impact"), ("date", "Authorization date"), ("assessor", "Assessor")]
 
 # history.csv columns, in the order they read best in the issue.
@@ -82,7 +82,7 @@ def main() -> None:
     ap.add_argument("--body", required=True, type=Path)
     args = ap.parse_args()
 
-    grc = {s.strip().lower() for s in json.loads(args.grc.read_text())["providers"]}
+    grc = {provider_key(s) for s in json.loads(args.grc.read_text())["providers"]}
     d_old, d_new = snapshot_date(args.old), snapshot_date(args.new)
     old, new = index(args.old, grc), index(args.new, grc)
 
@@ -106,7 +106,7 @@ def main() -> None:
             sec["gone20"].append(f'- {label(o)} — no longer in the export (was {o["status"]}, '
                                  f'{o["n_agencies"]} agency ATO{"s" if o["n_agencies"] != 1 else ""})')
             continue
-        if o["track"] != n["track"]:
+        if o["cert_type"] != n["cert_type"]:
             sec["changed20"].append(f'- {label(n)} — track label moved {o["cert_type"]} → {n["cert_type"]}')
         if not o["certified"] and n["certified"]:
             sec["changed20"].append(f'- {label(n)} — **newly authorized** {n["date"] or "(no date)"}'
@@ -115,7 +115,10 @@ def main() -> None:
             if f in ("status", "date") and not o["certified"] and n["certified"]:
                 continue
             if o[f] != n[f]:
-                sec["changed20"].append(f'- {label(n)} — {name}: {o[f] or "—"} → {n[f] or "—"}')
+                note = ""
+                if f == "csp" and o["grc"] != n["grc"]:
+                    note = " ⚠️ **GRC classification changed** — check `grc-vendors.json`"
+                sec["changed20"].append(f'- {label(n)} — {name}: {o[f] or "—"} → {n[f] or "—"}{note}')
         added = [a for a in n["agencies"] if a not in o["agencies"]]
         dropped = [a for a in o["agencies"] if a not in n["agencies"]]
         for a in added:
@@ -162,6 +165,15 @@ def main() -> None:
             headline = True
             sec["headline"].append("- **A new 20x product has an agency ATO.** Check the "
                                    "\"Which agencies have relied on 20x\" narrative still holds.")
+
+    # Export-wide loss of business categories (the self-declared GRC tag depends on them).
+    po, pn = load_snapshot(args.old)[0], load_snapshot(args.new)[0]
+    cov = lambda ps: sum(1 for p in ps if p.get("business_categories")) / max(len(ps), 1)
+    if cov(pn) < 0.7 * cov(po):
+        headline = True
+        sec["headline"].insert(0, f"- **The export lost most business categories** ({cov(po):.0%} of listings had one "
+                                  f"on {d_old}, {cov(pn):.0%} on {d_new}). The build carries the last known category "
+                                  "forward and says so on the page; check whether the marketplace restores them.")
 
     material = any(sec[k] for k in ("agency20", "new20", "changed20", "gone20", "rev5")) or bool(metric_rows)
 

@@ -120,13 +120,27 @@ def normalise(p: dict, grc: set[str], ai: set[str] | None = None) -> dict:
         "agencies": agencies,
         "n_agencies": len(agencies),
         "assessor": assessor,
-        "grc": (p.get("csp") or "").strip().lower() in grc,
+        "grc": provider_key(p.get("csp") or "") in grc,
         "grc_tag": GRC_TAG in (p.get("business_categories") or []),
         "ai_tag": "Artificial Intelligence (AI)" in (p.get("business_categories") or []),
         # AI classification list applies to the 20x track only: some listed providers
         # (Google) also hold non-AI Rev5 authorizations.
-        "ai": p.get("cert_type") != "Rev5" and (p.get("csp") or "").strip().lower() in (ai or set()),
+        "ai": p.get("cert_type") != "Rev5" and provider_key(p.get("csp") or "") in (ai or set()),
     }
+
+
+_SUFFIX = re.compile(r"[\s,]+(?:inc|llc|l\.l\.c|ltd|limited|corp|corporation|co|company|plc|gmbh|lp|llp)\.?$", re.I)
+
+
+def provider_key(name: str) -> str:
+    """Provider name for matching against the classification feeds: case-, space- and
+    corporate-suffix-insensitive, so 'Vanta' and 'Vanta Inc.' are the same provider."""
+    k = " ".join((name or "").split()).lower()
+    while True:
+        k2 = _SUFFIX.sub("", k).strip(" ,.")
+        if k2 == k:
+            return k
+        k = k2
 
 
 def name_key(s: str) -> str:
@@ -891,6 +905,16 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                     f'{words(n).capitalize()} {"product is" if n == 1 else "products are"} authorized on both. '
                     + "; ".join(bits) + '. Where agencies use these products, they use the Rev5 authorization.</p>')
 
+    carry = a.get("carried")
+    carry_note = (f' The {fmt_date(a["snapshot"])} export is missing business categories for most listings; '
+                  f'for {carry["filled"]} listings with no category in it, the category from the latest earlier '
+                  f'snapshot ({fmt_date(carry["from"])}) is used.' if carry and carry["filled"] else "")
+    carry_li = (f'<li><b>Business categories.</b> The marketplace export for {fmt_date(a["snapshot"])} dropped the '
+                f'business categories from most listings at once. Where a listing has no category in that export, '
+                f'the category it carried in the latest earlier snapshot ({fmt_date(carry["from"])}) is used '
+                f'({carry["filled"]} listings). A listing whose category changed to a different one is not affected.</li>'
+                if carry and carry["filled"] else "")
+
     # comparison table
     comp_rows = []
     for c in a["comparisons"]:
@@ -1142,7 +1166,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
 
     <section class="fig wide" id="grc-share">
       <h2>How much of 20x is GRC tooling</h2>
-      <p class="note">Share of products that are governance, risk and compliance tools, counted two ways. The <b>self-declared tag</b> is the "Governance, Risk, and Compliance (GRC)" business category providers choose for their own marketplace listing; it applies to both tracks the same way. The <b>classification feed</b> is a separately maintained list of providers whose product is compliance automation (feed data as of {fmt_date(a["grc_date"])}); it catches vendors that did not tag themselves, and is applied here to authorized 20x products only.</p>
+      <p class="note">Share of products that are governance, risk and compliance tools, counted two ways. The <b>self-declared tag</b> is the "Governance, Risk, and Compliance (GRC)" business category providers choose for their own marketplace listing; it applies to both tracks the same way. The <b>classification feed</b> is a separately maintained list of providers whose product is compliance automation (feed data as of {fmt_date(a["grc_date"])}); it catches vendors that did not tag themselves, and is applied here to authorized 20x products only.{carry_note}</p>
       <div class="cls">{grc_rows}</div>
       <h3 class="sub">Authorized 20x products counted as GRC, by either method</h3>
       <div class="tbl"><table>
@@ -1222,6 +1246,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       <li><b>Source.</b> The FedRAMP Marketplace's own JSON export, downloaded on a schedule and kept as dated snapshots. The page is rebuilt whenever the export changes.</li>
       <li><b>Agency ATO</b> means an agency other than the FedRAMP PMO listed on the product. The PMO records an agency use on every 20x authorization, so the marketplace's own authorization count shows at least one for every 20x product. That entry is removed everywhere on this page.</li>
       <li><b>Authorization date</b> is the marketplace's certification date for the product. The export lists the agencies on each product but not the date each agency signed, so this measures reliance as it stands today, not when it happened.</li>
+      {carry_li}
       <li><b>GRC and compliance vendors</b> are identified from a separately maintained provider classification feed (data as of {fmt_date(a["grc_date"])}), matched by provider name, and shown alongside the GRC business category providers choose for their own marketplace listings.</li>
       <li><b>AI platforms</b> are identified from a short provider list maintained alongside the GRC feed and applied to 20x products only. The marketplace's own "Artificial Intelligence (AI)" category is not used here: several AI products, including ChatGPT and Gemini, are not tagged with it.</li>
       <li><b>Reclassification.</b> No 20x record in the current export carries status history from before 2025 or an agency ATO inherited from a Rev5 authorization. Products authorized on both tracks are noted under the objections table; their agencies count toward Rev5. A listing that is only FedRAMP Ready on one track is not counted as a match, since Ready is not an authorization. Snapshots are kept so that a record converted in place will show up when two exports are compared.</li>
@@ -1242,6 +1267,43 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
 </body>
 </html>
 """
+
+
+def carry_categories(raw_dir: Path, current: Path, products: list[dict]) -> dict | None:
+    """If this export has lost most of its business categories, fill each empty listing from the
+    latest earlier snapshot that had categories for it. Returns what was done, or None.
+
+    The marketplace export has dropped categories wholesale (Oct 20, 2026: 592 listings with a
+    category on Oct 16, 237 four days later, with no listing moving to a different category).
+    Only empty lists are filled, and only when coverage collapses, so a provider that genuinely
+    changes its category still shows the change."""
+    cover = lambda ps: sum(1 for p in ps if p.get("business_categories")) / max(len(ps), 1)
+    cur_date = snapshot_date(current)
+    earlier = [f for f in sorted(raw_dir.glob("products-*.json.gz")) if snapshot_date(f) < cur_date]
+    if not earlier:
+        return None
+    prev, _ = load_snapshot(earlier[-1])
+    if cover(products) >= 0.7 * cover(prev):
+        return None
+    last: dict[str, tuple[str, list]] = {}
+    for f in earlier:                      # oldest to newest, so the latest non-empty wins
+        try:
+            ps, _ = load_snapshot(f)
+        except SystemExit:
+            continue
+        for p in ps:
+            if p.get("business_categories"):
+                last[p["id"]] = (snapshot_date(f), p["business_categories"])
+    filled, src = 0, set()
+    for p in products:
+        if not p.get("business_categories") and p["id"] in last:
+            d, cats = last[p["id"]]
+            p["business_categories"] = cats
+            filled += 1
+            src.add(d)
+    print(f"build_page: export category coverage collapsed ({cover(prev):.0%} in {snapshot_date(earlier[-1])}); "
+          f"carried forward categories for {filled} listings", file=sys.stderr)
+    return {"filled": filled, "from": max(src) if src else "", "prev_date": snapshot_date(earlier[-1])}
 
 
 def find_removed(raw_dir: Path, current: Path, products: list[dict], grc: set[str]) -> list[dict]:
@@ -1460,14 +1522,16 @@ def main() -> None:
     products, digest = load_snapshot(args.snapshot)
     snap = snapshot_date(args.snapshot)
     grc_feed = json.loads(args.grc.read_text())
-    grc = {s.strip().lower() for s in grc_feed["providers"]}
+    grc = {provider_key(s) for s in grc_feed["providers"]}
     ai: set[str] = set()
     if args.ai:
         ai_feed = json.loads(args.ai.read_text())
-        ai = {s.strip().lower() for s in ai_feed["providers"]}
+        ai = {provider_key(s) for s in ai_feed["providers"]}
+    carried = carry_categories(args.raw_dir, args.snapshot, products) if args.raw_dir else None
     rows = [normalise(p, grc, ai) for p in products]
     a = analyse(rows, snap)
     a["checked"] = args.checked or snap
+    a["carried"] = carried
     a["grc_date"] = grc_feed.get("updated") or snap
     a["removed"] = find_removed(args.raw_dir, args.snapshot, products, grc) if args.raw_dir else []
 
