@@ -35,6 +35,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          # Build from main as it is now, not the commit that triggered the run, so a queued run can't rebuild stale files.
+          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v5

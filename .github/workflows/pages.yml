@@ -19,6 +19,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          # A queued or duplicate push event can carry an older commit; always deploy what main is now.
+          ref: main
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Assemble public site (repo minus .deployignore)
