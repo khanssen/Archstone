@@ -18,6 +18,7 @@
 /data/fedramp/raw/
 /data/fedramp/inbox/
 /data/fedramp/grc-vendors.json
+/data/fedramp/ai-vendors.json
 /data/fedramp/README.md
 /*.md
 
