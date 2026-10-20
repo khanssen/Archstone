@@ -1,11 +1,11 @@
 snapshot,id,provider,product,cert_type,status,class,impact,authorized,grc_vendor,grc_self_tagged,agency_count,agencies,assessor
 2026-10-20,FR2527955211,Flock Safety,Flock Safety Platform,20x Pilot,FedRAMP Certified,Class B,Low,2025-07-25,no,no,0,,Baker Tilly
-2026-10-20,FR2525556241,Vanta Inc.,Vanta - Trust Management Platform,20x Pilot,FedRAMP Certified,Class B,Low,2025-07-25,no,yes,0,,"Schellman Compliance, LLC"
+2026-10-20,FR2525556241,Vanta Inc.,Vanta - Trust Management Platform,20x Pilot,FedRAMP Certified,Class B,Low,2025-07-25,yes,yes,0,,"Schellman Compliance, LLC"
 2026-10-20,FR2529359931,Anitian,FedFlex,20x Pilot,FedRAMP Certified,Class B,Low,2025-08-07,yes,no,0,,"A-LIGN Compliance and Security, Inc. dba A-LIGN"
 2026-10-20,FR2532557612,A-LIGN,A-SCEND,20x Pilot,FedRAMP Certified,Class B,Low,2025-09-17,yes,no,0,,RISCPoint
 2026-10-20,FR2533435144,Syneren Technologies Corporation,Configurable Case Management Application Platform (CMAP),20x Pilot,FedRAMP Certified,Class B,Low,2025-09-30,no,no,0,,Kompleye
-2026-10-20,FR2600167032,Drata,Drata Trust Management Platform,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,yes,no,0,,"Schellman Compliance, LLC"
-2026-10-20,FR2605341343,"IntelliGRC, Inc.",IntelliGRC,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,yes,no,0,,"A-LIGN Compliance and Security, Inc. dba A-LIGN"
+2026-10-20,FR2600167032,Drata,Drata Trust Management Platform,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,yes,yes,0,,"Schellman Compliance, LLC"
+2026-10-20,FR2605341343,"IntelliGRC, Inc.",IntelliGRC,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,yes,yes,0,,"A-LIGN Compliance and Security, Inc. dba A-LIGN"
 2026-10-20,FR2535459082,stackArmor,The Armory20x,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,yes,no,0,,Kratos
 2026-10-20,FR2433985791XL,Vyond,Vyond for Government,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,no,no,0,,Kratos
 2026-10-20,FR2533155773,OpenAI,ChatGPT Enterprise and API Platform,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-01-09,no,no,2,Department of Veterans Affairs; U.S. Election Assistance Commission,"Schellman Compliance, LLC"
@@ -15,12 +15,12 @@ snapshot,id,provider,product,cert_type,status,class,impact,authorized,grc_vendor
 2026-10-20,FR2604952842,MapLarge Inc.,MapLarge,20x Pilot,FedRAMP Certified,Class B,Low,2026-02-09,no,no,0,,"A-LIGN Compliance and Security, Inc. dba A-LIGN"
 2026-10-20,FR2409863458XL,Confluent,Confluent Cloud for Government (CCG),20x Pilot,FedRAMP Certified,Class C,Moderate,2026-03-06,no,no,0,,"Fortreum, LLC"
 2026-10-20,FR2527956755,"Meridian Knowledge Solutions, LLC",Meridian LMS,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-03-06,no,no,0,,"Fortreum, LLC"
-2026-10-20,FR2428769635XL,Paramify,Paramify Cloud,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-03-06,yes,no,0,,"Coalfire Systems, Inc."
-2026-10-20,FR2615451803,Aeroplicity Inc.,Aeroplicity,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-10,no,no,0,,"Lunarline, Inc."
+2026-10-20,FR2428769635XL,Paramify,Paramify Cloud,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-03-06,yes,yes,0,,"Coalfire Systems, Inc."
+2026-10-20,FR2615451803,Aeroplicity Inc.,Aeroplicity,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-10,no,yes,0,,"Lunarline, Inc."
 2026-10-20,FR2504154395XL,"Persona Identities, LLC",Persona for Government,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-10,no,no,0,,"First Information Technology Services, Inc."
-2026-10-20,FR2525557617,InfusionPoints,XBU40,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-10,no,no,0,,"Fortreum, LLC"
+2026-10-20,FR2525557617,InfusionPoints,XBU40,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-10,no,yes,0,,"Fortreum, LLC"
 2026-10-20,FR2525556241XM,Vanta,Vanta Government Cloud,20x,FedRAMP Certified,Class C,Moderate,2026-04-24,yes,no,0,,"Schellman Compliance, LLC"
-2026-10-20,FR2619434440,ASSYST,ComplySyncATO,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,yes,no,0,,"First Information Technology Services, Inc."
+2026-10-20,FR2619434440,ASSYST,ComplySyncATO,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,yes,yes,0,,"First Information Technology Services, Inc."
 2026-10-20,FR2606141075,Entratus,Entratus Conversational AI Platform,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,no,no,0,,"A-LIGN Compliance and Security, Inc. dba A-LIGN"
 2026-10-20,FR2335850594XL,Filevine,Filevine Platform,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,no,no,0,,"Coalfire Systems, Inc."
 2026-10-20,FR2621445678,Halo,Halo,20x,FedRAMP Certified,Class C,Moderate,2026-05-06,no,no,0,,DataLock Consulting Group
