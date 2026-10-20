@@ -460,9 +460,34 @@ def bar_chart(a: dict) -> str:
 
 CSS = """
 .wrap{max-width:1080px;margin:0 auto;padding:var(--s-6) max(20px,env(safe-area-inset-right,0px)) var(--s-7) max(20px,env(safe-area-inset-left,0px))}
-.site-mast{display:inline-flex;align-items:center;gap:10px;margin:var(--s-4) 0 0 max(20px,env(safe-area-inset-left,0px));text-decoration:none;color:var(--ink);font-weight:600}
-.site-mast:hover{text-decoration:underline}
-.site-mast img{display:block}
+/* Site navigation: mirrors the Bootstrap header on the rest of the site (css/style.css). */
+.snav{background:linear-gradient(to bottom,#fff 0%,#fff 25%,#bdced7 100%);border-bottom:3px solid #455359;position:relative;z-index:50;font-family:"Fira Sans",sans-serif}
+.snav-in{max-width:1140px;margin:0 auto;padding:0 12px;display:flex;align-items:center;min-height:93px}
+.snav-brand{flex:none;margin-right:16px}
+.snav-brand img{display:block;height:76px;width:auto}
+.snav-list{list-style:none;margin:0;padding:0;display:flex;align-items:stretch}
+.snav-list>li{position:relative;max-width:none}
+.snav-list>li>a,.snav-list>li>button{display:flex;align-items:center;gap:7px;padding:34px 30px;font:700 20px/25px "Fira Sans",sans-serif;color:#455359;background:none;border:0;cursor:pointer;text-decoration:none}
+.snav-list>li>a:hover,.snav-list>li>button:hover{color:#16556f}
+.snav-list>li>button{position:relative}
+.snav .chev{position:absolute;right:11px;top:50%;margin-top:-6px;transition:transform .15s}
+.snav .menu{display:none;position:absolute;left:0;top:100%;min-width:220px;margin:3px 0 0;padding:0;list-style:none;background:#fff;box-shadow:0 5px 20px rgba(0,0,0,.25)}
+.snav button[aria-expanded="true"]+.menu{display:block}
+.snav .menu li+li{border-top:1px solid #ececec}
+.snav .menu a{display:block;padding:7px 15px;font:600 15px/25px "Fira Sans",sans-serif;color:#455359;text-decoration:none}
+.snav .menu a:hover{background:#f3f6f8;color:#16556f}
+.snav-toggle{display:none;margin-left:auto;background:none;border:0;padding:8px;color:#455359;cursor:pointer}
+@media (max-width:991px){.snav-list>li>a,.snav-list>li>button{font-size:18px;padding:34px 18px}.snav .chev{right:-1px}}
+@media (max-width:767px){
+  .snav-in{flex-wrap:wrap;min-height:72px}
+  .snav-brand img{height:56px}
+  .snav-toggle{display:block}
+  .snav-list{display:none;flex-basis:100%;flex-direction:column;margin:0;padding-bottom:12px}
+  .snav-toggle[aria-expanded="true"]+.snav-list{display:flex}
+  .snav-list>li>a,.snav-list>li>button{padding:12px 12px;font-size:18px;width:100%}
+  .snav .menu{position:static;box-shadow:none;margin:0 0 6px 12px;background:transparent}
+  .snav .chev{position:static;margin:0}
+}
 .eyebrow{margin:0 0 var(--s-3)}
 h1{margin:0}
 .lede{font-size:var(--t-lede);color:var(--ink-soft);margin:var(--s-4) 0 0;max-width:none}
@@ -699,7 +724,97 @@ def prov(a: dict, digest: str, basis: str) -> str:
             f'<span><b>sha256</b> {digest[:12]}</span></div>')
 
 
-def render(a: dict, digest: str, built: str) -> str:
+# --------------------------------------------------------------------------
+# Site navigation, copied from the homepage so this page never drifts
+# --------------------------------------------------------------------------
+
+FALLBACK_NAV = [
+    ("Frameworks", [("NIST SP 800-171", "/nist-800-171.html"), ("FedRAMP", "/fedramp.html"),
+                    ("GovRAMP", "/govramp.html")]),
+    ("Practice", [("Compliance as Infrastructure", "/compliance-as-infrastructure.html"),
+                  ("Services", "/services.html"), ("About Us", "/about_us.html"), ("FAQs", "/faqs.html")]),
+    ("Research", "/research"),
+    ("Blog", "/blog.html"),
+    ("Contact", "mailto:contact@archstonesecurity.com"),
+]
+
+
+def read_nav(path: Path | None) -> list:
+    """Top-level items of the homepage's Bootstrap navbar: (label, href) or (label, [(label, href), ...])."""
+    if not path or not path.exists():
+        return FALLBACK_NAV
+    src = path.read_text(encoding="utf-8", errors="replace")
+    m = re.search(r'<ul class="navbar-nav[^"]*">(.*?)</ul>\s*</div>\s*</nav>', src, re.S)
+    if not m:
+        print("build_page: nav not found in homepage; using fallback", file=sys.stderr)
+        return FALLBACK_NAV
+    body, items, i = m.group(1), [], 0
+    clean = lambda t: html.unescape(re.sub(r"<[^>]+>|\s+", " ", t)).strip()
+    # Walk top-level <li> elements, tracking nesting so dropdown children stay with their parent.
+    for top in re.finditer(r'<li class="nav-item( dropdown)?">(.*?)</li>(?=\s*(?:<li class="nav-item|$))', body, re.S):
+        inner = top.group(2)
+        if top.group(1):
+            label = clean(re.search(r'<a[^>]*dropdown-toggle[^>]*>(.*?)</a>', inner, re.S).group(1))
+            kids = [(clean(t), h) for h, t in re.findall(r'<a class="dropdown-item"[^>]*href="([^"]+)"[^>]*>(.*?)</a>', inner, re.S)]
+            items.append((label, kids))
+        else:
+            a = re.search(r'<a[^>]*href="([^"]+)"[^>]*>(.*?)</a>', inner, re.S)
+            items.append((clean(a.group(2)), a.group(1)))
+    return items or FALLBACK_NAV
+
+
+def render_nav(items: list) -> str:
+    chev = ('<svg class="chev" width="12" height="12" viewBox="0 0 10 10" aria-hidden="true">'
+            '<path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>')
+    lis = []
+    for n, (label, target) in enumerate(items):
+        if isinstance(target, list):
+            kids = "".join(f'<li><a href="{esc(h)}">{esc(t)}</a></li>' for t, h in target)
+            lis.append(f'<li class="dd"><button type="button" aria-expanded="false" aria-controls="snav-m{n}">'
+                       f'{esc(label)}{chev}</button><ul id="snav-m{n}" class="menu">{kids}</ul></li>')
+        else:
+            lis.append(f'<li><a href="{esc(target)}">{esc(label)}</a></li>')
+    return f"""<header class="snav">
+  <div class="snav-in">
+    <a class="snav-brand" href="/"><img src="/images/logo-1200.png" alt="Archstone Security" width="270" height="76"></a>
+    <button type="button" class="snav-toggle" aria-expanded="false" aria-controls="snav-list" aria-label="Toggle navigation">
+      <svg width="24" height="18" viewBox="0 0 24 18" aria-hidden="true"><path d="M0 1h24M0 9h24M0 17h24" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+    <ul class="snav-list" id="snav-list">{"".join(lis)}</ul>
+  </div>
+</header>"""
+
+
+NAV_JS = """<script>
+(function () {
+  var nav = document.querySelector('.snav');
+  if (!nav) return;
+  var toggle = nav.querySelector('.snav-toggle');
+  var dds = Array.prototype.slice.call(nav.querySelectorAll('.dd > button'));
+  function closeAll(except) {
+    dds.forEach(function (b) { if (b !== except) b.setAttribute('aria-expanded', 'false'); });
+  }
+  dds.forEach(function (b) {
+    b.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = b.getAttribute('aria-expanded') === 'true';
+      closeAll(b);
+      b.setAttribute('aria-expanded', open ? 'false' : 'true');
+    });
+  });
+  toggle.addEventListener('click', function () {
+    var open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', open ? 'false' : 'true');
+    if (open) closeAll();
+  });
+  document.addEventListener('click', function () { closeAll(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
+})();
+</script>"""
+
+
+def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> str:
+    nav_html = render_nav(nav_items or FALLBACK_NAV)
     tw, grc = a["tw_stats"], a["grc_stats"]
     dated = len(a["tw_dated"])
     dated_with = sum(1 for r in a["tw_dated"] if r["n_agencies"])
@@ -971,7 +1086,7 @@ def render(a: dict, digest: str, built: str) -> str:
 <style>{CSS}</style>
 </head>
 <body>
-<a href="/" class="site-mast"><img src="/images/logo.png" alt="" height="26"><span>Archstone Security</span></a>
+{nav_html}
 <main class="wrap">
   <p class="eyebrow">Archstone Security · Research · FedRAMP</p>
   <h1>{esc(h1)}</h1>
@@ -1123,6 +1238,7 @@ def render(a: dict, digest: str, built: str) -> str:
     <span><a href="mailto:contact@archstonesecurity.com?subject=20x%20adoption%20%E2%80%94%20correction">Corrections welcome</a></span>
   </footer>
 </main>
+{NAV_JS}
 </body>
 </html>
 """
@@ -1335,6 +1451,7 @@ def main() -> None:
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--history", type=Path)
     ap.add_argument("--feature-target", type=Path, help="page to write the dated 20x carousel into (between markers)")
+    ap.add_argument("--nav-source", type=Path, help="page whose top navigation is copied (the homepage)")
     ap.add_argument("--ai", type=Path, help="AI provider classification list (applied to 20x only)")
     ap.add_argument("--raw-dir", type=Path, help="directory of earlier snapshots, to find listings removed since")
     ap.add_argument("--checked", help="date the marketplace was last checked (YYYY-MM-DD); defaults to the snapshot date")
@@ -1356,7 +1473,7 @@ def main() -> None:
 
     built = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     args.out.mkdir(parents=True, exist_ok=True)
-    (args.out / "index.html").write_text(render(a, digest, built), encoding="utf-8")
+    (args.out / "index.html").write_text(render(a, digest, built, read_nav(args.nav_source)), encoding="utf-8")
     write_csv(a, args.out / "20x-products.csv")
     if args.feature_target:
         inject_feature(args.feature_target, render_feature(a))

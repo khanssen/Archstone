@@ -19,6 +19,7 @@ on:
       - "data/fedramp/ai-vendors.json"
       - "scripts/fedramp/**"
       - "fedramp.html"
+      - "index.html"   # the 20x page copies the homepage navigation
 
 permissions:
   contents: write   # commit snapshots and the rebuilt page
@@ -72,6 +73,7 @@ jobs:
             --snapshot "$SNAP" \
             --grc data/fedramp/grc-vendors.json \
             --ai data/fedramp/ai-vendors.json \
+            --nav-source index.html \
             --out fedramp-20x-adoption \
             --history data/fedramp/history.csv \
             --raw-dir data/fedramp/raw \
