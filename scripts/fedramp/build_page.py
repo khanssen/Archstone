@@ -1060,7 +1060,8 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
     if a.get("removed"):
         rm = a["removed"]
         rm20 = [r for r in rm if r["track"] == "20x"]
-        rm20c = [r for r in rm20 if r["certified"]]
+        rmc = [r for r in rm if r["certified"]]
+        since_txt = f' since {fmt_date(a["tracking_since"])}' if a.get("tracking_since") else ""
         rows_rm = "".join(
             f'<tr><td>{esc(r["product"])}<br><span class="hide-sm" style="color:var(--ink-soft)">{esc(r["csp"])}</span></td>'
             f'<td>{esc(r["cert_type"])}</td><td>{esc(r["status"])}</td><td class="n">{r["date"] or "—"}</td>'
@@ -1069,11 +1070,11 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         removed_html = f"""<section class="fig wide" id="removed">
       <h2>Removed from the marketplace</h2>
       <div class="big">
-        <div><span class="num gap">{len(rm20)}</span><span class="lbl">20x listings removed since tracking began</span></div>
-        <div><span class="num">{len(rm20c)}</span><span class="lbl">of them had been authorized</span></div>
-        <div><span class="num">{sum(1 for r in rm20c if r["n_agencies"] == 0)}</span><span class="lbl">authorized, removed, never relied on by an agency</span></div>
+        <div><span class="num">{len(rm)}</span><span class="lbl">{"listing" if len(rm) == 1 else "listings"} removed{since_txt}, both tracks</span></div>
+        <div><span class="num{" gap" if rm20 else ""}">{len(rm20)}</span><span class="lbl">of them on the 20x track</span></div>
+        <div><span class="num">{len(rmc)}</span><span class="lbl">of them had been authorized</span></div>
       </div>
-      <p class="note">Listings that appeared in an earlier snapshot of the marketplace export and are missing from the current one, with their status as last seen. The export does not say why a listing was removed.</p>
+      <p class="note">Listings that appeared in an earlier snapshot of the marketplace export and are missing from the current one, with their status as last seen. Snapshots have been kept{since_txt}, so removals before then are not visible. The export does not say why a listing was removed.</p>
       <div class="tbl"><table>
         <thead><tr><th>Product</th><th>Track</th><th>Status when last seen</th><th class="n">Authorized</th><th class="n">Agencies</th><th class="n">Last seen</th></tr></thead>
         <tbody>{rows_rm}</tbody>
@@ -1534,6 +1535,8 @@ def main() -> None:
     a["carried"] = carried
     a["grc_date"] = grc_feed.get("updated") or snap
     a["removed"] = find_removed(args.raw_dir, args.snapshot, products, grc) if args.raw_dir else []
+    snaps = sorted(args.raw_dir.glob("products-*.json.gz")) if args.raw_dir else []
+    a["tracking_since"] = snapshot_date(snaps[0]) if snaps else ""
 
     built = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     args.out.mkdir(parents=True, exist_ok=True)
