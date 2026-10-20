@@ -467,7 +467,7 @@ CSS = """
 h1{margin:0}
 .lede{font-size:var(--t-lede);color:var(--ink-soft);margin:var(--s-4) 0 0;max-width:68ch}
 .lede b{color:var(--ink);font-weight:600}
-.intro{color:var(--ink-soft);margin:var(--s-3) 0 0;max-width:68ch}
+.intro{color:var(--ink-soft);margin:var(--s-3) 0 0;max-width:none}
 .intro b{color:var(--ink);font-weight:600}
 .meta{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-5);margin-top:var(--s-4);padding-top:var(--s-3);border-top:1px solid var(--rule);font-size:var(--t-small);color:var(--ink-soft)}
 .meta b{color:var(--ink);font-weight:600}
