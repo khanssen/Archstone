@@ -14,3 +14,9 @@
 .framework-page .glance dd { margin: 2px 0 0; font-size: 16px; }
 .framework-page .glance .checked { font-size: 13px; color: #5f6e74; margin: 18px 0 0; }
 @media (max-width: 991px) { .framework-page .glance { margin-top: 40px; } }
+
+/* Contact page: the Mailchimp form sits in a card that fits the column. */
+.contact-page .contact-form { background: #fff; border: 1px solid #dfe5e8; border-top: 4px solid #bdced7; padding: 8px; max-width: 640px; }
+.contact-page .contact-form iframe { display: block; width: 100%; height: 820px; border: 0; }
+.contact-page .glance dd a { word-break: break-word; }
+@media (max-width: 991px) { .contact-page aside { margin-top: 28px; } }
