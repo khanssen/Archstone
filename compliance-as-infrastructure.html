@@ -151,7 +151,7 @@
                 <p>So you assemble evidence by hand, across every operating system and cloud service you run, for 110 requirements and their hundreds of underlying objectives. Then you hand it to an assessor who, through no fault of their own, cannot fully see a modern environment in the time they have, and falls back on a mental template of how things "should" look. Correct-but-unfamiliar setups get dinged. Familiar-but-weak ones pass. You are not bad at compliance. The model is broken.</p>
 
                 <h3>A different model</h3>
-                <p>Archstone's Rosetta platform inverts the usual order. Instead of building a system and then writing documents that argue it is compliant, we build the system <strong>right first</strong>, hardened to a defensible baseline, and treat compliance as something <strong>computed from the system's actual state</strong>, not authored after the fact.</p>
+                <p>Archstone inverts the usual order. Instead of building a system and then writing documents that argue it is compliant, we build the system <strong>right first</strong>, hardened to a defensible baseline, and treat compliance as something <strong>computed from the system's actual state</strong>, not authored after the fact.</p>
                 <p>The configuration <em>is</em> the definition. The scan result <em>is</em> the source of truth. When the system changes, the evidence changes with it. Compliance stops being a project you survive every few years and becomes a property of the infrastructure you run every day. That is the whole idea: make the system the evidence.</p>
 
                 <figure style="margin:2.5rem 0; text-align:center;">
@@ -196,9 +196,9 @@
 
                 <h3>How it works</h3>
                 <ul>
-                    <li><strong>Start from hardened images.</strong> Your endpoints and servers deploy from images hardened to an industry baseline (CIS Level 2) plus Rosetta's own opinionated extensions: the configuration choices that make the result genuinely defensible, not just "passes a checklist."</li>
+                    <li><strong>Start from hardened images.</strong> Your endpoints and servers deploy from images hardened to an industry baseline (CIS Level 2) plus our own opinionated extensions: the configuration choices that make the result genuinely defensible, not just "passes a checklist."</li>
                     <li><strong>Verify continuously, by machine.</strong> Every control is checked by an automated, machine-readable scan, not a human attestation. If a setting drifts, you see it. The scan result is authoritative. We would rather fail loudly than pass quietly.</li>
-                    <li><strong>Map all four layers.</strong> Rosetta connects each system setting up through the controls, the assessment objectives, and the framework requirement it satisfies. It is an explicit, traceable thread from "this setting is configured" to "this 800-171 objective is met."</li>
+                    <li><strong>Map all four layers.</strong> We connect each system setting up through the controls, the assessment objectives, and the framework requirement it satisfies. It is an explicit, traceable thread from "this setting is configured" to "this 800-171 objective is met."</li>
                     <li><strong>Documentation from the same source of truth.</strong> Because the system's real state drives everything, your compliance artifacts are designed to be generated from the evidence that runs your machines, not maintained as a separate, ever-stale parallel universe.</li>
                 </ul>
 
@@ -206,14 +206,14 @@
 
                 <h3>Why this beats the alternatives</h3>
                 <ul>
-                    <li><strong>Versus a compliance consultant:</strong> their knowledge lives in one person's head and walks out the door when the engagement ends. Rosetta's lives in your infrastructure and stays.</li>
-                    <li><strong>Versus a checklist / GRC tool:</strong> those track what you <em>claim</em>. Rosetta verifies what your systems <em>actually do</em>, down to the setting, and shows its work.</li>
-                    <li><strong>Versus a point-in-time audit:</strong> a passing assessment is a photograph. Rosetta is the live feed: evidence stays current because it is generated from running systems.</li>
+                    <li><strong>Versus a compliance consultant:</strong> their knowledge lives in one person's head and walks out the door when the engagement ends. Here it lives in your infrastructure and stays.</li>
+                    <li><strong>Versus a checklist / GRC tool:</strong> those track what you <em>claim</em>. We verify what your systems <em>actually do</em>, down to the setting, and show our work.</li>
+                    <li><strong>Versus a point-in-time audit:</strong> a passing assessment is a photograph. This is the live feed: evidence stays current because it is generated from running systems.</li>
                 </ul>
                 <p>No proprietary black box, either: the foundations are open standards and open source (CIS, Wazuh, OSCAL). You can read every check. The value is not lock-in. It is a security posture built on infrastructure that is genuinely better.</p>
 
                 <h3>Built for the DIB, on purpose</h3>
-                <p>Rosetta is focused on the organizations getting squeezed hardest: small and mid-size defense contractors facing CMMC Level 2 and NIST SP 800-171 with a fraction of the security staff the primes have. You don't need a bigger compliance team. You need systems that arrive compliant and prove it on their own.</p>
+                <p>Archstone is focused on the organizations getting squeezed hardest: small and mid-size defense contractors facing CMMC Level 2 and NIST SP 800-171 with a fraction of the security staff the primes have. You don't need a bigger compliance team. You need systems that arrive compliant and prove it on their own.</p>
 
                 <br>
                 <a href="contact.html" class="custom-btn">Talk to us about your Level 2 path</a>
