@@ -158,13 +158,6 @@ def main() -> None:
             sec["headline"].append("- **A GRC vendor's 20x authorization now has an agency customer.** "
                                    "The lede's \"zero have an agency customer\" is no longer true; "
                                    "the build rewrites the number, but read the surrounding argument.")
-        sa = int(h_old["x20_with_agency"]) / max(int(h_old["x20_authorized"]), 1)
-        sb = int(h_new["x20_with_agency"]) / max(int(h_new["x20_authorized"]), 1)
-        if (sa < 0.25) != (sb < 0.25):
-            headline = True
-            sec["headline"].append(f"- **The page title flipped.** 20x agency share moved {sa:.0%} → {sb:.0%}, "
-                                   "across the 25% line that switches the H1 from "
-                                   "\"Agencies are not relying on FedRAMP 20x.\"")
         if int(h_new["x20_with_agency"]) > int(h_old["x20_with_agency"]):
             headline = True
             sec["headline"].append("- **A new 20x product has an agency ATO.** Check the "

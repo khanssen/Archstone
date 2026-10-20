@@ -703,9 +703,7 @@ def render(a: dict, digest: str, built: str) -> str:
     tw, grc = a["tw_stats"], a["grc_stats"]
     dated = len(a["tw_dated"])
     dated_with = sum(1 for r in a["tw_dated"] if r["n_agencies"])
-    low = (tw["share"] or 0) < 0.25
-    h1 = ("Agencies are not relying on FedRAMP 20x." if low
-          else "How many agencies rely on FedRAMP 20x.")
+    h1 = "FedRAMP 20x agency adoption, by the numbers."
     shared = [ag for ag, c in a["adopter_agencies"].items() if c == len(a["adopters"]) and c > 1]
 
     lede = (f'FedRAMP has issued <b>{tw["n"]} 20x authorizations</b> in the {a["days"]} days since '
@@ -729,7 +727,7 @@ def render(a: dict, digest: str, built: str) -> str:
     intro = []
     if grc["n"]:
         intro.append(
-            f'That headline understates the program. GRC and compliance-automation vendors are heavily '
+            f'Those figures understate the program. GRC and compliance-automation vendors are heavily '
             f'over-represented: they hold <b>{grc["n"]} of the {tw["n"]}</b> 20x authorizations ({pct(grc["n"] / tw["n"])}). '
             f'By the category providers choose for their own listings, GRC tools are {pct(ttag["share"])} of 20x '
             f'authorizations against {pct(rtag["share"])} of Rev5 authorizations issued over the same period.')
