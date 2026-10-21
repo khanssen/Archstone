@@ -1,0 +1,30 @@
+name: Cloudflare Pages cleanup (one-off)
+
+# Deletes the stale archstone.pages.dev project (too many deployments for the
+# dashboard). Trigger with repository_dispatch type cf-pages-cleanup and
+# client_payload {"mode": "inspect"|"delete"}, or by hand from the Actions tab.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: inspect (list only) or delete
+        default: inspect
+  repository_dispatch:
+    types: [cf-pages-cleanup]
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Run
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          MODE: ${{ github.event.inputs.mode || github.event.client_payload.mode || 'inspect' }}
+        run: python3 scripts/cloudflare/pages_cleanup.py archstone "$MODE"
