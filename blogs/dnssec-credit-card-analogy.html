@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <title>The Best DNSSEC Analogy I Could Come Up With | Archstone Security</title>
+    <meta name="description" content="Unsigned DNS records are cash; signed records are credit card transactions. DNSSEC explained through a small shop facing a flood of counterfeit bills, mapped to NIST SP 800-53 SC-20 and SC-21.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="canonical" href="https://archstonesecurity.com/blogs/dnssec-credit-card-analogy.html">
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+
+    <!-- Css Library -->
+    <link rel="stylesheet" href="/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/animate.css">
+    <link rel="stylesheet" href="/font/flaticon.css">
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.css">
+
+    <!-- Style css -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/framework.css">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGLH49FH2F"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SGLH49FH2F');
+    </script>
+    <!-- end Google tag -->
+
+    <!-- Social preview (Open Graph) -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Archstone Security">
+    <meta property="og:title" content="The Best DNSSEC Analogy I Could Come Up With">
+    <meta property="og:description" content="Unsigned DNS records are cash. Signed records are credit card transactions. DNSSEC, explained for the people who have to implement and assess it.">
+    <meta property="og:url" content="https://archstonesecurity.com/blogs/dnssec-credit-card-analogy.html">
+    <meta property="og:image" content="https://archstonesecurity.com/images/blogs/dnssec-analogy.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="The Best DNSSEC Analogy I Could Come Up With: unsigned DNS records are cash, signed records are credit card transactions">
+    <meta property="article:published_time" content="2026-10-21">
+    <meta property="article:author" content="Karen Stanford">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://archstonesecurity.com/images/blogs/dnssec-analogy.png">
+    <style>
+      @font-face{font-family:Plex;font-weight:400;src:url(/font/IBMPlexSans-Regular.woff2) format("woff2")}
+      @font-face{font-family:Plex;font-weight:600;src:url(/font/IBMPlexSans-SemiBold.woff2) format("woff2")}
+    </style>
+</head>
+<body>
+
+    <!-- Header Start -->
+    <header class="header header-2">
+        <div class="primary-navigation sticky-header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <nav class="navbar navbar-expand-md navbar-light">
+                            <a class="navbar-brand pl-5" href="/"><img src="/images/logo-1200.png"
+                                    alt="Archstone Security"></a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav mx-auto">
+
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Frameworks
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            <li><a class="dropdown-item" href="/nist-800-171.html">NIST SP 800-171</a></li>
+                                            <li><a class="dropdown-item" href="/fedramp.html">FedRAMP</a></li>
+                                            <li><a class="dropdown-item" href="/govramp.html">GovRAMP</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Practice
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                                            <li><a class="dropdown-item" href="/compliance-as-infrastructure.html">Compliance as Infrastructure</a></li>
+                                            <li><a class="dropdown-item" href="/services.html">Services</a></li>
+                                            <li><a class="dropdown-item" href="/about_us.html">About Us</a></li>
+                                            <li><a class="dropdown-item" href="/faqs.html">FAQs</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/research">Research</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/blog.html">Blog</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="mailto:contact@archstonesecurity.com">Contact</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+<main class="main-content post-index section-padding framework-page blog-post">
+        <div class="container">
+            <div class="row">
+                <article class="col-lg-8">
+                    <h1>The Best DNSSEC Analogy I Could Come Up With</h1>
+                    <p class="post-byline">Karen Stanford · <time datetime="2026-10-21">October 21, 2026</time></p>
+
+                    <p class="lead-in">We all know what counterfeit money is. Now imagine a sudden flood of it hits your town, and you own a small shop. Fake twenties are turning up in tills up and down the street, and every one your cashier accepts is money you never get back. What would you do to protect yourself?</p>
+                    <p>Hold that thought, because that&#8217;s how we&#8217;re going to explain DNSSEC.</p>
+
+                    <h2>Unsigned DNS records are cash</h2>
+                    <p>Every time someone in your organization visits a website, a DNS resolver, usually one your organization runs, asks &#8220;what&#8217;s the address for certifiedproducts.com?&#8221; That resolver is the merchant. It&#8217;s the one that has to decide whether to accept the answer it gets back, and it&#8217;s the one that gets hurt if it&#8217;s fooled.</p>
+                    <p>An unsigned DNS record is cash. It arrives over UDP port 53 with nothing to prove where it came from, so the resolver accepts the first answer that looks right. An attacker who floods it with counterfeit answers only needs one to arrive first. This is called cache poisoning, and once a counterfeit is accepted, your users are sent to the attacker&#8217;s copy of the site, usually built to harvest their credentials.</p>
+                    <p>Counterfeits also travel. A poisoned internet service provider hands the bad answer to your resolver, which hands it to your users&#8217; computers. One counterfeit bill, accepted once, gets passed along three times.</p>
+
+                    <h2>Signed DNS records are credit card transactions</h2>
+                    <p>One simple answer might be to stop taking cash. A card payment can&#8217;t be counterfeited at the counter, because the terminal checks it with the card issuer before accepting it. The validity of the card and the availability of the funds are all checked at the same time for credit card transactions. A signed DNS record works the same way: it carries signatures your resolver can check, the same way a card&#8217;s number, expiration date and security code get checked.</p>
+                    <p>What protects them is a <b>chain of trust</b>, and the pieces map neatly onto a card payment:</p>
+                    <ul class="work-list">
+                        <li><b>The root zone is the card network.</b> Its key is the trust anchor, built into every validating resolver the way every terminal already trusts the network.</li>
+                        <li><b>Your domain&#8217;s authoritative servers are the bank.</b> They issue the records, and signing them is what turns each one from cash into a transaction the merchant can verify.</li>
+                        <li><b>The resolver is the merchant&#8217;s terminal.</b> It checks each transaction back through the bank to the network, and declines anything that doesn&#8217;t verify.</li>
+                    </ul>
+                    <p>The terminal doesn&#8217;t just glance at the card. It checks the same few things on every transaction, and a signed DNS record carries each of them:</p>
+                    <div class="post-table"><table>
+                        <thead><tr><th>What the terminal checks</th><th>In a signed DNS record</th></tr></thead>
+                        <tbody>
+                            <tr><td><b>The card number:</b> which account this is</td><td><b>The key tag:</b> which of the zone&#8217;s keys made the signature, checked against keys the zone published and its parent vouched for</td></tr>
+                            <tr><td><b>The expiration date</b></td><td><b>The signature&#8217;s validity window:</b> every signature has a start and end date, and an expired one is declined. Expired signatures are one of the most common causes of real DNSSEC failures.</td></tr>
+                            <tr><td><b>The security code:</b> the three digits on the back, which prove you have the real card when you buy online. At the register, the card&#8217;s chip does the same job.</td><td><b>The signature itself:</b> made with the zone&#8217;s private key, which only the domain owner holds. A forger can copy everything printed on the card but can&#8217;t produce this.</td></tr>
+                            <tr><td><b>The signature strip:</b> which the cashier is supposed to check</td><td><b>Even better:</b> DNSSEC&#8217;s signatures are checked on every single answer.</td></tr>
+                        </tbody>
+                    </table></div>
+                    <p>Each zone in the chain, root, top-level domain and second-level domain, publishes two keys. The <b>key-signing key (KSK)</b> signs the zone&#8217;s own keys. The <b>zone-signing key (ZSK)</b> signs the zone&#8217;s actual records. The link between zones is a hash of the child&#8217;s KSK, published in the parent zone and signed with the parent&#8217;s ZSK. So root vouches for .gov, .gov vouches for doi.gov, and doi.gov&#8217;s own keys vouch for its records. A forged answer can&#8217;t produce valid signatures, so a validating resolver rejects it.</p>
+                    <figure class="post-figure">
+                        <svg viewBox="0 0 760 508" role="img" aria-labelledby="chain-title chain-desc" font-family="Plex, 'IBM Plex Sans', sans-serif" style="width:100%;height:auto;display:block">
+<title id="chain-title">Each zone vouches for the one below it, back to the trust anchor</title>
+<desc id="chain-desc">The root zone's key-signing key is the trust anchor (the card network). The root vouches for .gov through a DS record, .gov vouches for doi.gov (the bank) the same way, and doi.gov's zone-signing key signs its records. The resolver (the merchant's terminal) checks every link back to the anchor and rejects any answer that doesn't verify.</desc>
+<defs><marker id="chain-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9aa6ac"/></marker></defs>
+<text x="24" y="32" font-size="15" font-weight="600" fill="#1f2a30">Each zone vouches for the one below it, back to the trust anchor</text>
+<g fill="none" stroke="#9aa6ac" stroke-width="1.25"><path d="M260 112V134" marker-end="url(#chain-arrow)"/><path d="M260 208V230" marker-end="url(#chain-arrow)"/><path d="M260 304V326" marker-end="url(#chain-arrow)"/><path d="M260 400V422" marker-end="url(#chain-arrow)"/></g>
+<rect x="80" y="56" width="360" height="56" rx="8" fill="#16556f" fill-opacity="0.1" stroke="#16556f" stroke-width="2"/><text x="96" y="80" font-size="13.5" font-weight="600" fill="#1f2a30">Trust anchor: the root zone&#8217;s KSK</text><text x="96" y="96" font-size="12" font-weight="400" fill="#4a5a66">The card network: built into every validating resolver</text>
+<rect x="80" y="136" width="360" height="72" rx="8" fill="none" fill-opacity="1" stroke="#9aa6ac" stroke-width="1.25"/><text x="96" y="160" font-size="13.5" font-weight="600" fill="#1f2a30">Root zone (.)</text><text x="96" y="176" font-size="12" font-weight="400" fill="#4a5a66">KSK signs the root&#8217;s own keys</text><text x="96" y="192" font-size="12" font-weight="400" fill="#4a5a66">ZSK signs the DS record for .gov</text>
+<rect x="80" y="232" width="360" height="72" rx="8" fill="none" fill-opacity="1" stroke="#9aa6ac" stroke-width="1.25"/><text x="96" y="256" font-size="13.5" font-weight="600" fill="#1f2a30">Top-level domain (.gov)</text><text x="96" y="272" font-size="12" font-weight="400" fill="#4a5a66">DS in the root = hash of the .gov KSK</text><text x="96" y="288" font-size="12" font-weight="400" fill="#4a5a66">ZSK signs the DS record for doi.gov</text>
+<rect x="80" y="328" width="360" height="72" rx="8" fill="none" fill-opacity="1" stroke="#9aa6ac" stroke-width="1.25"/><text x="96" y="352" font-size="13.5" font-weight="600" fill="#1f2a30">Your domain (doi.gov): the bank</text><text x="96" y="368" font-size="12" font-weight="400" fill="#4a5a66">DS in .gov = hash of the doi.gov KSK</text><text x="96" y="384" font-size="12" font-weight="400" fill="#4a5a66">ZSK signs every record set (RRSIG)</text>
+<rect x="80" y="424" width="360" height="56" rx="8" fill="none" fill-opacity="1" stroke="#9aa6ac" stroke-width="1.25"/><text x="96" y="448" font-size="13.5" font-weight="600" fill="#1f2a30">The answer: A, AAAA, MX, TXT records</text><text x="96" y="464" font-size="12" font-weight="400" fill="#4a5a66">Signed, so a forged answer fails the check</text>
+<g fill="none" stroke="#9aa6ac" stroke-width="1.25"><path d="M440 84H468V452H440"/><path d="M440 172H468"/><path d="M440 268H468"/><path d="M440 364H468"/><path d="M520 268H472" marker-end="url(#chain-arrow)"/></g>
+<rect x="520" y="216" width="216" height="104" rx="8" fill="none" stroke="#9aa6ac" stroke-width="1.25"/>
+<text x="536" y="240" font-size="13.5" font-weight="600" fill="#1f2a30">Your resolver</text><text x="536" y="256" font-size="12" font-weight="400" fill="#4a5a66">The merchant&#8217;s terminal:</text><text x="536" y="272" font-size="12" font-weight="400" fill="#4a5a66">checks every link back to</text><text x="536" y="288" font-size="12" font-weight="400" fill="#4a5a66">the anchor, and rejects any</text><text x="536" y="304" font-size="12" font-weight="400" fill="#4a5a66">answer that doesn&#8217;t verify</text>
+</svg>
+                        <figcaption>Break any link (a missing DS record, an expired signature) and the resolver can&#8217;t verify the answer, so it refuses it.</figcaption>
+                    </figure>
+                    <p>The merchant also knows which customers carry cards. When a domain is signed, its parent zone publishes a record saying so (the DS record), and a validating resolver will then refuse any unsigned answer for that domain. A forger can&#8217;t fall back to cash. For a domain that isn&#8217;t signed, there&#8217;s nothing to check, and the resolver is still taking cash on trust.</p>
+
+                    <h2>Two jobs: signing and checking</h2>
+                    <p>If you publish a domain, you&#8217;re the bank, and you decide whether your records go out as cash or card. No bank would choose cash. Sign your zone and link it to its parent, so the merchants who look you up can insist on a card. That&#8217;s SC-20 in NIST SP 800-53.</p>
+                    <p>If you run resolvers, you&#8217;re the merchant: they have to check every card and refuse the ones that don&#8217;t verify. That&#8217;s SC-21. A group policy on your endpoints doesn&#8217;t do either job.</p>
+                    <p>The video goes further: how to test both controls, the settings for Windows and BIND, and SC-22, which covers how the DNS servers themselves are laid out.</p>
+                    <div class="post-video">
+                        <iframe src="https://www.youtube-nocookie.com/embed/j0vohUa2hyU" title="NIST Control Freak: SC-20, SC-21, SC-22" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <p class="post-video-link"><a href="https://www.youtube.com/watch?v=j0vohUa2hyU">NIST Control Freak: SC-20, SC-21, SC-22</a> on YouTube</p>
+                    <p>If you&#8217;d rather have someone sort out DNSSEC, or the rest of your 800-53 controls, before an assessor does, <a href="/contact.html">get in touch</a>.</p>
+                </article>
+                <aside class="col-lg-4">
+                    <div class="glance">
+                        <h2>In this post</h2>
+                        <dl>
+                            <dt>Topic</dt><dd>DNSSEC, explained by analogy</dd>
+                            <dt>Controls</dt><dd>NIST SP 800-53 SC-20 (signing) and SC-21 (validating)</dd>
+                            <dt>Applies to</dt><dd>FedRAMP, GovRAMP and federal systems</dd>
+                            <dt>Video</dt><dd><a href="https://www.youtube.com/watch?v=j0vohUa2hyU">SC-20, SC-21, SC-22 walkthrough</a></dd>
+                        </dl>
+                        <p class="checked"><a href="/blog.html">More from the blog</a></p>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+<!-- Footer Section Start -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row subscribe-wrap align-items-center">
+                <div class="col-lg-6">
+                    <div class="subs-txt">
+                        <h3>Get in touch</h3>
+                        <p><a href="mailto:contact@archstonesecurity.com">contact@archstonesecurity.com</a></p>
+                        <p>
+                            <a href="https://www.linkedin.com/company/archstone-security-llc/">LinkedIn</a>
+                            &nbsp;&middot;&nbsp;
+                            <a href="https://www.youtube.com/@ArchstoneSecurity">YouTube</a>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <a href="/"><img src="/images/logo-1200.png" alt="Archstone Security"></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-7">
+                        <p>&copy; 2026 Archstone Security LLC. Compliance as Infrastructure&trade; is a trademark of Archstone Security LLC.</p>
+                    </div>
+                    <div class="col-lg-6 col-sm-5">
+                        <nav class="footer-nav">
+                            <ul>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/about_us.html">About</a></li>
+                                <li><a href="/services.html">Services</a></li>
+                                <li><a href="/research">Research</a></li>
+                                <li><a href="/privacy.html">Privacy</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+
+<!--Javascript
+========================================================-->
+<script src="/js/jquery-3.7.1.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/jquery-ui.min.js"></script>
+<script src="/js/jquery.counterup.min.js"></script>
+<script src="/js/jquery.scrollUp.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

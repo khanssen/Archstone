@@ -20,3 +20,17 @@
 .contact-page .contact-form iframe { display: block; width: 100%; height: 820px; border: 0; }
 .contact-page .glance dd a { word-break: break-word; }
 @media (max-width: 991px) { .contact-page aside { margin-top: 28px; } }
+
+/* Blog posts */
+.blog-post .post-byline { color: #5f6e74; font-size: 15px; margin: -6px 0 22px; }
+.blog-post .post-table { overflow-x: auto; margin: 18px 0 24px; }
+.blog-post .post-table table { width: 100%; border-collapse: collapse; font-size: 15.5px; line-height: 1.5; }
+.blog-post .post-table table, .blog-post .post-table th, .blog-post .post-table td { border: 0; }
+.blog-post .post-table th { text-align: left; font-weight: 600; color: #455359; border-bottom: 2px solid #bdced7; padding: 10px 16px; background: #f6f8f9; }
+.blog-post .post-table td { vertical-align: top; border-bottom: 1px solid #e3e8eb; padding: 14px 16px; }
+.blog-post .post-table td:first-child { width: 40%; }
+.blog-post .post-figure { margin: 28px 0; }
+.blog-post .post-figure figcaption { font-size: 14px; color: #5f6e74; margin-top: 8px; }
+.blog-post .post-video { position: relative; padding-top: 56.25%; margin: 20px 0 6px; background: #0e1a20; }
+.blog-post .post-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.blog-post .post-video-link { font-size: 14px; color: #5f6e74; }
