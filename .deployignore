@@ -58,3 +58,8 @@
 /css/xstyle.css
 /font/flaticon.html
 /fedramp-20x-adoption/og.png.sha256
+
+# Theme demo pages (placeholder text and contact details); kept in the repo, not published
+/cloud.html
+/blog-left-sidebar.html
+/blog-right-sidebar.html

@@ -9086,3 +9086,10 @@ input::placeholder, textarea::placeholder, .form-control::placeholder{ color:#9a
   background: linear-gradient(to bottom, #ffffff 0%, #ffffff 25%, #bdced7 100%);
   border-bottom: 3px solid #455359;
 }
+
+/* ---------- Footer cleanup (2026-10)
+   The template's polygon artwork (.footer::before) peeked out around the
+   "Get in touch" card and in a strip under the bottom bar. Drop it, and let
+   the strip under the bar take the bar's colour so the footer ends cleanly. */
+.footer::before { display: none; }
+.footer { background: linear-gradient(to bottom, #002a3c calc(100% - 40px), #011e2a calc(100% - 40px)); }
