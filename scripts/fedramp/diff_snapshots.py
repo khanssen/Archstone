@@ -42,7 +42,7 @@ METRICS = [
     ("grc_authorized", "GRC-vendor 20x authorizations"),
     ("grc_with_agency", "GRC-vendor 20x with an agency ATO"),
     ("x20_in_process", "20x in process"),
-    ("rev5_since_first_20x", "Rev5 authorized since first 20x"),
+    ("rev5_since_first_20x", "Traditional authorized since first 20x"),
     ("rev5_since_with_agency", "  … of which with an agency ATO"),
     ("x20_removed_total", "20x listings removed (cumulative)"),
 ]
@@ -142,11 +142,11 @@ def main() -> None:
         if o is not None and set(o["agencies"]) != set(n["agencies"]):
             r5_agency_moves += 1
     if r5_new_auth:
-        sec["rev5"].append(f"New Rev5 authorizations ({len(r5_new_auth)}):")
+        sec["rev5"].append(f"New traditional authorizations ({len(r5_new_auth)}):")
         sec["rev5"] += sorted(r5_new_auth)
     if r5_agency_moves:
-        sec["rev5"].append(f"- Agency lists changed on {r5_agency_moves} existing Rev5 product"
-                           f'{"s" if r5_agency_moves != 1 else ""} (moves the "heaviest Rev5 users" table)')
+        sec["rev5"].append(f"- Agency lists changed on {r5_agency_moves} existing traditional product"
+                           f'{"s" if r5_agency_moves != 1 else ""} (moves the "heaviest users of traditional FedRAMP" table)')
 
     # ---- Headline numbers ---------------------------------------------------
     h_old, h_new = history_rows(args.history, d_old, d_new)
@@ -190,7 +190,7 @@ def main() -> None:
         ("new20", "New 20x listings"),
         ("changed20", "Changed 20x listings"),
         ("gone20", "20x listings no longer in the export"),
-        ("rev5", "Rev5"),
+        ("rev5", "Traditional FedRAMP"),
     ]
     if metric_rows:
         out += ["### Headline numbers", "", "| Metric | Before | After | Δ |", "|---|--:|--:|--:|",

@@ -398,9 +398,9 @@ def analyse(rows: list[dict], snap: str) -> dict:
         {"label": "20x authorized", "sub": "self-declared GRC tag", "kind": "tag", **share(tw_cert, "grc_tag")},
         {"label": "20x authorized", "sub": "GRC classification feed", "kind": "list", **share(tw_cert, "grc")},
         {"label": "20x in process", "sub": "self-declared GRC tag", "kind": "tag", **share(pipeline, "grc_tag")},
-        {"label": f"Rev5 authorized since {fmt_date(first)}", "sub": "self-declared GRC tag", "kind": "tag",
+        {"label": f"Traditional, authorized since {fmt_date(first)}", "sub": "self-declared GRC tag", "kind": "tag",
          **share([r for r in since if r["track"] == "Rev5"], "grc_tag")},
-        {"label": "Rev5 authorized, all", "sub": "self-declared GRC tag", "kind": "tag", **share(rev5_cert, "grc_tag")},
+        {"label": "Traditional, all authorized", "sub": "self-declared GRC tag", "kind": "tag", **share(rev5_cert, "grc_tag")},
     ]
     grc_products = sorted([r for r in tw_cert if r["grc"] or r["grc_tag"]],
                           key=lambda r: (not (r["grc"] and r["grc_tag"]), r["date"] or "9999"))
@@ -458,6 +458,11 @@ def analyse(rows: list[dict], snap: str) -> dict:
 # --------------------------------------------------------------------------
 # Formatting helpers
 # --------------------------------------------------------------------------
+
+def trk(t: str) -> str:
+    """Display name for a marketplace track label. The export calls the traditional track 'Rev5'."""
+    return "Traditional" if t == "Rev5" else t
+
 
 def esc(s) -> str:
     return html.escape(str(s), quote=True)
@@ -736,14 +741,14 @@ def timeline_chart(a: dict) -> str:
 
     out = [f'<svg class="tl" viewBox="0 0 {W} {H}" width="100%" role="img" aria-labelledby="tl-t">'
            f'<title id="tl-t">Days since each 20x product entered the process: time to authorization, then time '
-           f'without an agency, against the usual Rev5 time to an agency-backed authorization</title>']
+           f'without an agency, against the usual traditional FedRAMP time to an agency-backed authorization</title>']
     if tm["rev5_q1"] is not None:
         x1, x3 = x(tm["rev5_q1"]), x(tm["rev5_q3"])
         out.append(f'<rect x="{x1:.1f}" y="{mt - 8}" width="{x3 - x1:.1f}" height="{H - mb - mt + 8}" class="r5band"/>')
     if tm["rev5_median"] is not None:
         xm = x(tm["rev5_median"])
         out.append(f'<line x1="{xm:.1f}" x2="{xm:.1f}" y1="{mt - 8}" y2="{H - mb}" class="r5med"/>'
-                   f'<text x="{xm:.1f}" y="{mt - 30}" text-anchor="middle" class="r5lab">Rev5 median: {round(tm["rev5_median"])} days</text>'
+                   f'<text x="{xm:.1f}" y="{mt - 30}" text-anchor="middle" class="r5lab">Traditional median: {round(tm["rev5_median"])} days</text>'
                    f'<text x="{xm:.1f}" y="{mt - 17}" text-anchor="middle" class="r5sub">to an authorization with an agency behind it</text>')
     for v in range(0, top_days + 1, 90):
         out.append(f'<line x1="{x(v):.1f}" x2="{x(v):.1f}" y1="{mt - 8}" y2="{H - mb}" class="gridline"/>')
@@ -918,7 +923,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
             f'listing. Of the {grc["n"]} held by GRC and compliance-automation vendors, '
             f'<b>{words(grc["with"])} {"has" if grc["with"] == 1 else "have"} an agency customer</b>.')
 
-    # Timeline title: only claim "doesn't shorten" while most waiting pilots are past the Rev5 median.
+    # Timeline title: only claim "doesn't shorten" while most waiting pilots are past the traditional median.
     tm = a["timing"]
     if tm["pilot_wait_n"] and tm["pilot_past_rev5"] * 2 > tm["pilot_wait_n"]:
         tl_title = ("20x changes where in the process certification is granted "
@@ -936,7 +941,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
             f'Those figures understate the program. GRC and compliance-automation vendors are heavily '
             f'over-represented: they hold <b>{grc["n"]} of the {tw["n"]}</b> 20x authorizations ({pct(grc["n"] / tw["n"])}). '
             f'By the category providers choose for their own listings, GRC tools are {pct(ttag["share"])} of 20x '
-            f'authorizations against {pct(rtag["share"])} of Rev5 authorizations issued over the same period.')
+            f'authorizations against {pct(rtag["share"])} of traditional FedRAMP authorizations issued over the same period.')
         if grc["with"] == 0:
             have = (f'all {len(r5grc)} GRC products' if r5grc_with == len(r5grc)
                     else f'{r5grc_with} of the {len(r5grc)} GRC products')
@@ -973,14 +978,14 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                 dd = days_between(t["date"], r["date"])
                 mo = int(dd // 30.44)
                 gap = f'more than {mo} months' if mo >= 1 else f'{dd} days'
-                later = f' (the Rev5 authorization came {gap} after the 20x one)'
+                later = f' (the traditional authorization came {gap} after the 20x one)'
             ag = lambda n: f'{n} {"agency" if n == 1 else "agencies"}'
-            bits.append(f'{esc(t["product"])} ({esc(t["csp"])}): {ag(r["n_agencies"])} on its Rev5 '
+            bits.append(f'{esc(t["product"])} ({esc(t["csp"])}): {ag(r["n_agencies"])} on its traditional '
                         f'{esc(r["impact"])} authorization, {ag(t["n_agencies"])} on its 20x one{later}')
         n = len(a["dual"])
         dual_txt = (f'<p class="note" style="margin-top:var(--s-3)"><b>Same product, both tracks.</b> '
                     f'{words(n).capitalize()} {"product is" if n == 1 else "products are"} authorized on both. '
-                    + "; ".join(bits) + '. Where agencies use these products, they use the Rev5 authorization.</p>')
+                    + "; ".join(bits) + '. Where agencies use these products, they use the traditional authorization.</p>')
 
     carry = a.get("carried")
     carry_note = (f' The {fmt_date(a["snapshot"])} export is missing business categories for most listings; '
@@ -1031,7 +1036,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
             s = c["rows"][t]
             zero = ' class="n zero"' if t == "20x" and s["n"] and (s["share"] or 0) < 0.25 else ' class="n"'
             comp_rows.append(
-                f'<tr><td>{t}</td><td class="n">{s["n"]}</td><td{zero}>{s["with"]} ({pct(s["share"])})</td>'
+                f'<tr><td>{trk(t)}</td><td class="n">{s["n"]}</td><td{zero}>{s["with"]} ({pct(s["share"])})</td>'
                 f'<td class="n">{s["atos"]}</td><td class="n">{dec(s["mean"])}</td></tr>')
 
     list_rows = []
@@ -1084,7 +1089,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
     gsa_txt = ""
     if a["gsa_rev5"] is not None:
         gsa_txt = (f' The General Services Administration, which runs FedRAMP, relies on {a["gsa_rev5"]} '
-                   f'Rev5 products and {a["gsa_x20"]} 20x {"product" if a["gsa_x20"] == 1 else "products"}.')
+                   f'traditionally authorized products and {a["gsa_x20"]} 20x {"product" if a["gsa_x20"] == 1 else "products"}.')
 
     grc_rows = ""
     for i, g in enumerate(a["grc_share"]):
@@ -1117,8 +1122,8 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                 f'{rows_html or "<p>No GRC products on this track.</p>"}</div>')
 
     def grc_by_type():
-        order = [("Rev5", "Agency", "Rev5, agency path", "sponsored by an agency from the start"),
-                 ("Rev5", "JAB", "Rev5, JAB path", "Joint Authorization Board"),
+        order = [("Rev5", "Agency", "Traditional, agency path", "sponsored by an agency from the start"),
+                 ("Rev5", "JAB", "Traditional, JAB path", "Joint Authorization Board"),
                  ("20x Pilot", "Program", "20x Pilot", "authorized by the FedRAMP PMO"),
                  ("20x", "Program", "20x", "authorized by the FedRAMP PMO")]
         ps_all = a["grc_by_track"]["Rev5"] + a["grc_by_track"]["20x"]
@@ -1153,7 +1158,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                     f'<small>{st["atos"]} agency {"ATO" if st["atos"] == 1 else "ATOs"}</small></div></div>')
         return out
 
-    grc_track_html = (track_col("Traditional FedRAMP (Rev5)", a["grc_by_track"]["Rev5"])
+    grc_track_html = (track_col("Traditional FedRAMP", a["grc_by_track"]["Rev5"])
                       + track_col("FedRAMP 20x", a["grc_by_track"]["20x"]))
 
     fmt_days = lambda v: "—" if v is None else f"{round(v):,}"
@@ -1161,7 +1166,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                              fmt_days(a["timing"]["pilot_elapsed_median"]))
 
     n_amb = len(a["ambiguous"])
-    amb_txt = (f' <b>The count may be low.</b> Another {n_amb} {"listing is" if n_amb == 1 else "listings are"} in the same Initial Implementation intake status but labeled Rev5, with no sponsoring agency. One of them describes its own trust center as a FedRAMP 20x trust center, and the same provider also has a separate 20x listing, so the marketplace\'s track label for listings in intake is not reliable.'
+    amb_txt = (f' <b>The count may be low.</b> Another {n_amb} {"listing is" if n_amb == 1 else "listings are"} in the same Initial Implementation intake status but carry the marketplace\'s traditional-track label, with no sponsoring agency. One of them describes its own trust center as a FedRAMP 20x trust center, and the same provider also has a separate 20x listing, so the marketplace\'s track label for listings in intake is not reliable.'
                if n_amb else "")
 
     removed_html = ""
@@ -1172,7 +1177,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         since_txt = f' since {fmt_date(a["tracking_since"])}' if a.get("tracking_since") else ""
         rows_rm = "".join(
             f'<tr><td>{esc(r["product"])}<br><span class="hide-sm" style="color:var(--ink-soft)">{esc(r["csp"])}</span></td>'
-            f'<td>{esc(r["cert_type"])}</td><td>{esc(r["status"])}</td><td class="n">{r["date"] or "—"}</td>'
+            f'<td>{esc(trk(r["cert_type"]))}</td><td>{esc(r["status"])}</td><td class="n">{r["date"] or "—"}</td>'
             f'<td class="n{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</td><td class="n">{r["last_seen"]}</td></tr>'
             for r in rm)
         removed_html = f"""<section class="fig wide" id="removed">
@@ -1235,16 +1240,16 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
   <div class="figs">
     <section class="fig wide" id="timeline">
       <h2>{esc(tl_title)}</h2>
-      <p class="note">Every row starts on the day the product's marketplace listing entered the process. The grey bar runs to its 20x authorization; the dashed line runs from there to today. The shaded band is where a Rev5 authorization usually lands, middle half of products, measured the same way from the listing date. A Rev5 agency-path authorization comes with its sponsoring agency, so it is the point where an agency is relying on the product. For 20x that point has not arrived.</p>
+      <p class="note">Every row starts on the day the product's marketplace listing entered the process. The grey bar runs to its 20x authorization; the dashed line runs from there to today. The shaded band is where a traditional FedRAMP authorization usually lands, middle half of products, measured the same way from the listing date. A traditional agency-path authorization comes with its sponsoring agency, so it is the point where an agency is relying on the product. For 20x that point has not arrived.</p>
       <div class="stats3">
         <div><span class="num">{tm_x20}<small>days</small></span><span class="lbl">median to an open 20x authorization ({a["timing"]["x20_n"]} products; pilots excluded because the pilot was invitation-only)</span></div>
-        <div><span class="num">{tm_r5}<small>days</small></span><span class="lbl">median to a Rev5 authorization, which arrives with its sponsoring agency</span></div>
-        <div><span class="num gap">{tm_pel}<small>days</small></span><span class="lbl">median time since entering for the {a["timing"]["pilot_wait_n"]} pilot products still without an agency; {a["timing"]["pilot_past_rev5"]} are past the Rev5 median</span></div>
+        <div><span class="num">{tm_r5}<small>days</small></span><span class="lbl">median to a traditional authorization, which arrives with its sponsoring agency</span></div>
+        <div><span class="num gap">{tm_pel}<small>days</small></span><span class="lbl">median time since entering for the {a["timing"]["pilot_wait_n"]} pilot products still without an agency; {a["timing"]["pilot_past_rev5"]} are past the traditional median</span></div>
       </div>
-      <div class="legend"><span>{legend_swatch("tl-proc")}In process</span><span>{legend_swatch("tl-pil")}In process, pilot</span><span>{legend_swatch("tl-auth")}Authorized</span><span>{legend_swatch("tl-tail")}Since authorization, no agency ATO</span><span>{legend_swatch("tl-has")}Has an agency ATO</span><span>{legend_swatch("tl-recert")}Listing re-certified</span><span>{legend_swatch("tl-band")}Rev5, middle half of products</span></div>
+      <div class="legend"><span>{legend_swatch("tl-proc")}In process</span><span>{legend_swatch("tl-pil")}In process, pilot</span><span>{legend_swatch("tl-auth")}Authorized</span><span>{legend_swatch("tl-tail")}Since authorization, no agency ATO</span><span>{legend_swatch("tl-has")}Has an agency ATO</span><span>{legend_swatch("tl-recert")}Listing re-certified</span><span>{legend_swatch("tl-band")}Traditional, middle half of products</span></div>
       <div class="scroll">{timeline_chart(a)}</div>
       <p class="note" style="margin-top:var(--s-3)">{len(a["tw_cert"]) - len(a["tl_rows"])} authorized 20x {"product is" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "products are"} left out because {"its" if len(a["tw_cert"]) - len(a["tl_rows"]) == 1 else "their"} status history starts at authorization. Agency ATO dates are not in the export, so a filled tail means an agency relies on the product now, not since the date it was authorized. Pilots are included here because the question is how long agency adoption takes, which the invitation did not shorten. Both tracks are timed from the marketplace listing; preparation before a listing appears is not visible on either.</p>
-      {prov(a, digest, f'status history of {len(a["tl_rows"])} 20x and {a["timing"]["rev5_n"]} Rev5 listings authorized since {fmt_date(a["first"])}; days counted from each listing\'s first In Process status (Agency Authorization In Process for Rev5)')}
+      {prov(a, digest, f'status history of {len(a["tl_rows"])} 20x and {a["timing"]["rev5_n"]} traditional listings authorized since {fmt_date(a["first"])}; days counted from each listing\'s first In Process status (Agency Authorization In Process for traditional listings)')}
     </section>
 
     <section class="fig wide" id="by-class">
@@ -1262,12 +1267,12 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       </div>
       <p class="note">Agencies as the marketplace names them, so departments and their components count separately. FedRAMP PMO excluded.{gsa_txt}</p>
       <div class="tbl"><table>
-        <thead><tr><th>Agency</th><th>20x products it relies on</th><th class="n">20x ATOs</th><th class="n">Rev5 ATOs</th></tr></thead>
+        <thead><tr><th>Agency</th><th>20x products it relies on</th><th class="n">20x ATOs</th><th class="n">Traditional ATOs</th></tr></thead>
         <tbody>{adopter_rows or '<tr><td colspan="4">No agency other than the FedRAMP PMO is listed on any 20x product.</td></tr>'}</tbody>
       </table></div>
-      <h3 class="sub">The ten heaviest Rev5 users</h3>
+      <h3 class="sub">The ten heaviest users of traditional FedRAMP</h3>
       <div class="tbl"><table>
-        <thead><tr><th>Agency</th><th class="n">Rev5 ATOs</th><th class="n">20x ATOs</th></tr></thead>
+        <thead><tr><th>Agency</th><th class="n">Traditional ATOs</th><th class="n">20x ATOs</th></tr></thead>
         <tbody>{top_rows}</tbody>
       </table></div>
       {prov(a, digest, "Agencies listed on FedRAMP Certified products; each agency counted once per product")}
@@ -1289,7 +1294,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       <h2>Which ATOs do agencies prefer for GRC tools?</h2>
       <p class="note">GRC products are those from providers in the GRC classification feed (data as of {fmt_date(a["grc_date"])}), applied identically to both tracks. Agency ATOs exclude the FedRAMP PMO.</p>
       <h3 class="sub">GRC tool adoption by authorization type</h3>
-      <p class="note">One block per authorized GRC product, on a common scale. Filled blocks have at least one agency ATO; open blocks have none. A Rev5 agency-path authorization has a sponsoring agency by definition, so that row is filled by construction. Hover a block for the product.</p>
+      <p class="note">One block per authorized GRC product, on a common scale. Filled blocks have at least one agency ATO; open blocks have none. A traditional agency-path authorization has a sponsoring agency by definition, so that row is filled by construction. Hover a block for the product.</p>
       <div class="legend"><span>{legend_swatch("sb-has")}With an agency ATO</span><span>{legend_swatch("sb-none")}No agency ATO</span></div>
       <div class="sbs gbwrap">{grc_by_type()}</div>
       <h3 class="sub">Every GRC product, one square per agency ATO</h3>
@@ -1314,7 +1319,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         <div><span class="num">{a["pipeline"]["n"]}</span><span class="lbl">20x products in process</span></div>
         <div><span class="num gap">{a["pipeline"]["with"]}</span><span class="lbl">with an agency named</span></div>
       </div>
-      <p class="note">Products in Initial Implementation or In Process on the 20x track. A Rev5 agency-path authorization needs a sponsoring agency before it starts; a 20x one does not, and so far none in the queue has one.{amb_txt}</p>
+      <p class="note">Products in Initial Implementation or In Process on the 20x track. A traditional agency-path authorization needs a sponsoring agency before it starts; a 20x one does not, and so far none in the queue has one.{amb_txt}</p>
       {prov(a, digest, "20x products not yet certified, excluding Legacy FedRAMP Ready")}
     </section>
 
@@ -1345,7 +1350,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
     {removed_html}
     <section class="fig wide" id="compare">
       <h2>The obvious objections, answered from the same data</h2>
-      <p class="note">"It's too new" and "20x is mostly Low" are the two replies this gets. Both are checked below against Rev5 authorizations issued in the same window. Rev5 agency-path authorizations start with a sponsor by design, so the Rev5 share is close to 100% by construction; the comparison that matters is how far 20x sits from it after the same amount of time.</p>
+      <p class="note">"It's too new" and "20x is mostly Low" are the two replies this gets. Both are checked below against traditional FedRAMP authorizations issued in the same window. Traditional agency-path authorizations start with a sponsor by design, so the traditional share is close to 100% by construction; the comparison that matters is how far 20x sits from it after the same amount of time.</p>
       <div class="tbl"><table>
         <thead><tr><th>Track</th><th class="n">Authorized</th><th class="n">With agency ATO</th><th class="n">Agency ATOs</th><th class="n">Per authorization</th></tr></thead>
         <tbody>{"".join(comp_rows)}</tbody>
@@ -1372,11 +1377,12 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       <li><b>Agency ATO</b> means an agency other than the FedRAMP PMO listed on the product. The PMO records an agency use on every 20x authorization, so the marketplace's own authorization count shows at least one for every 20x product. That entry is removed everywhere on this page.</li>
       <li><b>Authorization date</b> is the marketplace's certification date for the product. The export lists the agencies on each product but not the date each agency signed, so this measures reliance as it stands today, not when it happened.</li>
       {carry_li}
+      <li><b>Traditional FedRAMP</b> is the agency and JAB authorization track. The marketplace export, and the CSV download on this page, label it "Rev5".</li>
       <li><b>Assessors</b> are the 3PAO each provider names on its listing, matched to FedRAMP's directory of recognized assessors (kept in this site's repository, updated {fmt_date(ASSESSORS["updated"]) if ASSESSORS["updated"] else "periodically"}), with the spelling variants providers use mapped to one name. For listings still in process the named assessor is the provider's own statement.</li>
       <li><b>GRC and compliance vendors</b> are identified from a separately maintained provider classification feed (data as of {fmt_date(a["grc_date"])}), matched by provider name, and shown alongside the GRC business category providers choose for their own marketplace listings.</li>
       <li><b>AI platforms</b> are identified from a short provider list maintained alongside the GRC feed and applied to 20x products only. The marketplace's own "Artificial Intelligence (AI)" category is not used here: several AI products, including ChatGPT and Gemini, are not tagged with it.</li>
-      <li><b>Reclassification.</b> No 20x record in the current export carries status history from before 2025 or an agency ATO inherited from a Rev5 authorization. Products authorized on both tracks are noted under the objections table; their agencies count toward Rev5. A listing that is only FedRAMP Ready on one track is not counted as a match, since Ready is not an authorization. Snapshots are kept so that a record converted in place will show up when two exports are compared.</li>
-      <li><b>Track labels for new listings.</b> Listings in the Initial Implementation intake status carry a Rev5 or 20x label that does not always match the program the provider is pursuing, and at least one provider is listed twice, once on each track. Authorized products and agency ATOs are not affected; counts of products still in process should be read as approximate.</li>
+      <li><b>Reclassification.</b> No 20x record in the current export carries status history from before 2025 or an agency ATO inherited from a traditional authorization. Products authorized on both tracks are noted under the objections table; their agencies count toward traditional FedRAMP. A listing that is only FedRAMP Ready on one track is not counted as a match, since Ready is not an authorization. Snapshots are kept so that a record converted in place will show up when two exports are compared.</li>
+      <li><b>Track labels for new listings.</b> Listings in the Initial Implementation intake status carry a traditional or 20x track label that does not always match the program the provider is pursuing, and at least one provider is listed twice, once on each track. Authorized products and agency ATOs are not affected; counts of products still in process should be read as approximate.</li>
       <li><b>Limits.</b> Withdrawn and expired products are not in the export. Class A 20x entries without an authorization date are included in totals and left out of anything plotted by date.</li>
     </ul>
   </section>
@@ -1511,7 +1517,7 @@ def render_feature(a: dict) -> str:
         ratio = tm["rev5_median"] / tm["x20_median"]
         slides.append((f'{round(tm["x20_median"])} days', "median to a 20x authorization", "Accreditation speed", P,
                        f'Open 20x authorizations take a median {round(tm["x20_median"])} days from the marketplace listing, '
-                       f'about {round(ratio)} times faster than the {round(tm["rev5_median"])} days a Rev5 authorization takes.',
+                       f'about {round(ratio)} times faster than the {round(tm["rev5_median"])} days a traditional authorization takes.',
                        "timeline"))
     if open_rows:
         f_ = min(open_rows, key=lambda d: d["to_auth"])
@@ -1538,7 +1544,7 @@ def render_feature(a: dict) -> str:
         heavy = max(ad, key=lambda d: d["rev5"])
         others = [d["agency"] for d in ad if d is not heavy]
         slides.append((f'{len(ad)}', "agencies already rely on 20x products", "First agency adopters", P,
-                       f'The {heavy["agency"]}, the heaviest FedRAMP user on the marketplace with {heavy["rev5"]} Rev5 ATOs, '
+                       f'The {heavy["agency"]}, the heaviest FedRAMP user on the marketplace with {heavy["rev5"]} traditional ATOs, '
                        f'relies on a 20x product' + (f', as {"does" if len(others) == 1 else "do"} '
                                                      f'{" and ".join("the " + o for o in others)}.' if others else '.'),
                        "agencies"))
