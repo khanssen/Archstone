@@ -1,0 +1,334 @@
+{
+  "source": "FedRAMP Marketplace assessor directory (github.com/FedRAMP/marketplace-fedramp-gov-data, assessors/)",
+  "updated": "2026-10-15",
+  "note": "FedRAMP-recognized assessors (A2LA-accredited 3PAOs). 'display' is the short name shown on the page; 'aliases' are spellings providers use in the marketplace assessor field. Add an alias when a new spelling appears; refresh the list when the directory changes.",
+  "assessors": [
+    {
+      "name": "Schellman",
+      "display": "Schellman",
+      "a2la": "136571",
+      "aliases": [
+        "Schellman & Company, LLC",
+        "Schellman Compliance, LLC",
+        "Schellman and Company, LLC",
+        "Schellman & Company"
+      ]
+    },
+    {
+      "name": "TalaTek, LLC",
+      "display": "TalaTek, LLC",
+      "a2la": "136573",
+      "aliases": []
+    },
+    {
+      "name": "COACT, Inc.",
+      "display": "COACT, Inc.",
+      "a2la": "136682",
+      "aliases": []
+    },
+    {
+      "name": "RSM US, LLP",
+      "display": "RSM US, LLP",
+      "a2la": "136762",
+      "aliases": []
+    },
+    {
+      "name": "Booz Allen Hamilton",
+      "display": "Booz Allen Hamilton",
+      "a2la": "136849",
+      "aliases": []
+    },
+    {
+      "name": "Lunarline, Inc.",
+      "display": "Lunarline",
+      "a2la": "137004",
+      "aliases": [
+        "Lunarline Inc."
+      ]
+    },
+    {
+      "name": "GMS Registrar Ltd",
+      "display": "GMS Registrar Ltd",
+      "a2la": "137012",
+      "aliases": []
+    },
+    {
+      "name": "Emagine IT",
+      "display": "Emagine IT",
+      "a2la": "137046",
+      "aliases": [
+        "EmagineIT"
+      ]
+    },
+    {
+      "name": "Lazarus Alliance, Inc.",
+      "display": "Lazarus Alliance, Inc.",
+      "a2la": "137047",
+      "aliases": []
+    },
+    {
+      "name": "Department of Transportation (DOT) Enterprise Services Center (ESC)",
+      "display": "Department of Transportation (DOT) Enterprise Services Center (ESC)",
+      "a2la": "137102",
+      "aliases": []
+    },
+    {
+      "name": "Kratos",
+      "display": "Kratos",
+      "a2la": "137255",
+      "aliases": []
+    },
+    {
+      "name": "Earthling Security, LLC",
+      "display": "Earthling Security, LLC",
+      "a2la": "137339",
+      "aliases": []
+    },
+    {
+      "name": "Information Technology Company, LLC",
+      "display": "Information Technology Company, LLC",
+      "a2la": "137644",
+      "aliases": []
+    },
+    {
+      "name": "MindPoint Group, A Tyto Athene Company",
+      "display": "MindPoint Group, A Tyto Athene Company",
+      "a2la": "137724",
+      "aliases": []
+    },
+    {
+      "name": "First Information Technology Services, Inc.",
+      "display": "First Information Technology Services (FITS)",
+      "a2la": "137801",
+      "aliases": [
+        "FITS"
+      ]
+    },
+    {
+      "name": "Excentium, Inc.",
+      "display": "Excentium",
+      "a2la": "138266",
+      "aliases": []
+    },
+    {
+      "name": "KPMG, LLP",
+      "display": "KPMG, LLP",
+      "a2la": "138412",
+      "aliases": []
+    },
+    {
+      "name": "Coalfire Systems, Inc.",
+      "display": "Coalfire",
+      "a2la": "138514",
+      "aliases": [
+        "Coalfire"
+      ]
+    },
+    {
+      "name": "A-LIGN Compliance and Security, Inc. dba A-LIGN",
+      "display": "A-LIGN",
+      "a2la": "138665",
+      "aliases": [
+        "A-LIGN",
+        "A-Lign",
+        "A-lign",
+        "Align",
+        "A-LIGN Compliance and Security, Inc.",
+        "A-LIGN Compliance and Security"
+      ]
+    },
+    {
+      "name": "SecureIT",
+      "display": "SecureIT",
+      "a2la": "138819",
+      "aliases": []
+    },
+    {
+      "name": "Deloitte & Touche LLP",
+      "display": "Deloitte & Touche LLP",
+      "a2la": "138883",
+      "aliases": []
+    },
+    {
+      "name": "Baker Tilly",
+      "display": "Baker Tilly",
+      "a2la": "139960",
+      "aliases": []
+    },
+    {
+      "name": "Accenture Federal Services",
+      "display": "Accenture Federal Services",
+      "a2la": "140508",
+      "aliases": []
+    },
+    {
+      "name": "Linford & Company",
+      "display": "Linford & Company",
+      "a2la": "140531",
+      "aliases": []
+    },
+    {
+      "name": "NCC Group Security Services, Inc.",
+      "display": "NCC Group Security Services, Inc.",
+      "a2la": "140544",
+      "aliases": []
+    },
+    {
+      "name": "Sera Brynn, LLC",
+      "display": "Sera Brynn, LLC",
+      "a2la": "140570",
+      "aliases": []
+    },
+    {
+      "name": "Tevora Business Solutions, Inc.",
+      "display": "Tevora Business Solutions, Inc.",
+      "a2la": "200492",
+      "aliases": []
+    },
+    {
+      "name": "ControlCase",
+      "display": "ControlCase",
+      "a2la": "200562",
+      "aliases": []
+    },
+    {
+      "name": "Vaultes",
+      "display": "Vaultes",
+      "a2la": "200719",
+      "aliases": []
+    },
+    {
+      "name": "Sentar, Inc.",
+      "display": "Sentar, Inc.",
+      "a2la": "200749",
+      "aliases": []
+    },
+    {
+      "name": "MegaplanIT Holdings, LLC",
+      "display": "MegaplanIT",
+      "a2la": "200765",
+      "aliases": [
+        "MegaPlanIT",
+        "MegaplanIT"
+      ]
+    },
+    {
+      "name": "Securisea, Inc.",
+      "display": "Securisea, Inc.",
+      "a2la": "200865",
+      "aliases": []
+    },
+    {
+      "name": "DataLock Consulting Group",
+      "display": "DataLock Consulting Group",
+      "a2la": "200883",
+      "aliases": []
+    },
+    {
+      "name": "InfusionPoints, LLC",
+      "display": "InfusionPoints",
+      "a2la": "200934",
+      "aliases": []
+    },
+    {
+      "name": "Aprio, LLP.",
+      "display": "Aprio, LLP.",
+      "a2la": "201573",
+      "aliases": []
+    },
+    {
+      "name": "Kompleye",
+      "display": "Kompleye",
+      "a2la": "201591",
+      "aliases": []
+    },
+    {
+      "name": "Databrackets",
+      "display": "Databrackets",
+      "a2la": "201639",
+      "aliases": []
+    },
+    {
+      "name": "Fortreum, LLC",
+      "display": "Fortreum",
+      "a2la": "201664",
+      "aliases": [
+        "Fortreum"
+      ]
+    },
+    {
+      "name": "Ignyte Platform Inc.",
+      "display": "Ignyte Platform Inc.",
+      "a2la": "201722",
+      "aliases": []
+    },
+    {
+      "name": "RISC Point",
+      "display": "RISCPoint",
+      "a2la": "201825",
+      "aliases": [
+        "RISCPoint"
+      ]
+    },
+    {
+      "name": "Prescient Security, LLC.",
+      "display": "Prescient Security",
+      "a2la": "202040",
+      "aliases": [
+        "Prescient Security",
+        "Prescient Security LLC"
+      ]
+    },
+    {
+      "name": "CyberQRT",
+      "display": "CyberQRT",
+      "a2la": "202200",
+      "aliases": []
+    },
+    {
+      "name": "bladestack.io (Advisory Focused)",
+      "display": "bladestack.io (Advisory Focused)",
+      "a2la": "202696",
+      "aliases": []
+    },
+    {
+      "name": "360 Advanced Compass Rose",
+      "display": "360 Advanced Compass Rose",
+      "a2la": "202896",
+      "aliases": []
+    },
+    {
+      "name": "AARC-360",
+      "display": "AARC-360",
+      "a2la": "203060",
+      "aliases": []
+    },
+    {
+      "name": "Anthony Timbers LLC",
+      "display": "Anthony Timbers LLC",
+      "a2la": "203181",
+      "aliases": []
+    },
+    {
+      "name": "SteelToad",
+      "display": "SteelToad",
+      "a2la": "203203",
+      "aliases": [
+        "SteelToad Consulting LLC",
+        "SteelToad Consulting"
+      ]
+    },
+    {
+      "name": "CBIZ Security and Compliance, LLC",
+      "display": "CBIZ Security and Compliance, LLC",
+      "a2la": "203271",
+      "aliases": []
+    },
+    {
+      "name": "Insight Assurance",
+      "display": "Insight Assurance",
+      "a2la": "203355",
+      "aliases": []
+    }
+  ]
+}
