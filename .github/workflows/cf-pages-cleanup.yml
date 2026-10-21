@@ -9,6 +9,9 @@ on:
       mode:
         description: inspect (list only) or delete
         default: inspect
+      account_id:
+        description: Cloudflare account ID
+        required: false
   repository_dispatch:
     types: [cf-pages-cleanup]
 
@@ -25,7 +28,7 @@ jobs:
       - name: Run
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || github.event.client_payload.account_id || github.event.inputs.account_id }}
           MODE: ${{ github.event.inputs.mode || github.event.client_payload.mode || 'inspect' }}
         run: |
           set +e
