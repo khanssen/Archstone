@@ -13,7 +13,7 @@ API = "https://api.cloudflare.com/client/v4"
 TOKEN = os.environ["CLOUDFLARE_API_TOKEN"]
 
 
-def call(method, path, ok404=False):
+def call(method, path, ok404=False, tolerate=()):
     req = urllib.request.Request(API + path, method=method,
                                  headers={"Authorization": f"Bearer {TOKEN}"})
     for attempt in range(5):
@@ -25,6 +25,8 @@ def call(method, path, ok404=False):
             if e.code == 429 or e.code >= 500:
                 time.sleep(2 ** attempt); continue
             if ok404 and e.code == 404:
+                return None
+            if any(str(c) in body for c in tolerate):
                 return None
             raise SystemExit(f"{method} {path} -> {e.code}: {body[:500]}")
     raise SystemExit(f"{method} {path}: gave up after retries")
@@ -61,18 +63,20 @@ def main():
         raise SystemExit("Refusing to delete: archstonesecurity.com is attached to this project. "
                          "Remove the custom domain in the dashboard first and check DNS still points at GitHub.")
 
-    deleted = 0
+    ids, pg = [], 1
     while True:
-        page = call("GET", f"{base}/{name}/deployments?per_page=25")["result"]
-        if not page:
+        res = call("GET", f"{base}/{name}/deployments?per_page=25&page={pg}")["result"]
+        ids += [d["id"] for d in res]
+        if len(res) < 25:
             break
-        for d in page:
-            if call("DELETE", f"{base}/{name}/deployments/{d['id']}?force=true", ok404=True) is not None:
-                deleted += 1
-        print(f"  deleted {deleted} deployments so far")
-        if len(page) < 25:
-            # stragglers (e.g. the live production one) may refuse; try the project now
-            break
+        pg += 1
+    deleted = 0
+    for i, dep in enumerate(ids, 1):
+        # 8000034: the active production deployment can't be deleted; the project delete takes it
+        if call("DELETE", f"{base}/{name}/deployments/{dep}?force=true", ok404=True, tolerate=(8000034,)) is not None:
+            deleted += 1
+        if i % 25 == 0:
+            print(f"  {i}/{len(ids)} processed, {deleted} deleted")
     call("DELETE", f"{base}/{name}")
     print(f"\nDeleted {deleted} deployments and the project '{name}'.")
 
