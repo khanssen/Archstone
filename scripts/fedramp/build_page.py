@@ -1216,7 +1216,12 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
 <meta property="og:title" content="{esc(h1)}">
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:url" content="{SITE}{PAGE_PATH}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{SITE}{PAGE_PATH}og.png?v={a["snapshot"]}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{tw["n"]} FedRAMP 20x authorizations, {tw["with"]} with an agency ATO. FedRAMP Marketplace data, {fmt_date(a["snapshot"])}.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{SITE}{PAGE_PATH}og.png?v={a["snapshot"]}">
 <meta name="data-snapshot" content="{a["snapshot"]}">
 <meta name="data-sha256" content="{digest}">
 <link rel="icon" href="/favicon.ico">
@@ -1602,6 +1607,33 @@ def inject_feature(target: Path, html_: str) -> bool:
 
 
 
+def write_og_card(a: dict, out: Path) -> None:
+    """Social preview image for the page, regenerated from the same numbers on every build.
+    Needs Playwright + Chromium (installed by the workflow); without them the old card is kept."""
+    try:
+        from og_card import render_png, x20_card_html
+    except ImportError:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from og_card import render_png, x20_card_html
+    tw, grc = a["tw_stats"], a["grc_stats"]
+    stats = [(str(tw["n"]), "20x authorizations", False),
+             (str(tw["with"]), "with an agency ATO", tw["with"] * 4 < tw["n"]),
+             (f'{grc["with"]} of {grc["n"]}', "GRC-vendor authorizations with an agency customer", grc["with"] == 0)]
+    title = "FedRAMP 20x agency adoption, by the numbers"
+    footer = f'FedRAMP Marketplace data, {fmt_date(a["snapshot"])} · archstonesecurity.com'
+    card = x20_card_html(title, stats, footer)
+    key_file = out.with_name(out.name + ".sha256")   # re-render only when the card content changes
+    key = hashlib.sha256(card.encode()).hexdigest()
+    if out.exists() and key_file.exists() and key_file.read_text().strip() == key:
+        return
+    try:
+        render_png(card, out)
+        key_file.write_text(key + "\n")
+    except Exception as e:                       # never fail the page build over the preview image
+        print(f"build_page: preview card not rendered ({e.__class__.__name__}: {e}); keeping {out.name}",
+              file=sys.stderr)
+
+
 def write_csv(a: dict, path: Path) -> None:
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\n")
@@ -1675,6 +1707,7 @@ def main() -> None:
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "index.html").write_text(render(a, digest, built, read_nav(args.nav_source)), encoding="utf-8")
     write_csv(a, args.out / "20x-products.csv")
+    write_og_card(a, args.out / "og.png")
     if args.feature_target:
         inject_feature(args.feature_target, render_feature(a))
     if args.history:
