@@ -11,6 +11,8 @@ on:
   schedule:
     - cron: "17 11 * * *"   # daily, 07:17 Eastern (11:17 UTC)
   workflow_dispatch:
+  repository_dispatch:     # lets an API client with push access start a run:
+    types: [marketplace-refresh]   #   POST /repos/khanssen/archstone/dispatches {"event_type":"marketplace-refresh"}
   push:
     branches: ["main"]
     paths:
