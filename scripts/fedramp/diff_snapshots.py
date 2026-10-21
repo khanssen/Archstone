@@ -26,7 +26,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_page import load_snapshot, normalise, provider_key, snapshot_date  # noqa: E402
+from build_page import load_assessors, load_snapshot, normalise, provider_key, snapshot_date  # noqa: E402
 
 PAGE = "https://archstonesecurity.com/fedramp-20x-adoption/"
 
@@ -80,8 +80,10 @@ def main() -> None:
     ap.add_argument("--grc", required=True, type=Path)
     ap.add_argument("--history", type=Path)
     ap.add_argument("--body", required=True, type=Path)
+    ap.add_argument("--assessors", type=Path, help="recognized assessor list, so spelling variants don't read as changes")
     args = ap.parse_args()
 
+    load_assessors(args.assessors)
     grc = {provider_key(s) for s in json.loads(args.grc.read_text())["providers"]}
     d_old, d_new = snapshot_date(args.old), snapshot_date(args.new)
     old, new = index(args.old, grc), index(args.new, grc)

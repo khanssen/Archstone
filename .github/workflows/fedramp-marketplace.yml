@@ -17,6 +17,7 @@ on:
       - "data/fedramp/inbox/**"
       - "data/fedramp/grc-vendors.json"
       - "data/fedramp/ai-vendors.json"
+      - "data/fedramp/assessors.json"
       - "scripts/fedramp/**"
       - "fedramp.html"
       - "index.html"   # the 20x page copies the homepage navigation
@@ -74,6 +75,7 @@ jobs:
             --grc data/fedramp/grc-vendors.json \
             --ai data/fedramp/ai-vendors.json \
             --nav-source index.html \
+            --assessors data/fedramp/assessors.json \
             --out fedramp-20x-adoption \
             --history data/fedramp/history.csv \
             --raw-dir data/fedramp/raw \
@@ -91,6 +93,7 @@ jobs:
             --old "$PREV" --new "$NEW" \
             --grc data/fedramp/grc-vendors.json \
             --history data/fedramp/history.csv \
+            --assessors data/fedramp/assessors.json \
             --body "$RUNNER_TEMP/issue.md"
 
       - name: Commit if anything changed

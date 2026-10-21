@@ -19,6 +19,7 @@
 /data/fedramp/inbox/
 /data/fedramp/grc-vendors.json
 /data/fedramp/ai-vendors.json
+/data/fedramp/assessors.json
 /data/fedramp/README.md
 /*.md
 

@@ -101,9 +101,8 @@ def timeline(p: dict, rev5: bool) -> dict:
 
 def normalise(p: dict, grc: set[str], ai: set[str] | None = None) -> dict:
     agencies = [a for a in (p.get("agency_authorizations") or []) if a and a != PMO]
-    assessor = (p.get("independent_assessor") or "").strip()
-    if len(assessor) > 80:          # free-text notes have appeared in this field
-        assessor = ""
+    a_kind, a_name = classify_assessor(p.get("independent_assessor") or "")
+    assessor = assessor_label(a_name) if a_kind == "3pao" else a_name
     return {
         "id": p["id"],
         "csp": (p.get("csp") or "").strip(),
@@ -120,6 +119,8 @@ def normalise(p: dict, grc: set[str], ai: set[str] | None = None) -> dict:
         "agencies": agencies,
         "n_agencies": len(agencies),
         "assessor": assessor,
+        "assessor_kind": a_kind,
+        "assessor_id": a_name,
         "grc": provider_key(p.get("csp") or "") in grc,
         "grc_tag": GRC_TAG in (p.get("business_categories") or []),
         "ai_tag": "Artificial Intelligence (AI)" in (p.get("business_categories") or []),
@@ -141,6 +142,52 @@ def provider_key(name: str) -> str:
         if k2 == k:
             return k
         k = k2
+
+
+# FedRAMP-recognized assessors (3PAOs), loaded from data/fedramp/assessors.json by main().
+ASSESSORS: dict = {"index": {}, "prefix": [], "names": {}, "count": 0, "updated": ""}
+
+
+def _akey(s: str) -> str:
+    k = re.sub(r"[^a-z0-9]+", " ", (s or "").lower().replace("&", " and ")).strip()
+    return provider_key(k)
+
+
+def load_assessors(path: Path | None) -> None:
+    if not path or not path.exists():
+        return
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    idx, names = {}, {}
+    for a in doc["assessors"]:
+        names[a["name"]] = a
+        for n in [a["name"], a.get("display", "")] + a.get("aliases", []):
+            if n:
+                idx[_akey(n)] = a["name"]
+    ASSESSORS.update(index=idx, names=names, count=len(doc["assessors"]), updated=doc.get("updated", ""),
+                     prefix=sorted(idx, key=len, reverse=True))
+
+
+def classify_assessor(raw: str) -> tuple[str, str]:
+    """('3pao', directory name) | ('other', text as listed) | ('pmo', '') | ('none', '')."""
+    t = " ".join((raw or "").split())
+    low = t.lower()
+    if not t or low in {"na", "n/a", "none", "tbd", "-", "—"} or "self-attest" in low or low.startswith("no assessor") \
+            or low.startswith("no fedramp"):
+        return "none", ""
+    if PMO.lower() in low or low in {"fedramp pmo", "fedramp"}:
+        return "pmo", ""
+    k = _akey(t)
+    if k in ASSESSORS["index"]:
+        return "3pao", ASSESSORS["index"][k]
+    for a in ASSESSORS["prefix"]:      # free-text notes that begin with the assessor's name
+        if k.startswith(a + " "):
+            return "3pao", ASSESSORS["index"][a]
+    return ("other", t) if len(t) <= 80 else ("none", "")
+
+
+def assessor_label(name: str) -> str:
+    a = ASSESSORS["names"].get(name)
+    return (a.get("display") or a["name"]) if a else name
 
 
 def name_key(s: str) -> str:
@@ -178,6 +225,34 @@ def stats(ps: list[dict]) -> dict:
     t = sum(p["n_agencies"] for p in ps)
     return {"n": n, "with": w, "atos": t,
             "share": (w / n) if n else None, "mean": (t / n) if n else None}
+
+
+def assessor_table(tw_cert: list[dict], pipeline: list[dict]) -> dict:
+    """Who assessed 20x: per recognized 3PAO, authorized and in-process 20x listings naming them."""
+    by: dict[str, dict] = {}
+    other: dict[str, list] = defaultdict(list)
+    for r, bucket in [(r, "auth") for r in tw_cert] + [(r, "proc") for r in pipeline]:
+        if r["assessor_kind"] == "3pao":
+            by.setdefault(r["assessor_id"], {"auth": [], "proc": []})[bucket].append(r)
+        elif r["assessor_kind"] == "other":
+            other[r["assessor"]].append(r)
+    rows = []
+    for name, d in by.items():
+        auth = sorted(d["auth"], key=lambda r: r["date"] or "9999")
+        rows.append({"name": name, "label": assessor_label(name), "auth": auth, "proc": d["proc"],
+                     "with": sum(1 for r in auth if r["n_agencies"]),
+                     "grc": sum(1 for r in auth if r["grc"])})
+    rows.sort(key=lambda d: (-len(d["auth"]), -len(d["proc"]), d["label"].lower()))
+    unassessed = [r for r in tw_cert if r["assessor_kind"] in ("none", "pmo")]
+    # Recognized assessors that hold a 20x authorization of their own.
+    keys = {}
+    for name, a in ASSESSORS["names"].items():
+        for n in [name, a.get("display", "")] + a.get("aliases", []):
+            if n:
+                keys[provider_key(n)] = name
+    own = [{"assessor": assessor_label(keys[provider_key(r["csp"])]), "r": r}
+           for r in tw_cert if provider_key(r["csp"]) in keys]
+    return {"rows": rows, "other": dict(other), "unassessed": unassessed, "own": own}
 
 
 def analyse(rows: list[dict], snap: str) -> dict:
@@ -373,6 +448,7 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "adopters": adopters,
         "adopter_agencies": adopter_agencies,
         "rev5_since": stats([r for r in since if r["track"] == "Rev5"]),
+        "assessors": assessor_table(tw_cert, pipeline),
         "nongrc_stats": stats([r for r in tw_cert if not r["grc"]]),
         "rev5_since_tag": share([r for r in since if r["track"] == "Rev5"], "grc_tag"),
         "tw_tag": share(tw_cert, "grc_tag"),
@@ -624,6 +700,7 @@ th{text-align:left;font-weight:600;color:var(--ink-soft);border-bottom:1px solid
 td{border-bottom:1px solid var(--rule);padding:var(--s-2) var(--s-2);vertical-align:top}
 td.n,th.n{text-align:right;white-space:nowrap}
 td.zero{color:var(--gap);font-weight:600}
+td.small{font-size:var(--t-small);color:var(--ink-soft)}
 tr.grp td{font-weight:600;color:var(--ink);border-bottom-color:var(--rule-strong);padding-top:var(--s-3)}
 .tag{font-family:var(--mono);font-size:var(--t-micro);letter-spacing:.06em;text-transform:uppercase;border:1px solid currentColor;border-radius:4px;padding:1px 6px;white-space:nowrap}
 .tag.grc{color:var(--gap)}
@@ -914,6 +991,37 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                 f'the category it carried in the latest earlier snapshot ({fmt_date(carry["from"])}) is used '
                 f'({carry["filled"]} listings). A listing whose category changed to a different one is not affected.</li>'
                 if carry and carry["filled"] else "")
+
+    # Who assessed 20x
+    at = a["assessors"]
+    def prod_list(ps):
+        return "; ".join(esc(r["product"]) + (' <span class="tag grc">GRC</span>' if r["grc"] else "")
+                         + (" (agency ATO)" if r["n_agencies"] else "") for r in ps) or "—"
+    asr_rows = "".join(
+        f'<tr><td>{esc(d["label"])}</td><td class="n">{len(d["auth"])}</td>'
+        f'<td class="n{" zero" if d["auth"] and d["with"] == 0 else ""}">{d["with"]}</td>'
+        f'<td class="n">{d["grc"]}</td><td class="n">{len(d["proc"])}</td>'
+        f'<td class="hide-sm small">{prod_list(d["auth"])}</td></tr>' for d in at["rows"])
+    n_auth_3pao = sum(1 for d in at["rows"] if d["auth"])
+    n_proc_only = sum(1 for d in at["rows"] if not d["auth"])
+    ua = at["unassessed"]
+    asr_notes = []
+    if ua:
+        asr_notes.append(f'{len(ua)} authorized 20x {"product lists" if len(ua) == 1 else "products list"} no recognized '
+                         f'assessor: {"; ".join(esc(r["product"]) + (" (" + esc(r["cls"]) + ")" if r["cls"] and r["cls"] != "Unknown" else "") for r in ua)}. '
+                         f'Some Class A listings describe their package as a self-attestation.')
+    if at["own"]:
+        bits = [f'{esc(o["assessor"])} ({esc(o["r"]["product"])}, assessed by {esc(o["r"]["assessor"]) or "no assessor listed"})'
+                for o in at["own"]]
+        asr_notes.append(f'{words(len(bits)).capitalize()} recognized {"3PAO also holds" if len(bits) == 1 else "3PAOs also hold"} '
+                         f'a 20x authorization of {"its" if len(bits) == 1 else "their"} own: {"; ".join(bits)}.')
+    if at["other"]:
+        bits = [f'{esc(k)} ({len(v)})' for k, v in sorted(at["other"].items())]
+        asr_notes.append(f'Named as assessor on 20x listings but not in the FedRAMP assessor directory: {", ".join(bits)}.')
+    asr_note_html = "".join(f'<p class="note" style="margin-top:var(--s-3)">{t}</p>' for t in asr_notes)
+    asr_basis = (f'assessor named on each 20x listing, matched to the FedRAMP assessor directory '
+                 f'({ASSESSORS["count"]} recognized assessors, {fmt_date(ASSESSORS["updated"])})'
+                 if ASSESSORS["count"] else "assessor named on each 20x listing")
 
     # comparison table
     comp_rows = []
@@ -1210,6 +1318,22 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       {prov(a, digest, "20x products not yet certified, excluding Legacy FedRAMP Ready")}
     </section>
 
+    <section class="fig wide" id="assessors">
+      <h2>Who assessed 20x</h2>
+      <div class="big">
+        <div><span class="num">{n_auth_3pao}</span><span class="lbl">recognized 3PAOs have assessed an authorized 20x product</span></div>
+        <div><span class="num">{n_proc_only}</span><span class="lbl">more are named only on 20x listings still in process</span></div>
+        <div><span class="num">{len(ua)}</span><span class="lbl">authorized 20x products list no recognized assessor</span></div>
+      </div>
+      <p class="note">The assessor each provider names on its marketplace listing, matched to FedRAMP's directory of recognized assessors. For listings still in process the name is the provider's own statement and can change before authorization. "With agency ATO" excludes the FedRAMP PMO.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>3PAO</th><th class="n">20x authorized</th><th class="n">With agency ATO</th><th class="n">GRC-vendor clients</th><th class="n">In process</th><th class="hide-sm">Authorized products</th></tr></thead>
+        <tbody>{asr_rows or '<tr><td colspan="6">No 20x listing names a recognized assessor.</td></tr>'}</tbody>
+      </table></div>
+      {asr_note_html}
+      {prov(a, digest, asr_basis)}
+    </section>
+
     <section class="fig wide" id="monthly">
       <h2>20x authorizations per month</h2>
       <p class="note">By marketplace authorization date, from the first 20x authorization to {fmt_date(a["snapshot"])}. GRC vendors are a large share of what the program has authorized; agency reliance barely registers.</p>
@@ -1248,6 +1372,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       <li><b>Agency ATO</b> means an agency other than the FedRAMP PMO listed on the product. The PMO records an agency use on every 20x authorization, so the marketplace's own authorization count shows at least one for every 20x product. That entry is removed everywhere on this page.</li>
       <li><b>Authorization date</b> is the marketplace's certification date for the product. The export lists the agencies on each product but not the date each agency signed, so this measures reliance as it stands today, not when it happened.</li>
       {carry_li}
+      <li><b>Assessors</b> are the 3PAO each provider names on its listing, matched to FedRAMP's directory of recognized assessors (kept in this site's repository, updated {fmt_date(ASSESSORS["updated"]) if ASSESSORS["updated"] else "periodically"}), with the spelling variants providers use mapped to one name. For listings still in process the named assessor is the provider's own statement.</li>
       <li><b>GRC and compliance vendors</b> are identified from a separately maintained provider classification feed (data as of {fmt_date(a["grc_date"])}), matched by provider name, and shown alongside the GRC business category providers choose for their own marketplace listings.</li>
       <li><b>AI platforms</b> are identified from a short provider list maintained alongside the GRC feed and applied to 20x products only. The marketplace's own "Artificial Intelligence (AI)" category is not used here: several AI products, including ChatGPT and Gemini, are not tagged with it.</li>
       <li><b>Reclassification.</b> No 20x record in the current export carries status history from before 2025 or an agency ATO inherited from a Rev5 authorization. Products authorized on both tracks are noted under the objections table; their agencies count toward Rev5. A listing that is only FedRAMP Ready on one track is not counted as a match, since Ready is not an authorization. Snapshots are kept so that a record converted in place will show up when two exports are compared.</li>
@@ -1514,12 +1639,14 @@ def main() -> None:
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--history", type=Path)
     ap.add_argument("--feature-target", type=Path, help="page to write the dated 20x carousel into (between markers)")
+    ap.add_argument("--assessors", type=Path, help="FedRAMP-recognized assessor list (data/fedramp/assessors.json)")
     ap.add_argument("--nav-source", type=Path, help="page whose top navigation is copied (the homepage)")
     ap.add_argument("--ai", type=Path, help="AI provider classification list (applied to 20x only)")
     ap.add_argument("--raw-dir", type=Path, help="directory of earlier snapshots, to find listings removed since")
     ap.add_argument("--checked", help="date the marketplace was last checked (YYYY-MM-DD); defaults to the snapshot date")
     args = ap.parse_args()
 
+    load_assessors(args.assessors)
     products, digest = load_snapshot(args.snapshot)
     snap = snapshot_date(args.snapshot)
     grc_feed = json.loads(args.grc.read_text())
