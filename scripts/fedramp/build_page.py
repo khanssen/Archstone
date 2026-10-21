@@ -1244,7 +1244,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
 
   <div class="figs">
     <section class="fig wide" id="timeline">
-      <h2>{esc(tl_title)}</h2>
+      <h2>{esc(tl_title).replace("changes where in", "changes <em>where</em> in", 1)}</h2>
       <p class="note">Every row starts on the day the product's marketplace listing entered the process. The grey bar runs to its 20x authorization; the dashed line runs from there to today. The shaded band is where a traditional FedRAMP authorization usually lands, middle half of products, measured the same way from the listing date. A traditional agency-path authorization comes with its sponsoring agency, so it is the point where an agency is relying on the product. For 20x that point has not arrived.</p>
       <div class="stats3">
         <div><span class="num">{tm_x20}<small>days</small></span><span class="lbl">median to an open 20x authorization ({a["timing"]["x20_n"]} products; pilots excluded because the pilot was invitation-only)</span></div>
