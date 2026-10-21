@@ -1403,6 +1403,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
   </footer>
 </main>
 {NAV_JS}
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "bbb997af2e1e46c4bfc0f95ebff155db"}}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
 """
