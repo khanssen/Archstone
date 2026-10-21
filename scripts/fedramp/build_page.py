@@ -1224,7 +1224,9 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
 <meta name="twitter:image" content="{SITE}{PAGE_PATH}og.png?v={a["snapshot"]}">
 <meta name="data-snapshot" content="{a["snapshot"]}">
 <meta name="data-sha256" content="{digest}">
-<link rel="icon" href="/favicon.ico">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
+<link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png">
 <link rel="stylesheet" href="/css/tokens.css">
 <style>{CSS}</style>
 </head>
