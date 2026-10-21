@@ -34,6 +34,25 @@
   font-weight: 500; font-style: normal; font-display: swap;
 }
 
+/* Metric-matched fallbacks: while Plex loads, text renders in Arial resized to
+   Plex's widths and line metrics, so the swap doesn't push the page around
+   (Cumulative Layout Shift). Values computed from the font files. */
+@font-face {
+  font-family: 'Plex Sans Fallback';
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('Helvetica');
+  font-weight: 400; size-adjust: 100.87%; ascent-override: 101.61%; descent-override: 27.26%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Plex Sans Fallback';
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('Helvetica Bold');
+  font-weight: 600 700; size-adjust: 97.28%; ascent-override: 105.36%; descent-override: 28.27%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Plex Mono Fallback';
+  src: local('Courier New'), local('CourierNewPSMT'), local('Liberation Mono'), local('Courier');
+  size-adjust: 99.98%; ascent-override: 102.52%; descent-override: 27.50%; line-gap-override: 0%;
+}
+
 :root {
   color-scheme: light;
 
@@ -79,8 +98,8 @@
   --accent-fill:      #F1EBF8;
 
   /* --- Type ------------------------------------------------------------- */
-  --sans:  'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --mono:  'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans:  'IBM Plex Sans', 'Plex Sans Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono:  'IBM Plex Mono', 'Plex Mono Fallback', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --t-display:  clamp(30px, 4.4vw, 46px);
   --t-title:    22px;

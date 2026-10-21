@@ -1227,6 +1227,9 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
 <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png">
+<link rel="preload" href="/font/IBMPlexSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/font/IBMPlexSans-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/font/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/tokens.css">
 <style>{CSS}</style>
 </head>
