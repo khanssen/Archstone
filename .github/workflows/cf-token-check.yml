@@ -1,0 +1,16 @@
+name: Cloudflare token check (one-off)
+on:
+  repository_dispatch:
+    types: [cf-token-check]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          T: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$T" ]; then echo "::notice title=token check::GitHub secret CLOUDFLARE_API_TOKEN is gone"; exit 0; fi
+          s=$(curl -s -H "Authorization: Bearer $T" https://api.cloudflare.com/client/v4/user/tokens/verify | python3 -c 'import json,sys;d=json.load(sys.stdin);print("active" if d.get("success") else "rejected: "+"; ".join(e["message"] for e in d.get("errors",[])))')
+          echo "::notice title=token check::GitHub secret still present; Cloudflare says the token is $s"
