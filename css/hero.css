@@ -32,3 +32,12 @@
    poster text on the dark player; style.css sets that with !important. */
 .home-slide-2 .single-slide .cai-player__poster span { color: #ffffff !important; }
 .home-slide-2 .single-slide .cai-player__poster .cai-player__num { color: #c5d2da !important; }
+
+/* Before Owl initialises (custom.js runs at the end of <body>), all slides are
+   in normal flow and stack vertically, then collapse when the carousel starts.
+   That reflow is a large layout shift and re-paints the LCP image late. Show
+   only the first slide until Owl marks the carousel loaded. */
+.home-slide-2:not(.owl-loaded) > .single-slide ~ .single-slide { display: none; }
+
+/* Slide images carry width/height attributes for layout stability; keep them responsive. */
+.home-slide-2 .slide-img img { max-width: 100%; height: auto; }
