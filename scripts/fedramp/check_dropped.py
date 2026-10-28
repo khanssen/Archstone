@@ -45,6 +45,16 @@ def load(path: Path) -> list[dict]:
     return data
 
 
+def controls(raw: Path, n: int = 2) -> dict[str, dict]:
+    """A few listings that ARE in the latest export (Certified, with agencies): their pages must come back live,
+    or the check itself is not working and its results are discarded."""
+    snaps = sorted(raw.glob("products-*.json.gz"))
+    prods = [p for p in load(snaps[-1]) if str(p.get("status", "")).startswith("FedRAMP Certified")
+             and p.get("agency_authorizations")]
+    prods.sort(key=lambda p: -len(p.get("agency_authorizations") or []))
+    return {p["id"]: p for p in prods[:n]}
+
+
 def dropped(raw: Path) -> tuple[str, dict[str, dict]]:
     snaps = sorted(raw.glob("products-*.json.gz"))
     if len(snaps) < 2:
@@ -81,12 +91,16 @@ def check(gone: dict[str, dict], timeout_s: int) -> tuple[dict, list[dict]]:
 
         def on_list(resp):
             try:
-                if "json" not in resp.headers.get("content-type", ""):
+                ctype = resp.headers.get("content-type", "")
+                if resp.request.resource_type in ("xhr", "fetch") or "json" in ctype:
+                    lists.append({"url": resp.url.split("?")[0], "status": resp.status, "type": ctype[:40], "records": None})
+                if "json" not in ctype:
                     return
                 prods = products_in(resp.json())
             except Exception:
                 return
             if prods:
+                lists.pop()
                 ids = {str(p.get("id")) for p in prods}
                 lists.append({"url": resp.url.split("?")[0], "records": len(prods),
                               "dropped_present": sorted(i for i in gone if i in ids)})
@@ -147,11 +161,14 @@ def check(gone: dict[str, dict], timeout_s: int) -> tuple[dict, list[dict]]:
                 if not r["page_impact"]:
                     m = IMPACT_RE.search(text)
                     r["page_impact"] = m.group(1) if m else ""
-                if (r["http_status"] or 200) >= 400:
-                    r["page"] = "missing"
-                elif r["name_on_page"] or seen_json.get("rec") or pid in text:
+                r["title"] = page.title()[:120]
+                r["final_url"] = page.url
+                r["snippet"] = re.sub(r"\s+", " ", text)[:300]
+                # Decide on what the page shows, not the HTTP status: the marketplace is built in the browser
+                # and may answer 404 for a product URL and then render the product anyway.
+                if r["name_on_page"] or seen_json.get("rec"):
                     r["page"] = "live"
-                elif NOT_FOUND_RE.search(text):
+                elif NOT_FOUND_RE.search(text) or not text.strip():
                     r["page"] = "missing"
             except Exception as e:  # keep going; one bad page should not lose the rest
                 r["error"] = f"{type(e).__name__}: {str(e)[:200]}"
@@ -174,13 +191,26 @@ def main() -> None:
     if not gone:
         print("check: no dropped listings")
         return
-    results, lists = check(gone, args.timeout)
+    ctl = controls(args.raw)
+    results, lists = check({**gone, **ctl}, args.timeout)
+    ctl_res = {i: results.pop(i) for i in ctl}
+    ok = all(r["page"] == "live" for r in ctl_res.values())
+    for i, r in ctl_res.items():
+        print(f"check: control {i} ({ctl[i].get('cso')}) -> {r['page']} http {r.get('http_status')}")
+    if not ok:
+        # The check could not see a listing that is certainly live, so it cannot see anything: mark every result
+        # inconclusive rather than record 31 false "missing" findings.
+        for r in results.values():
+            r["page"] = "unknown"
+            r["note"] = "control listing did not load as live; result discarded"
+        print("check: controls failed; all results marked unknown")
     listings = prior.get("listings", {})
     for pid, r in results.items():
         if r["page"] == "unknown" and pid in listings and listings[pid].get("page") != "unknown":
             continue   # keep the last conclusive result rather than overwrite it with a failed check
         listings[pid] = r
     out = {"snapshot": snap, "checked": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+           "controls": ctl_res, "controls_ok": ok,
            "list_responses": lists, "listings": dict(sorted(listings.items()))}
     args.out.write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n")
     live = sum(1 for r in results.values() if r["page"] == "live")
