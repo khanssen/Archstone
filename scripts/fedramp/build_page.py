@@ -1219,7 +1219,16 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
             succ_txt = (f' Successor {link(sid)}: {esc(h["succ_status"])}'
                         f'{", " + esc(h["succ_impact"]) if h["succ_impact"] and h["succ_impact"] != "Unknown" else ""}'
                         f', {h["succ_agencies"]} {"agency" if h["succ_agencies"] == 1 else "agencies"} in the current export.' if sid else "")
-            return (f'<div class="hist-body"><p>Listing {link(h["id"])} (that page may no longer resolve). '
+            c = r.get("check")
+            if c and c.get("page") == "live":
+                chk = (f' <b>Product page checked {c["checked"]}: live</b>, showing {esc(c.get("page_status") or "no status")}'
+                       f'{", as of " + c["page_as_of"] if c.get("page_as_of") else ""}'
+                       f'{", " + esc(c["page_impact"]) if c.get("page_impact") else ""}.')
+            elif c and c.get("page") == "missing":
+                chk = f' Product page checked {c["checked"]}: not found.'
+            else:
+                chk = ""
+            return (f'<div class="hist-body"><p>Listing {link(h["id"])}{"" if c and c.get("page") == "live" else " (that page may no longer resolve)"}.{chk} '
                     f'Status date on the record: {h["status_date"] or "none"}.{succ_txt}</p>'
                     f'<div class="hist-grid"><div><h4>In Archstone\'s dated snapshots of the export</h4>'
                     f'<table class="hist-t"><thead><tr><th class="n">Snapshots</th><th>{esc(h["id"])}</th>'
@@ -1246,20 +1255,28 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         def why(r):
             if r["kind"] == "superseded":
                 return f'Superseded: authorized as {esc(r["successor"])}'
-            return f'Transient: in the export {r["first_seen"]} to {r["last_seen"]} only'
+            if r["kind"] == "on_page":
+                c = r["check"]
+                st = esc(c.get("page_status") or "status not shown")
+                asof = f', as of {c["page_as_of"]}' if c.get("page_as_of") else ""
+                return f'Missing from the export; product page live ({st}{asof}), checked {c["checked"]}'
+            return f'Brief appearance: in the export {r["first_seen"]} to {r["last_seen"]} only'
 
         other_html = ""
         if other:
             n_sup = sum(1 for r in other if r["kind"] == "superseded")
-            n_tr = len(other) - n_sup
+            n_pg = sum(1 for r in other if r["kind"] == "on_page")
+            n_tr = len(other) - n_sup - n_pg
             parts = []
             if n_sup:
-                parts.append(f'{n_sup} {"is an older listing" if n_sup == 1 else "are older listings"} for a product that is now authorized under a newer listing with the same ID plus a suffix')
+                parts.append(f'<b>Superseded ({n_sup}):</b> the provider holds a FedRAMP Certified listing under the same marketplace ID with a suffix added, which is how the marketplace records an uplift or re-authorization; the older listing was never updated.')
+            if n_pg:
+                parts.append(f'<b>Product page live ({n_pg}):</b> the listing is missing from the marketplace export, but its own product page on the marketplace is still up and shows the status given in the row. The export and the site disagree; these are not treated as removals.')
             if n_tr:
-                parts.append(f'{n_tr} {"was" if n_tr == 1 else "were"} absent from the first snapshot and in the export for under {TRANSIENT_DAYS} days')
+                parts.append(f'<b>Brief appearance ({n_tr}):</b> the listing was not in the export when tracking began and was gone again within {TRANSIENT_DAYS} days. Most are "In Process" records whose last recorded update is years old.')
             rows_o = "".join(rm_row(r, f'<td>{why(r)}</td>') for r in sorted(other, key=lambda r: (r["kind"], r["product"].lower())))
             other_html = f"""<h3>Not counted as removals ({len(other)})</h3>
-      <p class="note">These listings dropped out of the export, but the product did not leave the marketplace in any meaningful sense: {"; ".join(parts)}. Most of them are years-old "In Process" records that first appeared in the Oct 20, 2026 export and were gone by Oct 26.</p>
+      <p class="note">These listings are missing from the current export but are not counted as removals. {" ".join(parts)} The export does not say why a listing appears or is withdrawn, and this page does not infer either; open a row's history for the evidence.</p>
       <div class="tbl"><table>
         <thead><tr><th>Product</th><th>Track</th><th>Status when last seen</th><th class="n">Authorized</th><th class="n">Agencies</th><th>Why not counted</th><th class="n">Last seen</th></tr></thead>
         <tbody>{rows_o}</tbody>
@@ -1563,15 +1580,18 @@ def removal_history(pid: str, rec: dict, succ: dict | None, states: list[tuple[s
 TRANSIENT_DAYS = 14
 
 
-def find_removed(raw_dir: Path, current: Path, products: list[dict], grc: set[str]) -> list[dict]:
+def find_removed(raw_dir: Path, current: Path, products: list[dict], grc: set[str], checks: dict | None = None) -> list[dict]:
     """Listings present in an earlier snapshot and absent from the current one, with their last-seen state.
 
     Each row carries "kind":
       removed     - counted as a removal
       superseded  - a current listing with the same ID plus a suffix (e.g. F1403283529 -> F1403283529A)
                     is authorized; the product is still on the marketplace under the newer listing
+      on_page     - missing from the export, but its product page on the marketplace is live
+                    (checked by check_dropped.py; the export and the site disagree)
       transient   - first seen after the earliest snapshot and gone again within TRANSIENT_DAYS
     """
+    checks = checks or {}
     from datetime import date as _date
     by_id = {p["id"]: p for p in products}
     cur_date = snapshot_date(current)
@@ -1603,8 +1623,11 @@ def find_removed(raw_dir: Path, current: Path, products: list[dict], grc: set[st
         days = (_date.fromisoformat(d) - _date.fromisoformat(first_seen[pid])).days
         r["successor_id"] = succ[0]["id"] if succ else ""
         r["history"] = removal_history(pid, p, succ[0] if succ else None, states + [(cur_date, {i: str(q.get("status") or "") for i, q in by_id.items()})])
+        r["check"] = checks.get(pid)
         if succ:
             r["kind"], r["successor"] = "superseded", succ[0].get("cso") or succ[0]["id"]
+        elif r["check"] and r["check"].get("page") == "live":
+            r["kind"], r["successor"] = "on_page", ""
         elif first_seen[pid] > first_snap and days < TRANSIENT_DAYS:
             r["kind"], r["successor"] = "transient", ""
         else:
@@ -1907,6 +1930,7 @@ def main() -> None:
     ap.add_argument("--nav-source", type=Path, help="page whose top navigation is copied (the homepage)")
     ap.add_argument("--ai", type=Path, help="AI provider classification list (applied to 20x only)")
     ap.add_argument("--raw-dir", type=Path, help="directory of earlier snapshots, to find listings removed since")
+    ap.add_argument("--dropped-checks", type=Path, help="product-page checks from check_dropped.py (optional)")
     ap.add_argument("--checked", help="date the marketplace was last checked (YYYY-MM-DD); defaults to the snapshot date")
     args = ap.parse_args()
 
@@ -1925,7 +1949,10 @@ def main() -> None:
     a["checked"] = args.checked or snap
     a["carried"] = carried
     a["grc_date"] = grc_feed.get("updated") or snap
-    a["removed"] = find_removed(args.raw_dir, args.snapshot, products, grc) if args.raw_dir else []
+    checks = {}
+    if args.dropped_checks and args.dropped_checks.exists():
+        checks = json.loads(args.dropped_checks.read_text()).get("listings", {})
+    a["removed"] = find_removed(args.raw_dir, args.snapshot, products, grc, checks) if args.raw_dir else []
     snaps = sorted(args.raw_dir.glob("products-*.json.gz")) if args.raw_dir else []
     a["tracking_since"] = snapshot_date(snaps[0]) if snaps else ""
 
