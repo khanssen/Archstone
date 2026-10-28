@@ -723,8 +723,8 @@ th .flt{display:block;width:100%;min-width:4.5rem;margin-top:var(--s-1);font:inh
 th.n .flt{text-align:left}
 th .flt.on{border-color:var(--ink);font-weight:600}
 .hist-btn{margin-top:var(--s-1);font:inherit;font-size:var(--t-micro);font-family:var(--mono);letter-spacing:.04em;color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:4px;padding:1px 8px;cursor:pointer}
-.hist-btn::after{content:" \25B8"}
-.hist-btn[aria-expanded="true"]::after{content:" \25BE"}
+.hist-btn::after{content:" ▸"}
+.hist-btn[aria-expanded="true"]::after{content:" ▾"}
 tr.hist>td{background:var(--bg,transparent);padding:var(--s-3)}
 .hist-body{position:sticky;left:0;max-width:calc(100vw - 7rem)}
 .hist-body p{margin:0 0 var(--s-2)}
