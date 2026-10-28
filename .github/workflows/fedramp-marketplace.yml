@@ -59,6 +59,11 @@ jobs:
         continue-on-error: true
         run: python scripts/fedramp/fetch_marketplace.py --raw data/fedramp/raw --inbox data/fedramp/inbox
 
+      - name: Check product pages of listings missing from the export
+        # Evidence for the removals section: is the listing's own marketplace page still up?
+        continue-on-error: true
+        run: python scripts/fedramp/check_dropped.py --raw data/fedramp/raw --out data/fedramp/dropped-checks.json
+
       - name: Rebuild page from latest snapshot
         env:
           FETCHED: ${{ steps.fetch.outcome }}
@@ -81,6 +86,7 @@ jobs:
             --out fedramp-20x-adoption \
             --history data/fedramp/history.csv \
             --raw-dir data/fedramp/raw \
+            --dropped-checks data/fedramp/dropped-checks.json \
             --feature-target fedramp.html \
             --checked "$CHECKED"
 
