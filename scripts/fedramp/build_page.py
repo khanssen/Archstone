@@ -1171,15 +1171,46 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
 
     removed_html = ""
     if a.get("removed"):
-        rm = a["removed"]
+        allrm = a["removed"]
+        rm = [r for r in allrm if r["kind"] == "removed"]
+        other = [r for r in allrm if r["kind"] != "removed"]
         rm20 = [r for r in rm if r["track"] == "20x"]
         rmc = [r for r in rm if r["certified"]]
         since_txt = f' since {fmt_date(a["tracking_since"])}' if a.get("tracking_since") else ""
-        rows_rm = "".join(
-            f'<tr><td>{esc(r["product"])}<br><span class="hide-sm" style="color:var(--ink-soft)">{esc(r["csp"])}</span></td>'
-            f'<td>{esc(trk(r["cert_type"]))}</td><td>{esc(r["status"])}</td><td class="n">{r["date"] or "—"}</td>'
-            f'<td class="n{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</td><td class="n">{r["last_seen"]}</td></tr>'
-            for r in rm)
+
+        def rm_row(r, extra=""):
+            return (f'<tr><td>{esc(r["product"])}<br><span class="hide-sm" style="color:var(--ink-soft)">{esc(r["csp"])}</span></td>'
+                    f'<td>{esc(trk(r["cert_type"]))}</td><td>{esc(r["status"])}</td><td class="n">{r["date"] or "—"}</td>'
+                    f'<td class="n{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</td>{extra}<td class="n">{r["last_seen"]}</td></tr>')
+
+        rows_rm = "".join(rm_row(r) for r in rm)
+        main_tbl = (f"""<div class="tbl"><table>
+        <thead><tr><th>Product</th><th>Track</th><th>Status when last seen</th><th class="n">Authorized</th><th class="n">Agencies</th><th class="n">Last seen</th></tr></thead>
+        <tbody>{rows_rm}</tbody>
+      </table></div>""" if rm else "")
+
+        def why(r):
+            if r["kind"] == "superseded":
+                return f'Superseded: authorized as {esc(r["successor"])}'
+            return f'Transient: in the export {r["first_seen"]} to {r["last_seen"]} only'
+
+        other_html = ""
+        if other:
+            n_sup = sum(1 for r in other if r["kind"] == "superseded")
+            n_tr = len(other) - n_sup
+            parts = []
+            if n_sup:
+                parts.append(f'{n_sup} {"is an older listing" if n_sup == 1 else "are older listings"} for a product that is now authorized under a newer listing with the same ID plus a suffix')
+            if n_tr:
+                parts.append(f'{n_tr} {"was" if n_tr == 1 else "were"} absent from the first snapshot and in the export for under {TRANSIENT_DAYS} days')
+            rows_o = "".join(rm_row(r, f'<td>{why(r)}</td>') for r in sorted(other, key=lambda r: (r["kind"], r["product"].lower())))
+            other_html = f"""<h3>Not counted as removals ({len(other)})</h3>
+      <p class="note">These listings dropped out of the export, but the product did not leave the marketplace in any meaningful sense: {"; ".join(parts)}. Most of them are years-old "In Process" records that first appeared in the Oct 20, 2026 export and were gone by Oct 26.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Product</th><th>Track</th><th>Status when last seen</th><th class="n">Authorized</th><th class="n">Agencies</th><th>Why not counted</th><th class="n">Last seen</th></tr></thead>
+        <tbody>{rows_o}</tbody>
+      </table></div>"""
+
         removed_html = f"""<section class="fig wide" id="removed">
       <h2>Removed from the marketplace</h2>
       <div class="big">
@@ -1187,11 +1218,9 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         <div><span class="num{" gap" if rm20 else ""}">{len(rm20)}</span><span class="lbl">of them on the 20x track</span></div>
         <div><span class="num">{len(rmc)}</span><span class="lbl">of them had been authorized</span></div>
       </div>
-      <p class="note">Listings that appeared in an earlier snapshot of the marketplace export and are missing from the current one, with their status as last seen. Snapshots have been kept{since_txt}, so removals before then are not visible. The export does not say why a listing was removed.</p>
-      <div class="tbl"><table>
-        <thead><tr><th>Product</th><th>Track</th><th>Status when last seen</th><th class="n">Authorized</th><th class="n">Agencies</th><th class="n">Last seen</th></tr></thead>
-        <tbody>{rows_rm}</tbody>
-      </table></div>
+      <p class="note">Listings that appeared in an earlier snapshot of the marketplace export and are missing from the current one, with their status as last seen. A listing is not counted if a newer listing for the same product (same ID plus a suffix) is authorized, or if it was absent from the first snapshot and in the export for under {TRANSIENT_DAYS} days; those are listed separately below. Snapshots have been kept{since_txt}, so removals before then are not visible. The export does not say why a listing was removed.</p>
+      {main_tbl}
+      {other_html}
       {prov(a, digest, "comparison of dated marketplace snapshots")}
     </section>
 """
@@ -1449,10 +1478,26 @@ def carry_categories(raw_dir: Path, current: Path, products: list[dict]) -> dict
     return {"filled": filled, "from": max(src) if src else "", "prev_date": snapshot_date(earlier[-1])}
 
 
+# A listing that first appears after tracking began and is gone again within this many
+# days is treated as a transient export record, not a removal. The Oct 20, 2026 export
+# briefly carried ~20 years-old "In Process" records that were absent on Oct 16 and gone by Oct 26.
+TRANSIENT_DAYS = 14
+
+
 def find_removed(raw_dir: Path, current: Path, products: list[dict], grc: set[str]) -> list[dict]:
-    """Listings present in an earlier snapshot and absent from the current one, with their last-seen state."""
-    now_ids = {p["id"] for p in products}
+    """Listings present in an earlier snapshot and absent from the current one, with their last-seen state.
+
+    Each row carries "kind":
+      removed     - counted as a removal
+      superseded  - a current listing with the same ID plus a suffix (e.g. F1403283529 -> F1403283529A)
+                    is authorized; the product is still on the marketplace under the newer listing
+      transient   - first seen after the earliest snapshot and gone again within TRANSIENT_DAYS
+    """
+    from datetime import date as _date
+    by_id = {p["id"]: p for p in products}
     cur_date = snapshot_date(current)
+    first_snap = ""
+    first_seen: dict[str, str] = {}
     last_seen: dict[str, tuple[str, dict]] = {}
     for f in sorted(raw_dir.glob("products-*.json.gz")):
         d = snapshot_date(f)
@@ -1462,13 +1507,25 @@ def find_removed(raw_dir: Path, current: Path, products: list[dict], grc: set[st
             prods, _ = load_snapshot(f)
         except SystemExit:
             continue
+        first_snap = first_snap or d
         for p in prods:
-            if p["id"] not in now_ids:
+            if p["id"] not in by_id:
+                first_seen.setdefault(p["id"], d)
                 last_seen[p["id"]] = (d, p)
     out = []
     for pid, (d, p) in last_seen.items():
         r = normalise(p, grc)
         r["last_seen"] = d
+        r["first_seen"] = first_seen[pid]
+        succ = sorted((q for i, q in by_id.items() if i != pid and i.startswith(pid)
+                       and str(q.get("status") or "").startswith("FedRAMP Certified")), key=lambda q: q["id"])
+        days = (_date.fromisoformat(d) - _date.fromisoformat(first_seen[pid])).days
+        if succ:
+            r["kind"], r["successor"] = "superseded", succ[0].get("cso") or succ[0]["id"]
+        elif first_seen[pid] > first_snap and days < TRANSIENT_DAYS:
+            r["kind"], r["successor"] = "transient", ""
+        else:
+            r["kind"], r["successor"] = "removed", ""
         out.append(r)
     out.sort(key=lambda r: (r["track"] != "20x", not r["certified"], r["product"].lower()))
     return out
@@ -1572,7 +1629,7 @@ def render_feature(a: dict) -> str:
     slides.append((f'{mk["atos"]:,}', f'agency ATOs across {mk["products"]} authorized products', "FedRAMP at scale", N,
                    f'The most relied-on product on the marketplace is {top["product"]} ({top["csp"]}), '
                    f'with {top["n_agencies"]} agencies.', "agencies"))
-    rm20 = [r for r in a.get("removed", []) if r["track"] == "20x"]
+    rm20 = [r for r in a.get("removed", []) if r["track"] == "20x" and r["kind"] == "removed"]
     if rm20:
         slides.append((str(len(rm20)), "20x listings removed from the marketplace", "Attrition", A,
                        f'{len(rm20)} 20x listings have dropped off the marketplace since tracking began, '
@@ -1666,7 +1723,7 @@ def update_history(a: dict, digest: str, path: Path) -> None:
         "x20_agency_atos": a["tw_stats"]["atos"], "grc_authorized": a["grc_stats"]["n"],
         "grc_with_agency": a["grc_stats"]["with"], "x20_in_process": a["pipeline"]["n"],
         "rev5_since_first_20x": a["rev5_since"]["n"], "rev5_since_with_agency": a["rev5_since"]["with"],
-        "x20_removed_total": sum(1 for r in a.get("removed", []) if r["track"] == "20x"),
+        "x20_removed_total": sum(1 for r in a.get("removed", []) if r["track"] == "20x" and r["kind"] == "removed"),
     })
     rows.sort(key=lambda r: r["snapshot"])
     path.parent.mkdir(parents=True, exist_ok=True)
