@@ -711,14 +711,24 @@ tr.grp td{font-weight:600;color:var(--ink);border-bottom-color:var(--rule-strong
 .tag.grc{color:var(--gap)}
 .tag.ag{color:var(--referent)}
 .list{max-height:34rem;overflow:auto;border:1px solid var(--rule);border-radius:6px}
-.list th{position:sticky;top:0;background:var(--surface)}
+.list th{position:sticky;top:0;background:var(--surface);z-index:1}
+[data-filter] table{min-width:640px}
+[data-filter] .hide-sm{display:table-cell}
+[data-filter] td.small{min-width:20rem}
+[data-filter] td[data-v*="|"]{min-width:12rem}
+.fbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2) var(--s-3);margin:var(--s-3) 0 var(--s-2);font-size:var(--t-small);color:var(--ink-soft)}
+.fbar button{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:4px;padding:2px 10px;cursor:pointer}
+.fbar button[hidden]{display:none}
+th .flt{display:block;width:100%;min-width:4.5rem;margin-top:var(--s-1);font:inherit;font-weight:400;font-size:var(--t-micro);color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:4px;padding:2px 4px}
+th.n .flt{text-align:left}
+th .flt.on{border-color:var(--ink);font-weight:600}
 section.read{margin-top:var(--s-6)}
 section.read h2{margin:0 0 var(--s-3)}
 section.read ul{margin:0;padding-left:1.1rem;display:grid;gap:var(--s-2);color:var(--ink-soft)}
 section.read li b{color:var(--ink);font-weight:600}
 footer{margin-top:var(--s-6);padding-top:var(--s-3);border-top:1px solid var(--rule);font-size:var(--t-small);color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-5)}
 footer a{color:var(--ink-soft)}
-@media (max-width:640px){.hide-sm{display:none}}
+@media (max-width:640px){.hide-sm{display:none}[data-filter] .hide-sm{display:table-cell}}
 """
 
 
@@ -1006,7 +1016,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         f'<tr><td>{esc(d["label"])}</td><td class="n">{len(d["auth"])}</td>'
         f'<td class="n{" zero" if d["auth"] and d["with"] == 0 else ""}">{d["with"]}</td>'
         f'<td class="n">{d["grc"]}</td><td class="n">{len(d["proc"])}</td>'
-        f'<td class="hide-sm small">{prod_list(d["auth"])}</td></tr>' for d in at["rows"])
+        f'<td class="hide-sm small" data-v="{esc("|".join(r["product"] for r in d["auth"]))}">{prod_list(d["auth"])}</td></tr>' for d in at["rows"])
     n_auth_3pao = sum(1 for d in at["rows"] if d["auth"])
     n_proc_only = sum(1 for d in at["rows"] if not d["auth"])
     ua = at["unassessed"]
@@ -1046,11 +1056,11 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         if p["grc"]:
             tags.append('<span class="tag grc">GRC</span>')
         list_rows.append(
-            f'<tr><td class="n">{p["date"] or "—"}</td><td>{esc(p["product"])} {" ".join(tags)}</td>'
+            f'<tr><td class="n">{p["date"] or "—"}</td><td data-v="{esc(p["product"])}">{esc(p["product"])} {" ".join(tags)}</td>'
             f'<td class="hide-sm">{esc(p["csp"])}</td><td class="hide-sm">{esc(p["cert_type"])}</td>'
             f'<td class="hide-sm">{esc(p["cls"])}</td><td class="hide-sm">{esc(p["impact"])}</td>'
             f'<td class="n{" zero" if p["n_agencies"] == 0 else ""}">{p["n_agencies"]}</td>'
-            f'<td class="hide-sm">{esc("; ".join(p["agencies"])) or "—"}</td>'
+            f'<td class="hide-sm" data-v="{esc("|".join(p["agencies"]) or "—")}">{esc("; ".join(p["agencies"])) or "—"}</td>'
             f'<td class="hide-sm">{esc(p["assessor"]) or "—"}</td></tr>')
 
     def class_row(name, sub, st, total=False):
@@ -1322,7 +1332,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       <p class="note">Share of products that are governance, risk and compliance tools, counted two ways. The <b>self-declared tag</b> is the "Governance, Risk, and Compliance (GRC)" business category providers choose for their own marketplace listing; it applies to both tracks the same way. The <b>classification feed</b> is a separately maintained list of providers whose product is compliance automation (feed data as of {fmt_date(a["grc_date"])}); it catches vendors that did not tag themselves, and is applied here to authorized 20x products only.{carry_note}</p>
       <div class="cls">{grc_rows}</div>
       <h3 class="sub">Authorized 20x products counted as GRC, by either method</h3>
-      <div class="tbl"><table>
+      <div class="list tbl" data-filter><table>
         <thead><tr><th>Product</th><th class="hide-sm">Provider</th><th class="n">Authorized</th><th class="ck">Self-tagged</th><th class="ck">Classified</th><th class="n">Agencies</th></tr></thead>
         <tbody>{grc_prod_rows}</tbody>
       </table></div>
@@ -1370,7 +1380,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         <div><span class="num">{len(ua)}</span><span class="lbl">authorized 20x products list no recognized assessor</span></div>
       </div>
       <p class="note">The assessor each provider names on its marketplace listing, matched to FedRAMP's directory of recognized assessors. For listings still in process the name is the provider's own statement and can change before authorization. "With agency ATO" excludes the FedRAMP PMO.</p>
-      <div class="tbl"><table>
+      <div class="list tbl" data-filter><table>
         <thead><tr><th>3PAO</th><th class="n">20x authorized</th><th class="n">With agency ATO</th><th class="n">GRC-vendor clients</th><th class="n">In process</th><th class="hide-sm">Authorized products</th></tr></thead>
         <tbody>{asr_rows or '<tr><td colspan="6">No 20x listing names a recognized assessor.</td></tr>'}</tbody>
       </table></div>
@@ -1401,7 +1411,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
     <section class="fig wide" id="list">
       <h2>All authorized 20x products</h2>
       <p class="note">Products with an agency ATO first, then by authorization date.</p>
-      <div class="list tbl"><table>
+      <div class="list tbl" data-filter><table>
         <thead><tr><th class="n">Authorized</th><th>Product</th><th class="hide-sm">Provider</th><th class="hide-sm">Track</th><th class="hide-sm">Class</th><th class="hide-sm">Impact</th><th class="n">Agencies</th><th class="hide-sm">Which</th><th class="hide-sm">Assessor</th></tr></thead>
         <tbody>{"".join(list_rows)}</tbody>
       </table></div>
@@ -1435,6 +1445,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
   </footer>
 </main>
 {NAV_JS}
+{FILTER_JS}
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "bbb997af2e1e46c4bfc0f95ebff155db"}}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
@@ -1533,6 +1544,78 @@ def find_removed(raw_dir: Path, current: Path, products: list[dict], grc: set[st
 
 FEATURE_START = "<!-- 20x-feature:start (generated by scripts/fedramp/build_page.py; do not edit by hand) -->"
 FEATURE_END = "<!-- 20x-feature:end -->"
+
+FILTER_JS = """<script>
+(function () {
+  function vals(td) {
+    if (td.hasAttribute('data-v')) return td.getAttribute('data-v').split('|').map(function (v) { return v.trim(); }).filter(Boolean);
+    var c = td.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll('.tag'), function (t) { t.remove(); });
+    return [c.textContent.replace(/\\s+/g, ' ').trim()];
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-filter]'), function (box) {
+    var table = box.querySelector('table');
+    var heads = Array.prototype.slice.call(table.tHead.rows[0].cells);
+    var rows = Array.prototype.slice.call(table.tBodies[0].rows).filter(function (r) { return r.cells.length === heads.length; });
+    if (rows.length < 2) return;
+    var data = rows.map(function (r) { return Array.prototype.map.call(r.cells, vals); });
+    var bar = document.createElement('div');
+    bar.className = 'fbar';
+    var count = document.createElement('span');
+    count.setAttribute('aria-live', 'polite');
+    var clear = document.createElement('button');
+    clear.type = 'button';
+    clear.textContent = 'Clear filters';
+    clear.hidden = true;
+    bar.appendChild(count);
+    bar.appendChild(clear);
+    box.parentNode.insertBefore(bar, box);
+    var ctrls = heads.map(function (th, ci) {
+      var label = th.textContent.trim();
+      var seen = {};
+      data.forEach(function (d) { d[ci].forEach(function (v) { seen[v] = 1; }); });
+      var opts = Object.keys(seen);
+      var numeric = opts.every(function (v) { return v === '—' || !isNaN(+v); });
+      var el;
+      if (opts.length <= 30 || numeric) {
+        opts.sort(function (a, b) { return numeric ? (a === '—' ? -1 : b === '—' ? 1 : a - b) : a.localeCompare(b); });
+        el = document.createElement('select');
+        el.add(new Option('All', ''));
+        opts.forEach(function (v) { el.add(new Option(v, v)); });
+      } else {
+        el = document.createElement('input');
+        el.type = 'search';
+        el.placeholder = 'Contains…';
+      }
+      el.className = 'flt';
+      el.setAttribute('aria-label', 'Filter by ' + label);
+      el.addEventListener('click', function (e) { e.stopPropagation(); });
+      el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', apply);
+      th.appendChild(el);
+      return el;
+    });
+    function apply() {
+      var shown = 0, active = false;
+      ctrls.forEach(function (el) { el.classList.toggle('on', !!el.value); if (el.value) active = true; });
+      rows.forEach(function (r, ri) {
+        var ok = ctrls.every(function (el, ci) {
+          if (!el.value) return true;
+          var vs = data[ri][ci];
+          if (el.tagName === 'SELECT') return vs.indexOf(el.value) >= 0;
+          var q = el.value.toLowerCase();
+          return vs.some(function (v) { return v.toLowerCase().indexOf(q) >= 0; });
+        });
+        r.hidden = !ok;
+        if (ok) shown++;
+      });
+      count.textContent = active ? 'Showing ' + shown + ' of ' + rows.length : rows.length + ' rows';
+      clear.hidden = !active;
+    }
+    clear.addEventListener('click', function () { ctrls.forEach(function (el) { el.value = ''; }); apply(); });
+    apply();
+  });
+})();
+</script>"""
 
 CAROUSEL_JS = """<script>
 (function () {
