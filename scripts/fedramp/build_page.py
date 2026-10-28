@@ -722,6 +722,21 @@ tr.grp td{font-weight:600;color:var(--ink);border-bottom-color:var(--rule-strong
 th .flt{display:block;width:100%;min-width:4.5rem;margin-top:var(--s-1);font:inherit;font-weight:400;font-size:var(--t-micro);color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:4px;padding:2px 4px}
 th.n .flt{text-align:left}
 th .flt.on{border-color:var(--ink);font-weight:600}
+.hist-btn{margin-top:var(--s-1);font:inherit;font-size:var(--t-micro);font-family:var(--mono);letter-spacing:.04em;color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:4px;padding:1px 8px;cursor:pointer}
+.hist-btn::after{content:" \25B8"}
+.hist-btn[aria-expanded="true"]::after{content:" \25BE"}
+tr.hist>td{background:var(--bg,transparent);padding:var(--s-3)}
+.hist-body{position:sticky;left:0;max-width:calc(100vw - 7rem)}
+.hist-body p{margin:0 0 var(--s-2)}
+.hist-body h4{margin:0 0 var(--s-1);font-size:var(--t-small);font-weight:600}
+.hist-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s-4)}
+@media (max-width:760px){.hist-grid{grid-template-columns:1fr}}
+.hist-t{font-size:var(--t-micro)}
+.hist-t td,.hist-t th{padding:2px var(--s-2)}
+.hist-body .abs{color:var(--ink-soft);font-style:italic}
+.hist-body ul.ev{margin:0;padding-left:1rem;font-size:var(--t-micro);display:grid;gap:2px}
+.hist-body .d{font-family:var(--mono)}
+.hist-body .src{font-size:var(--t-micro);color:var(--ink-soft);margin-top:var(--s-2)}
 section.read{margin-top:var(--s-6)}
 section.read h2{margin:0 0 var(--s-3)}
 section.read ul{margin:0;padding-left:1.1rem;display:grid;gap:var(--s-2);color:var(--ink-soft)}
@@ -1188,10 +1203,39 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         rmc = [r for r in rm if r["certified"]]
         since_txt = f' since {fmt_date(a["tracking_since"])}' if a.get("tracking_since") else ""
 
+        def hist_html(r):
+            h = r["history"]
+            sid = h["successor_id"]
+            def link(i):
+                return f'<a href="{MARKETPLACE_URL}{esc(i)}/" rel="noopener"><code>{esc(i)}</code></a>'
+            def st(v):
+                return esc(v) if v else '<span class="abs">not in export</span>'
+            runs = "".join(
+                f'<tr><td class="n">{x["from"]}{"" if x["to"] == x["from"] else " – " + x["to"]}</td><td>{st(x["state"][0])}</td>'
+                + (f'<td>{st(x["state"][1])}</td>' if sid else "") + '</tr>' for x in h["runs"])
+            evs = "".join(
+                f'<li><span class="d">{e["date"]}</span> <code>{esc(e["id"])}</code> {esc(e["text"])}</li>' for e in h["events"]) \
+                or "<li>No status changes recorded on the listing.</li>"
+            succ_txt = (f' Successor {link(sid)}: {esc(h["succ_status"])}'
+                        f'{", " + esc(h["succ_impact"]) if h["succ_impact"] and h["succ_impact"] != "Unknown" else ""}'
+                        f', {h["succ_agencies"]} {"agency" if h["succ_agencies"] == 1 else "agencies"} in the current export.' if sid else "")
+            return (f'<div class="hist-body"><p>Listing {link(h["id"])} (that page may no longer resolve). '
+                    f'Status date on the record: {h["status_date"] or "none"}.{succ_txt}</p>'
+                    f'<div class="hist-grid"><div><h4>In Archstone\'s dated snapshots of the export</h4>'
+                    f'<table class="hist-t"><thead><tr><th class="n">Snapshots</th><th>{esc(h["id"])}</th>'
+                    + (f'<th>{esc(sid)}</th>' if sid else "") + f'</tr></thead><tbody>{runs}</tbody></table></div>'
+                    f'<div><h4>Status changes recorded on the listing{"s" if sid else ""}</h4><ul class="ev">{evs}</ul></div></div>'
+                    f'<p class="src">Source: FedRAMP Marketplace export, event log fields and Archstone snapshots from {fmt_date(a["tracking_since"])}. '
+                    f'The export does not explain why a listing appears or is withdrawn.</p></div>')
+
         def rm_row(r, extra=""):
-            return (f'<tr><td>{esc(r["product"])}<br><span class="hide-sm" style="color:var(--ink-soft)">{esc(r["csp"])}</span></td>'
+            hid = "h-" + re.sub(r"[^A-Za-z0-9]", "", r["history"]["id"])
+            span = 7 if extra else 6
+            return (f'<tr><td>{esc(r["product"])}<br><span class="hide-sm" style="color:var(--ink-soft)">{esc(r["csp"])}</span>'
+                    f'<br><button type="button" class="hist-btn" aria-expanded="false" aria-controls="{hid}">History</button></td>'
                     f'<td>{esc(trk(r["cert_type"]))}</td><td>{esc(r["status"])}</td><td class="n">{r["date"] or "—"}</td>'
-                    f'<td class="n{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</td>{extra}<td class="n">{r["last_seen"]}</td></tr>')
+                    f'<td class="n{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</td>{extra}<td class="n">{r["last_seen"]}</td></tr>'
+                    f'<tr class="hist" id="{hid}" hidden><td colspan="{span}">{hist_html(r)}</td></tr>')
 
         rows_rm = "".join(rm_row(r) for r in rm)
         main_tbl = (f"""<div class="tbl"><table>
@@ -1489,6 +1533,30 @@ def carry_categories(raw_dir: Path, current: Path, products: list[dict]) -> dict
     return {"filled": filled, "from": max(src) if src else "", "prev_date": snapshot_date(earlier[-1])}
 
 
+def removal_history(pid: str, rec: dict, succ: dict | None, states: list[tuple[str, dict[str, str]]]) -> dict:
+    """Snapshot-by-snapshot presence/status for a dropped listing (and its successor), plus the PMO event logs."""
+    sid = succ["id"] if succ else ""
+    runs: list[dict] = []
+    for d, st in states:
+        cur = (st.get(pid, ""), st.get(sid, "") if sid else "")
+        if runs and runs[-1]["state"] == cur:
+            runs[-1]["to"] = d
+        else:
+            runs.append({"from": d, "to": d, "state": cur})
+    events = []
+    for who, r in ((pid, rec), (sid, succ)):
+        if not r:
+            continue
+        for e in r.get("event_log") or []:
+            events.append({"date": str(e.get("date") or "")[:10], "id": who, "text": str(e.get("description") or e.get("category") or "")})
+    events.sort(key=lambda e: (e["date"], e["id"]))
+    return {"id": pid, "successor_id": sid, "runs": runs, "events": events,
+            "status_date": str(rec.get("status_date") or "")[:10],
+            "succ_status": str(succ.get("status") or "") if succ else "",
+            "succ_impact": str(succ.get("impact_level") or "") if succ else "",
+            "succ_agencies": len(succ.get("agency_authorizations") or []) if succ else 0}
+
+
 # A listing that first appears after tracking began and is gone again within this many
 # days is treated as a transient export record, not a removal. The Oct 20, 2026 export
 # briefly carried ~20 years-old "In Process" records that were absent on Oct 16 and gone by Oct 26.
@@ -1510,6 +1578,7 @@ def find_removed(raw_dir: Path, current: Path, products: list[dict], grc: set[st
     first_snap = ""
     first_seen: dict[str, str] = {}
     last_seen: dict[str, tuple[str, dict]] = {}
+    states: list[tuple[str, dict[str, str]]] = []   # (snapshot date, {id: status}) oldest first
     for f in sorted(raw_dir.glob("products-*.json.gz")):
         d = snapshot_date(f)
         if d >= cur_date:
@@ -1519,6 +1588,7 @@ def find_removed(raw_dir: Path, current: Path, products: list[dict], grc: set[st
         except SystemExit:
             continue
         first_snap = first_snap or d
+        states.append((d, {p["id"]: str(p.get("status") or "") for p in prods}))
         for p in prods:
             if p["id"] not in by_id:
                 first_seen.setdefault(p["id"], d)
@@ -1531,6 +1601,8 @@ def find_removed(raw_dir: Path, current: Path, products: list[dict], grc: set[st
         succ = sorted((q for i, q in by_id.items() if i != pid and i.startswith(pid)
                        and str(q.get("status") or "").startswith("FedRAMP Certified")), key=lambda q: q["id"])
         days = (_date.fromisoformat(d) - _date.fromisoformat(first_seen[pid])).days
+        r["successor_id"] = succ[0]["id"] if succ else ""
+        r["history"] = removal_history(pid, p, succ[0] if succ else None, states + [(cur_date, {i: str(q.get("status") or "") for i, q in by_id.items()})])
         if succ:
             r["kind"], r["successor"] = "superseded", succ[0].get("cso") or succ[0]["id"]
         elif first_seen[pid] > first_snap and days < TRANSIENT_DAYS:
@@ -1613,6 +1685,14 @@ FILTER_JS = """<script>
     }
     clear.addEventListener('click', function () { ctrls.forEach(function (el) { el.value = ''; }); apply(); });
     apply();
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.hist-btn'), function (b) {
+    b.addEventListener('click', function () {
+      var row = document.getElementById(b.getAttribute('aria-controls'));
+      var open = b.getAttribute('aria-expanded') === 'true';
+      b.setAttribute('aria-expanded', open ? 'false' : 'true');
+      row.hidden = open;
+    });
   });
 })();
 </script>"""
