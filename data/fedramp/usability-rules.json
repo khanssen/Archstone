@@ -384,7 +384,7 @@
       ],
       "cuiD": [
         "no",
-        "Not established. It would need its own FedRAMP listing, a FedRAMP Moderate equivalency package, or the {host} package showing significant change testing of its addition."
+        "Not established. It would need its own FedRAMP listing, a FedRAMP Moderate equivalency package, or the {host} package showing significant change testing of its addition. The clause’s incident-reporting and forensic duties (paragraphs (c) through (g)) fall on {service}’s own provider, not only on {host}."
       ]
     },
     "x20p_B": {
