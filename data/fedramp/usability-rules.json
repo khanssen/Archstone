@@ -211,8 +211,8 @@
         "Certified under CR26. The package is available for agency review."
       ],
       "low": [
-        "lev",
-        "FedRAMP presumes Class B adequate for most Low impact agency systems."
+        "dec",
+        "FedRAMP presumes Class B adequate for most Low impact agency systems. That is FedRAMP guidance on the package’s assurance, not equivalence to a FedRAMP Low authorization; the agency decides."
       ],
       "mod": [
         "dec",
@@ -237,12 +237,12 @@
         "Certified under CR26. The package is available for agency review."
       ],
       "low": [
-        "lev",
-        "FedRAMP presumes Class C adequate for most Low impact agency systems."
+        "dec",
+        "FedRAMP presumes Class C adequate for most Low impact agency systems. That is FedRAMP guidance on the package’s assurance, not equivalence to a FedRAMP Low authorization; the agency decides."
       ],
       "mod": [
-        "lev",
-        "FedRAMP presumes Class C adequate for most Moderate impact agency systems."
+        "dec",
+        "FedRAMP presumes Class C adequate for most Moderate impact agency systems. That is FedRAMP guidance on the package’s assurance, not equivalence to a FedRAMP Moderate authorization; the agency decides."
       ],
       "high": [
         "dec",
@@ -263,16 +263,16 @@
         "Certified under CR26. The package is available for agency review."
       ],
       "low": [
-        "lev",
-        "FedRAMP presumes Class D adequate for most agency systems regardless of impact level."
+        "dec",
+        "FedRAMP presumes Class D adequate for most agency systems regardless of impact level. That is FedRAMP guidance on the package’s assurance, not equivalence to a FedRAMP Low authorization; the agency decides."
       ],
       "mod": [
-        "lev",
-        "FedRAMP presumes Class D adequate for most agency systems regardless of impact level."
+        "dec",
+        "FedRAMP presumes Class D adequate for most agency systems regardless of impact level. That is FedRAMP guidance on the package’s assurance, not equivalence to a FedRAMP Moderate authorization; the agency decides."
       ],
       "high": [
-        "lev",
-        "FedRAMP presumes Class D adequate for most agency systems regardless of impact level."
+        "dec",
+        "FedRAMP presumes Class D adequate for most agency systems regardless of impact level. That is FedRAMP guidance on the package’s assurance, not equivalence to a FedRAMP High authorization; the agency decides."
       ],
       "cuiA": [
         "no",
@@ -386,8 +386,61 @@
         "no",
         "Not established. It would need its own FedRAMP listing, a FedRAMP Moderate equivalency package, or the {host} package showing significant change testing of its addition."
       ]
+    },
+    "x20p_B": {
+      "gate": [
+        "lev",
+        "Certified in the FedRAMP 20x pilot; listed as Class B. The package is available for agency review."
+      ],
+      "low": [
+        "dec",
+        "FedRAMP presumes Class B adequate for most Low impact agency systems. Not equivalent to a FedRAMP Low authorization."
+      ],
+      "mod": [
+        "dec",
+        "FedRAMP presumes Class B adequate for some Moderate systems, with compensating controls. Not equivalent to a FedRAMP Moderate authorization."
+      ],
+      "high": [
+        "dec",
+        "FedRAMP presumes Class B adequate for some High systems, with compensating controls. Not equivalent to a FedRAMP High authorization."
+      ],
+      "cuiA": [
+        "no",
+        "No rule recognizes a 20x class for CUI."
+      ],
+      "cuiD": [
+        "no",
+        "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ]
+    },
+    "x20p_C": {
+      "gate": [
+        "lev",
+        "Certified in the FedRAMP 20x pilot; listed as Class C. The package is available for agency review."
+      ],
+      "low": [
+        "dec",
+        "FedRAMP presumes Class C adequate for most Low impact agency systems. Not equivalent to a FedRAMP Low authorization."
+      ],
+      "mod": [
+        "dec",
+        "FedRAMP presumes Class C adequate for most Moderate impact agency systems. Not equivalent to a FedRAMP Moderate authorization."
+      ],
+      "high": [
+        "dec",
+        "FedRAMP presumes Class C adequate for some High systems, with compensating controls. Not equivalent to a FedRAMP High authorization."
+      ],
+      "cuiA": [
+        "no",
+        "No rule recognizes a 20x class for CUI."
+      ],
+      "cuiD": [
+        "no",
+        "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ]
     }
   },
   "hosted_banner": "Listed inside another provider’s authorization. {hostProvider} lists {service} as a service within {host} ({hostId}). The marketplace does not show whether {service} was assessed when it was added. Under CR26, adding a third-party service is a significant change: a third-party assessment of it is recommended, not required, and an assessment report is required only if one was done. Treat {service} as not authorized unless it has its own FedRAMP listing, a FedRAMP Moderate equivalency package, or the {host} package shows significant change testing of its addition. If a vendor gave you {hostId} as this product’s FedRAMP ID, that is the host’s ID, not the product’s.",
-  "host_banner": "Given this ID for a different product? {hostId} is the ID of {host} itself. The products below are listed as services inside it but have no FedRAMP listing of their own, and the ticks on this card do not extend to them. A vendor quoting this ID for one of them is quoting the host’s authorization, not its own."
+  "host_banner": "Given this ID for a different product? {hostId} is the ID of {host} itself. The products below are listed as services inside it but have no FedRAMP listing of their own, and the ticks on this card do not extend to them. A vendor quoting this ID for one of them is quoting the host’s authorization, not its own.",
+  "pilot_banner": "Pilot certification, relabeled {class}. This listing was certified in the FedRAMP 20x pilot on {date}, before certification classes existed; the marketplace later labeled it {class}. FedRAMP’s presumption of adequacy for {class} describes packages built to the CR26 requirements for that class, which this listing was not."
 }
