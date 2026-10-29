@@ -1,10 +1,52 @@
 {
   "_about": "Hand-maintained list of platform listings that host other vendors' products inside their own authorization boundary (FedRAMP-as-a-service / GSS platforms). For each host listing ID, every service on its marketplace service list is treated as a hosted third-party product, except services whose names start with one of own_prefix (the platform's own components). Hosted products get their own search result and a card that marks them not established. Add a host here when a listing starts carrying other vendors' products.",
   "hosts": {
-    "FR2300457485": {"name": "Project Hosts GSS One AWS", "own_prefix": ["GSSOne"]},
-    "F1403283529A": {"name": "Project Hosts GSS One Azure", "own_prefix": ["GSSOne"]},
-    "FR2513256853": {"name": "stackArmor The Armory", "own_prefix": ["The Armory", "Hosted Authorization Landing Zones", "Managed Authorization Landing Zones"]},
-    "FR2528033654": {"name": "Knox Systems FedRAMP High Managed Platform", "own_prefix": []},
-    "F1206111371": {"name": "Knox Systems (Moderate)", "own_prefix": []}
+    "FR2300457485": {
+      "name": "Project Hosts GSS One AWS",
+      "own_prefix": [
+        "GSSOne"
+      ]
+    },
+    "F1403283529A": {
+      "name": "Project Hosts GSS One Azure",
+      "own_prefix": [
+        "GSSOne"
+      ]
+    },
+    "FR2513256853": {
+      "name": "stackArmor The Armory",
+      "own_prefix": [
+        "The Armory",
+        "Hosted Authorization Landing Zones",
+        "Managed Authorization Landing Zones"
+      ]
+    },
+    "FR2528033654": {
+      "name": "Knox Systems FedRAMP High Managed Platform",
+      "own_prefix": []
+    },
+    "F1206111371": {
+      "name": "Knox Systems (Moderate)",
+      "own_prefix": []
+    },
+    "FR2315464863": {
+      "name": "Palantir Federal Cloud Service – Supporting Services (FedStart)",
+      "own_prefix": []
+    },
+    "FR2410866384": {
+      "name": "Second Front 2F Game Warden",
+      "own_prefix": []
+    },
+    "FR2206159758": {
+      "name": "Merlin International Constellation GovCloud",
+      "own_prefix": []
+    },
+    "F1311222650": {
+      "name": "MIS Sciences GovPoint Cloud Services",
+      "own_prefix": [
+        "Private FedRAMP Cloud",
+        "Virtual Desktop Services"
+      ]
+    }
   }
 }
