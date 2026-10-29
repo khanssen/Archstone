@@ -160,23 +160,23 @@
       ],
       "low": [
         "dec",
-        "The marketplace lists no impact level or class. Check the package before relying on it."
+        "The marketplace lists no impact level for this listing, and a class label alone does not establish the baseline. Confirm it in the package before relying on it."
       ],
       "mod": [
         "dec",
-        "The marketplace lists no impact level or class. Check the package before relying on it."
+        "The marketplace lists no impact level for this listing, and a class label alone does not establish the baseline. Confirm it in the package before relying on it."
       ],
       "high": [
         "dec",
-        "The marketplace lists no impact level or class. Check the package before relying on it."
+        "The marketplace lists no impact level for this listing, and a class label alone does not establish the baseline. Confirm it in the package before relying on it."
       ],
       "cuiA": [
         "dec",
-        "Depends on the baseline, which the listing doesn’t state. Confirm it is Moderate or High."
+        "Depends on the baseline, which the listing doesn’t state. Confirm in the package that it is Moderate or High."
       ],
       "cuiD": [
         "dec",
-        "Depends on the baseline, which the listing doesn’t state. Confirm it is Moderate or High."
+        "Depends on the baseline, which the listing doesn’t state. Confirm in the package that it is Moderate or High."
       ]
     },
     "x20_A": {

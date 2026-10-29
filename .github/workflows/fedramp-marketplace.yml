@@ -129,6 +129,15 @@ jobs:
           python scripts/fedramp/flag_hosts.py --old "$PREV" --new "$NEW" \
             --hosted data/fedramp/hosted-services.json --body "$RUNNER_TEMP/hosts.md"
 
+      - name: Look for track changes
+        id: tracks
+        if: steps.fetch.outputs.changed == 'true'
+        run: |
+          PREV=$(ls data/fedramp/raw/products-*.json.gz | sort | tail -n 2 | head -n 1)
+          NEW=$(ls data/fedramp/raw/products-*.json.gz | sort | tail -n 1)
+          if [ "$PREV" = "$NEW" ]; then echo "found=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          python scripts/fedramp/track_changes.py --old "$PREV" --new "$NEW" --body "$RUNNER_TEMP/tracks.md"
+
       - name: Commit if anything changed
         id: commit
         run: |
@@ -186,6 +195,20 @@ jobs:
             gh issue comment "$OPEN" --body-file "$RUNNER_TEMP/hosts.md"
           else
             gh issue create --label possible-host --title "Possible hosting platforms to review for /fedramp-lookup/" --body-file "$RUNNER_TEMP/hosts.md"
+          fi
+
+      - name: Report track changes
+        if: steps.tracks.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # One open issue at a time; later changes are added as comments, so the history stays in one place.
+          gh label create track-change --color B60205 --description "A listing changed track, path or class" 2>/dev/null || true
+          OPEN=$(gh issue list --label track-change --state open --json number --jq '.[0].number')
+          if [ -n "$OPEN" ]; then
+            gh issue comment "$OPEN" --body-file "$RUNNER_TEMP/tracks.md"
+          else
+            gh issue create --label track-change --title "Marketplace listings changing track, path or class" --body-file "$RUNNER_TEMP/tracks.md"
           fi
 
       - name: Report a failed download

@@ -355,10 +355,6 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
         esc(r.c) + '” stands for a traditional ' + esc(r.i) + ' authorization. A 20x listing labeled “' + esc(r.c) +
         '” carries the same words and different standing, including for CUI. The track decides; the class label doesn’t.</p>');
     }
-    if (r.inf) {
-      b.push('<p class="bn"><b>No impact level listed.</b> The baseline is taken from the “' + esc(r.c) +
-        '” label, which on the traditional track stands for ' + esc(r.inf) + '. Confirm it in the package.</p>');
-    }
     if (r.t === '20x Pilot' && r.c) {
       var pb = DATA.rules.pilotBanner.split('{class}').join(r.c).split('{date}').join(fmtDate(r.d) || 'an unlisted date');
       b.push('<p class="bn"><b>' + esc(pb).replace(/^([^.]*\.)/, '$1</b>') + '</p>');
