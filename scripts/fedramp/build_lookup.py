@@ -19,6 +19,7 @@ import argparse
 import hashlib
 import html
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -42,8 +43,10 @@ def load_rules(path: Path) -> dict:
     if set(rules["states"]) != STATES:
         sys.exit(f"build_lookup: rules states must be exactly {sorted(STATES)}")
     for r in rules["rows"]:
-        if set(r["cite"]) != {"trad", "20x"}:
-            sys.exit(f"build_lookup: row {r['key']} needs a 'trad' and a '20x' citation")
+        if set(r["cite"]) != {"trad", "20x", "hosted"}:
+            sys.exit(f"build_lookup: row {r['key']} needs a 'trad', a '20x' and a 'hosted' citation")
+    if "hosted" not in rules["cases"] or not rules.get("hosted_banner") or not rules.get("host_banner"):
+        sys.exit("build_lookup: rules need a 'hosted' case, a hosted_banner and a host_banner")
     for name, case in rules["cases"].items():
         missing = set(rows) - set(case)
         extra = set(case) - set(rows)
@@ -136,6 +139,70 @@ def build_listings(products: list[dict], rules: dict, ov: dict) -> list[dict]:
     return out
 
 
+_URL_TAIL = re.compile(r"\s+-\s+https?://\S+$")
+_PROVIDED_BY = re.compile(r"^\s*provided\s+(?:and|&)\s+managed\s+by\s+([^,.]+)", re.I)
+
+
+def norm_name(s: str) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", (s or "").lower().replace("™", "").replace("®", "")).strip()
+
+
+def add_services(products: list[dict], listings: list[dict], hosted_cfg: dict) -> list[dict]:
+    """Attach marketplace service lists to their listings and split out hosted third-party products.
+
+    A host's own components stay search aliases of the host listing. Every other service on a
+    designated host is a hosted product: it gets its own search result and card, decided by the
+    rules' 'hosted' case, never by the host's verdicts.
+    """
+    hosts = hosted_cfg.get("hosts", {})
+    by_id = {r["id"]: r for r in listings}
+    for k in hosts:
+        if k not in by_id:
+            print(f"build_lookup: host {k} in hosted-services.json is not in this snapshot", file=sys.stderr)
+    # Names a hosted product might also carry as a listing of its own.
+    names: dict[str, str] = {}
+    for r in listings:
+        for n in (r["n"], r["p"]):
+            names.setdefault(norm_name(n), r["id"])
+
+    hosted = []
+    for p in products:
+        r = by_id[p["id"]]
+        svcs = [s for s in (p.get("certified_services") or []) if (s.get("serviceName") or "").strip()]
+        own, cfg = [], hosts.get(p["id"])
+        for s in svcs:
+            name = _URL_TAIL.sub("", s["serviceName"].strip())
+            if not cfg or any(name.startswith(pre) for pre in cfg.get("own_prefix", [])):
+                own.append(name)
+                continue
+            desc = (s.get("serviceDescription") or "").strip()
+            m = _PROVIDED_BY.match(desc)
+            hid = f"{p['id']}~{re.sub(r'[^A-Za-z0-9]+', '-', name).strip('-')[:48]}"
+            hosted.append({
+                "id": hid,
+                "kind": "h",
+                "p": m.group(1).strip() if m else "",
+                "n": name,
+                "pk": "",
+                "t": "hosted",
+                "tl": "Hosted product",
+                "tk": "hosted",
+                "s": "Hosted service",
+                "host": p["id"],
+                "since": (s.get("dateAvailable") or "")[:10],
+                "own": names.get(norm_name(name), ""),
+                "case": "hosted",
+                "cui": False,
+            })
+        if own:
+            r["sv"] = own
+        hp = [h["id"] for h in hosted if h["host"] == p["id"]]
+        if hp:
+            r["hp"] = hp
+    hosted.sort(key=lambda h: h["n"].lower())
+    return hosted
+
+
 # --------------------------------------------------------------------------
 # Page
 # --------------------------------------------------------------------------
@@ -196,6 +263,8 @@ h1{margin:0;max-width:24ch}
 .lk-it .mt{grid-column:1/-1;font:var(--t-micro)/1.4 var(--mono);color:var(--ink-soft)}
 .lk-it .cuitag{align-self:start;font:500 var(--t-micro)/1 var(--mono);padding:4px 6px;border-radius:5px;border:1px solid var(--referent);color:var(--referent);background:var(--referent-fill);white-space:nowrap}
 .lk-it[aria-current="true"] .cuitag{border-color:#fff;color:#fff;background:transparent}
+.lk-it .htag{align-self:start;font:500 var(--t-micro)/1 var(--mono);padding:4px 6px;border-radius:5px;border:1px dashed var(--gap);color:var(--gap);background:var(--gap-fill);white-space:nowrap}
+.lk-it[aria-current="true"] .htag{border-color:#fff;color:#fff;background:transparent}
 .lk-none{padding:var(--s-4) var(--s-3);color:var(--ink-soft);font-size:var(--t-small)}
 
 .lk-panel{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:var(--s-4);position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto;min-width:0}
@@ -213,9 +282,14 @@ h1{margin:0;max-width:24ch}
 .facts dd{margin:3px 0 0;font-weight:600;overflow-wrap:anywhere}
 .facts dd small{display:block;font-weight:400;font-size:var(--t-small);color:var(--ink-soft)}
 .bn{margin:var(--s-3) 0 0;padding:12px 14px;border-radius:8px;font-size:var(--t-small);line-height:1.55;max-width:none;border:1px solid var(--rule-strong);background:var(--referent-fill)}
+.bn.warn{border:2px solid var(--gap);background:var(--gap-fill);margin-top:var(--s-4)}
+.bn.warn b{color:var(--gap)}
+.lk-warn{padding:12px var(--s-3);font-size:var(--t-small);line-height:1.5;background:var(--gap-fill);border-bottom:2px solid var(--gap)}
+.lk-warn b{color:var(--gap)}
 .bn.mine{border:1px solid var(--accent);background:var(--accent-fill)}
 .bn.mine b{color:var(--accent)}
 .bn ul{margin:6px 0 0;padding:0;list-style:none;display:grid;gap:4px}
+.facts .lnk{font:inherit;font-weight:600;color:var(--referent);background:none;border:0;padding:0;text-align:left;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
 .bn button{font:inherit;color:var(--referent);background:none;border:0;padding:4px 0;text-align:left;text-decoration:underline;text-underline-offset:2px;cursor:pointer;min-height:32px}
 .ch{margin:var(--s-4) 0 0}
 .ch .r{display:grid;grid-template-columns:minmax(0,1.1fr) 200px minmax(0,1.4fr);gap:var(--s-2) var(--s-4);align-items:center;padding:14px 0;border-bottom:1px solid var(--rule)}
@@ -272,6 +346,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
             <option value="Rev5">Traditional</option>
             <option value="20x">20x</option>
             <option value="20x Pilot">20x Pilot</option>
+            <option value="hosted">Hosted products (no listing of their own)</option>
           </select>
           <label class="sr" for="lk-status">Status</label>
           <select id="lk-status">
@@ -312,7 +387,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
 <script>
 (function () {
   var MARKET = '%%MARKET%%';
-  var DATA = null, byId = {}, rowsEl = document.getElementById('lk-items');
+  var DATA = null, ALL = [], byId = {}, rowsEl = document.getElementById('lk-items');
   var q = document.getElementById('lk-q'), fTrack = document.getElementById('lk-track'),
       fStatus = document.getElementById('lk-status'), fCui = document.getElementById('lk-cui'),
       count = document.getElementById('lk-count'), panel = document.getElementById('lk-panel'),
@@ -332,18 +407,27 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
     return (+p[2]) + ' ' + m[+p[1] - 1] + ' ' + p[0];
   }
   function statusGroup(s) {
+    if (s === 'Hosted service') return 'hosted';
     if (s.indexOf('FedRAMP Certified') === 0) return 'cert';
     if (s === 'Legacy FedRAMP Ready') return 'ready';
     if (s === 'Initial Implementation') return 'ii';
     return 'ip';
   }
   function shortStatus(s) {
-    return { cert: 'Certified', ready: 'Legacy Ready', ii: 'Initial implementation', ip: 'In process' }[statusGroup(s)];
+    return { cert: 'Certified', ready: 'Legacy Ready', ii: 'Initial implementation', ip: 'In process', hosted: 'No listing of its own' }[statusGroup(s)];
   }
   function levelText(r) {
+    if (r.kind === 'h') return 'inside ' + byId[r.host].n;
     if (r.tk === 'trad') return r.i || r.c || 'Level not listed';
     return r.c || 'Class not assigned';
   }
+  function fill(t, r) {
+    var h = r.kind === 'h' ? byId[r.host] : null;
+    return t.split('{status}').join(r.s).split('{host}').join(h ? h.n : '')
+      .split('{hostProvider}').join(h ? h.p.replace(/\.$/, '') : '').split('{hostId}').join(h ? h.id : '')
+      .split('{service}').join(r.n);
+  }
+  function hasTerm(hay, t) { return /\d/.test(t) ? hay.indexOf(t) >= 0 : hay.indexOf(' ' + t) >= 0; }
   function badge(state) {
     var s = DATA.rules.states[state];
     return '<span class="bd ' + state + '"><span class="ic" aria-hidden="true">' + esc(s.icon) + '</span>' + esc(s.label) + '</span>';
@@ -355,29 +439,47 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
     if (fCui.checked && !r.cui) return false;
     // Words match from their start ("vanta" finds Vanta, not Advantage); anything with a digit
     // matches anywhere, so a partial FR ID still finds its listing.
-    for (var i = 0; i < terms.length; i++) {
-      var t = terms[i];
-      if (/\d/.test(t) ? r._hay.indexOf(t) < 0 : r._hay.indexOf(' ' + t) < 0) return false;
-    }
+    for (var i = 0; i < terms.length; i++) if (!hasTerm(r._hay, terms[i])) return false;
     return true;
   }
 
   function renderList() {
     var terms = q.value.toLowerCase().split(/\s+/).filter(Boolean);
-    var shown = DATA.listings.filter(function (r) { return matches(r, terms); });
+    var shown = ALL.filter(function (r) { return matches(r, terms); });
     var html = shown.map(function (r) {
       var cur = selected && selected.id === r.id ? 'true' : 'false';
+      if (r.kind === 'h') {
+        var h = byId[r.host];
+        return '<li><button type="button" class="lk-it" data-id="' + esc(r.id) + '" aria-current="' + cur + '">' +
+          '<span class="pv">' + esc(r.n) + '</span><span class="htag" title="No FedRAMP listing of its own">Hosted</span>' +
+          '<span class="pr">' + (r.p ? 'by ' + esc(r.p) : 'Vendor not stated') + '</span>' +
+          '<span class="mt">Hosted product · inside ' + esc(h.n) + ' (' + esc(h.p.replace(/\.$/, '')) + ')</span></button></li>';
+      }
+      // Say why a listing matched when the hit was one of its listed services, not its name.
+      var via = '';
+      if (terms.length && r.sv && !terms.every(function (t) { return hasTerm(r._base, t); })) {
+        var hit = r.sv.filter(function (n) { var hay = ' ' + n.toLowerCase().replace(/[^a-z0-9]+/g, ' '); return terms.some(function (t) { return hasTerm(hay, t); }); });
+        if (hit.length) via = '<span class="mt">Listed service: ' + esc(hit.slice(0, 2).join('; ')) + '</span>';
+      }
       return '<li><button type="button" class="lk-it" data-id="' + esc(r.id) + '" aria-current="' + cur + '">' +
         '<span class="pv">' + esc(r.p) + '</span>' +
         (r.cui ? '<span class="cuitag" title="Meets DFARS 7012 for CUI">7012 ✓</span>' : '<span></span>') +
         '<span class="pr">' + esc(r.n) + '</span>' +
-        '<span class="mt">' + esc(r.tl) + ' · ' + esc(levelText(r)) + ' · ' + esc(shortStatus(r.s)) + '</span>' +
+        '<span class="mt">' + esc(r.tl) + ' · ' + esc(levelText(r)) + ' · ' + esc(shortStatus(r.s)) + '</span>' + via +
         '</button></li>';
     }).join('');
-    rowsEl.innerHTML = html || '<li class="lk-none">No listings match. Try fewer words or clear a filter.</li>';
-    count.textContent = shown.length === DATA.listings.length
-      ? DATA.listings.length + ' listings'
-      : shown.length + ' of ' + DATA.listings.length + ' listings';
+    var idHosts = terms.length === 1 && /^[a-z]*\d{6,}[a-z]*$/.test(terms[0])
+      ? DATA.listings.filter(function (r) { return r.hp && r.id.toLowerCase().indexOf(terms[0]) >= 0; }) : [];
+    var notice = idHosts.map(function (h) {
+      return '<li class="lk-warn"><b>' + esc(h.id) + ' is ' + esc(h.n) + ' (' + esc(h.p.replace(/\.$/, '')) + ').</b> ' +
+        h.hp.length + ' other vendors’ products are listed inside it with no FedRAMP listing of their own. ' +
+        'If a vendor gave you this ID for their product, it is the host’s ID; find the product below.</li>';
+    }).join('');
+    rowsEl.innerHTML = notice + (html || '<li class="lk-none">No listings match. Try fewer words or clear a filter.</li>');
+    var nl = DATA.listings.length, nh = DATA.hosted.length;
+    count.textContent = shown.length === ALL.length
+      ? nl + ' listings · ' + nh + ' hosted products'
+      : shown.length + ' of ' + ALL.length + ' results';
   }
 
   function banners(r) {
@@ -404,6 +506,11 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       b.push('<p class="bn"><b>Impact label ignored.</b> The marketplace lists this 20x listing at “' + esc(r.i) +
         '” impact. A 20x class is not an impact-level authorization, and FedRAMP says not to treat classes as replacements for impact levels, so the chart doesn’t use that field.</p>');
     }
+    if (r.kind === 'h') {
+      b.push('<p class="bn mine"><b>' + esc(fill(DATA.rules.hostedBanner, r)).replace(/^([^.]*\.)/, '$1</b>') + '</p>');
+      if (r.own) b.push('<p class="bn"><b>This product also has a listing of its own.</b> <button type="button" data-go="' + esc(r.own) + '">' + esc(byId[r.own].n) + '</button> — check that listing’s card instead.</p>');
+      return b.join('');
+    }
     var sib = DATA.listings.filter(function (o) { return o.pk === r.pk && o.id !== r.id && r.pk; });
     if (sib.length) {
       b.push('<div class="bn"><b>Other listings from ' + esc(r.p.replace(/\.$/, '')) + '.</b> Check these too; an uplift or a second track appears as a separate listing.<ul>' +
@@ -415,10 +522,32 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
     return b.join('');
   }
 
+  // Vendors hosted inside a platform's boundary hand out the platform's FR ID as their own.
+  // Anyone landing on such an ID, by search or deep link, sees that before any tick.
+  function hostWarning(r) {
+    if (!r.hp) return '';
+    var hb = DATA.rules.hostBanner.split('{host}').join(r.n).split('{hostId}').join(r.id);
+    return '<div class="bn warn" role="note"><b>' + esc(hb).replace(/^([^?]*\?)/, '$1</b>') + '<ul>' +
+      r.hp.map(function (id) {
+        var o = byId[id];
+        return '<li><button type="button" data-go="' + esc(o.id) + '">' + esc(o.n) + '</button>' + (o.p ? ' <span class="ct">by ' + esc(o.p) + '</span>' : '') + ' <span class="ct">✕ not covered</span></li>';
+      }).join('') + '</ul></div>';
+  }
+
   function renderCard(r) {
     var rules = DATA.rules, cs = rules.cases[r.case];
     var gateWait = cs.gate[0] === 'wait';
-    var facts = [
+    var h = r.kind === 'h' ? byId[r.host] : null;
+    var facts = h ? [
+      ['Track', 'Hosted product<small>no FedRAMP listing of its own</small>'],
+      ['Provided by', esc(r.p || 'Not stated in the listing')],
+      ['Listed inside', '<button type="button" class="lnk" data-go="' + esc(h.id) + '">' + esc(h.n) + '</button><small>' + esc(h.p) + '</small>'],
+      ['Host authorization', esc(h.tl) + ' · ' + esc(levelText(h)) + '<small>' + esc(h.s) + '</small>'],
+      ['Listed since', esc(fmtDate(r.since) || 'Not stated')],
+      ['Own listing', r.own ? '<button type="button" class="lnk" data-go="' + esc(r.own) + '">' + esc(byId[r.own].id) + '</button>' : 'None'],
+      ['Host assessor', esc(h.a || 'None listed')],
+      ['Host marketplace ID', '<a href="' + MARKET + encodeURIComponent(h.id) + '/" rel="noopener">' + esc(h.id) + '</a>']
+    ] : [
       ['Track', esc(r.tl)],
       [r.tk === 'trad' ? 'Impact level' : 'Class', esc(levelText(r)) + (r.tk === 'trad' && r.c ? '<small>labeled ' + esc(r.c) + '</small>' : '')],
       ['Status', esc(r.s || '—')],
@@ -429,7 +558,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       ['Marketplace ID', '<a href="' + MARKET + encodeURIComponent(r.id) + '/" rel="noopener">' + esc(r.id) + '</a>']
     ];
     var rows = rules.rows.map(function (row) {
-      var c = cs[row.key], st = c[0], note = c[1].replace('{status}', r.s);
+      var c = cs[row.key], st = c[0], note = fill(c[1], r);
       var cls = 'r' + (row.key === 'gate' ? ' gate' : '') + (gateWait && row.key !== 'gate' ? ' dim' : '');
       return '<div class="' + cls + '" role="row">' +
         '<div role="rowheader"><p class="q">' + esc(row.q) + '</p><p class="ct">' + esc(row.cite[r.tk]) + '</p></div>' +
@@ -438,7 +567,8 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
     }).join('');
     card.innerHTML =
       '<button type="button" class="back" data-back><span aria-hidden="true">←</span> All listings</button>' +
-      '<div class="cd-hd"><div><p class="eyebrow">' + esc(r.id) + '</p><h2 id="lk-h" tabindex="-1">' + esc(r.n) + '</h2><p class="by">' + esc(r.p) + '</p></div></div>' +
+      '<div class="cd-hd"><div><p class="eyebrow">' + esc(h ? 'Hosted in ' + h.id : r.id) + '</p><h2 id="lk-h" tabindex="-1">' + esc(r.n) + '</h2><p class="by">' + esc(h ? (r.p ? r.p + ' · inside ' + h.n : 'inside ' + h.n) : r.p) + '</p></div></div>' +
+      hostWarning(r) +
       '<dl class="facts">' + facts.map(function (f) { return '<div><dt>' + f[0] + '</dt><dd>' + f[1] + '</dd></div>'; }).join('') + '</dl>' +
       banners(r) +
       '<div class="ch" role="table" aria-label="What this listing supports">' + rows + '</div>' +
@@ -502,10 +632,18 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
     return res.json();
   }).then(function (d) {
     DATA = d;
+    function hay(s) { return (' ' + s).toLowerCase().replace(/[^a-z0-9]+/g, ' '); }
     d.listings.forEach(function (r) {
       byId[r.id] = r;
-      r._hay = (' ' + r.p + ' ' + r.n + ' ' + r.id + ' ' + r.a).toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+      r._base = hay(r.p + ' ' + r.n + ' ' + r.id + ' ' + r.a);
+      r._hay = r.sv ? r._base + hay(r.sv.join(' ')) : r._base;
     });
+    d.hosted.forEach(function (r) {
+      var h = byId[r.host];
+      byId[r.id] = r;
+      r._hay = hay(r.n + ' ' + r.p + ' ' + h.n + ' ' + h.p + ' ' + h.id);
+    });
+    ALL = d.listings.concat(d.hosted);
     document.getElementById('lk-legend').innerHTML = ['lev', 'dec', 'no', 'wait'].map(badge).join('');
     var params = new URLSearchParams(location.search);
     if (params.get('q')) q.value = params.get('q');
@@ -560,6 +698,7 @@ def main() -> None:
     ap.add_argument("--snapshot", required=True, type=Path)
     ap.add_argument("--rules", required=True, type=Path)
     ap.add_argument("--overrides", required=True, type=Path)
+    ap.add_argument("--hosted", required=True, type=Path, help="hand-maintained list of hosting platforms (data/fedramp/hosted-services.json)")
     ap.add_argument("--assessors", type=Path)
     ap.add_argument("--nav-source", type=Path)
     ap.add_argument("--out", required=True, type=Path)
@@ -571,6 +710,7 @@ def main() -> None:
     rules = load_rules(args.rules)
     ov = json.loads(args.overrides.read_text(encoding="utf-8"))
     listings = build_listings(products, rules, ov)
+    hosted = add_services(products, listings, json.loads(args.hosted.read_text(encoding="utf-8")))
 
     # Agencies repeat across hundreds of listings; send each name once and index it.
     agencies = sorted({a for r in listings for a in r["ag"]})
@@ -582,9 +722,11 @@ def main() -> None:
         "snapshot": snap,
         "snapshotHuman": bp.fmt_date(snap),
         "sha256": digest,
-        "rules": {"states": rules["states"], "rows": rules["rows"], "cases": rules["cases"]},
+        "rules": {"states": rules["states"], "rows": rules["rows"], "cases": rules["cases"],
+                  "hostedBanner": rules["hosted_banner"], "hostBanner": rules["host_banner"]},
         "agencies": agencies,
         "listings": listings,
+        "hosted": hosted,
     }
     args.out.mkdir(parents=True, exist_ok=True)
     data = json.dumps(payload, ensure_ascii=False, separators=(",", ":"), sort_keys=False)
@@ -595,7 +737,7 @@ def main() -> None:
     from collections import Counter
     cases = Counter(r["case"] for r in listings)
     print(f"build_lookup: {len(listings)} listings from {args.snapshot.name}; "
-          f"{sum(r['cui'] for r in listings)} meet 7012; cases {dict(sorted(cases.items()))}; "
+          f"{len(hosted)} hosted products; {sum(r['cui'] for r in listings)} meet 7012; cases {dict(sorted(cases.items()))}; "
           f"listings.json {len(data.encode()) // 1024} KB")
 
 
