@@ -363,6 +363,9 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       var pb = DATA.rules.pilotBanner.split('{class}').join(r.c).split('{date}').join(fmtDate(r.d) || 'an unlisted date');
       b.push('<p class="bn"><b>' + esc(pb).replace(/^([^.]*\.)/, '$1</b>') + '</p>');
     }
+    if (r.tk === '20x' && r.c === 'Class A') {
+      b.push('<p class="bn"><b>' + esc(DATA.rules.classABanner).replace(/^([^.]*\.)/, '$1</b>') + '</p>');
+    }
     if (r.tk === '20x' && r.i) {
       b.push('<p class="bn"><b>Impact label ignored.</b> The marketplace lists this 20x listing at “' + esc(r.i) +
         '” impact. A 20x class is not an impact-level authorization, and FedRAMP says not to treat classes as replacements for impact levels, so the chart doesn’t use that field.</p>');
