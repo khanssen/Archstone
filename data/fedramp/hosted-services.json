@@ -1,5 +1,5 @@
 {
-  "_about": "Hand-maintained list of platform listings that host other vendors' products inside their own authorization boundary (FedRAMP-as-a-service / GSS platforms). For each host listing ID, every service on its marketplace service list is treated as a hosted third-party product, except services whose names start with one of own_prefix (the platform's own components). Hosted products get their own search result and a card that marks them not established. Add a host here when a listing starts carrying other vendors' products.",
+  "_about": "Hand-maintained list of platform listings that host other vendors' products inside their own authorization boundary (FedRAMP-as-a-service / GSS platforms). For each host listing ID, every service on its marketplace service list is treated as a hosted third-party product, except services whose names start with one of own_prefix (the platform's own components). Hosted products get their own search result and a card that marks them not established. Add a host here when a listing starts carrying other vendors' products. not_hosts lists listings reviewed and found not to be hosts, with the reason; scripts/fedramp/flag_hosts.py skips both lists and opens an issue when a new listing looks like a host.",
   "hosts": {
     "FR2300457485": {
       "name": "Project Hosts GSS One AWS",
@@ -48,5 +48,10 @@
         "Virtual Desktop Services"
       ]
     }
+  },
+  "not_hosts": {
+    "FR2634047811": "86Borders: the service list is its own internal tooling and dependencies (A-LIGN, Paramify, Atlassian), not hosted products.",
+    "F1603047866": "AWS GovCloud: AWS's own services; flagged on CloudFormation's description.",
+    "AGENCYAMAZONEW": "AWS US East/West: AWS's own services; flagged on CloudFormation's description."
   }
 }

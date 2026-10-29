@@ -119,6 +119,16 @@ jobs:
             --assessors data/fedramp/assessors.json \
             --body "$RUNNER_TEMP/issue.md"
 
+      - name: Look for new hosting platforms
+        id: hosts
+        if: steps.fetch.outputs.changed == 'true'
+        run: |
+          PREV=$(ls data/fedramp/raw/products-*.json.gz | sort | tail -n 2 | head -n 1)
+          NEW=$(ls data/fedramp/raw/products-*.json.gz | sort | tail -n 1)
+          if [ "$PREV" = "$NEW" ]; then echo "found=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          python scripts/fedramp/flag_hosts.py --old "$PREV" --new "$NEW" \
+            --hosted data/fedramp/hosted-services.json --body "$RUNNER_TEMP/hosts.md"
+
       - name: Commit if anything changed
         id: commit
         run: |
@@ -163,6 +173,20 @@ jobs:
           LABELS=marketplace-update
           [ "$HEADLINE" = "true" ] && LABELS="$LABELS,headline-claim"
           gh issue create --title "$TITLE" --body-file "$RUNNER_TEMP/issue.md" --label "$LABELS"
+
+      - name: Flag possible hosting platforms
+        if: steps.hosts.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # One open issue at a time; later finds are added as comments.
+          gh label create possible-host --color 6A4C93 --description "Listing may host other vendors' products" 2>/dev/null || true
+          OPEN=$(gh issue list --label possible-host --state open --json number --jq '.[0].number')
+          if [ -n "$OPEN" ]; then
+            gh issue comment "$OPEN" --body-file "$RUNNER_TEMP/hosts.md"
+          else
+            gh issue create --label possible-host --title "Possible hosting platforms to review for /fedramp-lookup/" --body-file "$RUNNER_TEMP/hosts.md"
+          fi
 
       - name: Report a failed download
         if: steps.fetch.outcome == 'failure'
