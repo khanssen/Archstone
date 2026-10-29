@@ -45,8 +45,8 @@ def load_rules(path: Path) -> dict:
     for r in rules["rows"]:
         if set(r["cite"]) != {"trad", "20x", "hosted"}:
             sys.exit(f"build_lookup: row {r['key']} needs a 'trad', a '20x' and a 'hosted' citation")
-    if "hosted" not in rules["cases"] or not rules.get("hosted_banner") or not rules.get("host_banner"):
-        sys.exit("build_lookup: rules need a 'hosted' case, a hosted_banner and a host_banner")
+    if "hosted" not in rules["cases"] or not all(rules.get(k) for k in ("hosted_banner", "host_banner", "pilot_banner")):
+        sys.exit("build_lookup: rules need a 'hosted' case, a hosted_banner, a host_banner and a pilot_banner")
     for name, case in rules["cases"].items():
         missing = set(rows) - set(case)
         extra = set(case) - set(rows)
@@ -79,6 +79,9 @@ def assign_case(r: dict) -> tuple[str, str]:
         inferred = CLASS_TO_LEVEL.get(r["cert_class"], "")
         return (LEVEL_CASE[inferred], inferred) if inferred else ("trad_unknown", "")
     letter = (r["cert_class"] or "").replace("Class", "").strip()
+    # Pilot listings were certified before classes existed and later relabeled; they get their own cases.
+    if r["cert_type"] == "20x Pilot" and letter in ("B", "C"):
+        return f"x20p_{letter}", ""
     return (f"x20_{letter}", "") if letter in ("A", "B", "C", "D") else ("x20_unknown", "")
 
 
@@ -502,6 +505,10 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       b.push('<p class="bn"><b>No impact level listed.</b> The baseline is taken from the “' + esc(r.c) +
         '” label, which on the traditional track stands for ' + esc(r.inf) + '. Confirm it in the package.</p>');
     }
+    if (r.t === '20x Pilot' && r.c) {
+      var pb = DATA.rules.pilotBanner.split('{class}').join(r.c).split('{date}').join(fmtDate(r.d) || 'an unlisted date');
+      b.push('<p class="bn"><b>' + esc(pb).replace(/^([^.]*\.)/, '$1</b>') + '</p>');
+    }
     if (r.tk === '20x' && r.i) {
       b.push('<p class="bn"><b>Impact label ignored.</b> The marketplace lists this 20x listing at “' + esc(r.i) +
         '” impact. A 20x class is not an impact-level authorization, and FedRAMP says not to treat classes as replacements for impact levels, so the chart doesn’t use that field.</p>');
@@ -723,7 +730,8 @@ def main() -> None:
         "snapshotHuman": bp.fmt_date(snap),
         "sha256": digest,
         "rules": {"states": rules["states"], "rows": rules["rows"], "cases": rules["cases"],
-                  "hostedBanner": rules["hosted_banner"], "hostBanner": rules["host_banner"]},
+                  "hostedBanner": rules["hosted_banner"], "hostBanner": rules["host_banner"],
+                  "pilotBanner": rules["pilot_banner"]},
         "agencies": agencies,
         "listings": listings,
         "hosted": hosted,
