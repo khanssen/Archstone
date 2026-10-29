@@ -1,8 +1,8 @@
 name: FedRAMP marketplace snapshot
 
 # Downloads the FedRAMP Marketplace product export, keeps a dated snapshot when
-# it changes, rebuilds /fedramp-20x-adoption/ and the dated 20x carousel on
-# fedramp.html, and redeploys the site.
+# it changes, rebuilds /fedramp-20x-adoption/, /fedramp-lookup/ and the dated
+# 20x carousel on fedramp.html, and redeploys the site.
 #
 # Manual fallback: export JSON from the marketplace yourself, commit it to
 # data/fedramp/inbox/, and push. This workflow picks it up instead of the browser.
@@ -20,6 +20,8 @@ on:
       - "data/fedramp/grc-vendors.json"
       - "data/fedramp/ai-vendors.json"
       - "data/fedramp/assessors.json"
+      - "data/fedramp/usability-rules.json"
+      - "data/fedramp/lookup-overrides.json"
       - "scripts/fedramp/**"
       - "fedramp.html"
       - "index.html"   # the 20x page copies the homepage navigation
@@ -90,6 +92,17 @@ jobs:
             --feature-target fedramp.html \
             --checked "$CHECKED"
 
+      - name: Rebuild the marketplace lookup
+        run: |
+          SNAP=$(ls data/fedramp/raw/products-*.json.gz | sort | tail -n 1)
+          python scripts/fedramp/build_lookup.py \
+            --snapshot "$SNAP" \
+            --rules data/fedramp/usability-rules.json \
+            --overrides data/fedramp/lookup-overrides.json \
+            --assessors data/fedramp/assessors.json \
+            --nav-source index.html \
+            --out fedramp-lookup
+
       - name: Compare with the previous snapshot
         id: diff
         if: steps.fetch.outputs.changed == 'true'
@@ -109,7 +122,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/fedramp fedramp-20x-adoption fedramp.html
+          git add data/fedramp fedramp-20x-adoption fedramp-lookup fedramp.html
           if git diff --cached --quiet; then
             echo "pushed=false" >> "$GITHUB_OUTPUT"
             echo "Nothing changed."
