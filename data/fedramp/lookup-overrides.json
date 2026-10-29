@@ -1,0 +1,5 @@
+{
+  "_about": "Hand-maintained corrections and disclosures for /fedramp-lookup/. Keys are marketplace IDs (FR...). An override replaces any of cert_type, cert_class, impact_level or status for the lookup only, and must carry a public note saying what was corrected and why; the card shows the marketplace value next to the correction. A disclosure is shown on the listing's card verbatim. Leave either object empty when there is nothing to say.",
+  "overrides": {},
+  "disclosures": {}
+}
