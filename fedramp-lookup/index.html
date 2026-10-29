@@ -100,6 +100,7 @@ h1{margin:0;max-width:24ch}
 .facts dd{margin:3px 0 0;font-weight:600;overflow-wrap:anywhere}
 .facts dd small{display:block;font-weight:400;font-size:var(--t-small);color:var(--ink-soft)}
 .bn{margin:var(--s-3) 0 0;padding:12px 14px;border-radius:8px;font-size:var(--t-small);line-height:1.55;max-width:none;border:1px solid var(--rule-strong);background:var(--referent-fill)}
+.bn p{margin:0;max-width:none}.bn p+p{margin-top:8px}
 .bn.warn{border:2px solid var(--gap);background:var(--gap-fill);margin-top:var(--s-4)}
 .bn.warn b{color:var(--gap)}
 .lk-warn{padding:12px var(--s-3);font-size:var(--t-small);line-height:1.5;background:var(--gap-fill);border-bottom:2px solid var(--gap)}
@@ -367,7 +368,9 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
         '” impact. A 20x class is not an impact-level authorization, and FedRAMP says not to treat classes as replacements for impact levels, so the chart doesn’t use that field.</p>');
     }
     if (r.kind === 'h') {
-      b.push('<p class="bn mine"><b>' + esc(fill(DATA.rules.hostedBanner, r)).replace(/^([^.]*\.)/, '$1</b>') + '</p>');
+      b.push('<div class="bn mine">' + fill(DATA.rules.hostedBanner, r).split('\n\n').map(function (para) {
+        return '<p>' + esc(para).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>') + '</p>';
+      }).join('') + '</div>');
       if (r.own) b.push('<p class="bn"><b>This product also has a listing of its own.</b> <button type="button" data-go="' + esc(r.own) + '">' + esc(byId[r.own].n) + '</button> — check that listing’s card instead.</p>');
       return b.join('');
     }
