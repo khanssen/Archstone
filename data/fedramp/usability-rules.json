@@ -1,113 +1,393 @@
 {
-  "_about": "Hand-maintained rules for /fedramp-lookup/. Each listing is assigned one case by scripts/fedramp/build_lookup.py; each case answers every row. Edit the wording here and push to rebuild. Every case must answer every row, or the build fails. States: lev = package can be leveraged, dec = agency risk decision, no = not recognized, wait = not yet available. {status} in a note is replaced with the listing's marketplace status.",
+  "_about": "Hand-maintained rules for /fedramp-lookup/. Each listing is assigned one case by scripts/fedramp/build_lookup.py; each case answers every row. Edit the wording here and push to rebuild. Every case must answer every row, or the build fails. States: lev = package can be leveraged, dec = agency risk decision, no = not recognized, wait = not yet available. {status} in a note is replaced with the listing's marketplace status; {host} with the hosting listing's name. The 'hosted' case is for third-party products a platform lists as services inside its own authorization (see hosted-services.json).",
   "states": {
-    "lev":  {"icon": "✓", "label": "Can be leveraged"},
-    "dec":  {"icon": "◐", "label": "Agency risk decision"},
-    "no":   {"icon": "✕", "label": "Not recognized"},
-    "wait": {"icon": "—", "label": "Not yet available"}
+    "lev": {
+      "icon": "✓",
+      "label": "Can be leveraged"
+    },
+    "dec": {
+      "icon": "◐",
+      "label": "Agency risk decision"
+    },
+    "no": {
+      "icon": "✕",
+      "label": "Not recognized"
+    },
+    "wait": {
+      "icon": "—",
+      "label": "Not yet available"
+    }
   },
   "rows": [
-    {"key": "gate", "q": "Authorized or certified today?",
-     "cite": {"trad": "FedRAMP Marketplace status", "20x": "FedRAMP Marketplace status · CR26"}},
-    {"key": "low", "q": "Federal data, Low impact",
-     "cite": {"trad": "FedRAMP baseline · agency ATO still required", "20x": "CR26 Certification Classes · agency ATO still required"}},
-    {"key": "mod", "q": "Federal data, Moderate impact",
-     "cite": {"trad": "FedRAMP baseline · agency ATO still required", "20x": "CR26 Certification Classes · agency ATO still required"}},
-    {"key": "high", "q": "Federal data, High impact",
-     "cite": {"trad": "FedRAMP baseline · agency ATO still required", "20x": "CR26 Certification Classes · agency ATO still required"}},
-    {"key": "cuiA", "q": "CUI, federal agency systems",
-     "cite": {"trad": "32 CFR 2002 · Moderate confidentiality floor", "20x": "32 CFR 2002 · Moderate confidentiality floor"}},
-    {"key": "cuiD", "q": "CUI, DoD contractors",
-     "cite": {"trad": "DFARS 252.204-7012(b)(2)(ii)(D)", "20x": "DFARS 252.204-7012(b)(2)(ii)(D)"}}
+    {
+      "key": "gate",
+      "q": "Authorized or certified today?",
+      "cite": {
+        "trad": "FedRAMP Marketplace status",
+        "20x": "FedRAMP Marketplace status · CR26",
+        "hosted": "Marketplace service list · CR26 SCN-TRF-TPR, SCN-TRF-NAV"
+      }
+    },
+    {
+      "key": "low",
+      "q": "Federal data, Low impact",
+      "cite": {
+        "trad": "FedRAMP baseline · agency ATO still required",
+        "20x": "CR26 Certification Classes · agency ATO still required",
+        "hosted": "No listing of its own · CR26 significant change rules"
+      }
+    },
+    {
+      "key": "mod",
+      "q": "Federal data, Moderate impact",
+      "cite": {
+        "trad": "FedRAMP baseline · agency ATO still required",
+        "20x": "CR26 Certification Classes · agency ATO still required",
+        "hosted": "No listing of its own · CR26 significant change rules"
+      }
+    },
+    {
+      "key": "high",
+      "q": "Federal data, High impact",
+      "cite": {
+        "trad": "FedRAMP baseline · agency ATO still required",
+        "20x": "CR26 Certification Classes · agency ATO still required",
+        "hosted": "No listing of its own · CR26 significant change rules"
+      }
+    },
+    {
+      "key": "cuiA",
+      "q": "CUI, federal agency systems",
+      "cite": {
+        "trad": "32 CFR 2002 · Moderate confidentiality floor",
+        "20x": "32 CFR 2002 · Moderate confidentiality floor",
+        "hosted": "32 CFR 2002 · no listing of its own"
+      }
+    },
+    {
+      "key": "cuiD",
+      "q": "CUI, DoD contractors",
+      "cite": {
+        "trad": "DFARS 252.204-7012(b)(2)(ii)(D)",
+        "20x": "DFARS 252.204-7012(b)(2)(ii)(D)",
+        "hosted": "DFARS 252.204-7012(b)(2)(ii)(D) · no listing of its own"
+      }
+    }
   ],
   "cases": {
     "trad_high": {
-      "gate": ["lev", "Certified on the traditional track. The package is available for agency review."],
-      "low":  ["lev", "The package can support an agency’s Low ATO."],
-      "mod":  ["lev", "The package can support an agency’s Moderate ATO."],
-      "high": ["lev", "The package can support an agency’s High ATO."],
-      "cuiA": ["lev", "Above the Moderate floor. The agency still authorizes its own use."],
-      "cuiD": ["lev", "Meets the FedRAMP Moderate baseline the clause names. The clause’s flow-down terms still have to be in the contract."]
+      "gate": [
+        "lev",
+        "Certified on the traditional track. The package is available for agency review."
+      ],
+      "low": [
+        "lev",
+        "The package can support an agency’s Low ATO."
+      ],
+      "mod": [
+        "lev",
+        "The package can support an agency’s Moderate ATO."
+      ],
+      "high": [
+        "lev",
+        "The package can support an agency’s High ATO."
+      ],
+      "cuiA": [
+        "lev",
+        "Above the Moderate floor. The agency still authorizes its own use."
+      ],
+      "cuiD": [
+        "lev",
+        "Meets the FedRAMP Moderate baseline the clause names. The clause’s flow-down terms still have to be in the contract."
+      ]
     },
     "trad_mod": {
-      "gate": ["lev", "Certified on the traditional track. The package is available for agency review."],
-      "low":  ["lev", "The package can support an agency’s Low ATO."],
-      "mod":  ["lev", "The package can support an agency’s Moderate ATO."],
-      "high": ["no",  "Authorized at Moderate, not High."],
-      "cuiA": ["lev", "Meets the Moderate floor. The agency still authorizes its own use."],
-      "cuiD": ["lev", "Meets the FedRAMP Moderate baseline the clause names. The clause’s flow-down terms still have to be in the contract."]
+      "gate": [
+        "lev",
+        "Certified on the traditional track. The package is available for agency review."
+      ],
+      "low": [
+        "lev",
+        "The package can support an agency’s Low ATO."
+      ],
+      "mod": [
+        "lev",
+        "The package can support an agency’s Moderate ATO."
+      ],
+      "high": [
+        "no",
+        "Authorized at Moderate, not High."
+      ],
+      "cuiA": [
+        "lev",
+        "Meets the Moderate floor. The agency still authorizes its own use."
+      ],
+      "cuiD": [
+        "lev",
+        "Meets the FedRAMP Moderate baseline the clause names. The clause’s flow-down terms still have to be in the contract."
+      ]
     },
     "trad_low": {
-      "gate": ["lev", "Certified on the traditional track. The package is available for agency review."],
-      "low":  ["lev", "The package can support an agency’s Low ATO."],
-      "mod":  ["no",  "Authorized at Low (or LI-SaaS) only."],
-      "high": ["no",  "Authorized at Low (or LI-SaaS) only."],
-      "cuiA": ["no",  "Below the Moderate confidentiality floor for CUI."],
-      "cuiD": ["no",  "Below the FedRAMP Moderate baseline the clause names."]
+      "gate": [
+        "lev",
+        "Certified on the traditional track. The package is available for agency review."
+      ],
+      "low": [
+        "lev",
+        "The package can support an agency’s Low ATO."
+      ],
+      "mod": [
+        "no",
+        "Authorized at Low (or LI-SaaS) only."
+      ],
+      "high": [
+        "no",
+        "Authorized at Low (or LI-SaaS) only."
+      ],
+      "cuiA": [
+        "no",
+        "Below the Moderate confidentiality floor for CUI."
+      ],
+      "cuiD": [
+        "no",
+        "Below the FedRAMP Moderate baseline the clause names."
+      ]
     },
     "trad_unknown": {
-      "gate": ["lev", "Certified on the traditional track. The package is available for agency review."],
-      "low":  ["dec", "The marketplace lists no impact level or class. Check the package before relying on it."],
-      "mod":  ["dec", "The marketplace lists no impact level or class. Check the package before relying on it."],
-      "high": ["dec", "The marketplace lists no impact level or class. Check the package before relying on it."],
-      "cuiA": ["dec", "Depends on the baseline, which the listing doesn’t state. Confirm it is Moderate or High."],
-      "cuiD": ["dec", "Depends on the baseline, which the listing doesn’t state. Confirm it is Moderate or High."]
+      "gate": [
+        "lev",
+        "Certified on the traditional track. The package is available for agency review."
+      ],
+      "low": [
+        "dec",
+        "The marketplace lists no impact level or class. Check the package before relying on it."
+      ],
+      "mod": [
+        "dec",
+        "The marketplace lists no impact level or class. Check the package before relying on it."
+      ],
+      "high": [
+        "dec",
+        "The marketplace lists no impact level or class. Check the package before relying on it."
+      ],
+      "cuiA": [
+        "dec",
+        "Depends on the baseline, which the listing doesn’t state. Confirm it is Moderate or High."
+      ],
+      "cuiD": [
+        "dec",
+        "Depends on the baseline, which the listing doesn’t state. Confirm it is Moderate or High."
+      ]
     },
     "x20_A": {
-      "gate": ["lev", "Certified under CR26. The package is available for agency review."],
-      "low":  ["dec", "FedRAMP presumes Class A adequate only for pilots, configuration and testing, public information, or very few users."],
-      "mod":  ["no",  "Outside FedRAMP’s presumption of adequacy for Class A."],
-      "high": ["no",  "Outside FedRAMP’s presumption of adequacy for Class A."],
-      "cuiA": ["no",  "No rule recognizes a 20x class for CUI."],
-      "cuiD": ["no",  "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."]
+      "gate": [
+        "lev",
+        "Certified under CR26. The package is available for agency review."
+      ],
+      "low": [
+        "dec",
+        "FedRAMP presumes Class A adequate only for pilots, configuration and testing, public information, or very few users."
+      ],
+      "mod": [
+        "no",
+        "Outside FedRAMP’s presumption of adequacy for Class A."
+      ],
+      "high": [
+        "no",
+        "Outside FedRAMP’s presumption of adequacy for Class A."
+      ],
+      "cuiA": [
+        "no",
+        "No rule recognizes a 20x class for CUI."
+      ],
+      "cuiD": [
+        "no",
+        "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ]
     },
     "x20_B": {
-      "gate": ["lev", "Certified under CR26. The package is available for agency review."],
-      "low":  ["lev", "FedRAMP presumes Class B adequate for most Low impact agency systems."],
-      "mod":  ["dec", "FedRAMP presumes Class B adequate for some Moderate systems, with compensating controls."],
-      "high": ["dec", "FedRAMP presumes Class B adequate for some High systems, with compensating controls."],
-      "cuiA": ["no",  "No rule recognizes a 20x class for CUI."],
-      "cuiD": ["no",  "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."]
+      "gate": [
+        "lev",
+        "Certified under CR26. The package is available for agency review."
+      ],
+      "low": [
+        "lev",
+        "FedRAMP presumes Class B adequate for most Low impact agency systems."
+      ],
+      "mod": [
+        "dec",
+        "FedRAMP presumes Class B adequate for some Moderate systems, with compensating controls."
+      ],
+      "high": [
+        "dec",
+        "FedRAMP presumes Class B adequate for some High systems, with compensating controls."
+      ],
+      "cuiA": [
+        "no",
+        "No rule recognizes a 20x class for CUI."
+      ],
+      "cuiD": [
+        "no",
+        "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ]
     },
     "x20_C": {
-      "gate": ["lev", "Certified under CR26. The package is available for agency review."],
-      "low":  ["lev", "FedRAMP presumes Class C adequate for most Low impact agency systems."],
-      "mod":  ["lev", "FedRAMP presumes Class C adequate for most Moderate impact agency systems."],
-      "high": ["dec", "FedRAMP presumes Class C adequate for some High systems, with compensating controls."],
-      "cuiA": ["no",  "No rule recognizes a 20x class for CUI."],
-      "cuiD": ["no",  "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."]
+      "gate": [
+        "lev",
+        "Certified under CR26. The package is available for agency review."
+      ],
+      "low": [
+        "lev",
+        "FedRAMP presumes Class C adequate for most Low impact agency systems."
+      ],
+      "mod": [
+        "lev",
+        "FedRAMP presumes Class C adequate for most Moderate impact agency systems."
+      ],
+      "high": [
+        "dec",
+        "FedRAMP presumes Class C adequate for some High systems, with compensating controls."
+      ],
+      "cuiA": [
+        "no",
+        "No rule recognizes a 20x class for CUI."
+      ],
+      "cuiD": [
+        "no",
+        "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ]
     },
     "x20_D": {
-      "gate": ["lev", "Certified under CR26. The package is available for agency review."],
-      "low":  ["lev", "FedRAMP presumes Class D adequate for most agency systems regardless of impact level."],
-      "mod":  ["lev", "FedRAMP presumes Class D adequate for most agency systems regardless of impact level."],
-      "high": ["lev", "FedRAMP presumes Class D adequate for most agency systems regardless of impact level."],
-      "cuiA": ["no",  "No rule recognizes a 20x class for CUI."],
-      "cuiD": ["no",  "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."]
+      "gate": [
+        "lev",
+        "Certified under CR26. The package is available for agency review."
+      ],
+      "low": [
+        "lev",
+        "FedRAMP presumes Class D adequate for most agency systems regardless of impact level."
+      ],
+      "mod": [
+        "lev",
+        "FedRAMP presumes Class D adequate for most agency systems regardless of impact level."
+      ],
+      "high": [
+        "lev",
+        "FedRAMP presumes Class D adequate for most agency systems regardless of impact level."
+      ],
+      "cuiA": [
+        "no",
+        "No rule recognizes a 20x class for CUI."
+      ],
+      "cuiD": [
+        "no",
+        "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ]
     },
     "x20_unknown": {
-      "gate": ["lev", "Certified under CR26. The package is available for agency review."],
-      "low":  ["dec", "The marketplace lists no class for this listing. Check the package before relying on it."],
-      "mod":  ["dec", "The marketplace lists no class for this listing. Check the package before relying on it."],
-      "high": ["dec", "The marketplace lists no class for this listing. Check the package before relying on it."],
-      "cuiA": ["no",  "No rule recognizes a 20x class for CUI."],
-      "cuiD": ["no",  "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."]
+      "gate": [
+        "lev",
+        "Certified under CR26. The package is available for agency review."
+      ],
+      "low": [
+        "dec",
+        "The marketplace lists no class for this listing. Check the package before relying on it."
+      ],
+      "mod": [
+        "dec",
+        "The marketplace lists no class for this listing. Check the package before relying on it."
+      ],
+      "high": [
+        "dec",
+        "The marketplace lists no class for this listing. Check the package before relying on it."
+      ],
+      "cuiA": [
+        "no",
+        "No rule recognizes a 20x class for CUI."
+      ],
+      "cuiD": [
+        "no",
+        "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ]
     },
     "legacy_ready": {
-      "gate": ["wait", "Legacy FedRAMP Ready. Ready was a readiness designation, never an authorization."],
-      "low":  ["wait", "Nothing to leverage until the listing is authorized."],
-      "mod":  ["wait", "Nothing to leverage until the listing is authorized."],
-      "high": ["wait", "Nothing to leverage until the listing is authorized."],
-      "cuiA": ["wait", "Nothing to leverage until the listing is authorized."],
-      "cuiD": ["wait", "Nothing to leverage until the listing is authorized."]
+      "gate": [
+        "wait",
+        "Legacy FedRAMP Ready. Ready was a readiness designation, never an authorization."
+      ],
+      "low": [
+        "wait",
+        "Nothing to leverage until the listing is authorized."
+      ],
+      "mod": [
+        "wait",
+        "Nothing to leverage until the listing is authorized."
+      ],
+      "high": [
+        "wait",
+        "Nothing to leverage until the listing is authorized."
+      ],
+      "cuiA": [
+        "wait",
+        "Nothing to leverage until the listing is authorized."
+      ],
+      "cuiD": [
+        "wait",
+        "Nothing to leverage until the listing is authorized."
+      ]
     },
     "not_certified": {
-      "gate": ["wait", "{status}. There is no authorization package to leverage yet."],
-      "low":  ["wait", "Nothing to leverage until the listing is authorized."],
-      "mod":  ["wait", "Nothing to leverage until the listing is authorized."],
-      "high": ["wait", "Nothing to leverage until the listing is authorized."],
-      "cuiA": ["wait", "Nothing to leverage until the listing is authorized."],
-      "cuiD": ["wait", "Nothing to leverage until the listing is authorized."]
+      "gate": [
+        "wait",
+        "{status}. There is no authorization package to leverage yet."
+      ],
+      "low": [
+        "wait",
+        "Nothing to leverage until the listing is authorized."
+      ],
+      "mod": [
+        "wait",
+        "Nothing to leverage until the listing is authorized."
+      ],
+      "high": [
+        "wait",
+        "Nothing to leverage until the listing is authorized."
+      ],
+      "cuiA": [
+        "wait",
+        "Nothing to leverage until the listing is authorized."
+      ],
+      "cuiD": [
+        "wait",
+        "Nothing to leverage until the listing is authorized."
+      ]
+    },
+    "hosted": {
+      "gate": [
+        "no",
+        "No listing of its own. {host} lists it as a service inside its authorization; the marketplace shows no assessment of that addition."
+      ],
+      "low": [
+        "no",
+        "Not established. It would need its own FedRAMP listing, or the {host} package showing the addition was assessed."
+      ],
+      "mod": [
+        "no",
+        "Not established. It would need its own FedRAMP listing, or the {host} package showing the addition was assessed."
+      ],
+      "high": [
+        "no",
+        "Not established. It would need its own FedRAMP listing, or the {host} package showing the addition was assessed."
+      ],
+      "cuiA": [
+        "no",
+        "Not established. It would need its own FedRAMP listing, or the {host} package showing the addition was assessed."
+      ],
+      "cuiD": [
+        "no",
+        "Not established. It would need its own FedRAMP listing, a FedRAMP Moderate equivalency package, or the {host} package showing significant change testing of its addition."
+      ]
     }
-  }
+  },
+  "hosted_banner": "Listed inside another provider’s authorization. {hostProvider} lists {service} as a service within {host} ({hostId}). The marketplace does not show whether {service} was assessed when it was added. Under CR26, adding a third-party service is a significant change: a third-party assessment of it is recommended, not required, and an assessment report is required only if one was done. Treat {service} as not authorized unless it has its own FedRAMP listing, a FedRAMP Moderate equivalency package, or the {host} package shows significant change testing of its addition.",
+  "host_banner": "Hosted third-party products. {host} lists these products as services inside its authorization. The answers below are for {host} itself and do not extend to them."
 }
