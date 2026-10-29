@@ -309,6 +309,11 @@ h1{margin:0;max-width:24ch}
 .bd.no{border-style:solid;border-color:var(--gap);background:var(--gap-fill);color:var(--gap)}
 .bd.wait{border-style:dotted;border-color:var(--manual);background:var(--surface);color:var(--manual)}
 .legend{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-3);margin:var(--s-3) 0 0}
+.ags{margin:var(--s-4) 0 0}
+.ags h3{margin:0 0 var(--s-2);font-size:var(--t-body)}
+.ags ul{margin:0;padding-left:1.2em;columns:2 280px;column-gap:var(--s-5)}
+.ags li{font-size:var(--t-small);margin:0 0 4px;break-inside:avoid}
+.ags .ct{margin:var(--s-2) 0 0;font:var(--t-micro)/1.4 var(--mono);color:var(--ink-soft);max-width:none}
 .fn{margin:var(--s-4) 0 0;padding-top:var(--s-3);border-top:1px solid var(--rule);display:grid;gap:var(--s-2)}
 .fn p{margin:0;font-size:var(--t-small);color:var(--ink-soft);max-width:none}
 .fn b{color:var(--ink)}
@@ -560,7 +565,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       ['Status', esc(r.s || '—')],
       ['Certified', esc(fmtDate(r.d) || '—')],
       ['Path', esc(r.path || '—')],
-      ['Agency ATOs', r.ag.length ? r.ag.length + '<small>' + r.ag.map(function (i) { return esc(DATA.agencies[i]); }).join('; ') + '</small>' : '0'],
+      ['Agency ATOs', r.ag.length ? r.ag.length + '<small><a href="#lk-ag">listed below</a></small>' : '0'],
       ['Assessor', esc(r.a || 'None listed')],
       ['Marketplace ID', '<a href="' + MARKET + encodeURIComponent(r.id) + '/" rel="noopener">' + esc(r.id) + '</a>']
     ];
@@ -579,6 +584,9 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       '<dl class="facts">' + facts.map(function (f) { return '<div><dt>' + f[0] + '</dt><dd>' + f[1] + '</dd></div>'; }).join('') + '</dl>' +
       banners(r) +
       '<div class="ch" role="table" aria-label="What this listing supports">' + rows + '</div>' +
+      (!h && r.ag.length ? '<section class="ags" id="lk-ag" aria-label="Agency authorizations"><h3>Agency ATOs (' + r.ag.length + ')</h3><ul>' +
+        r.ag.map(function (i) { return DATA.agencies[i]; }).sort().map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') +
+        '</ul><p class="ct">Agencies the marketplace lists as having authorized this offering, other than the FedRAMP PMO.</p></section>' : '') +
       '<div class="fn">' +
         '<p><b>A ✓ is a starting point, not a permission.</b> For federal data and agency CUI, the agency still categorizes its own system, runs RMF and issues its own ATO. DFARS 7012 has no agency ATO step, so for DoD contractors the listing’s status is the bar itself.</p>' +
         '<p>DoD Impact Levels (IL2–IL5) are a separate DISA authorization and aren’t covered here. Listings are shown as the marketplace lists them, as of ' + esc(DATA.snapshotHuman) + ', unless marked as corrected.</p>' +
