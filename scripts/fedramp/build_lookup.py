@@ -29,7 +29,6 @@ import build_page as bp  # noqa: E402  (shared loaders, nav and assessor matchin
 PAGE_PATH = "/fedramp-lookup/"
 STATES = {"lev", "dec", "no", "wait"}
 OVERRIDABLE = ("cert_type", "cert_class", "impact_level", "status")
-CLASS_TO_LEVEL = {"Class D": "High", "Class C": "Moderate", "Class B": "Low"}
 LEVEL_CASE = {"High": "trad_high", "Moderate": "trad_mod", "Low": "trad_low", "LI-SaaS": "trad_low"}
 
 
@@ -63,7 +62,7 @@ def is_trad(cert_type: str) -> bool:
 
 
 def assign_case(r: dict) -> tuple[str, str]:
-    """Rules case for an (already corrected) listing, plus the level inferred from its class label, if any.
+    """Rules case for an (already corrected) listing.
 
     Track decides before class: anything that is not the traditional (Rev5) track is
     judged as 20x, so an unexpected new track label can never earn a CUI tick.
@@ -76,8 +75,8 @@ def assign_case(r: dict) -> tuple[str, str]:
     if is_trad(r["cert_type"]):
         if r["impact_level"] in LEVEL_CASE:
             return LEVEL_CASE[r["impact_level"]], ""
-        inferred = CLASS_TO_LEVEL.get(r["cert_class"], "")
-        return (LEVEL_CASE[inferred], inferred) if inferred else ("trad_unknown", "")
+        # No impact level listed: the class label alone doesn't establish the baseline.
+        return "trad_unknown", ""
     letter = (r["cert_class"] or "").replace("Class", "").strip()
     # Pilot listings were certified before classes existed and later relabeled; they get their own cases.
     if r["cert_type"] == "20x Pilot" and letter in ("B", "C"):
@@ -112,7 +111,7 @@ def build_listings(products: list[dict], rules: dict, ov: dict) -> list[dict]:
                 if f in o and o[f] != rec[f]:
                     corrected[f] = [rec[f], o[f]]
                     rec[f] = o[f]
-        case, inferred = assign_case(rec)
+        case, _ = assign_case(rec)
         agencies = [a for a in (p.get("agency_authorizations") or []) if a and a != bp.PMO]
         kind, name = bp.classify_assessor(p.get("independent_assessor") or "")
         out.append({
@@ -133,7 +132,6 @@ def build_listings(products: list[dict], rules: dict, ov: dict) -> list[dict]:
             "ag": agencies,
             "a": bp.assessor_label(name) if kind == "3pao" else name,
             "case": case,
-            "inf": inferred,
             "cui": rules["cases"][case]["cuiD"][0] == "lev",
             **({"ov": {"fields": corrected, "note": o["note"]}} if o else {}),
             **({"dis": disclosures[p["id"]]} if p["id"] in disclosures else {}),
@@ -506,10 +504,6 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       b.push('<p class="bn"><b>Same label, different meaning.</b> The marketplace now labels traditional listings with a class too. Here “' +
         esc(r.c) + '” stands for a traditional ' + esc(r.i) + ' authorization. A 20x listing labeled “' + esc(r.c) +
         '” carries the same words and different standing, including for CUI. The track decides; the class label doesn’t.</p>');
-    }
-    if (r.inf) {
-      b.push('<p class="bn"><b>No impact level listed.</b> The baseline is taken from the “' + esc(r.c) +
-        '” label, which on the traditional track stands for ' + esc(r.inf) + '. Confirm it in the package.</p>');
     }
     if (r.t === '20x Pilot' && r.c) {
       var pb = DATA.rules.pilotBanner.split('{class}').join(r.c).split('{date}').join(fmtDate(r.d) || 'an unlisted date');
