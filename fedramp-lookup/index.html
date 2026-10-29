@@ -100,6 +100,10 @@ h1{margin:0;max-width:24ch}
 .facts dd{margin:3px 0 0;font-weight:600;overflow-wrap:anywhere}
 .facts dd small{display:block;font-weight:400;font-size:var(--t-small);color:var(--ink-soft)}
 .bn{margin:var(--s-3) 0 0;padding:12px 14px;border-radius:8px;font-size:var(--t-small);line-height:1.55;max-width:none;border:1px solid var(--rule-strong);background:var(--referent-fill)}
+.bn.warn{border:2px solid var(--gap);background:var(--gap-fill);margin-top:var(--s-4)}
+.bn.warn b{color:var(--gap)}
+.lk-warn{padding:12px var(--s-3);font-size:var(--t-small);line-height:1.5;background:var(--gap-fill);border-bottom:2px solid var(--gap)}
+.lk-warn b{color:var(--gap)}
 .bn.mine{border:1px solid var(--accent);background:var(--accent-fill)}
 .bn.mine b{color:var(--accent)}
 .bn ul{margin:6px 0 0;padding:0;list-style:none;display:grid;gap:4px}
@@ -315,7 +319,14 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
         '<span class="mt">' + esc(r.tl) + ' · ' + esc(levelText(r)) + ' · ' + esc(shortStatus(r.s)) + '</span>' + via +
         '</button></li>';
     }).join('');
-    rowsEl.innerHTML = html || '<li class="lk-none">No listings match. Try fewer words or clear a filter.</li>';
+    var idHosts = terms.length === 1 && /^[a-z]*\d{6,}[a-z]*$/.test(terms[0])
+      ? DATA.listings.filter(function (r) { return r.hp && r.id.toLowerCase().indexOf(terms[0]) >= 0; }) : [];
+    var notice = idHosts.map(function (h) {
+      return '<li class="lk-warn"><b>' + esc(h.id) + ' is ' + esc(h.n) + ' (' + esc(h.p.replace(/\.$/, '')) + ').</b> ' +
+        h.hp.length + ' other vendors’ products are listed inside it with no FedRAMP listing of their own. ' +
+        'If a vendor gave you this ID for their product, it is the host’s ID; find the product below.</li>';
+    }).join('');
+    rowsEl.innerHTML = notice + (html || '<li class="lk-none">No listings match. Try fewer words or clear a filter.</li>');
     var nl = DATA.listings.length, nh = DATA.hosted.length;
     count.textContent = shown.length === ALL.length
       ? nl + ' listings · ' + nh + ' hosted products'
@@ -351,14 +362,6 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       if (r.own) b.push('<p class="bn"><b>This product also has a listing of its own.</b> <button type="button" data-go="' + esc(r.own) + '">' + esc(byId[r.own].n) + '</button> — check that listing’s card instead.</p>');
       return b.join('');
     }
-    if (r.hp) {
-      var hb = DATA.rules.hostBanner.split('{host}').join(r.n);
-      b.push('<div class="bn mine"><b>' + esc(hb).replace(/^([^.]*\.)/, '$1</b>') + '<ul>' +
-        r.hp.map(function (id) {
-          var o = byId[id];
-          return '<li><button type="button" data-go="' + esc(o.id) + '">' + esc(o.n) + '</button>' + (o.p ? ' <span class="ct">by ' + esc(o.p) + '</span>' : '') + '</li>';
-        }).join('') + '</ul></div>');
-    }
     var sib = DATA.listings.filter(function (o) { return o.pk === r.pk && o.id !== r.id && r.pk; });
     if (sib.length) {
       b.push('<div class="bn"><b>Other listings from ' + esc(r.p.replace(/\.$/, '')) + '.</b> Check these too; an uplift or a second track appears as a separate listing.<ul>' +
@@ -368,6 +371,18 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
         }).join('') + '</ul></div>');
     }
     return b.join('');
+  }
+
+  // Vendors hosted inside a platform's boundary hand out the platform's FR ID as their own.
+  // Anyone landing on such an ID, by search or deep link, sees that before any tick.
+  function hostWarning(r) {
+    if (!r.hp) return '';
+    var hb = DATA.rules.hostBanner.split('{host}').join(r.n).split('{hostId}').join(r.id);
+    return '<div class="bn warn" role="note"><b>' + esc(hb).replace(/^([^?]*\?)/, '$1</b>') + '<ul>' +
+      r.hp.map(function (id) {
+        var o = byId[id];
+        return '<li><button type="button" data-go="' + esc(o.id) + '">' + esc(o.n) + '</button>' + (o.p ? ' <span class="ct">by ' + esc(o.p) + '</span>' : '') + ' <span class="ct">✕ not covered</span></li>';
+      }).join('') + '</ul></div>';
   }
 
   function renderCard(r) {
@@ -404,6 +419,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
     card.innerHTML =
       '<button type="button" class="back" data-back><span aria-hidden="true">←</span> All listings</button>' +
       '<div class="cd-hd"><div><p class="eyebrow">' + esc(h ? 'Hosted in ' + h.id : r.id) + '</p><h2 id="lk-h" tabindex="-1">' + esc(r.n) + '</h2><p class="by">' + esc(h ? (r.p ? r.p + ' · inside ' + h.n : 'inside ' + h.n) : r.p) + '</p></div></div>' +
+      hostWarning(r) +
       '<dl class="facts">' + facts.map(function (f) { return '<div><dt>' + f[0] + '</dt><dd>' + f[1] + '</dd></div>'; }).join('') + '</dl>' +
       banners(r) +
       '<div class="ch" role="table" aria-label="What this listing supports">' + rows + '</div>' +
