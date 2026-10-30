@@ -1,34 +1,35 @@
 snapshot,id,provider,product,cert_type,status,class,impact,authorized,grc_vendor,grc_self_tagged,agency_count,agencies,assessor
-2026-10-29,FR2527955211,Flock Safety,Flock Safety Platform,20x Pilot,FedRAMP Certified,Class B,Low,2025-07-25,no,no,0,,Baker Tilly
-2026-10-29,FR2525556241,Vanta Inc.,Vanta - Trust Management Platform,20x Pilot,FedRAMP Certified,Class B,Low,2025-07-25,yes,yes,0,,Schellman
-2026-10-29,FR2529359931,Anitian,FedFlex,20x Pilot,FedRAMP Certified,Class B,Low,2025-08-07,yes,no,0,,A-LIGN
-2026-10-29,FR2532557612,A-LIGN,A-SCEND,20x Pilot,FedRAMP Certified,Class B,Low,2025-09-17,yes,no,0,,RISCPoint
-2026-10-29,FR2533435144,Syneren Technologies Corporation,Configurable Case Management Application Platform (CMAP),20x Pilot,FedRAMP Certified,Class B,Low,2025-09-30,no,no,0,,Kompleye
-2026-10-29,FR2600167032,Drata,Drata Trust Management Platform,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,yes,no,0,,Schellman
-2026-10-29,FR2605341343,"IntelliGRC, Inc.",IntelliGRC,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,yes,no,0,,A-LIGN
-2026-10-29,FR2535459082,stackArmor,The Armory20x,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,yes,no,0,,Kratos
-2026-10-29,FR2433985791XL,Vyond,Vyond for Government,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,no,no,0,,Kratos
-2026-10-29,FR2533155773,OpenAI,ChatGPT Enterprise and API Platform,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-01-09,no,no,2,Department of Veterans Affairs; U.S. Election Assistance Commission,Schellman
-2026-10-29,FR2604952026,Google,Gemini for Government,20x Pilot,FedRAMP Certified,Class B,Low,2026-01-21,no,no,1,U.S. Election Assistance Commission,
-2026-10-29,FR2604643715,Perplexity AI,Perplexity Enterprise and API Platform,20x Pilot,FedRAMP Certified,Class B,Low,2026-02-01,no,no,2,Department of Agriculture; U.S. Election Assistance Commission,
-2026-10-29,FR2604835605,Longevity Consulting,Riskuity,20x Pilot,FedRAMP Certified,Class B,Low,2026-02-06,yes,no,0,,Excentium
-2026-10-29,FR2604952842,MapLarge Inc.,MapLarge,20x Pilot,FedRAMP Certified,Class B,Low,2026-02-09,no,no,0,,A-LIGN
-2026-10-29,FR2409863458XL,Confluent,Confluent Cloud for Government (CCG),20x Pilot,FedRAMP Certified,Class C,Moderate,2026-03-06,no,no,0,,Fortreum
-2026-10-29,FR2527956755,"Meridian Knowledge Solutions, LLC",Meridian LMS,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-03-06,no,no,0,,Fortreum
-2026-10-29,FR2428769635XL,Paramify,Paramify Cloud,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-03-06,yes,no,0,,Coalfire
-2026-10-29,FR2615451803,Aeroplicity Inc.,Aeroplicity,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-10,no,no,0,,Lunarline
-2026-10-29,FR2504154395XL,"Persona Identities, LLC",Persona for Government,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-10,no,no,0,,First Information Technology Services (FITS)
-2026-10-29,FR2525557617,InfusionPoints,XBU40,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-10,no,no,0,,Fortreum
-2026-10-29,FR2525556241XM,Vanta,Vanta Government Cloud,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-24,yes,no,0,,Schellman
-2026-10-29,FR2619434440,ASSYST,ComplySyncATO,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,yes,no,0,,First Information Technology Services (FITS)
-2026-10-29,FR2606141075,Entratus,Entratus Conversational AI Platform,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,no,no,0,,A-LIGN
-2026-10-29,FR2335850594XL,Filevine,Filevine Platform,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,no,no,0,,Coalfire
-2026-10-29,FR2621445678,Halo,Halo,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,no,no,0,,DataLock Consulting Group
-2026-10-29,FR2620235600,Anecdotes,Anecdotes,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-06-23,yes,no,0,,Schellman
-2026-10-29,FR2529360449,Secureframe,Secureframe Platform,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-06-23,yes,no,0,,Coalfire
-2026-10-29,FR2628647242,Bland AI,Bland,20x,FedRAMP Certified,Class A,Unknown,,no,no,0,,Prescient Security
-2026-10-29,FR2628647238,Eleven Labs Inc.,ElevenLabs Platform,20x,FedRAMP Certified,Class A,Unknown,,no,no,0,,
-2026-10-29,FR2630354495,Files.com,Files.com,20x,FedRAMP Certified,Class A,Unknown,,no,no,0,,
-2026-10-29,FR2631258132,"Harness, Inc.",Harness for Government,20x,FedRAMP Certified,Class A,Unknown,,no,no,0,,
-2026-10-29,FR2631054539,Mycroft Technologies Inc,Mycroft GRC Platform,20x,FedRAMP Certified,Class A,Unknown,,yes,yes,0,,
-2026-10-29,FR2631654537,Wisedocs USA Inc.,Wisedocs for Government,20x,FedRAMP Certified,Class A,Unknown,,no,no,0,,
+2026-10-30,FR2527955211,Flock Safety,Flock Safety Platform,20x Pilot,FedRAMP Certified,Class B,Low,2025-07-25,no,no,0,,Baker Tilly
+2026-10-30,FR2525556241,Vanta Inc.,Vanta - Trust Management Platform,20x Pilot,FedRAMP Certified,Class B,Low,2025-07-25,yes,yes,0,,Schellman
+2026-10-30,FR2529359931,Anitian,FedFlex,20x Pilot,FedRAMP Certified,Class B,Low,2025-08-07,yes,no,0,,A-LIGN
+2026-10-30,FR2532557612,A-LIGN,A-SCEND,20x Pilot,FedRAMP Certified,Class B,Low,2025-09-17,yes,no,0,,RISCPoint
+2026-10-30,FR2533435144,Syneren Technologies Corporation,Configurable Case Management Application Platform (CMAP),20x Pilot,FedRAMP Certified,Class B,Low,2025-09-30,no,no,0,,Kompleye
+2026-10-30,FR2600167032,Drata,Drata Trust Management Platform,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,yes,no,0,,Schellman
+2026-10-30,FR2605341343,"IntelliGRC, Inc.",IntelliGRC,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,yes,no,0,,A-LIGN
+2026-10-30,FR2535459082,stackArmor,The Armory20x,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,yes,no,0,,Kratos
+2026-10-30,FR2433985791XL,Vyond,Vyond for Government,20x Pilot,FedRAMP Certified,Class B,Low,2025-12-05,no,no,0,,Kratos
+2026-10-30,FR2533155773,OpenAI,ChatGPT Enterprise and API Platform,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-01-09,no,no,2,Department of Veterans Affairs; U.S. Election Assistance Commission,Schellman
+2026-10-30,FR2604952026,Google,Gemini for Government,20x Pilot,FedRAMP Certified,Class B,Low,2026-01-21,no,no,1,U.S. Election Assistance Commission,
+2026-10-30,FR2604643715,Perplexity AI,Perplexity Enterprise and API Platform,20x,FedRAMP Certified,Class C,Low,2026-02-01,no,no,2,Department of Agriculture; U.S. Election Assistance Commission,
+2026-10-30,FR2604835605,Longevity Consulting,Riskuity,20x Pilot,FedRAMP Certified,Class B,Low,2026-02-06,yes,no,0,,Excentium
+2026-10-30,FR2604952842,MapLarge Inc.,MapLarge,20x Pilot,FedRAMP Certified,Class B,Low,2026-02-09,no,no,0,,A-LIGN
+2026-10-30,FR2409863458XL,Confluent,Confluent Cloud for Government (CCG),20x Pilot,FedRAMP Certified,Class C,Moderate,2026-03-06,no,no,0,,Fortreum
+2026-10-30,FR2527956755,"Meridian Knowledge Solutions, LLC",Meridian LMS,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-03-06,no,no,0,,Fortreum
+2026-10-30,FR2428769635XL,Paramify,Paramify Cloud,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-03-06,yes,no,0,,Coalfire
+2026-10-30,FR2615451803,Aeroplicity Inc.,Aeroplicity,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-10,no,no,0,,Lunarline
+2026-10-30,FR2504154395XL,"Persona Identities, LLC",Persona for Government,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-10,no,no,0,,First Information Technology Services (FITS)
+2026-10-30,FR2525557617,InfusionPoints,XBU40,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-10,no,no,0,,Fortreum
+2026-10-30,FR2525556241XM,Vanta,Vanta Government Cloud,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-04-24,yes,no,0,,Schellman
+2026-10-30,FR2619434440,ASSYST,ComplySyncATO,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,yes,no,0,,First Information Technology Services (FITS)
+2026-10-30,FR2606141075,Entratus,Entratus Conversational AI Platform,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,no,no,0,,A-LIGN
+2026-10-30,FR2335850594XL,Filevine,Filevine Platform,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,no,no,0,,Coalfire
+2026-10-30,FR2621445678,Halo,Halo,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-05-06,no,no,0,,DataLock Consulting Group
+2026-10-30,FR2620235600,Anecdotes,Anecdotes,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-06-23,yes,no,0,,Schellman
+2026-10-30,FR2529360449,Secureframe,Secureframe Platform,20x Pilot,FedRAMP Certified,Class C,Moderate,2026-06-23,yes,no,0,,Coalfire
+2026-10-30,FR2628647242,Bland AI,Bland,20x,FedRAMP Certified,Class A,Unknown,,no,no,0,,Prescient Security
+2026-10-30,FR2631054484,"Anysphere, Inc.",Cursor,20x,FedRAMP Certified,Class A,Unknown,,no,no,0,,A-LIGN
+2026-10-30,FR2628647238,Eleven Labs Inc.,ElevenLabs Platform,20x,FedRAMP Certified,Class A,Unknown,,no,no,0,,
+2026-10-30,FR2630354495,Files.com,Files.com,20x,FedRAMP Certified,Class A,Unknown,,no,no,0,,
+2026-10-30,FR2631258132,"Harness, Inc.",Harness for Government,20x,FedRAMP Certified,Class A,Unknown,,no,no,0,,
+2026-10-30,FR2631054539,Mycroft Technologies Inc,Mycroft GRC Platform,20x,FedRAMP Certified,Class A,Unknown,,yes,yes,0,,
+2026-10-30,FR2631654537,Wisedocs USA Inc.,Wisedocs for Government,20x,FedRAMP Certified,Class A,Unknown,,no,no,0,,
