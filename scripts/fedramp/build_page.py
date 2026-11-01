@@ -1406,7 +1406,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       <div class="cls">{grc_rows}</div>
       <h3 class="sub">Authorized 20x products counted as GRC, by either method</h3>
       <div class="list tbl" data-filter><table>
-        <thead><tr><th>Product</th><th class="hide-sm">Provider</th><th class="n" data-sort>Authorized</th><th class="ck">Self-tagged</th><th class="ck">Classified</th><th class="n">Agencies</th></tr></thead>
+        <thead><tr><th>Product</th><th class="hide-sm">Provider</th><th class="n" data-sort data-sort-on="1">Authorized</th><th class="ck">Self-tagged</th><th class="ck">Classified</th><th class="n">Agencies</th></tr></thead>
         <tbody>{grc_prod_rows}</tbody>
       </table></div>
       {prov(a, digest, f'business categories each provider chose for its listing; GRC classification feed, {fmt_date(a["grc_date"])}')}
@@ -1454,7 +1454,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       </div>
       <p class="note">The assessor each provider names on its marketplace listing, matched to FedRAMP's directory of recognized assessors. For listings still in process the name is the provider's own statement and can change before authorization. "With agency ATO" excludes the FedRAMP PMO.</p>
       <div class="list tbl" data-filter><table>
-        <thead><tr><th>3PAO</th><th class="n">20x authorized</th><th class="n">With agency ATO</th><th class="n">GRC-vendor clients</th><th class="n">In process</th><th class="hide-sm">Authorized products</th></tr></thead>
+        <thead><tr><th>3PAO</th><th class="n" data-sort data-sort-type="num" data-sort-on="-1">20x authorized</th><th class="n">With agency ATO</th><th class="n" data-sort data-sort-type="num">GRC-vendor clients</th><th class="n" data-sort data-sort-type="num">In process</th><th class="hide-sm">Authorized products</th></tr></thead>
         <tbody>{asr_rows or '<tr><td colspan="6">No 20x listing names a recognized assessor.</td></tr>'}</tbody>
       </table></div>
       {asr_note_html}
@@ -1679,11 +1679,13 @@ FILTER_JS = """<script>
     box.parentNode.insertBefore(bar, box);
     var tbody = table.tBodies[0];
     rows.forEach(function (r, i) { r._d = data[i]; r._i = i; });
-    function sortRows(ci, dir) {
+    var sorters = [], nSort = heads.filter(function (th) { return th.hasAttribute('data-sort'); }).length;
+    function sortRows(ci, dir, num) {
       var order = rows.slice();
       if (dir) order.sort(function (x, y) {
         var a = x._d[ci][0], b = y._d[ci][0];
         if (a === '—' || b === '—') return a === b ? x._i - y._i : (a === '—' ? 1 : -1);
+        if (num) { a = +a; b = +b; }
         return a === b ? x._i - y._i : (a < b ? -dir : dir);
       });
       order.forEach(function (r) { tbody.appendChild(r); });
@@ -1691,17 +1693,23 @@ FILTER_JS = """<script>
     var ctrls = heads.map(function (th, ci) {
       var label = th.textContent.trim();
       if (th.hasAttribute('data-sort')) {
+        var num = th.getAttribute('data-sort-type') === 'num';
         var s = document.createElement('select');
-        var dflt = th.getAttribute('data-sort');
-        if (dflt) s.add(new Option(dflt, ''));
-        s.add(new Option('Oldest first', '1'));
-        s.add(new Option('Newest first', '-1'));
+        var neutral = th.getAttribute('data-sort') || (nSort > 1 ? 'Sort…' : '');
+        if (neutral) s.add(new Option(neutral, ''));
+        if (num) { s.add(new Option('High to low', '-1')); s.add(new Option('Low to high', '1')); }
+        else { s.add(new Option('Oldest first', '1')); s.add(new Option('Newest first', '-1')); }
+        if (th.hasAttribute('data-sort-on')) s.value = th.getAttribute('data-sort-on');
         s.className = 'flt srt';
         s.setAttribute('aria-label', 'Sort by ' + label);
         s.addEventListener('click', function (e) { e.stopPropagation(); });
-        s.addEventListener('change', function () { sortRows(ci, +s.value); });
+        s.addEventListener('change', function () {
+          sorters.forEach(function (o) { if (o !== s) o.value = ''; });
+          sortRows(ci, +s.value, num);
+        });
         th.appendChild(s);
-        if (!dflt) sortRows(ci, +s.value);
+        sorters.push(s);
+        if (s.value) sortRows(ci, +s.value, num);
         return null;
       }
       var seen = {};
