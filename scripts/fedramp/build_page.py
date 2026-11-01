@@ -116,6 +116,8 @@ def normalise(p: dict, grc: set[str], ai: set[str] | None = None) -> dict:
         "impact": p.get("impact_level") or "",
         "date": (p.get("cert_date") or "")[:10],
         "tl": timeline(p, p.get("cert_type") == "Rev5"),
+        "first_event": min([(e.get("date") or "")[:10] for e in (p.get("event_log") or []) if e.get("date")]
+                           or [(p.get("status_date") or "")[:10]]),
         "agencies": agencies,
         "n_agencies": len(agencies),
         "assessor": assessor,
@@ -131,6 +133,11 @@ def normalise(p: dict, grc: set[str], ai: set[str] | None = None) -> dict:
 
 
 _SUFFIX = re.compile(r"[\s,]+(?:inc|llc|l\.l\.c|ltd|limited|corp|corporation|co|company|plc|gmbh|lp|llp)\.?$", re.I)
+
+
+def card(r: dict) -> str:
+    """Product name linked to its usability card on the marketplace lookup page."""
+    return f'<a class="card-lk" href="/fedramp-lookup/?id={esc(r["id"])}">{esc(r["product"])}</a>'
 
 
 def provider_key(name: str) -> str:
@@ -314,6 +321,25 @@ def analyse(rows: list[dict], snap: str) -> dict:
                 dual.append({"rev5": r, "x20": t})
     dual.sort(key=lambda d: (-d["rev5"]["n_agencies"], d["x20"]["product"].lower()))
 
+    # Every listing in 20x intake or review, plus the traditional-labeled intake listings
+    # with no sponsor (see "ambiguous"), for the pipeline table and CSV.
+    queue = pipeline + ambiguous
+    seen = Counter((r["csp"].lower(), name_key(r["product"])) for r in queue)
+    rev5_cert = [r for r in rows if r["track"] == "Rev5" and r["certified"]]
+    pipeline_rows = []
+    for r in queue:
+        notes = []
+        if r["track"] == "Rev5":
+            notes.append("Labeled traditional, no sponsor")
+        if seen[(r["csp"].lower(), name_key(r["product"]))] > 1:
+            notes.append("Listed more than once")
+        k = name_key(r["product"])
+        if any(t["csp"].lower() == r["csp"].lower() and (name_key(t["product"]) == k or k in name_key(t["product"])
+               or name_key(t["product"]) in k) for t in rev5_cert):
+            notes.append("Similar product authorized on traditional track")
+        pipeline_rows.append({**r, "notes": notes, "entered": r["tl"]["start"] or r["first_event"]})
+    pipeline_rows.sort(key=lambda r: (r["entered"] or "0000", r["product"].lower()), reverse=True)
+
     by_class = []
     order = ["Class A", "Class B", "Class C", "Class D"]
     present = sorted({r["cls"] for r in tw_cert}, key=lambda c: order.index(c) if c in order else 99)
@@ -444,6 +470,7 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "market": {"products": len(cert), "atos": sum(r["n_agencies"] for r in cert),
                    "top": max(cert, key=lambda r: r["n_agencies"])},
         "ambiguous": ambiguous,
+        "pipeline_rows": pipeline_rows,
         "dual": dual,
         "adopters": adopters,
         "adopter_agencies": adopter_agencies,
@@ -728,6 +755,9 @@ tr.grp td{font-weight:600;color:var(--ink);border-bottom-color:var(--rule-strong
 th .flt{display:block;width:100%;min-width:4.5rem;margin-top:var(--s-1);font:inherit;font-weight:400;font-size:var(--t-micro);color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:4px;padding:2px 4px}
 th.n .flt{text-align:left}
 th .flt.on{border-color:var(--ink);font-weight:600}
+th .flt.srt{min-width:8.5rem}
+a.card-lk{color:inherit;text-decoration:underline;text-decoration-color:var(--rule-strong);text-underline-offset:2px}
+a.card-lk:hover{text-decoration-color:currentColor}
 .hist-btn{margin-top:var(--s-1);font:inherit;font-size:var(--t-micro);font-family:var(--mono);letter-spacing:.04em;color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:4px;padding:1px 8px;cursor:pointer}
 .hist-btn::after{content:" ▸"}
 .hist-btn[aria-expanded="true"]::after{content:" ▾"}
@@ -1031,7 +1061,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
     # Who assessed 20x
     at = a["assessors"]
     def prod_list(ps):
-        return "; ".join(esc(r["product"]) + (' <span class="tag grc">GRC</span>' if r["grc"] else "")
+        return "; ".join(card(r) + (' <span class="tag grc">GRC</span>' if r["grc"] else "")
                          + (" (agency ATO)" if r["n_agencies"] else "") for r in ps) or "—"
     asr_rows = "".join(
         f'<tr><td>{esc(d["label"])}</td><td class="n">{len(d["auth"])}</td>'
@@ -1077,12 +1107,22 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         if p["grc"]:
             tags.append('<span class="tag grc">GRC</span>')
         list_rows.append(
-            f'<tr><td class="n">{p["date"] or "—"}</td><td data-v="{esc(p["product"])}">{esc(p["product"])} {" ".join(tags)}</td>'
+            f'<tr><td class="n">{p["date"] or "—"}</td><td data-v="{esc(p["product"])}">{card(p)} {" ".join(tags)}</td>'
             f'<td class="hide-sm">{esc(p["csp"])}</td><td class="hide-sm">{esc(p["cert_type"])}</td>'
             f'<td class="hide-sm">{esc(p["cls"])}</td><td class="hide-sm">{esc(p["impact"])}</td>'
             f'<td class="n{" zero" if p["n_agencies"] == 0 else ""}">{p["n_agencies"]}</td>'
             f'<td class="hide-sm" data-v="{esc("|".join(p["agencies"]) or "—")}">{esc("; ".join(p["agencies"])) or "—"}</td>'
             f'<td class="hide-sm">{esc(p["assessor"]) or "—"}</td></tr>')
+
+    pipe_rows = []
+    for p in a["pipeline_rows"]:
+        trad = p["track"] == "Rev5"
+        pipe_rows.append(
+            f'<tr><td class="n">{p["entered"] or "—"}</td><td data-v="{esc(p["product"])}">{card(p)}</td>'
+            f'<td class="hide-sm">{esc(p["csp"])}</td><td class="hide-sm">{"Traditional" if trad else "20x"}</td>'
+            f'<td class="hide-sm">{esc(p["status"])}</td><td class="hide-sm">{esc(p["assessor"]) or "—"}</td>'
+            f'<td class="hide-sm" data-v="{esc("|".join(p["notes"]) or "—")}">{esc("; ".join(p["notes"])) or "—"}</td></tr>')
+    n_pipe, n_amb_rows = len(a["pipeline_rows"]), len(a["ambiguous"])
 
     def class_row(name, sub, st, total=False):
         share = st["share"] or 0
@@ -1132,7 +1172,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                      f'<div class="cls-val"><span class="pc">{sh:.0%}</span>'
                      f'<span class="of">{g["k"]} of {g["n"]} {"product" if g["n"] == 1 else "products"}</span></div></div>')
     grc_prod_rows = "".join(
-        f'<tr><td>{esc(r["product"])}</td><td class="hide-sm">{esc(r["csp"])}</td><td class="n">{r["date"] or "—"}</td>'
+        f'<tr><td data-v="{esc(r["product"])}">{card(r)}</td><td class="hide-sm">{esc(r["csp"])}</td><td class="n">{r["date"] or "—"}</td>'
         f'<td class="ck">{"✓" if r["grc_tag"] else "–"}</td><td class="ck">{"✓" if r["grc"] else "–"}</td>'
         f'<td class="n{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</td></tr>' for r in a["grc_products"])
 
@@ -1143,7 +1183,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         rows_html = ""
         for r in ps:
             units = "".join(f'<span class="u" title="{esc(ag)}"></span>' for ag in r["agencies"]) or '<span class="u none">No agency</span>'
-            rows_html += (f'<div class="prow"><div class="pn">{esc(r["product"])}<small>{esc(r["csp"])} · '
+            rows_html += (f'<div class="prow"><div class="pn">{card(r)}<small>{esc(r["csp"])} · '
                           f'{esc(r["impact"]) if r["impact"] != "Unknown" else "impact not listed"} · '
                           f'{fmt_date(r["date"]) if r["date"] else "no date"}</small></div>'
                           f'<div class="pc{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</div>'
@@ -1350,7 +1390,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
     <span><b>Data</b> FedRAMP Marketplace, {fmt_date(a["snapshot"])}</span>
     <span><b>Records</b> {a["records"]:,}</span>
     <span data-checked="{esc(a["checked"])}"><b>Last checked</b> {fmt_date(a["checked"])}</span>
-    <span><a href="20x-products.csv">Download the 20x rows (CSV)</a></span>
+    <span><a href="20x-products.csv">Authorized 20x products (CSV)</a></span> <span><a href="20x-pipeline.csv">20x queue (CSV)</a></span>
   </div>
 
   <form class="lkup" action="/fedramp-lookup/" method="get" role="search">
@@ -1405,7 +1445,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       <div class="cls">{grc_rows}</div>
       <h3 class="sub">Authorized 20x products counted as GRC, by either method</h3>
       <div class="list tbl" data-filter><table>
-        <thead><tr><th>Product</th><th class="hide-sm">Provider</th><th class="n">Authorized</th><th class="ck">Self-tagged</th><th class="ck">Classified</th><th class="n">Agencies</th></tr></thead>
+        <thead><tr><th>Product</th><th class="hide-sm">Provider</th><th class="n" data-sort data-sort-on="1">Authorized</th><th class="ck">Self-tagged</th><th class="ck">Classified</th><th class="n">Agencies</th></tr></thead>
         <tbody>{grc_prod_rows}</tbody>
       </table></div>
       {prov(a, digest, f'business categories each provider chose for its listing; GRC classification feed, {fmt_date(a["grc_date"])}')}
@@ -1453,7 +1493,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       </div>
       <p class="note">The assessor each provider names on its marketplace listing, matched to FedRAMP's directory of recognized assessors. For listings still in process the name is the provider's own statement and can change before authorization. "With agency ATO" excludes the FedRAMP PMO.</p>
       <div class="list tbl" data-filter><table>
-        <thead><tr><th>3PAO</th><th class="n">20x authorized</th><th class="n">With agency ATO</th><th class="n">GRC-vendor clients</th><th class="n">In process</th><th class="hide-sm">Authorized products</th></tr></thead>
+        <thead><tr><th>3PAO</th><th class="n" data-sort data-sort-type="num" data-sort-on="-1">20x authorized</th><th class="n">With agency ATO</th><th class="n" data-sort data-sort-type="num">GRC-vendor clients</th><th class="n" data-sort data-sort-type="num">In process</th><th class="hide-sm">Authorized products</th></tr></thead>
         <tbody>{asr_rows or '<tr><td colspan="6">No 20x listing names a recognized assessor.</td></tr>'}</tbody>
       </table></div>
       {asr_note_html}
@@ -1484,10 +1524,20 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       <h2>All authorized 20x products</h2>
       <p class="note">Products with an agency ATO first, then by authorization date.</p>
       <div class="list tbl" data-filter><table>
-        <thead><tr><th class="n">Authorized</th><th>Product</th><th class="hide-sm">Provider</th><th class="hide-sm">Track</th><th class="hide-sm">Class</th><th class="hide-sm">Impact</th><th class="n">Agencies</th><th class="hide-sm">Which</th><th class="hide-sm">Assessor</th></tr></thead>
+        <thead><tr><th class="n" data-sort="Agency ATO first">Authorized</th><th>Product</th><th class="hide-sm">Provider</th><th class="hide-sm">Track</th><th class="hide-sm">Class</th><th class="hide-sm">Impact</th><th class="n">Agencies</th><th class="hide-sm">Which</th><th class="hide-sm">Assessor</th></tr></thead>
         <tbody>{"".join(list_rows)}</tbody>
       </table></div>
       {prov(a, digest, "20x and 20x Pilot products with FedRAMP Certified status")}
+    </section>
+
+    <section class="fig wide" id="pipeline-list">
+      <h2>Every listing in the 20x queue</h2>
+      <p class="note">The {a["pipeline"]["n"]} listings on the 20x track that are in intake or review{f", plus the {n_amb_rows} intake listings the marketplace labels traditional with no sponsoring agency" if n_amb_rows else ""}. Newest first by the date each entered the process. Class and impact level are not set on any listing until authorization, so they are left out.</p>
+      <div class="list tbl" data-filter><table>
+        <thead><tr><th class="n" data-sort data-sort-on="-1">Entered</th><th>Product</th><th class="hide-sm">Provider</th><th class="hide-sm">Marketplace label</th><th class="hide-sm">Status</th><th class="hide-sm">Assessor</th><th class="hide-sm">Notes</th></tr></thead>
+        <tbody>{"".join(pipe_rows)}</tbody>
+      </table></div>
+      {prov(a, digest, f"{n_pipe} listings: 20x not yet certified, excluding Legacy FedRAMP Ready, plus traditional-labeled Initial Implementation listings with no agency")}
     </section>
   </div>
 
@@ -1676,8 +1726,41 @@ FILTER_JS = """<script>
     bar.appendChild(count);
     bar.appendChild(clear);
     box.parentNode.insertBefore(bar, box);
+    var tbody = table.tBodies[0];
+    rows.forEach(function (r, i) { r._d = data[i]; r._i = i; });
+    var sorters = [], nSort = heads.filter(function (th) { return th.hasAttribute('data-sort'); }).length;
+    function sortRows(ci, dir, num) {
+      var order = rows.slice();
+      if (dir) order.sort(function (x, y) {
+        var a = x._d[ci][0], b = y._d[ci][0];
+        if (a === '—' || b === '—') return a === b ? x._i - y._i : (a === '—' ? 1 : -1);
+        if (num) { a = +a; b = +b; }
+        return a === b ? x._i - y._i : (a < b ? -dir : dir);
+      });
+      order.forEach(function (r) { tbody.appendChild(r); });
+    }
     var ctrls = heads.map(function (th, ci) {
       var label = th.textContent.trim();
+      if (th.hasAttribute('data-sort')) {
+        var num = th.getAttribute('data-sort-type') === 'num';
+        var s = document.createElement('select');
+        var neutral = th.getAttribute('data-sort') || (nSort > 1 ? 'Sort…' : '');
+        if (neutral) s.add(new Option(neutral, ''));
+        if (num) { s.add(new Option('High to low', '-1')); s.add(new Option('Low to high', '1')); }
+        else { s.add(new Option('Oldest first', '1')); s.add(new Option('Newest first', '-1')); }
+        if (th.hasAttribute('data-sort-on')) s.value = th.getAttribute('data-sort-on');
+        s.className = 'flt srt';
+        s.setAttribute('aria-label', 'Sort by ' + label);
+        s.addEventListener('click', function (e) { e.stopPropagation(); });
+        s.addEventListener('change', function () {
+          sorters.forEach(function (o) { if (o !== s) o.value = ''; });
+          sortRows(ci, +s.value, num);
+        });
+        th.appendChild(s);
+        sorters.push(s);
+        if (s.value) sortRows(ci, +s.value, num);
+        return null;
+      }
       var seen = {};
       data.forEach(function (d) { d[ci].forEach(function (v) { seen[v] = 1; }); });
       var opts = Object.keys(seen);
@@ -1702,10 +1785,10 @@ FILTER_JS = """<script>
     });
     function apply() {
       var shown = 0, active = false;
-      ctrls.forEach(function (el) { el.classList.toggle('on', !!el.value); if (el.value) active = true; });
+      ctrls.forEach(function (el) { if (!el) return; el.classList.toggle('on', !!el.value); if (el.value) active = true; });
       rows.forEach(function (r, ri) {
         var ok = ctrls.every(function (el, ci) {
-          if (!el.value) return true;
+          if (!el || !el.value) return true;
           var vs = data[ri][ci];
           if (el.tagName === 'SELECT') return vs.indexOf(el.value) >= 0;
           var q = el.value.toLowerCase();
@@ -1717,7 +1800,7 @@ FILTER_JS = """<script>
       count.textContent = active ? 'Showing ' + shown + ' of ' + rows.length : rows.length + ' rows';
       clear.hidden = !active;
     }
-    clear.addEventListener('click', function () { ctrls.forEach(function (el) { el.value = ''; }); apply(); });
+    clear.addEventListener('click', function () { ctrls.forEach(function (el) { if (el) el.value = ''; }); apply(); });
     apply();
   });
   Array.prototype.forEach.call(document.querySelectorAll('.hist-btn'), function (b) {
@@ -1906,6 +1989,16 @@ def write_csv(a: dict, path: Path) -> None:
     path.write_text(buf.getvalue(), encoding="utf-8")
 
 
+def write_pipeline_csv(a: dict, path: Path) -> None:
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\n")
+    w.writerow(["snapshot", "id", "provider", "product", "marketplace_label", "status", "entered", "assessor", "notes"])
+    for p in a["pipeline_rows"]:
+        w.writerow([a["snapshot"], p["id"], p["csp"], p["product"], "Traditional" if p["track"] == "Rev5" else "20x",
+                    p["status"], p["entered"], p["assessor"], "; ".join(p["notes"])])
+    path.write_text(buf.getvalue(), encoding="utf-8")
+
+
 def update_history(a: dict, digest: str, path: Path) -> None:
     fields = ["snapshot", "sha256", "records", "x20_authorized", "x20_with_agency", "x20_agency_atos",
               "grc_authorized", "grc_with_agency", "x20_in_process", "rev5_since_first_20x",
@@ -1971,6 +2064,7 @@ def main() -> None:
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "index.html").write_text(render(a, digest, built, read_nav(args.nav_source)), encoding="utf-8")
     write_csv(a, args.out / "20x-products.csv")
+    write_pipeline_csv(a, args.out / "20x-pipeline.csv")
     write_og_card(a, args.out / "og.png")
     if args.feature_target:
         inject_feature(args.feature_target, render_feature(a))

@@ -144,6 +144,39 @@ _URL_TAIL = re.compile(r"\s+-\s+https?://\S+$")
 _PROVIDED_BY = re.compile(r"^\s*provided\s+(?:and|&)\s+managed\s+by\s+([^,.]+)", re.I)
 
 
+def add_flags(products: list[dict], listings: list[dict], snap: str) -> None:
+    """Status date, entered date and data-quality flags for the table view."""
+    from collections import Counter
+    from datetime import date
+    raw = {p["id"]: p for p in products}
+    groups: dict = {}
+    for r in listings:
+        if r["pk"]:
+            groups.setdefault((r["pk"], norm_name(r["n"])), []).append(r)
+    today = date.fromisoformat(snap)
+    for r in listings:
+        p = raw[r["id"]]
+        ev = sorted(e["date"][:10] for e in (p.get("event_log") or []) if e.get("date"))
+        r["sd"] = (p.get("status_date") or "")[:10] or (ev[-1] if ev else "")
+        r["en"] = ev[0] if ev else r["sd"]
+        fl = []
+        for o in groups.get((r["pk"], norm_name(r["n"])), []):
+            if o is r:
+                continue
+            if (o["t"], o["s"], o["i"], o["c"]) == (r["t"], r["s"], r["i"], r["c"]):
+                if "Listed more than once" not in fl:
+                    fl.append("Listed more than once")
+            else:
+                fl.append(f"Also listed: {o['tl']}, {o['s']}" + (f" ({o['i']})" if o["i"] and o["i"] != r["i"] else ""))
+        if r["tk"] == "trad" and r["s"] == "Initial Implementation" and not r["ag"]:
+            fl.append("Labeled traditional, no sponsor")
+        if (r["s"] not in ("Legacy FedRAMP Ready",) and not r["s"].startswith("FedRAMP Certified")
+                and r["sd"] and (today - date.fromisoformat(r["sd"])).days > 730):
+            fl.append(f"No status change since {r['sd'][:4]}")
+        if fl:
+            r["fl"] = fl
+
+
 def norm_name(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", (s or "").lower().replace("™", "").replace("®", "")).strip()
 
@@ -327,6 +360,46 @@ h1{margin:0;max-width:24ch}
   .back{display:inline-flex}
   .lk-empty{display:none}
 }
+.lk-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--s-2)}
+.lk-view{display:inline-flex;border:1px solid var(--rule-strong);border-radius:8px;overflow:hidden}
+.lk-view button{font:inherit;font-size:var(--t-small);padding:6px 14px;background:var(--surface);color:var(--ink);border:0;cursor:pointer;min-height:36px}
+.lk-view button+button{border-left:1px solid var(--rule-strong)}
+.lk-view button[aria-pressed="true"]{background:var(--ink);color:#fff}
+body.lk-tbl .lk{grid-template-columns:minmax(0,1fr)}
+.lk-list{min-width:0}
+body.lk-tbl .lk-list{position:static;max-height:none}
+body.lk-tbl .lk-tools{grid-template-columns:minmax(0,1fr)}
+body.lk-tbl .lk-items{display:none}
+body.lk-tbl .lk-panel,body.lk-tbl .lk-empty{display:none}
+body.lk-tbl .back{display:inline-flex}
+body.lk-tbl.lk-open{overflow:hidden}
+body.lk-tbl.lk-open .lk-panel{display:block;position:fixed;top:0;right:0;bottom:0;width:min(820px,100%);z-index:100;border-radius:0;border:0;border-left:1px solid var(--rule);max-height:none;box-shadow:-12px 0 32px rgba(0,0,0,.14)}
+.lk-scrim{display:none}
+body.lk-tbl.lk-open .lk-scrim{display:block;position:fixed;inset:0;z-index:99;background:rgba(16,24,32,.32)}
+.lk-tbl-wrap{overflow:auto;max-height:calc(100vh - 120px)}
+.lk-tbl-wrap .lk-warn{margin:0}
+.lk-t{width:100%;border-collapse:collapse;font-size:var(--t-small);min-width:1040px}
+.lk-t th{position:sticky;top:0;z-index:1;background:var(--surface);text-align:left;padding:0;border-bottom:1px solid var(--rule-strong);vertical-align:bottom}
+.lk-t th button{font:inherit;font-weight:600;color:var(--ink);background:none;border:0;padding:10px 12px;cursor:pointer;width:100%;text-align:inherit;white-space:nowrap}
+.lk-t th.n{text-align:right}
+.lk-t th .ar{display:inline-block;width:1em;margin-left:4px;color:var(--ink-soft);font-family:var(--mono)}
+.lk-t th[aria-sort] .ar{color:var(--ink)}
+.lk-t td{padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top;overflow-wrap:break-word}
+.lk-t td:first-child{overflow-wrap:anywhere;min-width:16rem}
+.lk-t td.tk{white-space:nowrap}
+.lk-t tbody tr{cursor:pointer}
+.lk-t tbody tr:hover td{background:var(--referent-fill)}
+.lk-t tbody tr[aria-current="true"] td{background:var(--referent-fill);box-shadow:inset 0 1px 0 var(--referent),inset 0 -1px 0 var(--referent)}
+.lk-t .nm{font:inherit;font-weight:600;color:var(--ink);background:none;border:0;padding:0;text-align:left;cursor:pointer;text-decoration:underline;text-decoration-color:var(--rule-strong);text-underline-offset:2px}
+.lk-t .nm:hover{text-decoration-color:currentColor}
+.lk-t .pv{display:block;color:var(--ink-soft)}
+.lk-t td.n{text-align:right;font-variant-numeric:tabular-nums}
+.lk-t td.n.zero{color:var(--gap);font-weight:600}
+.lk-t .dt{font:var(--t-micro)/1.4 var(--mono);white-space:nowrap}
+.lk-t .fl{display:block;font-size:var(--t-micro);line-height:1.4;color:var(--gap)}
+.lk-t .fl.also{color:var(--ink-soft)}
+.lk-t .fl+.fl{margin-top:3px}
+.lk-t .cui{font:500 var(--t-micro)/1 var(--mono);color:var(--referent);white-space:nowrap}
 footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-6);padding-top:var(--s-3);border-top:1px solid var(--rule);font-size:var(--t-small);color:var(--ink-soft)}
 </style>
 </head>
@@ -365,9 +438,15 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
           </select>
           <label class="ck"><input id="lk-cui" type="checkbox"> Meets DFARS 7012 for CUI</label>
         </div>
-        <p class="lk-count" id="lk-count" aria-live="polite">Loading %%N%% listings…</p>
+        <div class="lk-bar">
+          <p class="lk-count" id="lk-count" aria-live="polite">Loading %%N%% listings…</p>
+          <div class="lk-view" role="group" aria-label="View">
+            <button type="button" data-view="list" aria-pressed="true">List</button><button type="button" data-view="table" aria-pressed="false">Table</button>
+          </div>
+        </div>
       </div>
       <ul class="lk-items" id="lk-items"></ul>
+      <div class="lk-tbl-wrap" id="lk-tbl" hidden></div>
     </section>
 
     <section class="lk-panel" id="lk-panel" aria-label="Usability chart" tabindex="-1">
@@ -379,6 +458,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       <div id="lk-card" hidden></div>
     </section>
   </div>
+  <div class="lk-scrim" id="lk-scrim"></div>
   <noscript><p class="lede">This lookup needs JavaScript. The data behind it is at <a href="listings.json">listings.json</a>.</p></noscript>
 
   <p class="prov"><span>FedRAMP Marketplace export %%SNAPHUMAN%%</span><span>sha256 %%DIGEST%%</span><span>%%N%% listings</span><span>rules: data/fedramp/usability-rules.json</span></p>
@@ -401,6 +481,20 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       card = document.getElementById('lk-card'), empty = document.getElementById('lk-empty');
   var selected = null, lastBtn = null;
   var mobile = window.matchMedia('(max-width: 860px)');
+  var tbl = document.getElementById('lk-tbl'), scrim = document.getElementById('lk-scrim');
+  var view = 'list', sortK = '', sortDir = 0;
+  // Table columns. "first" is the direction a header's first click sorts in.
+  var COLS = [
+    { k: 'n', label: 'Product', v: function (r) { return r.n.toLowerCase(); } },
+    { k: 'tl', label: 'Track', v: function (r) { return r.kind === 'h' ? 'Hosted' : r.tl; } },
+    { k: 's', label: 'Status', v: function (r) { return r.kind === 'h' ? 'No listing of its own' : r.s; } },
+    { k: 'sd', label: 'Status date', first: -1, v: function (r) { return r.sd || ''; } },
+    { k: 'd', label: 'Authorized', first: -1, v: function (r) { return r.d || ''; } },
+    { k: 'lv', label: 'Level', v: function (r) { return levelText(r); } },
+    { k: 'ag', label: 'Agency ATOs', num: 1, first: -1, v: function (r) { return r.kind === 'h' ? '' : r.ag.length; } },
+    { k: 'a', label: 'Assessor', v: function (r) { return r.kind === 'h' ? '' : (r.a || ''); } },
+    { k: 'fl', label: 'Flags', first: -1, v: function (r) { return (r.fl || []).length || ''; } }
+  ];
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -482,11 +576,79 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
         h.hp.length + ' other vendors’ products are listed inside it with no FedRAMP listing of their own. ' +
         'If a vendor gave you this ID for their product, it is the host’s ID; find the product below.</li>';
     }).join('');
-    rowsEl.innerHTML = notice + (html || '<li class="lk-none">No listings match. Try fewer words or clear a filter.</li>');
+    if (view === 'table') renderTable(shown, notice);
+    else rowsEl.innerHTML = notice + (html || '<li class="lk-none">No listings match. Try fewer words or clear a filter.</li>');
     var nl = DATA.listings.length, nh = DATA.hosted.length;
     count.textContent = shown.length === ALL.length
       ? nl + ' listings · ' + nh + ' hosted products'
       : shown.length + ' of ' + ALL.length + ' results';
+  }
+
+  function renderTable(shown, notice) {
+    var col = COLS.filter(function (c) { return c.k === sortK; })[0];
+    var rows = shown.slice();
+    if (col && sortDir) {
+      var idx = new Map(shown.map(function (r, i) { return [r, i]; }));
+      rows.sort(function (x, y) {
+        var a = col.v(x), b = col.v(y);
+        if (a === '' || b === '') return a === b ? idx.get(x) - idx.get(y) : (a === '' ? 1 : -1);
+        if (typeof a === 'string') { var c = a.localeCompare(b); if (c) return c * sortDir; }
+        else if (a !== b) return (a < b ? -1 : 1) * sortDir;
+        return idx.get(x) - idx.get(y);
+      });
+    }
+    var head = '<thead><tr>' + COLS.map(function (c) {
+      var on = c.k === sortK && sortDir;
+      return '<th' + (c.num ? ' class="n"' : '') + (on ? ' aria-sort="' + (sortDir > 0 ? 'ascending' : 'descending') + '"' : '') + '>' +
+        '<button type="button" data-sort="' + c.k + '">' + esc(c.label) + '<span class="ar" aria-hidden="true">' + (on ? (sortDir > 0 ? '▲' : '▼') : '↕') + '</span></button></th>';
+    }).join('') + '</tr></thead>';
+    var body = rows.map(function (r) {
+      var cur = selected && selected.id === r.id ? 'true' : 'false';
+      var h = r.kind === 'h' ? byId[r.host] : null;
+      var ag = h ? '—' : String(r.ag.length);
+      var flags = (r.fl || []).map(function (f) {
+        return '<span class="fl' + (f.indexOf('Also listed') === 0 ? ' also' : '') + '">' + esc(f) + '</span>';
+      }).join('');
+      return '<tr data-id="' + esc(r.id) + '" aria-current="' + cur + '">' +
+        '<td><button type="button" class="nm" data-id="' + esc(r.id) + '">' + esc(r.n) + '</button>' +
+        '<span class="pv">' + esc(h ? (r.p ? 'by ' + r.p + ' · ' : '') + 'inside ' + h.n : r.p) + '</span>' +
+        (r.cui ? '<span class="cui" title="Meets DFARS 7012 for CUI">7012 ✓</span>' : '') + '</td>' +
+        '<td class="tk">' + esc(h ? 'Hosted' : r.tl) + '</td>' +
+        '<td>' + esc(h ? 'No listing of its own' : r.s) + '</td>' +
+        '<td class="dt">' + esc(r.sd || '—') + '</td>' +
+        '<td class="dt">' + esc(r.d || '—') + '</td>' +
+        '<td>' + esc(levelText(r)) + '</td>' +
+        '<td class="n' + (!h && r.tk === '20x' && r.s.indexOf('FedRAMP Certified') === 0 && !r.ag.length ? ' zero' : '') + '">' + ag + '</td>' +
+        '<td>' + esc(h ? '—' : (r.a || '—')) + '</td>' +
+        '<td>' + (flags || '') + '</td></tr>';
+    }).join('');
+    tbl.innerHTML = (notice ? '<div class="lk-warn">' + notice.replace(/^<li class="lk-warn">|<\/li>$/g, '') + '</div>' : '') +
+      (rows.length ? '<table class="lk-t">' + head + '<tbody>' + body + '</tbody></table>'
+                   : '<p class="lk-none">No listings match. Try fewer words or clear a filter.</p>');
+  }
+
+  function setUrl(id) {
+    var u = new URLSearchParams();
+    if (view === 'table') u.set('view', 'table');
+    if (q.value) u.set('q', q.value);
+    if (id) u.set('id', id);
+    var qs = u.toString();
+    try { history.replaceState(null, '', qs ? '?' + qs : location.pathname); } catch (e) {}
+  }
+
+  function setView(v, quiet) {
+    view = v === 'table' ? 'table' : 'list';
+    document.body.classList.toggle('lk-tbl', view === 'table');
+    if (view === 'list' && !mobile.matches) document.body.classList.remove('lk-open');
+    Array.prototype.forEach.call(document.querySelectorAll('.lk-view button'), function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-view') === view ? 'true' : 'false');
+    });
+    rowsEl.hidden = view === 'table';
+    tbl.hidden = view !== 'table';
+    try { localStorage.setItem('lk-view', view); } catch (e) {}
+    if (DATA) renderList();
+    if (view === 'list' && selected && !mobile.matches) select(selected.id, { quiet: true });
+    if (!quiet) setUrl(view === 'list' && selected ? selected.id : null);
   }
 
   function banners(r) {
@@ -609,9 +771,12 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
         if (br.top < lr.top || br.bottom > lr.bottom) rowsEl.scrollTop += br.top - lr.top - rowsEl.clientHeight / 3;
       }
     });
-    try { history.replaceState(null, '', '?id=' + encodeURIComponent(id)); } catch (e) {}
+    Array.prototype.forEach.call(tbl.querySelectorAll('tr[data-id]'), function (t) {
+      t.setAttribute('aria-current', t.getAttribute('data-id') === id ? 'true' : 'false');
+    });
+    setUrl(id);
     document.title = r.n + ' — FedRAMP usability lookup | Archstone Security';
-    if (mobile.matches) document.body.classList.add('lk-open');
+    if (mobile.matches || view === 'table') document.body.classList.add('lk-open');
     panel.scrollTop = 0;
     if (!opts || !opts.quiet) {
       var h = document.getElementById('lk-h');
@@ -621,6 +786,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
 
   function closeMobile() {
     document.body.classList.remove('lk-open');
+    if (view === 'table') setUrl(null);
     if (lastBtn && document.body.contains(lastBtn)) lastBtn.focus();
   }
 
@@ -629,6 +795,28 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
     if (!b) return;
     lastBtn = b;
     select(b.getAttribute('data-id'));
+  });
+  tbl.addEventListener('click', function (e) {
+    var s = e.target.closest('[data-sort]');
+    if (s) {
+      var k = s.getAttribute('data-sort'), c = COLS.filter(function (x) { return x.k === k; })[0];
+      var first = c.first || 1;
+      if (sortK !== k) { sortK = k; sortDir = first; }
+      else if (sortDir === first) sortDir = -first;
+      else { sortK = ''; sortDir = 0; }
+      renderList();
+      var again = tbl.querySelector('[data-sort="' + k + '"]');
+      if (again) again.focus();
+      return;
+    }
+    var row = e.target.closest('tr[data-id]');
+    if (!row) return;
+    lastBtn = row.querySelector('.nm');
+    select(row.getAttribute('data-id'));
+  });
+  scrim.addEventListener('click', closeMobile);
+  Array.prototype.forEach.call(document.querySelectorAll('.lk-view button'), function (b) {
+    b.addEventListener('click', function () { setView(b.getAttribute('data-view')); });
   });
   card.addEventListener('click', function (e) {
     if (e.target.closest('[data-back]')) { closeMobile(); return; }
@@ -639,7 +827,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
     if (e.key === 'Escape' && document.body.classList.contains('lk-open')) closeMobile();
   });
   [q, fTrack, fStatus, fCui].forEach(function (el) {
-    el.addEventListener(el === q ? 'input' : 'change', function () { if (DATA) renderList(); });
+    el.addEventListener(el === q ? 'input' : 'change', function () { if (DATA) renderList(); if (view === 'table' && el === q) setUrl(null); });
   });
 
   fetch('listings.json?v=%%SNAP%%').then(function (res) {
@@ -662,7 +850,9 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
     document.getElementById('lk-legend').innerHTML = ['lev', 'dec', 'no', 'wait'].map(badge).join('');
     var params = new URLSearchParams(location.search);
     if (params.get('q')) q.value = params.get('q');
-    renderList();
+    var saved = null;
+    try { saved = localStorage.getItem('lk-view'); } catch (e) {}
+    setView(params.get('view') || (params.get('id') ? 'list' : saved) || 'list', true);
     var id = params.get('id');
     if (id && byId[id]) select(id, { quiet: true });
     else if (params.get('q')) {
@@ -726,6 +916,7 @@ def main() -> None:
     ov = json.loads(args.overrides.read_text(encoding="utf-8"))
     listings = build_listings(products, rules, ov)
     hosted = add_services(products, listings, json.loads(args.hosted.read_text(encoding="utf-8")))
+    add_flags(products, listings, snap)
 
     # Agencies repeat across hundreds of listings; send each name once and index it.
     agencies = sorted({a for r in listings for a in r["ag"]})
