@@ -116,6 +116,8 @@ def normalise(p: dict, grc: set[str], ai: set[str] | None = None) -> dict:
         "impact": p.get("impact_level") or "",
         "date": (p.get("cert_date") or "")[:10],
         "tl": timeline(p, p.get("cert_type") == "Rev5"),
+        "first_event": min([(e.get("date") or "")[:10] for e in (p.get("event_log") or []) if e.get("date")]
+                           or [(p.get("status_date") or "")[:10]]),
         "agencies": agencies,
         "n_agencies": len(agencies),
         "assessor": assessor,
@@ -314,6 +316,25 @@ def analyse(rows: list[dict], snap: str) -> dict:
                 dual.append({"rev5": r, "x20": t})
     dual.sort(key=lambda d: (-d["rev5"]["n_agencies"], d["x20"]["product"].lower()))
 
+    # Every listing in 20x intake or review, plus the traditional-labeled intake listings
+    # with no sponsor (see "ambiguous"), for the pipeline table and CSV.
+    queue = pipeline + ambiguous
+    seen = Counter((r["csp"].lower(), name_key(r["product"])) for r in queue)
+    rev5_cert = [r for r in rows if r["track"] == "Rev5" and r["certified"]]
+    pipeline_rows = []
+    for r in queue:
+        notes = []
+        if r["track"] == "Rev5":
+            notes.append("Labeled traditional, no sponsor")
+        if seen[(r["csp"].lower(), name_key(r["product"]))] > 1:
+            notes.append("Listed more than once")
+        k = name_key(r["product"])
+        if any(t["csp"].lower() == r["csp"].lower() and (name_key(t["product"]) == k or k in name_key(t["product"])
+               or name_key(t["product"]) in k) for t in rev5_cert):
+            notes.append("Similar product authorized on traditional track")
+        pipeline_rows.append({**r, "notes": notes, "entered": r["tl"]["start"] or r["first_event"]})
+    pipeline_rows.sort(key=lambda r: (r["entered"] or "0000", r["product"].lower()), reverse=True)
+
     by_class = []
     order = ["Class A", "Class B", "Class C", "Class D"]
     present = sorted({r["cls"] for r in tw_cert}, key=lambda c: order.index(c) if c in order else 99)
@@ -444,6 +465,7 @@ def analyse(rows: list[dict], snap: str) -> dict:
         "market": {"products": len(cert), "atos": sum(r["n_agencies"] for r in cert),
                    "top": max(cert, key=lambda r: r["n_agencies"])},
         "ambiguous": ambiguous,
+        "pipeline_rows": pipeline_rows,
         "dual": dual,
         "adopters": adopters,
         "adopter_agencies": adopter_agencies,
@@ -1085,6 +1107,16 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
             f'<td class="hide-sm" data-v="{esc("|".join(p["agencies"]) or "—")}">{esc("; ".join(p["agencies"])) or "—"}</td>'
             f'<td class="hide-sm">{esc(p["assessor"]) or "—"}</td></tr>')
 
+    pipe_rows = []
+    for p in a["pipeline_rows"]:
+        trad = p["track"] == "Rev5"
+        pipe_rows.append(
+            f'<tr><td class="n">{p["entered"] or "—"}</td><td>{esc(p["product"])}</td>'
+            f'<td class="hide-sm">{esc(p["csp"])}</td><td class="hide-sm">{"Traditional" if trad else "20x"}</td>'
+            f'<td class="hide-sm">{esc(p["status"])}</td><td class="hide-sm">{esc(p["assessor"]) or "—"}</td>'
+            f'<td class="hide-sm" data-v="{esc("|".join(p["notes"]) or "—")}">{esc("; ".join(p["notes"])) or "—"}</td></tr>')
+    n_pipe, n_amb_rows = len(a["pipeline_rows"]), len(a["ambiguous"])
+
     def class_row(name, sub, st, total=False):
         share = st["share"] or 0
         z = " zero" if st["with"] == 0 else ""
@@ -1351,7 +1383,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
     <span><b>Data</b> FedRAMP Marketplace, {fmt_date(a["snapshot"])}</span>
     <span><b>Records</b> {a["records"]:,}</span>
     <span data-checked="{esc(a["checked"])}"><b>Last checked</b> {fmt_date(a["checked"])}</span>
-    <span><a href="20x-products.csv">Download the 20x rows (CSV)</a></span>
+    <span><a href="20x-products.csv">Authorized 20x products (CSV)</a></span> <span><a href="20x-pipeline.csv">20x queue (CSV)</a></span>
   </div>
 
   <form class="lkup" action="/fedramp-lookup/" method="get" role="search">
@@ -1489,6 +1521,16 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         <tbody>{"".join(list_rows)}</tbody>
       </table></div>
       {prov(a, digest, "20x and 20x Pilot products with FedRAMP Certified status")}
+    </section>
+
+    <section class="fig wide" id="pipeline-list">
+      <h2>Every listing in the 20x queue</h2>
+      <p class="note">The {a["pipeline"]["n"]} listings on the 20x track that are in intake or review{f", plus the {n_amb_rows} intake listings the marketplace labels traditional with no sponsoring agency" if n_amb_rows else ""}. Newest first by the date each entered the process. Class and impact level are not set on any listing until authorization, so they are left out.</p>
+      <div class="list tbl" data-filter><table>
+        <thead><tr><th class="n" data-sort data-sort-on="-1">Entered</th><th>Product</th><th class="hide-sm">Provider</th><th class="hide-sm">Marketplace label</th><th class="hide-sm">Status</th><th class="hide-sm">Assessor</th><th class="hide-sm">Notes</th></tr></thead>
+        <tbody>{"".join(pipe_rows)}</tbody>
+      </table></div>
+      {prov(a, digest, f"{n_pipe} listings: 20x not yet certified, excluding Legacy FedRAMP Ready, plus traditional-labeled Initial Implementation listings with no agency")}
     </section>
   </div>
 
@@ -1940,6 +1982,16 @@ def write_csv(a: dict, path: Path) -> None:
     path.write_text(buf.getvalue(), encoding="utf-8")
 
 
+def write_pipeline_csv(a: dict, path: Path) -> None:
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\n")
+    w.writerow(["snapshot", "id", "provider", "product", "marketplace_label", "status", "entered", "assessor", "notes"])
+    for p in a["pipeline_rows"]:
+        w.writerow([a["snapshot"], p["id"], p["csp"], p["product"], "Traditional" if p["track"] == "Rev5" else "20x",
+                    p["status"], p["entered"], p["assessor"], "; ".join(p["notes"])])
+    path.write_text(buf.getvalue(), encoding="utf-8")
+
+
 def update_history(a: dict, digest: str, path: Path) -> None:
     fields = ["snapshot", "sha256", "records", "x20_authorized", "x20_with_agency", "x20_agency_atos",
               "grc_authorized", "grc_with_agency", "x20_in_process", "rev5_since_first_20x",
@@ -2005,6 +2057,7 @@ def main() -> None:
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "index.html").write_text(render(a, digest, built, read_nav(args.nav_source)), encoding="utf-8")
     write_csv(a, args.out / "20x-products.csv")
+    write_pipeline_csv(a, args.out / "20x-pipeline.csv")
     write_og_card(a, args.out / "og.png")
     if args.feature_target:
         inject_feature(args.feature_target, render_feature(a))
