@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png">
+<title>Is the system an authoritative evidence source? | Archstone Security</title>
+<meta name="description" content="Aggregate results for the 320 assessment objectives in NIST SP 800-171A Rev 2: how many the system itself can answer, and what limits the rest.">
+<link rel="canonical" href="https://archstonesecurity.com/authoritative-evidence/">
+    <!-- Css Library -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/animate.css">
+    <link rel="stylesheet" href="/font/flaticon.css">
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/venobox.min.css">
+    <link rel="stylesheet" href="/css/jquery-ui.min.css">
+    <!-- Style css -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://use.typekit.net/csw0swu.css">
+    <link rel="stylesheet" href="/css/feature-20x.css">
+    <link rel="stylesheet" href="/css/research.css">
+    <!-- Social preview (Open Graph) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Archstone Security">
+    <meta property="og:title" content="Is the system an authoritative evidence source? | Archstone Security">
+    <meta property="og:description" content="Aggregate results for the 320 assessment objectives in NIST SP 800-171A Rev 2: how many the system itself can answer, and what limits the rest.">
+    <meta property="og:url" content="https://archstonesecurity.com/authoritative-evidence/">
+    <meta property="og:image" content="https://archstonesecurity.com/images/og-default.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Archstone Security: compliance engineering for NIST SP 800-171, FedRAMP and GovRAMP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://archstonesecurity.com/images/og-default.png">
+<style>
+.ae-def { margin: 28px 0 0; padding: 18px 22px; border-left: 3px solid var(--x-referent); background: var(--x-referent-fill); border-radius: 0 8px 8px 0; font-size: 15px; color: var(--x-ink-soft); max-width: 78ch; }
+.ae-def b { color: var(--x-ink); }
+.ae-fig { margin: 56px 0 0; }
+.ae-fig > h2 { font-size: 24px; margin: 0 0 8px; max-width: 30ch; }
+.ae-fig > p { font-size: 15px; color: var(--x-ink-soft); margin: 0 0 22px; }
+.ae-cap { font-size: 13px !important; color: var(--x-ink-soft); margin: 14px 0 0 !important; font-family: var(--x-mono); }
+.ae-key { display: flex; flex-wrap: wrap; gap: 6px 20px; list-style: none; padding: 0; margin: 0 0 18px; font-size: 13px; color: var(--x-ink-soft); }
+.ae-key li { display: flex; align-items: center; gap: 7px; }
+.ae-key b { color: var(--x-ink); font-weight: 600; }
+.ae-fams { display: grid; gap: 10px; }
+.ae-fam { display: grid; grid-template-columns: minmax(150px, 250px) 1fr 70px; gap: 14px; align-items: center; }
+.ae-fn { font-size: 14px; }
+.ae-fr { font-family: var(--x-mono); font-size: 12px; color: var(--x-ink-soft); text-align: right; white-space: nowrap; }
+.ae-fr b { color: var(--x-ink); font-weight: 500; }
+.ae-cells { display: flex; flex-wrap: wrap; gap: 3px; max-width: calc(36 * 15px); }
+.ae-c, .ae-sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; }
+.ae-yes, .ae-s-dept { background: var(--x-referent); }
+.ae-s-org { background: #6E93AA; }
+.ae-partial, .ae-s-partial { background: #B7CBD7; }
+.ae-no, .ae-s-no { background: #fff; box-shadow: inset 0 0 0 1px #AEB9B4; }
+.ae-bar { display: flex; height: 54px; border-radius: 6px; overflow: hidden; gap: 2px; }
+.ae-seg { display: flex; align-items: center; padding: 0 10px; font-family: var(--x-mono); font-size: 13px; min-width: 0; }
+.ae-seg b { font-weight: 500; }
+.ae-s-dept b, .ae-s-org b { color: #fff; }
+.ae-bar-ax { display: flex; justify-content: space-between; font-family: var(--x-mono); font-size: 11px; color: var(--x-ink-soft); margin: 6px 0 0; }
+.ae-brace { display: grid; grid-template-columns: 143fr 177fr; gap: 2px; margin: 0 0 6px; font-size: 13px; color: var(--x-ink-soft); }
+.ae-brace span { border-bottom: 1.5px solid var(--x-ink-soft); padding: 0 0 4px; }
+.ae-brace span + span { border-color: var(--x-rule); }
+.ae-slope { width: 100%; max-width: 640px; height: auto; display: block; font-family: var(--x-mono); }
+.ae-ax { stroke: var(--x-rule); }
+.ae-axl { font-size: 12px; fill: var(--x-ink-soft); }
+.ae-ln { stroke-width: 2.5; fill: none; }
+.ae-l-yes { stroke: var(--x-referent); fill: var(--x-referent); }
+.ae-l-partial { stroke: #8FAABB; fill: #8FAABB; }
+.ae-l-no { stroke: #8C9893; fill: #8C9893; }
+.ae-v { font-size: 14px; fill: var(--x-ink); }
+.ae-d { fill: var(--x-ink-soft); font-size: 13px; }
+.ae-sl { font-family: var(--x-sans); font-size: 14px; fill: var(--x-ink-soft); }
+@media (max-width: 640px) {
+  .ae-fam { grid-template-columns: 1fr auto; }
+  .ae-cells { grid-column: 1 / -1; grid-row: 2; }
+  .ae-seg b { display: none; }
+}
+</style>
+</head>
+<body>
+    <!-- Preloader start-->
+    <div id="preloader">
+        <div class="preloader"> </div>
+    </div>
+    <!-- Preloader end  -->
+
+     <!-- Header Start -->
+    <header class="header header-2">
+        <div class="primary-navigation sticky-header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <nav class="navbar navbar-expand-md navbar-light">
+                            <a class="navbar-brand pl-5" href="/"><img src="/images/logo-1200.png"
+                                    alt="Archstone Security"></a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav mx-auto">
+
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Frameworks
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            <li><a class="dropdown-item" href="/nist-800-171.html">NIST SP 800-171</a></li>
+                                            <li><a class="dropdown-item" href="/fedramp.html">FedRAMP</a></li>
+                                            <li><a class="dropdown-item" href="/govramp.html">GovRAMP</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Practice
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                                            <li><a class="dropdown-item" href="/compliance-as-infrastructure.html">Compliance as Infrastructure</a></li>
+                                            <li><a class="dropdown-item" href="/services.html">Services</a></li>
+                                            <li><a class="dropdown-item" href="/about_us.html">About Us</a></li>
+                                            <li><a class="dropdown-item" href="/faqs.html">FAQs</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/research">Research</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/blog.html">Blog</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="mailto:contact@archstonesecurity.com">Contact</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Header End -->
+
+    <main class="main-content post-index section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 x20">
+  <section class="x20-hero" aria-labelledby="ae-h1">
+  <p class="x20-eyebrow">Archstone Security · Research · NIST SP 800-171A Rev 2</p>
+  <h1 id="ae-h1">Is the system an authoritative evidence source?</h1>
+  <p class="x20-lede">We put the question to each of the 320 assessment objectives in NIST SP 800-171A Rev 2. For <b>143</b>, the system's own state answers it. For <b>80</b>, the evidence exists but is conditional, a proxy, or waits on a value nobody has published. For <b>97</b>, nothing the system emits answers the objective.</p>
+  <div class="rs-meta">
+    <span><b>Standard</b> NIST SP 800-171A Rev 2 · 320 objectives</span>
+    <span><b>Dataset</b> v8.9</span>
+    <span><b>Scope</b> one reference environment, n=1</span>
+  </div>
+  <p class="ae-def"><b>Authoritative evidence source</b>, as used here: the system's own emitted state, read by a machine and compared against a referent, with no human attestation in between. A <b>referent</b> is the value the state is compared against, either one the Department has published or one the standard obliges the organization to set.</p>
+  </section>
+
+  <section class="ae-fig" aria-labelledby="ae-f1">
+  <h2 id="ae-f1">Family by family</h2>
+  <p>One square per assessment objective. Families are ordered by the share the system answers in full.</p>
+  <ul class="ae-key"><li><i class="ae-sw ae-yes"></i>Fully reportable</li><li><i class="ae-sw ae-partial"></i>Partially reportable</li><li><i class="ae-sw ae-no"></i>Not reportable</li></ul>
+  <div class="ae-fams" role="list">
+    <div class="ae-fam" role="listitem" aria-label="Identification &amp; Authentication: 21 of 25 fully reportable, 4 partial, 0 not reportable">
+      <span class="ae-fn">Identification &amp; Authentication</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i></span>
+      <span class="ae-fr"><b>21</b> of 25</span>
+    </div><div class="ae-fam" role="listitem" aria-label="Configuration Management: 29 of 44 fully reportable, 7 partial, 8 not reportable">
+      <span class="ae-fn">Configuration Management</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>29</b> of 44</span>
+    </div><div class="ae-fam" role="listitem" aria-label="Access Control: 39 of 70 fully reportable, 18 partial, 13 not reportable">
+      <span class="ae-fn">Access Control</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>39</b> of 70</span>
+    </div><div class="ae-fam" role="listitem" aria-label="System &amp; Information Integrity: 10 of 20 fully reportable, 6 partial, 4 not reportable">
+      <span class="ae-fn">System &amp; Information Integrity</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>10</b> of 20</span>
+    </div><div class="ae-fam" role="listitem" aria-label="System &amp; Communications Protection: 20 of 41 fully reportable, 14 partial, 7 not reportable">
+      <span class="ae-fn">System &amp; Communications Protection</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>20</b> of 41</span>
+    </div><div class="ae-fam" role="listitem" aria-label="Audit &amp; Accountability: 12 of 29 fully reportable, 3 partial, 14 not reportable">
+      <span class="ae-fn">Audit &amp; Accountability</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>12</b> of 29</span>
+    </div><div class="ae-fam" role="listitem" aria-label="Risk Assessment: 3 of 9 fully reportable, 5 partial, 1 not reportable">
+      <span class="ae-fn">Risk Assessment</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>3</b> of 9</span>
+    </div><div class="ae-fam" role="listitem" aria-label="Security Assessment: 3 of 14 fully reportable, 5 partial, 6 not reportable">
+      <span class="ae-fn">Security Assessment</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>3</b> of 14</span>
+    </div><div class="ae-fam" role="listitem" aria-label="Maintenance: 2 of 10 fully reportable, 4 partial, 4 not reportable">
+      <span class="ae-fn">Maintenance</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-yes"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>2</b> of 10</span>
+    </div><div class="ae-fam" role="listitem" aria-label="Awareness &amp; Training: 1 of 9 fully reportable, 0 partial, 8 not reportable">
+      <span class="ae-fn">Awareness &amp; Training</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>1</b> of 9</span>
+    </div><div class="ae-fam" role="listitem" aria-label="Incident Response: 1 of 14 fully reportable, 0 partial, 13 not reportable">
+      <span class="ae-fn">Incident Response</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>1</b> of 14</span>
+    </div><div class="ae-fam" role="listitem" aria-label="Media Protection: 1 of 15 fully reportable, 4 partial, 10 not reportable">
+      <span class="ae-fn">Media Protection</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>1</b> of 15</span>
+    </div><div class="ae-fam" role="listitem" aria-label="Physical Protection: 1 of 16 fully reportable, 8 partial, 7 not reportable">
+      <span class="ae-fn">Physical Protection</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-yes"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>1</b> of 16</span>
+    </div><div class="ae-fam" role="listitem" aria-label="Personnel Security: 0 of 4 fully reportable, 2 partial, 2 not reportable">
+      <span class="ae-fn">Personnel Security</span>
+      <span class="ae-cells" aria-hidden="true"><i class="ae-c ae-partial"></i><i class="ae-c ae-partial"></i><i class="ae-c ae-no"></i><i class="ae-c ae-no"></i></span>
+      <span class="ae-fr"><b>0</b> of 4</span>
+    </div>
+  </div>
+  <p class="ae-cap">Figure 1 · 320 objectives, 14 families · dataset v8.9</p>
+  </section>
+
+  <section class="ae-fig" aria-labelledby="ae-f2">
+  <h2 id="ae-f2">The limit is the referent, not the telemetry</h2>
+  <p>Of the 143 objectives the system answers in full, 100 are compared against a value the Department has published. The other 43 depend on a value the organization is required to set, so the answer is only as authoritative as that value.</p>
+  <div class="ae-brace" aria-hidden="true"><span>Fully reportable · 143</span><span>Partial or not reportable · 177</span></div>
+  <div class="ae-bar" role="img" aria-label="Department-published referent: 100; Organization-defined value: 43; Partially reportable: 80; Not reportable: 97"><span class="ae-seg ae-s-dept" style="flex:100"><b>100</b></span><span class="ae-seg ae-s-org" style="flex:43"><b>43</b></span><span class="ae-seg ae-s-partial" style="flex:80"><b>80</b></span><span class="ae-seg ae-s-no" style="flex:97"><b>97</b></span></div>
+  <div class="ae-bar-ax" aria-hidden="true"><span>0</span><span>320</span></div>
+  <ul class="ae-key" style="margin-top:14px"><li><i class="ae-sw ae-s-dept"></i>Department-published referent <b>100</b></li><li><i class="ae-sw ae-s-org"></i>Organization-defined value <b>43</b></li><li><i class="ae-sw ae-s-partial"></i>Partially reportable <b>80</b></li><li><i class="ae-sw ae-s-no"></i>Not reportable <b>97</b></li></ul>
+  <p class="ae-cap">Figure 2 · Department-published referents: NIST Checklist Repository content and DoD organization-defined parameter values</p>
+  </section>
+
+  <section class="ae-fig" aria-labelledby="ae-f3">
+  <h2 id="ae-f3">The calls have tightened</h2>
+  <p>Each revision re-tested the classification against itself. Net movement between published versions:</p>
+  <svg class="ae-slope" viewBox="0 0 600 230" role="img" aria-label="Totals by call, v7 to v8.9: fully reportable 140 to 143; partially reportable 101 to 80; not reportable 79 to 97"><line x1="60" x2="60" y1="12" y2="200" class="ae-ax"/><text x="60" y="222" class="ae-axl" text-anchor="middle">v7</text><line x1="350" x2="350" y1="12" y2="200" class="ae-ax"/><text x="350" y="222" class="ae-axl" text-anchor="middle">v8.9</text><line x1="60" y1="55.2" x2="350" y2="49.9" class="ae-ln ae-l-yes"/><circle cx="60" cy="55.2" r="4.5" class="ae-dot ae-l-yes"/><circle cx="350" cy="49.9" r="4.5" class="ae-dot ae-l-yes"/><text x="48" y="59.2" text-anchor="end" class="ae-v">140</text><text x="362" y="53.9" class="ae-v">143</text><text x="398" y="53.9" class="ae-d">+3</text><text x="442" y="53.9" class="ae-sl">Fully reportable</text><line x1="60" y1="123.8" x2="350" y2="160.8" class="ae-ln ae-l-partial"/><circle cx="60" cy="123.8" r="4.5" class="ae-dot ae-l-partial"/><circle cx="350" cy="160.8" r="4.5" class="ae-dot ae-l-partial"/><text x="48" y="127.8" text-anchor="end" class="ae-v">101</text><text x="362" y="164.8" class="ae-v">80</text><text x="398" y="164.8" class="ae-d">-21</text><text x="442" y="164.8" class="ae-sl">Partially reportable</text><line x1="60" y1="162.6" x2="350" y2="130.9" class="ae-ln ae-l-no"/><circle cx="60" cy="162.6" r="4.5" class="ae-dot ae-l-no"/><circle cx="350" cy="130.9" r="4.5" class="ae-dot ae-l-no"/><text x="48" y="166.6" text-anchor="end" class="ae-v">79</text><text x="362" y="134.9" class="ae-v">97</text><text x="398" y="134.9" class="ae-d">+18</text><text x="442" y="134.9" class="ae-sl">Not reportable</text></svg>
+  <p class="ae-cap">Figure 3 · Totals by call at each published dataset version · net change beside each total</p>
+  </section>
+
+  <section class="rs-notes" aria-label="Notes">
+  <p><b>What these figures are.</b> Counts from one reference environment. They show that a substantial share of the standard can be answered from the system's own state using components the standard already requires. They are not a population estimate, and a different architecture would move objectives between categories.</p>
+  <p><b>What is not on this page.</b> Counts only. Which objectives fall where, and how each is collected, are not shown here.</p>
+  </section>
+
+  <div class="rs-colophon">
+    <span>Archstone Security</span>
+    <span>Dataset v8.9</span>
+    <span><a href="mailto:contact@archstonesecurity.com?subject=Research%20%E2%80%94%20authoritative%20evidence">Corrections and disagreements welcome</a></span>
+  </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+<!-- Footer Section Start -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row subscribe-wrap align-items-center">
+                <div class="col-lg-6">
+                    <div class="subs-txt">
+                        <h3>Get in touch</h3>
+                        <p><a href="mailto:contact@archstonesecurity.com">contact@archstonesecurity.com</a></p>
+                        <p>
+                            <a href="https://www.linkedin.com/company/archstone-security-llc/">LinkedIn</a>
+                            &nbsp;&middot;&nbsp;
+                            <a href="https://www.youtube.com/@ArchstoneSecurity">YouTube</a>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <a href="/"><img src="/images/logo-1200.png" alt="Archstone Security"></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-7">
+                        <p>&copy; 2026 Archstone Security LLC. Compliance as Infrastructure&trade; is a trademark of Archstone Security LLC.</p>
+                    </div>
+                    <div class="col-lg-6 col-sm-5">
+                        <nav class="footer-nav">
+                            <ul>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/about_us.html">About</a></li>
+                                <li><a href="/services.html">Services</a></li>
+                                <li><a href="/research">Research</a></li>
+                                <li><a href="/privacy.html">Privacy</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+		  
+				
+<!--Javascript
+========================================================-->
+
+    <script src="/js/jquery-3.7.1.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/jquery.scrollUp.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
+    <script src="/js/wow.min.js"></script>
+    <script src="/js/waypoints.js"></script>
+    <script src="/js/jquery.counterup.min.js"></script>
+    <script src="/js/venobox.min.js"></script>
+    <script src="/js/isotope.pkgd.min.js"></script>
+    
+    <script src="/js/jquery-ui.min.js"></script>
+    <!-- Custom Js -->
+    <script src="/js/custom.js"></script>
+	<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGLH49FH2F"></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "bbb997af2e1e46c4bfc0f95ebff155db"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
