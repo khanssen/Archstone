@@ -152,7 +152,7 @@ def provider_key(name: str) -> str:
 
 
 # FedRAMP-recognized assessors (3PAOs), loaded from data/fedramp/assessors.json by main().
-ASSESSORS: dict = {"index": {}, "prefix": [], "names": {}, "count": 0, "updated": ""}
+ASSESSORS: dict = {"index": {}, "prefix": [], "names": {}, "count": 0, "updated": "", "checked": ""}
 
 
 def _akey(s: str) -> str:
@@ -171,6 +171,8 @@ def load_assessors(path: Path | None) -> None:
             if n:
                 idx[_akey(n)] = a["name"]
     ASSESSORS.update(index=idx, names=names, count=len(doc["assessors"]), updated=doc.get("updated", ""),
+                     # "checked": last day check_assessors.py found the list identical to FedRAMP's directory.
+                     checked=max(doc.get("checked", ""), doc.get("updated", "")),
                      prefix=sorted(idx, key=len, reverse=True))
 
 
@@ -1086,7 +1088,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         asr_notes.append(f'Named as assessor on 20x listings but not in the FedRAMP assessor directory: {", ".join(bits)}.')
     asr_note_html = "".join(f'<p class="note" style="margin-top:var(--s-3)">{t}</p>' for t in asr_notes)
     asr_basis = (f'assessor named on each 20x listing, matched to the FedRAMP assessor directory '
-                 f'({ASSESSORS["count"]} recognized assessors, {fmt_date(ASSESSORS["updated"])})'
+                 f'({ASSESSORS["count"]} recognized assessors, checked {fmt_date(ASSESSORS["checked"])})'
                  if ASSESSORS["count"] else "assessor named on each 20x listing")
 
     # comparison table
@@ -1549,7 +1551,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       <li><b>Authorization date</b> is the marketplace's certification date for the product. The export lists the agencies on each product but not the date each agency signed, so this measures reliance as it stands today, not when it happened.</li>
       {carry_li}
       <li><b>Traditional FedRAMP</b> is the agency and JAB authorization track. The marketplace export, and the CSV download on this page, label it "Rev5".</li>
-      <li><b>Assessors</b> are the 3PAO each provider names on its listing, matched to FedRAMP's directory of recognized assessors (kept in this site's repository, updated {fmt_date(ASSESSORS["updated"]) if ASSESSORS["updated"] else "periodically"}), with the spelling variants providers use mapped to one name. For listings still in process the named assessor is the provider's own statement.</li>
+      <li><b>Assessors</b> are the 3PAO each provider names on its listing, matched to FedRAMP's directory of recognized assessors (a copy is kept in this site's repository and compared with FedRAMP's published directory daily; last confirmed identical {fmt_date(ASSESSORS["checked"]) if ASSESSORS["checked"] else "periodically"}), with the spelling variants providers use mapped to one name. For listings still in process the named assessor is the provider's own statement.</li>
       <li><b>GRC and compliance vendors</b> are identified from a separately maintained provider classification feed (data as of {fmt_date(a["grc_date"])}), matched by provider name, and shown alongside the GRC business category providers choose for their own marketplace listings.</li>
       <li><b>AI platforms</b> are identified from a short provider list maintained alongside the GRC feed and applied to 20x products only. The marketplace's own "Artificial Intelligence (AI)" category is not used here: several AI products, including ChatGPT and Gemini, are not tagged with it.</li>
       <li><b>Reclassification.</b> No 20x record in the current export carries status history from before 2025 or an agency ATO inherited from a traditional authorization. Products authorized on both tracks are noted under the objections table; their agencies count toward traditional FedRAMP. A listing that is only FedRAMP Ready on one track is not counted as a match, since Ready is not an authorization. Snapshots are kept so that a record converted in place will show up when two exports are compared.</li>

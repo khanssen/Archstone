@@ -67,6 +67,21 @@ jobs:
         continue-on-error: true
         run: python scripts/fedramp/check_dropped.py --raw data/fedramp/raw --out data/fedramp/dropped-checks.json
 
+      - name: Check the recognized-assessor list against FedRAMP's directory
+        # Same list: moves "checked" in assessors.json to today. Different: leaves it and reports below.
+        # If FedRAMP's repository can't be reached, nothing changes and the page keeps the last confirmed date.
+        id: assessors
+        continue-on-error: true
+        run: |
+          git clone --quiet --depth 1 --filter=blob:none --sparse \
+            https://github.com/FedRAMP/marketplace-fedramp-gov-data "$RUNNER_TEMP/fedramp-data"
+          git -C "$RUNNER_TEMP/fedramp-data" sparse-checkout set assessors
+          python scripts/fedramp/check_assessors.py \
+            --dir "$RUNNER_TEMP/fedramp-data/assessors" \
+            --assessors data/fedramp/assessors.json \
+            --today "$(date -u +%Y-%m-%d)" \
+            --body "$RUNNER_TEMP/assessors.md"
+
       - name: Rebuild page from latest snapshot
         env:
           FETCHED: ${{ steps.fetch.outcome }}
@@ -210,6 +225,29 @@ jobs:
           else
             gh issue create --label track-change --title "Marketplace listings changing track, path or class" --body-file "$RUNNER_TEMP/tracks.md"
           fi
+
+      - name: Report assessor directory changes
+        if: steps.assessors.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # One open issue at a time. Comment only when the difference itself changes, not every day it persists.
+          gh label create assessor-directory --color 0E8A16 --description "FedRAMP's recognized-assessor list changed" 2>/dev/null || true
+          OPEN=$(gh issue list --label assessor-directory --state open --json number --jq '.[0].number')
+          if [ -z "$OPEN" ]; then
+            gh issue create --label assessor-directory \
+              --title "Recognized-assessor list out of date: update data/fedramp/assessors.json" \
+              --body-file "$RUNNER_TEMP/assessors.md"
+          else
+            LAST=$(gh issue view "$OPEN" --json body,comments --jq '[.body] + [.comments[].body] | last')
+            if [ "$LAST" != "$(cat "$RUNNER_TEMP/assessors.md")" ]; then
+              gh issue comment "$OPEN" --body-file "$RUNNER_TEMP/assessors.md"
+            fi
+          fi
+
+      - name: Warn if the assessor check couldn't run
+        if: steps.assessors.outcome == 'failure'
+        run: echo "::warning::Couldn't compare assessors.json with FedRAMP's directory today; the page keeps the last confirmed date."
 
       - name: Report a failed download
         if: steps.fetch.outcome == 'failure'
