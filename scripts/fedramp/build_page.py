@@ -728,6 +728,7 @@ tr.grp td{font-weight:600;color:var(--ink);border-bottom-color:var(--rule-strong
 th .flt{display:block;width:100%;min-width:4.5rem;margin-top:var(--s-1);font:inherit;font-weight:400;font-size:var(--t-micro);color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:4px;padding:2px 4px}
 th.n .flt{text-align:left}
 th .flt.on{border-color:var(--ink);font-weight:600}
+th .flt.srt{min-width:8.5rem}
 .hist-btn{margin-top:var(--s-1);font:inherit;font-size:var(--t-micro);font-family:var(--mono);letter-spacing:.04em;color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:4px;padding:1px 8px;cursor:pointer}
 .hist-btn::after{content:" ▸"}
 .hist-btn[aria-expanded="true"]::after{content:" ▾"}
@@ -1405,7 +1406,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       <div class="cls">{grc_rows}</div>
       <h3 class="sub">Authorized 20x products counted as GRC, by either method</h3>
       <div class="list tbl" data-filter><table>
-        <thead><tr><th>Product</th><th class="hide-sm">Provider</th><th class="n">Authorized</th><th class="ck">Self-tagged</th><th class="ck">Classified</th><th class="n">Agencies</th></tr></thead>
+        <thead><tr><th>Product</th><th class="hide-sm">Provider</th><th class="n" data-sort>Authorized</th><th class="ck">Self-tagged</th><th class="ck">Classified</th><th class="n">Agencies</th></tr></thead>
         <tbody>{grc_prod_rows}</tbody>
       </table></div>
       {prov(a, digest, f'business categories each provider chose for its listing; GRC classification feed, {fmt_date(a["grc_date"])}')}
@@ -1484,7 +1485,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
       <h2>All authorized 20x products</h2>
       <p class="note">Products with an agency ATO first, then by authorization date.</p>
       <div class="list tbl" data-filter><table>
-        <thead><tr><th class="n">Authorized</th><th>Product</th><th class="hide-sm">Provider</th><th class="hide-sm">Track</th><th class="hide-sm">Class</th><th class="hide-sm">Impact</th><th class="n">Agencies</th><th class="hide-sm">Which</th><th class="hide-sm">Assessor</th></tr></thead>
+        <thead><tr><th class="n" data-sort="Agency ATO first">Authorized</th><th>Product</th><th class="hide-sm">Provider</th><th class="hide-sm">Track</th><th class="hide-sm">Class</th><th class="hide-sm">Impact</th><th class="n">Agencies</th><th class="hide-sm">Which</th><th class="hide-sm">Assessor</th></tr></thead>
         <tbody>{"".join(list_rows)}</tbody>
       </table></div>
       {prov(a, digest, "20x and 20x Pilot products with FedRAMP Certified status")}
@@ -1676,8 +1677,33 @@ FILTER_JS = """<script>
     bar.appendChild(count);
     bar.appendChild(clear);
     box.parentNode.insertBefore(bar, box);
+    var tbody = table.tBodies[0];
+    rows.forEach(function (r, i) { r._d = data[i]; r._i = i; });
+    function sortRows(ci, dir) {
+      var order = rows.slice();
+      if (dir) order.sort(function (x, y) {
+        var a = x._d[ci][0], b = y._d[ci][0];
+        if (a === '—' || b === '—') return a === b ? x._i - y._i : (a === '—' ? 1 : -1);
+        return a === b ? x._i - y._i : (a < b ? -dir : dir);
+      });
+      order.forEach(function (r) { tbody.appendChild(r); });
+    }
     var ctrls = heads.map(function (th, ci) {
       var label = th.textContent.trim();
+      if (th.hasAttribute('data-sort')) {
+        var s = document.createElement('select');
+        var dflt = th.getAttribute('data-sort');
+        if (dflt) s.add(new Option(dflt, ''));
+        s.add(new Option('Oldest first', '1'));
+        s.add(new Option('Newest first', '-1'));
+        s.className = 'flt srt';
+        s.setAttribute('aria-label', 'Sort by ' + label);
+        s.addEventListener('click', function (e) { e.stopPropagation(); });
+        s.addEventListener('change', function () { sortRows(ci, +s.value); });
+        th.appendChild(s);
+        if (!dflt) sortRows(ci, +s.value);
+        return null;
+      }
       var seen = {};
       data.forEach(function (d) { d[ci].forEach(function (v) { seen[v] = 1; }); });
       var opts = Object.keys(seen);
@@ -1702,10 +1728,10 @@ FILTER_JS = """<script>
     });
     function apply() {
       var shown = 0, active = false;
-      ctrls.forEach(function (el) { el.classList.toggle('on', !!el.value); if (el.value) active = true; });
+      ctrls.forEach(function (el) { if (!el) return; el.classList.toggle('on', !!el.value); if (el.value) active = true; });
       rows.forEach(function (r, ri) {
         var ok = ctrls.every(function (el, ci) {
-          if (!el.value) return true;
+          if (!el || !el.value) return true;
           var vs = data[ri][ci];
           if (el.tagName === 'SELECT') return vs.indexOf(el.value) >= 0;
           var q = el.value.toLowerCase();
@@ -1717,7 +1743,7 @@ FILTER_JS = """<script>
       count.textContent = active ? 'Showing ' + shown + ' of ' + rows.length : rows.length + ' rows';
       clear.hidden = !active;
     }
-    clear.addEventListener('click', function () { ctrls.forEach(function (el) { el.value = ''; }); apply(); });
+    clear.addEventListener('click', function () { ctrls.forEach(function (el) { if (el) el.value = ''; }); apply(); });
     apply();
   });
   Array.prototype.forEach.call(document.querySelectorAll('.hist-btn'), function (b) {
