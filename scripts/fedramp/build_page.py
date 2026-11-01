@@ -135,6 +135,11 @@ def normalise(p: dict, grc: set[str], ai: set[str] | None = None) -> dict:
 _SUFFIX = re.compile(r"[\s,]+(?:inc|llc|l\.l\.c|ltd|limited|corp|corporation|co|company|plc|gmbh|lp|llp)\.?$", re.I)
 
 
+def card(r: dict) -> str:
+    """Product name linked to its usability card on the marketplace lookup page."""
+    return f'<a class="card-lk" href="/fedramp-lookup/?id={esc(r["id"])}">{esc(r["product"])}</a>'
+
+
 def provider_key(name: str) -> str:
     """Provider name for matching against the classification feeds: case-, space- and
     corporate-suffix-insensitive, so 'Vanta' and 'Vanta Inc.' are the same provider."""
@@ -751,6 +756,8 @@ th .flt{display:block;width:100%;min-width:4.5rem;margin-top:var(--s-1);font:inh
 th.n .flt{text-align:left}
 th .flt.on{border-color:var(--ink);font-weight:600}
 th .flt.srt{min-width:8.5rem}
+a.card-lk{color:inherit;text-decoration:underline;text-decoration-color:var(--rule-strong);text-underline-offset:2px}
+a.card-lk:hover{text-decoration-color:currentColor}
 .hist-btn{margin-top:var(--s-1);font:inherit;font-size:var(--t-micro);font-family:var(--mono);letter-spacing:.04em;color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:4px;padding:1px 8px;cursor:pointer}
 .hist-btn::after{content:" ▸"}
 .hist-btn[aria-expanded="true"]::after{content:" ▾"}
@@ -1054,7 +1061,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
     # Who assessed 20x
     at = a["assessors"]
     def prod_list(ps):
-        return "; ".join(esc(r["product"]) + (' <span class="tag grc">GRC</span>' if r["grc"] else "")
+        return "; ".join(card(r) + (' <span class="tag grc">GRC</span>' if r["grc"] else "")
                          + (" (agency ATO)" if r["n_agencies"] else "") for r in ps) or "—"
     asr_rows = "".join(
         f'<tr><td>{esc(d["label"])}</td><td class="n">{len(d["auth"])}</td>'
@@ -1100,7 +1107,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         if p["grc"]:
             tags.append('<span class="tag grc">GRC</span>')
         list_rows.append(
-            f'<tr><td class="n">{p["date"] or "—"}</td><td data-v="{esc(p["product"])}">{esc(p["product"])} {" ".join(tags)}</td>'
+            f'<tr><td class="n">{p["date"] or "—"}</td><td data-v="{esc(p["product"])}">{card(p)} {" ".join(tags)}</td>'
             f'<td class="hide-sm">{esc(p["csp"])}</td><td class="hide-sm">{esc(p["cert_type"])}</td>'
             f'<td class="hide-sm">{esc(p["cls"])}</td><td class="hide-sm">{esc(p["impact"])}</td>'
             f'<td class="n{" zero" if p["n_agencies"] == 0 else ""}">{p["n_agencies"]}</td>'
@@ -1111,7 +1118,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
     for p in a["pipeline_rows"]:
         trad = p["track"] == "Rev5"
         pipe_rows.append(
-            f'<tr><td class="n">{p["entered"] or "—"}</td><td>{esc(p["product"])}</td>'
+            f'<tr><td class="n">{p["entered"] or "—"}</td><td data-v="{esc(p["product"])}">{card(p)}</td>'
             f'<td class="hide-sm">{esc(p["csp"])}</td><td class="hide-sm">{"Traditional" if trad else "20x"}</td>'
             f'<td class="hide-sm">{esc(p["status"])}</td><td class="hide-sm">{esc(p["assessor"]) or "—"}</td>'
             f'<td class="hide-sm" data-v="{esc("|".join(p["notes"]) or "—")}">{esc("; ".join(p["notes"])) or "—"}</td></tr>')
@@ -1165,7 +1172,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                      f'<div class="cls-val"><span class="pc">{sh:.0%}</span>'
                      f'<span class="of">{g["k"]} of {g["n"]} {"product" if g["n"] == 1 else "products"}</span></div></div>')
     grc_prod_rows = "".join(
-        f'<tr><td>{esc(r["product"])}</td><td class="hide-sm">{esc(r["csp"])}</td><td class="n">{r["date"] or "—"}</td>'
+        f'<tr><td data-v="{esc(r["product"])}">{card(r)}</td><td class="hide-sm">{esc(r["csp"])}</td><td class="n">{r["date"] or "—"}</td>'
         f'<td class="ck">{"✓" if r["grc_tag"] else "–"}</td><td class="ck">{"✓" if r["grc"] else "–"}</td>'
         f'<td class="n{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</td></tr>' for r in a["grc_products"])
 
@@ -1176,7 +1183,7 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         rows_html = ""
         for r in ps:
             units = "".join(f'<span class="u" title="{esc(ag)}"></span>' for ag in r["agencies"]) or '<span class="u none">No agency</span>'
-            rows_html += (f'<div class="prow"><div class="pn">{esc(r["product"])}<small>{esc(r["csp"])} · '
+            rows_html += (f'<div class="prow"><div class="pn">{card(r)}<small>{esc(r["csp"])} · '
                           f'{esc(r["impact"]) if r["impact"] != "Unknown" else "impact not listed"} · '
                           f'{fmt_date(r["date"]) if r["date"] else "no date"}</small></div>'
                           f'<div class="pc{" zero" if r["n_agencies"] == 0 else ""}">{r["n_agencies"]}</div>'
