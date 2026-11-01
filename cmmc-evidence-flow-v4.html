@@ -112,6 +112,8 @@ svg.edges{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z
 .lk{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--ink2)}
 .lk svg{flex:none}
 .note{font-size:13.5px;color:var(--ink2);max-width:112ch;margin-top:18px}
+.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:18px}
+.notes .note{max-width:none;margin-top:0}
 .note b{color:var(--ink)}
 .src{margin-left:auto;font-size:11.5px;color:var(--muted);text-align:right}
 .src b{color:var(--ink2)}
@@ -277,11 +279,13 @@ button.reset:hover{border-color:var(--ink2)}
   </button>
 </div>
 
+<div class="notes">
 <p class="note"><b>Accept the artifact where it is offered; assess the remainder.</b> Of the 320 assessment objectives in SP 800-171A, <b>44.7%</b> fall to automated validation and need no assessor participation, <b>25.0%</b> are narrowed by the artifact but closed by judgement, and <b>30.3%</b> require manual validation by an assessor. Of the automated share, <b>31.2% of the standard</b> is scored against a referent the Federal government publishes and <b>13.4%</b> against one the organization is obliged to define but no one else can read. The three shares account for the whole standard. Nothing is removed from the requirement set; verification changes hands where the system can answer for itself.</p>
 
 <p class="note"><b>The standard requires the state, not the reading of it.</b> Nothing in SP 800-171 obliges a contractor to operate a scanner, query a configuration interface, or search a log store. What it obliges is the underlying condition &mdash; a hardened baseline, a configured tenant, scanned and remediated components, retained audit records &mdash; and that condition is already exposed in machine-readable form by the products that maintain it. This proposal adds no required component. It makes an existing required state reportable, for suppliers who choose to report it.</p>
 
 <p class="note"><b>The ask is one act, and it is a publication.</b> The Department publishes the list of assessment objectives a machine-readable export may satisfy, stating for each whether the export satisfies the objective outright &mdash; <i>automated validation</i> &mdash; or contributes evidence toward it &mdash; <i>combination</i>. Periodic exports then replace assessment for the listed objectives, at a cadence no more frequent than each control already requires. Nothing is asked of the Department beyond the list: how a supplier produces a conforming export is internal to the supplier. No Departmental tooling, no new system, no rulemaking &mdash; the April 2025 parameter values went out as a memorandum.</p>
+</div>
 
 <div class="legend">
   <span class="lk"><svg width="34" height="12"><line x1="1" y1="6" x2="33" y2="6" stroke="#0ca30c" stroke-width="2.4"/></svg>Established — required and readable today</span>
