@@ -1059,6 +1059,20 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                 f'the category it carried in the latest earlier snapshot ({fmt_date(carry["from"])}) is used '
                 f'({carry["filled"]} listings). A listing whose category changed to a different one is not affected.</li>'
                 if carry and carry["filled"] else "")
+    dc = a.get("dates_carried")
+    if dc and (dc["filled"] or dc["from_log"]):
+        bits = []
+        if dc["filled"]:
+            bits.append(f'{dc["filled"]} {"listing keeps" if dc["filled"] == 1 else "listings keep"} the last date '
+                        f'the marketplace displayed for {"it" if dc["filled"] == 1 else "them"}')
+        if dc["from_log"]:
+            bits.append(f'{dc["from_log"]} {"authorization" if dc["from_log"] == 1 else "authorizations"} first seen '
+                        f'after the date was removed {"is" if dc["from_log"] == 1 else "are"} dated from the first '
+                        f'"FedRAMP Certified" entry in {"its" if dc["from_log"] == 1 else "their"} status history')
+        carry_li += (f'<li><b>Authorization dates from {fmt_date(dc["since"])}.</b> The marketplace stopped showing a '
+                     f'certification date for {dc["tracks"]} authorizations: the export from {fmt_date(dc["since"])} '
+                     f'onward leaves the field empty. {"; ".join(bits)}. Listings that never displayed '
+                     f'a date stay undated.</li>')
 
     # Who assessed 20x
     at = a["assessors"]
@@ -1613,6 +1627,67 @@ def carry_categories(raw_dir: Path, current: Path, products: list[dict]) -> dict
     return {"filled": filled, "from": max(src) if src else "", "prev_date": snapshot_date(earlier[-1])}
 
 
+def carry_dates(raw_dir: Path, current: Path, products: list[dict]) -> dict | None:
+    """If the export has stopped carrying certification dates on a track, keep each certified listing's
+    last displayed date from the earlier snapshots. Returns what was done, or None.
+
+    The marketplace stopped displaying 20x certification dates on Nov 3, 2026; the export kept the
+    cert_date field but left it empty. Per track, and only when date coverage on certified listings
+    falls below 30% of the best earlier coverage: a listing with an earlier displayed date keeps the
+    latest one; a listing first certified after that is dated from the first "FedRAMP Certified" event
+    in its status history; a listing that was certified before but never displayed a date stays
+    undated, as it was."""
+    track = lambda p: "Rev5" if p.get("cert_type") == "Rev5" else "20x"
+    certified = lambda p: str(p.get("status") or "").startswith("FedRAMP Certified")
+
+    def cover(ps, t):
+        c = [p for p in ps if certified(p) and track(p) == t]
+        return sum(1 for p in c if p.get("cert_date")) / max(len(c), 1)
+
+    cur_date = snapshot_date(current)
+    earlier = [f for f in sorted(raw_dir.glob("products-*.json.gz")) if snapshot_date(f) < cur_date]
+    last: dict[str, str] = {}             # id -> latest displayed cert_date
+    seen_cert: set[str] = set()           # ids certified in an earlier snapshot that still had dates
+    best = {"Rev5": 0.0, "20x": 0.0}      # best date coverage seen so far, per track
+    since: dict[str, str] = {}            # first snapshot where the track's dates collapsed
+    for f in earlier:                     # oldest to newest, so the latest non-empty date wins
+        try:
+            ps, _ = load_snapshot(f)
+        except SystemExit:
+            continue
+        for t in best:
+            cv = cover(ps, t)
+            if best[t] and cv < 0.3 * best[t]:
+                since.setdefault(t, snapshot_date(f))
+            elif t not in since:
+                best[t] = max(best[t], cv)
+        for p in ps:
+            if certified(p) and track(p) not in since:
+                seen_cert.add(p["id"])
+            if p.get("cert_date"):
+                last[p["id"]] = p["cert_date"]
+    collapsed = {t for t in best if best[t] and cover(products, t) < 0.3 * best[t]}
+    if not collapsed:
+        return None
+    filled = from_log = 0
+    for p in products:
+        if p.get("cert_date") or not certified(p) or track(p) not in collapsed:
+            continue
+        if p["id"] in last:
+            p["cert_date"] = last[p["id"]]
+            filled += 1
+        elif p["id"] not in seen_cert:
+            first = timeline(p, track(p) == "Rev5")["first_cert"]
+            if first:
+                p["cert_date"] = first
+                from_log += 1
+    tracks = " and ".join("traditional" if t == "Rev5" else "20x" for t in sorted(collapsed, key=lambda t: t != "20x"))
+    print(f"build_page: certification dates missing from the export for {tracks} listings; kept the last displayed "
+          f"date for {filled}, dated {from_log} new authorizations from status history", file=sys.stderr)
+    return {"filled": filled, "from_log": from_log, "tracks": tracks,
+            "since": min([since.get(t, cur_date) for t in collapsed])}
+
+
 def removal_history(pid: str, rec: dict, succ: dict | None, states: list[tuple[str, dict[str, str]]]) -> dict:
     """Snapshot-by-snapshot presence/status for a dropped listing (and its successor), plus the PMO event logs."""
     sid = succ["id"] if succ else ""
@@ -2050,10 +2125,12 @@ def main() -> None:
         ai_feed = json.loads(args.ai.read_text())
         ai = {provider_key(s) for s in ai_feed["providers"]}
     carried = carry_categories(args.raw_dir, args.snapshot, products) if args.raw_dir else None
+    dates_carried = carry_dates(args.raw_dir, args.snapshot, products) if args.raw_dir else None
     rows = [normalise(p, grc, ai) for p in products]
     a = analyse(rows, snap)
     a["checked"] = args.checked or snap
     a["carried"] = carried
+    a["dates_carried"] = dates_carried
     a["grc_date"] = grc_feed.get("updated") or snap
     checks = {}
     if args.dropped_checks and args.dropped_checks.exists():

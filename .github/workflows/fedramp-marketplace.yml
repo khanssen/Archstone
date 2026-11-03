@@ -118,6 +118,7 @@ jobs:
             --hosted data/fedramp/hosted-services.json \
             --assessors data/fedramp/assessors.json \
             --nav-source index.html \
+            --raw-dir data/fedramp/raw \
             --out fedramp-lookup
 
       - name: Compare with the previous snapshot

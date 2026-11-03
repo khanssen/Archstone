@@ -907,9 +907,12 @@ def main() -> None:
     ap.add_argument("--assessors", type=Path)
     ap.add_argument("--nav-source", type=Path)
     ap.add_argument("--out", required=True, type=Path)
+    ap.add_argument("--raw-dir", type=Path, help="earlier snapshots, to keep certification dates the export has dropped")
     args = ap.parse_args()
 
     products, digest = bp.load_snapshot(args.snapshot)
+    if args.raw_dir:
+        bp.carry_dates(args.raw_dir, args.snapshot, products)
     snap = bp.snapshot_date(args.snapshot)
     bp.load_assessors(args.assessors)
     rules = load_rules(args.rules)
