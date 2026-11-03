@@ -33,6 +33,9 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 PMO = "Federal Risk and Authorization Management Program"
+# From the Nov 3, 2026 export the PMO's own entry on 20x listings is named for its parent agency.
+# GSA is also a real sponsor of traditional authorizations, so the alias applies to 20x listings only.
+PMO_20X = {PMO, "General Services Administration"}
 GRC_TAG = "Governance, Risk, and Compliance (GRC)"
 REQUIRED_FIELDS = {"id", "csp", "cso", "status", "cert_type", "cert_date",
                    "cert_path", "cert_class", "impact_level",
@@ -69,15 +72,24 @@ def load_snapshot(path: Path) -> tuple[list[dict], str]:
     # and set impact_level to "Unknown" on most listings. Refuse to build rather than publish that.
     tw = [p for p in data if str(p.get("cert_type")).startswith("20x")
           and str(p.get("status") or "").startswith("FedRAMP Certified")]
-    pmo = sum(1 for p in tw if PMO in (p.get("agency_authorizations") or []))
+    pmo = sum(1 for p in tw if PMO_20X & set(p.get("agency_authorizations") or []))
     if tw and pmo < 0.5 * len(tw):
         alt = Counter(a for p in tw for a in (p.get("agency_authorizations") or [])).most_common(3)
         sys.exit(f"build_page: the FedRAMP PMO is listed on only {pmo} of {len(tw)} authorized 20x products "
                  f"(most common entries: {alt}); the export may have renamed it. Not building.")
-    unknown = sum(1 for p in data if str(p.get("impact_level") or "").strip() in ("", "Unknown"))
-    if unknown > 0.5 * len(data):
-        sys.exit(f"build_page: impact level is missing or Unknown on {unknown} of {len(data)} listings. Not building.")
     return data, digest
+
+
+def unknown_impact(p: dict) -> bool:
+    return str(p.get("impact_level") or "").strip() in ("", "Unknown")
+
+
+def require_impact(products: list[dict]) -> None:
+    """Run after carry_impact: refuse to build when most listings still have no impact level."""
+    unknown = sum(1 for p in products if unknown_impact(p))
+    if unknown > 0.5 * len(products):
+        sys.exit(f"build_page: impact level is missing or Unknown on {unknown} of {len(products)} listings "
+                 f"and no earlier snapshot fills them. Not building.")
 
 
 def snapshot_date(path: Path) -> str:
@@ -113,7 +125,8 @@ def timeline(p: dict, rev5: bool) -> dict:
 
 
 def normalise(p: dict, grc: set[str], ai: set[str] | None = None) -> dict:
-    agencies = [a for a in (p.get("agency_authorizations") or []) if a and a != PMO]
+    skip = PMO_20X if p.get("cert_type") != "Rev5" else {PMO}
+    agencies = [a for a in (p.get("agency_authorizations") or []) if a and a not in skip]
     a_kind, a_name = classify_assessor(p.get("independent_assessor") or "")
     assessor = assessor_label(a_name) if a_kind == "3pao" else a_name
     return {
@@ -1042,6 +1055,23 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         intro.append(f'Even at {pct(ng["share"])}, 20x remains far from the traditional path, where every '
                      f'agency-path authorization starts with a sponsor.')
     intro_html = f'<p class="intro">{" ".join(intro)}</p>' if intro else ""
+    drops = a.get("dropped_atos") or []
+    if drops:
+        by_ag: dict[str, list[str]] = defaultdict(list)
+        for d in drops:
+            by_ag[d["agency"]].append(d["product"])
+        def joined(xs):
+            xs = sorted(set(xs))
+            return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+        parts = [f'{esc(ag)} on {esc(joined(ps))}' for ag, ps in sorted(by_ag.items())]
+        last = max(d["last"] for d in drops)
+        n = len(drops)
+        intro_html += (f'\n  <p class="intro" id="dropped-atos"><b>{words(n).capitalize()} agency '
+                       f'{"ATO" if n == 1 else "ATOs"} on 20x products {"is" if n == 1 else "are"} no longer listed.</b> '
+                       f'The marketplace showed {"it" if n == 1 else "them"} through {fmt_date(last)}: '
+                       f'{"; ".join(parts)}. {"It is" if n == 1 else "They are"} absent from every export since, '
+                       f'while the products remain authorized. The marketplace gives no reason. The counts on this '
+                       f'page use the current export.</p>')
 
     # Products authorized on both tracks, folded into the objections section.
     dual_txt = ""
@@ -1072,6 +1102,16 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                 f'the category it carried in the latest earlier snapshot ({fmt_date(carry["from"])}) is used '
                 f'({carry["filled"]} listings). A listing whose category changed to a different one is not affected.</li>'
                 if carry and carry["filled"] else "")
+    ic = a.get("impact_carried")
+    if ic:
+        carry_li += (f'<li><b>Impact levels from {fmt_date(ic["since"])}.</b> The marketplace export from that date '
+                     f'lists every product\'s impact level as Unknown. Each listing keeps the impact level it carried in '
+                     f'the latest earlier export ({ic["filled"]} listings); listings first seen after that stay Unknown.</li>')
+    if a.get("gsa_pmo"):
+        carry_li += ('<li><b>The PMO under a new name.</b> From the November 3, 2026 export, the FedRAMP PMO\'s own entry '
+                     'on 20x listings appears as the General Services Administration, the agency FedRAMP sits in. On 20x '
+                     'listings it is treated as the PMO and excluded. GSA as a sponsor of traditional authorizations is '
+                     'counted as an agency, as before.</li>')
     dc = a.get("dates_carried")
     if dc and (dc["filled"] or dc["from_log"]):
         bits = []
@@ -1701,6 +1741,103 @@ def carry_dates(raw_dir: Path, current: Path, products: list[dict]) -> dict | No
             "since": min([since.get(t, cur_date) for t in collapsed])}
 
 
+def require_sponsors(raw_dir: Path, current: Path, products: list[dict], limit: int = 3) -> None:
+    """Refuse to build when agency-path traditional authorizations lose their sponsoring agency.
+
+    An agency-path authorization cannot exist without one, so a listing that named an agency in any
+    earlier snapshot and names none now means the export is incomplete. The Nov 3, 2026 export did
+    this to nine of them, Cloudflare for Government (23 agencies) among them. A single listing can
+    lose its agencies legitimately; `limit` or more at once is treated as a data problem."""
+    cur_date = snapshot_date(current)
+    agency_path = lambda p: (p.get("cert_type") == "Rev5" and p.get("cert_path") == "Agency"
+                             and str(p.get("status") or "").startswith("FedRAMP Certified"))
+    named = lambda p: [a for a in (p.get("agency_authorizations") or []) if a and a != PMO]
+    had: set[str] = set()
+    for f in sorted(raw_dir.glob("products-*.json.gz")):
+        if snapshot_date(f) >= cur_date:
+            continue
+        try:
+            ps, _ = load_snapshot(f)
+        except SystemExit:
+            continue
+        had |= {p["id"] for p in ps if agency_path(p) and named(p)}
+    lost = sorted((p.get("cso") or p["id"]).strip() for p in products if agency_path(p) and p["id"] in had and not named(p))
+    if len(lost) >= limit:
+        sys.exit(f"build_page: {len(lost)} agency-path authorizations list no agency in this export though earlier "
+                 f"exports named one (e.g. {', '.join(lost[:4])}). The export is incomplete. Not building.")
+
+
+def carry_impact(raw_dir: Path, current: Path, products: list[dict]) -> dict | None:
+    """The Nov 3, 2026 export set impact_level to "Unknown" on every listing. When most of the export
+    has no impact level, each listing keeps the impact level from the latest earlier snapshot that
+    had one. Listings with no earlier impact level stay Unknown. Returns what was done, or None."""
+    if sum(1 for p in products if unknown_impact(p)) <= 0.5 * len(products):
+        return None
+    cur_date = snapshot_date(current)
+    last: dict[str, tuple[str, str, str]] = {}
+    since = cur_date
+    for f in sorted(raw_dir.glob("products-*.json.gz")):
+        if snapshot_date(f) >= cur_date:
+            continue
+        try:
+            ps, _ = load_snapshot(f)
+        except SystemExit:
+            continue
+        if sum(1 for p in ps if unknown_impact(p)) > 0.5 * len(ps):
+            since = min(since, snapshot_date(f))
+            continue
+        since = cur_date                   # a later good export resets the start of the gap
+        for p in ps:
+            if not unknown_impact(p):
+                last[p["id"]] = (snapshot_date(f), p["impact_level"], p.get("impact_level_number") or "")
+    filled = 0
+    for p in products:
+        if unknown_impact(p) and p["id"] in last:
+            _, p["impact_level"], p["impact_level_number"] = last[p["id"]]
+            filled += 1
+    if not filled:
+        return None
+    print(f"build_page: impact level missing from the export; carried forward for {filled} listings", file=sys.stderr)
+    return {"filled": filled, "since": since, "from": max(d for d, _, _ in last.values())}
+
+
+def agency_key(name: str) -> str:
+    """Match agency names across exports: the Nov 3, 2026 export drops the "U.S." prefix."""
+    n = " ".join(name.split())
+    return re.sub(r"^(U\.S\.|US|United States)\s+", "", n, flags=re.I).lower()
+
+
+def dropped_agency_atos(raw_dir: Path, current: Path, products: list[dict]) -> list[dict]:
+    """Agency ATOs (PMO excluded) shown on an authorized 20x listing in an earlier snapshot and absent from
+    the current one, while the listing itself is still authorized. Oldest last-seen first."""
+    cur_date = snapshot_date(current)
+    now = {p["id"]: p for p in products
+           if p.get("cert_type") != "Rev5" and str(p.get("status") or "").startswith("FedRAMP Certified")}
+    seen: dict[tuple[str, str], dict] = {}
+    for f in sorted(raw_dir.glob("products-*.json.gz")):
+        if snapshot_date(f) >= cur_date:
+            continue
+        try:
+            ps, _ = load_snapshot(f)
+        except SystemExit:
+            continue
+        for p in ps:
+            if p["id"] not in now or p.get("cert_type") == "Rev5":
+                continue
+            for ag in p.get("agency_authorizations") or []:
+                if ag and ag not in PMO_20X:
+                    k = (p["id"], agency_key(ag))
+                    rec = seen.setdefault(k, {"id": p["id"], "agency": ag, "first": snapshot_date(f)})
+                    rec["last"] = snapshot_date(f)
+    out = []
+    for (pid, ak), rec in seen.items():
+        cur = {agency_key(a) for a in now[pid].get("agency_authorizations") or [] if a}
+        if ak not in cur:
+            out.append({**rec, "product": (now[pid].get("cso") or "").strip(),
+                        "csp": (now[pid].get("csp") or "").strip()})
+    return sorted(out, key=lambda r: (r["last"], r["product"], r["agency"]))
+
+
 def removal_history(pid: str, rec: dict, succ: dict | None, states: list[tuple[str, dict[str, str]]]) -> dict:
     """Snapshot-by-snapshot presence/status for a dropped listing (and its successor), plus the PMO event logs."""
     sid = succ["id"] if succ else ""
@@ -2139,11 +2276,19 @@ def main() -> None:
         ai = {provider_key(s) for s in ai_feed["providers"]}
     carried = carry_categories(args.raw_dir, args.snapshot, products) if args.raw_dir else None
     dates_carried = carry_dates(args.raw_dir, args.snapshot, products) if args.raw_dir else None
+    impact_carried = carry_impact(args.raw_dir, args.snapshot, products) if args.raw_dir else None
+    require_impact(products)
+    if args.raw_dir:
+        require_sponsors(args.raw_dir, args.snapshot, products)
     rows = [normalise(p, grc, ai) for p in products]
     a = analyse(rows, snap)
     a["checked"] = args.checked or snap
     a["carried"] = carried
     a["dates_carried"] = dates_carried
+    a["impact_carried"] = impact_carried
+    a["gsa_pmo"] = any("General Services Administration" in (p.get("agency_authorizations") or [])
+                       for p in products if p.get("cert_type") != "Rev5")
+    a["dropped_atos"] = dropped_agency_atos(args.raw_dir, args.snapshot, products) if args.raw_dir else []
     a["grc_date"] = grc_feed.get("updated") or snap
     checks = {}
     if args.dropped_checks and args.dropped_checks.exists():

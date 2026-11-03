@@ -913,6 +913,10 @@ def main() -> None:
     products, digest = bp.load_snapshot(args.snapshot)
     if args.raw_dir:
         bp.carry_dates(args.raw_dir, args.snapshot, products)
+        bp.carry_impact(args.raw_dir, args.snapshot, products)
+    bp.require_impact(products)
+    if args.raw_dir:
+        bp.require_sponsors(args.raw_dir, args.snapshot, products)
     snap = bp.snapshot_date(args.snapshot)
     bp.load_assessors(args.assessors)
     rules = load_rules(args.rules)

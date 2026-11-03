@@ -53,6 +53,7 @@
 .wrap{max-width:1240px;margin:0 auto;padding:var(--s-6) max(20px,env(safe-area-inset-right,0px)) var(--s-7) max(20px,env(safe-area-inset-left,0px))}
 .eyebrow{margin:0 0 var(--s-3)}
 h1{margin:0;max-width:24ch}
+.data-hold{margin:var(--s-4) 0 0;padding:var(--s-3) var(--s-4);border-left:3px solid var(--accent, currentColor);font-size:var(--t-small);max-width:none}
 .lede{font-size:var(--t-lede);color:var(--ink-soft);margin:var(--s-4) 0 0}
 .pmo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s-3);margin:var(--s-5) 0 0}
 @media (max-width:760px){.pmo{grid-template-columns:1fr}}
@@ -201,6 +202,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
   <p class="eyebrow">FedRAMP Marketplace · usability lookup · snapshot Nov 2, 2026</p>
   <h1>What can this listing actually be used for?</h1>
   <p class="lede">Every listing on the FedRAMP Marketplace, checked against the published rules for federal data and CUI. Pick one to see what its authorization supports and what it doesn’t. Each answer cites the rule it comes from.</p>
+  <p class="data-hold" role="note"><b>Data on hold.</b> FedRAMP restructured its marketplace data on November 3, 2026. The new export omits agency authorizations that are still in force, including the sponsoring agency on agency-path authorizations, and lists every impact level as Unknown. This page continues to show the November 2 export and will update once the marketplace data is complete.</p>
   <div class="pmo">
     <blockquote><p>Certification Classes indicate the level of assurance provided, not the level of security or protection provided.</p><cite>FedRAMP CR26 · Certification Classes</cite></blockquote>
     <blockquote><p>Agencies should not treat Certification Classes as one-for-one replacements for Low, Moderate, or High impact levels.</p><cite>FedRAMP CR26 · Certification Classes</cite></blockquote>
