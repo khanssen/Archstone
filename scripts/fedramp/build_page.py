@@ -64,6 +64,19 @@ def load_snapshot(path: Path) -> tuple[list[dict], str]:
     types = Counter(p.get("cert_type") for p in data)
     if "Rev5" not in types or not any(str(t).startswith("20x") for t in types):
         sys.exit(f"build_page: cert_type values unexpected: {dict(types)}")
+    # Meaning checks, not just shape. The Nov 3, 2026 export kept every field name but renamed the
+    # PMO entry on 20x listings to "General Services Administration" (counted as an agency ATO here)
+    # and set impact_level to "Unknown" on most listings. Refuse to build rather than publish that.
+    tw = [p for p in data if str(p.get("cert_type")).startswith("20x")
+          and str(p.get("status") or "").startswith("FedRAMP Certified")]
+    pmo = sum(1 for p in tw if PMO in (p.get("agency_authorizations") or []))
+    if tw and pmo < 0.5 * len(tw):
+        alt = Counter(a for p in tw for a in (p.get("agency_authorizations") or [])).most_common(3)
+        sys.exit(f"build_page: the FedRAMP PMO is listed on only {pmo} of {len(tw)} authorized 20x products "
+                 f"(most common entries: {alt}); the export may have renamed it. Not building.")
+    unknown = sum(1 for p in data if str(p.get("impact_level") or "").strip() in ("", "Unknown"))
+    if unknown > 0.5 * len(data):
+        sys.exit(f"build_page: impact level is missing or Unknown on {unknown} of {len(data)} listings. Not building.")
     return data, digest
 
 

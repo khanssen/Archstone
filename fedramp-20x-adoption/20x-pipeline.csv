@@ -1,115 +1,115 @@
 snapshot,id,provider,product,marketplace_label,status,entered,assessor,notes
-2026-11-03,FR2702852019,"Vbrick Systems, Inc.",Vbrick Enterprise Video Platform,20x,Initial Implementation,2026-10-29,Coalfire,Similar product authorized on traditional track
-2026-11-03,FR2702852004,"RediMinds, Inc",RediReview,20x,Initial Implementation,2026-10-29,A-LIGN,Listed more than once
-2026-11-03,FR2702851998,"RediMinds, Inc",RediReview,20x,Initial Implementation,2026-10-29,A-LIGN,Listed more than once
-2026-11-03,FR2702851992,AccessAgility LLC,Optifi,20x,Initial Implementation,2026-10-29,,
-2026-11-03,FR2702852015,Intergraph Corporation,Octave Reliance,Traditional,Initial Implementation,2026-10-29,A-LIGN,"Labeled traditional, no sponsor"
-2026-11-03,FR2702852025,GitHub,GitHub Enterprise Cloud with Data Residency,Traditional,Initial Implementation,2026-10-29,Coalfire,"Labeled traditional, no sponsor; Similar product authorized on traditional track"
-2026-11-03,FR2702852010,Continuity Logic L.L.C.,CLDigital 360 FedGov,20x,Initial Implementation,2026-10-29,,
-2026-11-03,FR2702556365,"Flare Systems, Inc.",Flare Platform,20x,Initial Implementation,2026-10-26,,
-2026-11-03,FR2702257111,Veoci Inc.,Veoci,20x,Initial Implementation,2026-10-23,,
-2026-11-03,FR2702257113,"Nominal, Inc.",Nominal Platform,20x,Initial Implementation,2026-10-23,A-LIGN,
-2026-11-03,FR2702257117,ioMoVo Corp.,ioMoVo for Government,20x,Initial Implementation,2026-10-23,,
-2026-11-03,FR2702058502,Ocient Inc.,OcientAIQ,20x,Initial Implementation,2026-10-21,,
-2026-11-03,FR2701857792,"Liferay, Inc.",Liferay SaaS,20x,Initial Implementation,2026-10-19,,
-2026-11-03,FR2701857797,Optimal Labs,9line,20x,Initial Implementation,2026-10-19,,
-2026-11-03,FR2701557049,Sixtyfourai,Sixtyfour Identity Intelligence Platform,20x,Initial Implementation,2026-10-16,,
-2026-11-03,FR2701557058,"38North Security, LLC",NorthWatch,20x,Initial Implementation,2026-10-16,A-LIGN,
-2026-11-03,FR2701557044,"Business Integra Technology Solutions, Inc.",Moderniza,20x,Initial Implementation,2026-10-16,Kompleye,
-2026-11-03,FR2701557054,Aequitas Cyber Labs,KineticCode,20x,Initial Implementation,2026-10-16,,
-2026-11-03,FR2701557038,"Facility Grid, LLC",Facility Grid,20x,Initial Implementation,2026-10-16,Insight Assurance,
-2026-11-03,FR2701457579,"Replit, Inc.",Replit for Government,20x,Initial Implementation,2026-10-15,,
-2026-11-03,FR2701457585,PDQ,PDQ for Government,20x,Initial Implementation,2026-10-15,,
-2026-11-03,FR2701457600,IndirectTek LLC,Elixium,20x,Initial Implementation,2026-10-15,,
-2026-11-03,FR2701457595,AtomAI Solutions Inc.,AtomAI Platform,20x,Initial Implementation,2026-10-15,,
-2026-11-03,FR2701247929,Trimble Inc.,Trimble for Government,Traditional,Initial Implementation,2026-10-13,A-LIGN,"Labeled traditional, no sponsor"
-2026-11-03,FR2701247935,Tansi LLC,Tansi,20x,Initial Implementation,2026-10-13,,
-2026-11-03,FR2701247925,"Litmas, Inc.",Litmas AI,20x,Initial Implementation,2026-10-13,,
-2026-11-03,FR2701256060,Fulcrum,Fulcrum,20x,Initial Implementation,2026-10-13,A-LIGN,
-2026-11-03,FR2700857469,Zeta Global Corp.,Zeta Marketing Platform for Government,20x,Initial Implementation,2026-10-09,,
-2026-11-03,FR2700857464,"Securin, Inc.",Securin Preemptive Exposure Management Platform,20x,Initial Implementation,2026-10-09,,
-2026-11-03,FR2700857493,Samsara Inc.,Samsara Connected Operations Cloud,20x,Initial Implementation,2026-10-09,,Listed more than once
-2026-11-03,FR2700857472,"CLEATUS, Inc.",CLEATUS,20x,Initial Implementation,2026-10-09,A-LIGN,
-2026-11-03,FR2700754082,PlatformOne Group Inc,ComplianceONE,20x,Initial Implementation,2026-10-08,DataLock Consulting Group,
-2026-11-03,FR2700754078,"CloudFit Software, LLC",CloudFit Federal Platform,20x,Initial Implementation,2026-10-08,,
-2026-11-03,FR2700555844,"Linear Orbit, Inc.",Linear,20x,Initial Implementation,2026-10-07,,
-2026-11-03,FR2700555848,Dynatrace,Dynatrace Platform for FedRAMP Class D (High),Traditional,Initial Implementation,2026-10-07,,"Labeled traditional, no sponsor; Similar product authorized on traditional track"
-2026-11-03,FR2700429895,Ardoq Inc,Ardoq,20x,Initial Implementation,2026-10-05,,
-2026-11-03,FR2700137045,"RegScale, Inc.",RegScale Trust Center 20x (Class C),20x,Initial Implementation,2026-10-02,A-LIGN,
-2026-11-03,FR2700137035,Caldera AI Inc.,Mesa,20x,Initial Implementation,2026-10-02,,
-2026-11-03,FR2700137029,"HealthEdge Software, Inc.",HealthEdge Integrated Solution Suite,20x,Initial Implementation,2026-10-02,A-LIGN,
-2026-11-03,FR2700137041,Dossier,Dossier for Government,20x,Initial Implementation,2026-10-02,Prescient Security,
-2026-11-03,FR2635930482,VisualVault LLC,VisualVault Cloud,20x,Initial Implementation,2026-09-30,A-LIGN,Listed more than once
-2026-11-03,FR2635930421,SOFware LLC,FORGE,20x,Initial Implementation,2026-09-30,,
-2026-11-03,FR2635930439,Advent Business Company Inc.,Enablement®,20x,Initial Implementation,2026-09-30,SteelToad,Listed more than once
-2026-11-03,FR2635930425,"CodeSignal, Inc.",CodeSignal,20x,Initial Implementation,2026-09-30,,
-2026-11-03,FR2635447609,MyEvaluations.com Inc.,MyEvaluations,20x,Initial Implementation,2026-09-25,Prescient Security,
-2026-11-03,FR2635050861,"VirtualDojo, Inc.",VirtualDojo AI CRM,20x,Initial Implementation,2026-09-21,Anthony Timbers LLC,
-2026-11-03,FR2635050850,Toonimo Inc.,Toonimo Digital Adoption Platform,20x,Initial Implementation,2026-09-21,,
-2026-11-03,FR2635050855,"SuperGov, Inc",SuperFile,20x,Initial Implementation,2026-09-21,,
-2026-11-03,FR2635050845,"DigiCert, Inc.",DigiCert for Government,20x,Initial Implementation,2026-09-21,Schellman,
-2026-11-03,FR2634659091,Tactical Takedown LLC,TNT Business Resilience Platform,20x,Initial Implementation,2026-09-18,,
-2026-11-03,FR2634659079,ThinkTrends LLC,ThinkTrends AI Platform,20x,Initial Implementation,2026-09-18,A-LIGN,
-2026-11-03,FR2634659087,Signifi Solutions Inc.,SignifiVISION,Traditional,Initial Implementation,2026-09-18,,"Labeled traditional, no sponsor"
-2026-11-03,FR2634659083,NavigatorCRE,NavigatorCRE,20x,Initial Implementation,2026-09-18,Insight Assurance,
-2026-11-03,FR2634659095,CISCO,Cisco Cloud Control with AgenticOps,20x,Initial Implementation,2026-09-18,,
-2026-11-03,FR2634436150,Remedio Technologies Inc,Remedio,20x,Initial Implementation,2026-09-15,,
-2026-11-03,FR2634450946,"Pinecone Systems, Inc.",Pinecone,20x,Initial Implementation,2026-09-15,,
-2026-11-03,FR2634357692,Progressive Expert Consulting,Collaborative Learning Environment,Traditional,Initial Implementation,2026-09-15,Booz Allen Hamilton,"Labeled traditional, no sponsor"
-2026-11-03,FR2633957422,MediaLab Solutions LLC,Vastian (MediaLab by Vastian),20x,Initial Implementation,2026-09-11,First Information Technology Services (FITS),
-2026-11-03,FR2633957417,Dayforce,"Dayforce HCM, Public Sector",Traditional,Initial Implementation,2026-09-11,Baker Tilly,"Labeled traditional, no sponsor"
-2026-11-03,FR2634047811,86Borders LLC,86Borders ConnectAllCare,20x,Initial Implementation,2026-09-11,A-LIGN,
-2026-11-03,FR2633841585,"Silkline, Inc.",Silkline,20x,Initial Implementation,2026-09-09,A-LIGN,
-2026-11-03,FR2633734917,Simuhealth Technologies Inc.,Simuhealth,20x,Initial Implementation,2026-09-08,,
-2026-11-03,FR2633734927,Meterbox Inc.,Meterbox,20x,Initial Implementation,2026-09-08,,
-2026-11-03,FR2633734906,"Four BT, LLC",Four BT Benchmark Construction Estimator,20x,Initial Implementation,2026-09-08,,
-2026-11-03,FR2633734921,Elvo,Elvo,20x,Initial Implementation,2026-09-08,DataLock Consulting Group,
-2026-11-03,FR2633734912,ConnectSecure LLC,ConnectSecure Vulnerability and Compliance Manager,20x,Initial Implementation,2026-09-08,CertPro CPA LLC,
-2026-11-03,FR2633734932,Skyward IT Solutions,Alira,20x,Initial Implementation,2026-09-08,,
-2026-11-03,FR2633153272,Samsara Inc.,Samsara Connected Operations Cloud,20x,Initial Implementation,2026-09-03,,Listed more than once
-2026-11-03,FR2633153276,"Anyreach, Inc.",Anyreach App Software Application,20x,Initial Implementation,2026-09-03,,
-2026-11-03,FR2633058240,"Ultra Security, Inc.",Ultra Agentic Security Platform,20x,Initial Implementation,2026-09-01,A-LIGN,
-2026-11-03,FR2633053629,TGuardAI Inc.,TrustGuard AI Compliance Platform,20x,Initial Implementation,2026-09-01,A-LIGN,
-2026-11-03,FR2633058235,Emburse,Emburse Enterprise,20x,Initial Implementation,2026-09-01,,
-2026-11-03,FR2633053633,Anthropic,Claude,20x,Initial Implementation,2026-09-01,Schellman,
-2026-11-03,FR2632755834,Armada,Armada Platform,Traditional,Initial Implementation,2026-08-29,First Information Technology Services (FITS),"Labeled traditional, no sponsor"
-2026-11-03,FR2632731472,"Transmittr, Inc.",Casco for Government,20x,FedRAMP In Process,2026-08-28,,
-2026-11-03,FR2632558740,Cornerstone Information Systems,Upstream Gov,20x,Initial Implementation,2026-08-27,,
-2026-11-03,FR2632558748,"Baseten Labs, Inc.",Baseten Inference Platform,20x,Initial Implementation,2026-08-27,,
-2026-11-03,FR2632558735,Ocasio Convergence Holdings LLC,Axiom Convergence Engine (ACE),20x,Initial Implementation,2026-08-27,,
-2026-11-03,FR2632436493,"Rohirrim, Inc.",Unified Acquisition Platform,20x,FedRAMP In Process,2026-08-25,,
-2026-11-03,FR2632054491,OpenClinica LLC,OpenClinica4 (OC4),20x,Initial Implementation,2026-08-22,A-LIGN,
-2026-11-03,FR2632054516,"Neuramill, Inc.",NeuraBridge,20x,Initial Implementation,2026-08-22,,
-2026-11-03,FR2632054534,"Thread AI, Inc.",Lemma (GovCloud),20x,Initial Implementation,2026-08-22,,
-2026-11-03,FR2632054521,"Leadership Connect, Inc.",Leadership Connect,20x,Initial Implementation,2026-08-22,,
-2026-11-03,FR2632054495,"JupiterOne, Inc.",JupiterOne GovCloud,20x,FedRAMP In Process,2026-08-22,,
-2026-11-03,FR2632054530,Beam Up Ltd,Beam,20x,Initial Implementation,2026-08-22,,
-2026-11-03,FR2631747327,Geographic Solutions Inc.,VOS Sapphire,20x,Initial Implementation,2026-08-18,,
-2026-11-03,FR2631747315,Sustainment Technologies Inc.,Sustainment Digital Manufacturing Hub,20x,Initial Implementation,2026-08-18,Prescient Security,
-2026-11-03,FR2631747321,Specset,Specset Cloud Platform,20x,Initial Implementation,2026-08-18,Prescient Security,Listed more than once
-2026-11-03,FR2631258113,"TRM Labs, Inc.",TRM Labs on GovCloud,20x,Initial Implementation,2026-08-14,,
-2026-11-03,FR2631258135,Specset,Specset Cloud Platform,20x,Initial Implementation,2026-08-14,Prescient Security,Listed more than once
-2026-11-03,FR2631258127,NEXGEN Asset Management,NEXGEN Asset Management,20x,Initial Implementation,2026-08-14,A-LIGN,
-2026-11-03,FR2631258125,"Certivo, Inc.",Certivo Compliance Platform,20x,Initial Implementation,2026-08-14,,
-2026-11-03,FR2631154499,"IronWiFi, LLC",IronWiFi Cloud RADIUS and Wi-Fi Authentication Platform,20x,Initial Implementation,2026-08-13,,
-2026-11-03,FR2631258122,"Cahill Swift, LLC",Cahill Swift Compliance Management Platform,20x,Initial Implementation,2026-08-13,,
-2026-11-03,FR2631054482,Concourse Tech Inc.,Concourse Platform,20x,Initial Implementation,2026-08-12,,
-2026-11-03,FR2631054487,"Nastro Technologies, Inc.",BitRip,20x,Initial Implementation,2026-08-12,,
-2026-11-03,FR2631054533,"Portal26, Inc.","AI Security, Governance, & Telemetry Platform",20x,Initial Implementation,2026-08-12,A-LIGN,
-2026-11-03,FR2630354484,VisualVault LLC,VisualVault Cloud,20x,Initial Implementation,2026-08-05,A-LIGN,Listed more than once
-2026-11-03,FR2630354494,"NextgenID, Inc.",NextgenID User Interface as a Service (UIaaS),20x,Initial Implementation,2026-08-05,,
-2026-11-03,FR2630354487,Globality Inc,Globality Platform,20x,Initial Implementation,2026-08-05,,
-2026-11-03,FR2630354491,Freshworks,Freshworks for Government,20x,Initial Implementation,2026-08-05,A-LIGN,
-2026-11-03,FR2630354482,Dispel LLC,Dispel Zero Trust Engine,20x,Initial Implementation,2026-08-05,MegaplanIT,
-2026-11-03,FR2630354485,ComplianceAid INC.,ComplianceAide Government Cloud,20x,Initial Implementation,2026-08-05,,
-2026-11-03,FR2629068830,"SunStone Secure, LLC",SunStone Artemis Platform,Traditional,Initial Implementation,2026-07-22,ACME 3PAO Inc.,"Labeled traditional, no sponsor"
-2026-11-03,FR2629068832,"Open Access Technology International, Inc.",OATI Marketplace,Traditional,Initial Implementation,2026-07-22,Schellman,"Labeled traditional, no sponsor"
-2026-11-03,FR2629068833,Immuta,Immuta Federal,20x,Initial Implementation,2026-07-22,Fortreum,
-2026-11-03,FR2628943629,"International Vending Management, Inc.",SmartHub,Traditional,Initial Implementation,2026-07-20,Kompleye,"Labeled traditional, no sponsor"
-2026-11-03,FR2628943630,Xfinion Inc.,Continuously Aware Realtime Tracking Network (CARTN),Traditional,Initial Implementation,2026-07-20,A-LIGN,"Labeled traditional, no sponsor"
-2026-11-03,FR2628943633,Boundera,Boundera SaaS,20x,Initial Implementation,2026-07-20,Schellman,
-2026-11-03,FR2630447318,"Stoke Space Technologies, Inc.",Boltline,Traditional,Initial Implementation,2026-07-20,Coalfire,"Labeled traditional, no sponsor"
-2026-11-03,FR2628650874,Pincus Technologies Inc,Tarly Cowork,20x,Initial Implementation,2026-07-17,A-LIGN,
-2026-11-03,FR2628647241,Partos Inc.,Partos for Government,Traditional,Initial Implementation,2026-07-17,Prescient Security,"Labeled traditional, no sponsor"
-2026-11-03,FR2628647239,Advent Business Company Inc.,Enablement®,Traditional,Initial Implementation,2026-07-17,SteelToad,"Labeled traditional, no sponsor; Listed more than once"
-2026-11-03,FR2628647233,"Dispel, LLC",Dispel Zero Trust Engine (DZTE) For Government,Traditional,Initial Implementation,2026-07-17,,"Labeled traditional, no sponsor"
+2026-11-02,FR2702852019,"Vbrick Systems, Inc.",Vbrick Enterprise Video Platform,20x,Initial Implementation,2026-10-29,Coalfire,Similar product authorized on traditional track
+2026-11-02,FR2702851998,"RediMinds, Inc",RediReview,20x,Initial Implementation,2026-10-29,A-LIGN,Listed more than once
+2026-11-02,FR2702852004,"RediMinds, Inc",RediReview,20x,Initial Implementation,2026-10-29,A-LIGN,Listed more than once
+2026-11-02,FR2702851992,AccessAgility LLC,Optifi,20x,Initial Implementation,2026-10-29,,
+2026-11-02,FR2702852015,Intergraph Corporation,Octave Reliance,Traditional,Initial Implementation,2026-10-29,A-LIGN,"Labeled traditional, no sponsor"
+2026-11-02,FR2702852025,GitHub,GitHub Enterprise Cloud with Data Residency,Traditional,Initial Implementation,2026-10-29,Coalfire,"Labeled traditional, no sponsor; Similar product authorized on traditional track"
+2026-11-02,FR2702852010,Continuity Logic L.L.C.,CLDigital 360 FedGov,20x,Initial Implementation,2026-10-29,,
+2026-11-02,FR2702556365,"Flare Systems, Inc.",Flare Platform,20x,Initial Implementation,2026-10-26,,
+2026-11-02,FR2702257111,Veoci Inc.,Veoci,20x,Initial Implementation,2026-10-23,,
+2026-11-02,FR2702257113,"Nominal, Inc.",Nominal Platform,20x,Initial Implementation,2026-10-23,A-LIGN,
+2026-11-02,FR2702257117,ioMoVo Corp.,ioMoVo for Government,20x,Initial Implementation,2026-10-23,,
+2026-11-02,FR2702058502,Ocient Inc.,OcientAIQ,20x,Initial Implementation,2026-10-21,,
+2026-11-02,FR2701857792,"Liferay, Inc.",Liferay SaaS,20x,Initial Implementation,2026-10-19,,
+2026-11-02,FR2701857797,Optimal Labs,9line,20x,Initial Implementation,2026-10-19,,
+2026-11-02,FR2701557049,Sixtyfourai,Sixtyfour Identity Intelligence Platform,20x,Initial Implementation,2026-10-16,,
+2026-11-02,FR2701557058,"38North Security, LLC",NorthWatch,20x,Initial Implementation,2026-10-16,A-LIGN,
+2026-11-02,FR2701557044,"Business Integra Technology Solutions, Inc.",Moderniza,20x,Initial Implementation,2026-10-16,Kompleye,
+2026-11-02,FR2701557054,Aequitas Cyber Labs,KineticCode,20x,Initial Implementation,2026-10-16,,
+2026-11-02,FR2701557038,"Facility Grid, LLC",Facility Grid,20x,Initial Implementation,2026-10-16,Insight Assurance,
+2026-11-02,FR2701457579,"Replit, Inc.",Replit for Government,20x,Initial Implementation,2026-10-15,,
+2026-11-02,FR2701457585,PDQ,PDQ for Government,20x,Initial Implementation,2026-10-15,,
+2026-11-02,FR2701457600,IndirectTek LLC,Elixium,20x,Initial Implementation,2026-10-15,,
+2026-11-02,FR2701457595,AtomAI Solutions Inc.,AtomAI Platform,20x,Initial Implementation,2026-10-15,,
+2026-11-02,FR2701247929,Trimble Inc.,Trimble for Government,Traditional,Initial Implementation,2026-10-13,A-LIGN,"Labeled traditional, no sponsor"
+2026-11-02,FR2701247935,Tansi LLC,Tansi,20x,Initial Implementation,2026-10-13,,
+2026-11-02,FR2701247925,"Litmas, Inc.",Litmas AI,20x,Initial Implementation,2026-10-13,,
+2026-11-02,FR2701256060,Fulcrum,Fulcrum,20x,Initial Implementation,2026-10-13,A-LIGN,
+2026-11-02,FR2700857469,Zeta Global Corp.,Zeta Marketing Platform for Government,20x,Initial Implementation,2026-10-09,,
+2026-11-02,FR2700857464,"Securin, Inc.",Securin Preemptive Exposure Management Platform,20x,Initial Implementation,2026-10-09,,
+2026-11-02,FR2700857493,Samsara Inc.,Samsara Connected Operations Cloud,20x,Initial Implementation,2026-10-09,,Listed more than once
+2026-11-02,FR2700857472,"CLEATUS, Inc.",CLEATUS,20x,Initial Implementation,2026-10-09,A-LIGN,
+2026-11-02,FR2700754082,PlatformOne Group Inc,ComplianceONE,20x,Initial Implementation,2026-10-08,DataLock Consulting Group,
+2026-11-02,FR2700754078,"CloudFit Software, LLC",CloudFit Federal Platform,20x,Initial Implementation,2026-10-08,,
+2026-11-02,FR2700555844,"Linear Orbit, Inc.",Linear,20x,Initial Implementation,2026-10-07,,
+2026-11-02,FR2700555848,Dynatrace,Dynatrace Platform for FedRAMP Class D (High),Traditional,Initial Implementation,2026-10-07,,"Labeled traditional, no sponsor; Similar product authorized on traditional track"
+2026-11-02,FR2700429895,Ardoq Inc,Ardoq,20x,Initial Implementation,2026-10-05,,
+2026-11-02,FR2700137045,"RegScale, Inc.",RegScale Trust Center 20x (Class C),20x,Initial Implementation,2026-10-02,A-LIGN,
+2026-11-02,FR2700137035,Caldera AI Inc.,Mesa,20x,Initial Implementation,2026-10-02,,
+2026-11-02,FR2700137029,"HealthEdge Software, Inc.",HealthEdge Integrated Solution Suite,20x,Initial Implementation,2026-10-02,A-LIGN,
+2026-11-02,FR2700137041,Dossier,Dossier for Government,20x,Initial Implementation,2026-10-02,Prescient Security,
+2026-11-02,FR2635930482,VisualVault LLC,VisualVault Cloud,20x,Initial Implementation,2026-09-30,A-LIGN,Listed more than once
+2026-11-02,FR2635930421,SOFware LLC,FORGE,20x,Initial Implementation,2026-09-30,,
+2026-11-02,FR2635930439,Advent Business Company Inc.,Enablement®,20x,Initial Implementation,2026-09-30,SteelToad,Listed more than once
+2026-11-02,FR2635930425,"CodeSignal, Inc.",CodeSignal,20x,Initial Implementation,2026-09-30,,
+2026-11-02,FR2635447609,MyEvaluations.com Inc.,MyEvaluations,20x,Initial Implementation,2026-09-25,Prescient Security,
+2026-11-02,FR2635050861,"VirtualDojo, Inc.",VirtualDojo AI CRM,20x,Initial Implementation,2026-09-21,Anthony Timbers LLC,
+2026-11-02,FR2635050850,Toonimo Inc.,Toonimo Digital Adoption Platform,20x,Initial Implementation,2026-09-21,,
+2026-11-02,FR2635050855,"SuperGov, Inc",SuperFile,20x,Initial Implementation,2026-09-21,,
+2026-11-02,FR2635050845,"DigiCert, Inc.",DigiCert for Government,20x,Initial Implementation,2026-09-21,Schellman,
+2026-11-02,FR2634659091,Tactical Takedown LLC,TNT Business Resilience Platform,20x,Initial Implementation,2026-09-18,,
+2026-11-02,FR2634659079,ThinkTrends LLC,ThinkTrends AI Platform,20x,Initial Implementation,2026-09-18,A-LIGN,
+2026-11-02,FR2634659087,Signifi Solutions Inc.,SignifiVISION,Traditional,Initial Implementation,2026-09-18,,"Labeled traditional, no sponsor"
+2026-11-02,FR2634659083,NavigatorCRE,NavigatorCRE,20x,Initial Implementation,2026-09-18,Insight Assurance,
+2026-11-02,FR2634659095,CISCO,Cisco Cloud Control with AgenticOps,20x,Initial Implementation,2026-09-18,,
+2026-11-02,FR2634436150,Remedio Technologies Inc,Remedio,20x,Initial Implementation,2026-09-15,,
+2026-11-02,FR2634450946,"Pinecone Systems, Inc.",Pinecone,20x,Initial Implementation,2026-09-15,,
+2026-11-02,FR2634357692,Progressive Expert Consulting,Collaborative Learning Environment,Traditional,Initial Implementation,2026-09-15,Booz Allen Hamilton,"Labeled traditional, no sponsor"
+2026-11-02,FR2633957422,MediaLab Solutions LLC,Vastian (MediaLab by Vastian),20x,Initial Implementation,2026-09-11,First Information Technology Services (FITS),
+2026-11-02,FR2633957417,Dayforce,"Dayforce HCM, Public Sector",Traditional,Initial Implementation,2026-09-11,Baker Tilly,"Labeled traditional, no sponsor"
+2026-11-02,FR2634047811,86Borders LLC,86Borders ConnectAllCare,20x,Initial Implementation,2026-09-11,A-LIGN,
+2026-11-02,FR2633841585,"Silkline, Inc.",Silkline,20x,Initial Implementation,2026-09-09,A-LIGN,
+2026-11-02,FR2633734917,Simuhealth Technologies Inc.,Simuhealth,20x,Initial Implementation,2026-09-08,,
+2026-11-02,FR2633734927,Meterbox Inc.,Meterbox,20x,Initial Implementation,2026-09-08,,
+2026-11-02,FR2633734906,"Four BT, LLC",Four BT Benchmark Construction Estimator,20x,Initial Implementation,2026-09-08,,
+2026-11-02,FR2633734921,Elvo,Elvo,20x,Initial Implementation,2026-09-08,DataLock Consulting Group,
+2026-11-02,FR2633734912,ConnectSecure LLC,ConnectSecure Vulnerability and Compliance Manager,20x,Initial Implementation,2026-09-08,CertPro CPA LLC,
+2026-11-02,FR2633734932,Skyward IT Solutions,Alira,20x,Initial Implementation,2026-09-08,,
+2026-11-02,FR2633153272,Samsara Inc.,Samsara Connected Operations Cloud,20x,Initial Implementation,2026-09-03,,Listed more than once
+2026-11-02,FR2633153276,"Anyreach, Inc.",Anyreach App Software Application,20x,Initial Implementation,2026-09-03,,
+2026-11-02,FR2633058240,"Ultra Security, Inc.",Ultra Agentic Security Platform,20x,Initial Implementation,2026-09-01,A-LIGN,
+2026-11-02,FR2633053629,TGuardAI Inc.,TrustGuard AI Compliance Platform,20x,Initial Implementation,2026-09-01,A-LIGN,
+2026-11-02,FR2633058235,Emburse,Emburse Enterprise,20x,Initial Implementation,2026-09-01,,
+2026-11-02,FR2633053633,Anthropic,Claude,20x,Initial Implementation,2026-09-01,Schellman,
+2026-11-02,FR2632755834,Armada,Armada Platform,Traditional,Initial Implementation,2026-08-29,First Information Technology Services (FITS),"Labeled traditional, no sponsor"
+2026-11-02,FR2632731472,"Transmittr, Inc.",Casco for Government,20x,FedRAMP In Process,2026-08-28,,
+2026-11-02,FR2632558740,Cornerstone Information Systems,Upstream Gov,20x,Initial Implementation,2026-08-27,,
+2026-11-02,FR2632558748,"Baseten Labs, Inc.",Baseten Inference Platform,20x,Initial Implementation,2026-08-27,,
+2026-11-02,FR2632558735,Ocasio Convergence Holdings LLC,Axiom Convergence Engine (ACE),20x,Initial Implementation,2026-08-27,,
+2026-11-02,FR2632436493,"Rohirrim, Inc.",Unified Acquisition Platform,20x,FedRAMP In Process,2026-08-25,,
+2026-11-02,FR2632054491,OpenClinica LLC,OpenClinica4 (OC4),20x,Initial Implementation,2026-08-22,A-LIGN,
+2026-11-02,FR2632054516,"Neuramill, Inc.",NeuraBridge,20x,Initial Implementation,2026-08-22,,
+2026-11-02,FR2632054534,"Thread AI, Inc.",Lemma (GovCloud),20x,Initial Implementation,2026-08-22,,
+2026-11-02,FR2632054521,"Leadership Connect, Inc.",Leadership Connect,20x,Initial Implementation,2026-08-22,,
+2026-11-02,FR2632054495,"JupiterOne, Inc.",JupiterOne GovCloud,20x,FedRAMP In Process,2026-08-22,,
+2026-11-02,FR2632054530,Beam Up Ltd,Beam,20x,Initial Implementation,2026-08-22,,
+2026-11-02,FR2631747327,Geographic Solutions Inc.,VOS Sapphire,20x,Initial Implementation,2026-08-18,,
+2026-11-02,FR2631747315,Sustainment Technologies Inc.,Sustainment Digital Manufacturing Hub,20x,Initial Implementation,2026-08-18,Prescient Security,
+2026-11-02,FR2631747321,Specset,Specset Cloud Platform,20x,Initial Implementation,2026-08-18,Prescient Security,Listed more than once
+2026-11-02,FR2631258113,"TRM Labs, Inc.",TRM Labs on GovCloud,20x,Initial Implementation,2026-08-14,,
+2026-11-02,FR2631258135,Specset,Specset Cloud Platform,20x,Initial Implementation,2026-08-14,Prescient Security,Listed more than once
+2026-11-02,FR2631258127,NEXGEN Asset Management,NEXGEN Asset Management,20x,Initial Implementation,2026-08-14,A-LIGN,
+2026-11-02,FR2631258125,"Certivo, Inc.",Certivo Compliance Platform,20x,Initial Implementation,2026-08-14,,
+2026-11-02,FR2631154499,"IronWiFi, LLC",IronWiFi Cloud RADIUS and Wi-Fi Authentication Platform,20x,Initial Implementation,2026-08-13,,
+2026-11-02,FR2631258122,"Cahill Swift, LLC",Cahill Swift Compliance Management Platform,20x,Initial Implementation,2026-08-13,,
+2026-11-02,FR2631054482,Concourse Tech Inc.,Concourse Platform,20x,Initial Implementation,2026-08-12,,
+2026-11-02,FR2631054487,"Nastro Technologies, Inc.",BitRip,20x,Initial Implementation,2026-08-12,,
+2026-11-02,FR2631054533,"Portal26, Inc.","AI Security, Governance, & Telemetry Platform",20x,Initial Implementation,2026-08-12,A-LIGN,
+2026-11-02,FR2630354484,VisualVault LLC,VisualVault Cloud,20x,Initial Implementation,2026-08-05,A-LIGN,Listed more than once
+2026-11-02,FR2630354494,"NextgenID, Inc.",NextgenID User Interface as a Service (UIaaS),20x,Initial Implementation,2026-08-05,,
+2026-11-02,FR2630354487,Globality Inc,Globality Platform,20x,Initial Implementation,2026-08-05,,
+2026-11-02,FR2630354491,Freshworks,Freshworks for Government,20x,Initial Implementation,2026-08-05,A-LIGN,
+2026-11-02,FR2630354482,Dispel LLC,Dispel Zero Trust Engine,20x,Initial Implementation,2026-08-05,MegaplanIT,
+2026-11-02,FR2630354485,ComplianceAid INC.,ComplianceAide Government Cloud,20x,Initial Implementation,2026-08-05,,
+2026-11-02,FR2629068830,"SunStone Secure, LLC",SunStone Artemis Platform,Traditional,Initial Implementation,2026-07-22,ACME 3PAO Inc.,"Labeled traditional, no sponsor"
+2026-11-02,FR2629068832,"Open Access Technology International, Inc.",OATI Marketplace,Traditional,Initial Implementation,2026-07-22,Schellman,"Labeled traditional, no sponsor"
+2026-11-02,FR2629068833,Immuta,Immuta Federal,20x,Initial Implementation,2026-07-22,Fortreum,
+2026-11-02,FR2628943629,"International Vending Management, Inc.",SmartHub,Traditional,Initial Implementation,2026-07-20,Kompleye,"Labeled traditional, no sponsor"
+2026-11-02,FR2628943630,Xfinion Inc.,Continuously Aware Realtime Tracking Network (CARTN),Traditional,Initial Implementation,2026-07-20,A-LIGN,"Labeled traditional, no sponsor"
+2026-11-02,FR2628943633,Boundera,Boundera SaaS,20x,Initial Implementation,2026-07-20,Schellman,
+2026-11-02,FR2630447318,"Stoke Space Technologies, Inc.",Boltline,Traditional,Initial Implementation,2026-07-20,Coalfire,"Labeled traditional, no sponsor"
+2026-11-02,FR2628650874,Pincus Technologies Inc,Tarly Cowork,20x,Initial Implementation,2026-07-17,A-LIGN,
+2026-11-02,FR2628647241,Partos Inc.,Partos for Government,Traditional,Initial Implementation,2026-07-17,Prescient Security,"Labeled traditional, no sponsor"
+2026-11-02,FR2628647239,Advent Business Company Inc.,Enablement®,Traditional,Initial Implementation,2026-07-17,SteelToad,"Labeled traditional, no sponsor; Listed more than once"
+2026-11-02,FR2628647233,"Dispel, LLC",Dispel Zero Trust Engine (DZTE) For Government,Traditional,Initial Implementation,2026-07-17,,"Labeled traditional, no sponsor"
