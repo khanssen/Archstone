@@ -1111,7 +1111,8 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
         carry_li += ('<li><b>The PMO under a new name.</b> From the November 3, 2026 export, the FedRAMP PMO\'s own entry '
                      'on 20x listings appears as the General Services Administration, the agency FedRAMP sits in. On 20x '
                      'listings it is treated as the PMO and excluded. GSA as a sponsor of traditional authorizations is '
-                     'counted as an agency, as before.</li>')
+                     'counted as an agency, as before. The export gives names, not agency identifiers, so a GSA sponsorship of a 20x '
+                     'product would also be excluded; none is recorded in FedRAMP\'s published ATO records.</li>')
     dc = a.get("dates_carried")
     if dc and (dc["filled"] or dc["from_log"]):
         bits = []
