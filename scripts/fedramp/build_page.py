@@ -35,7 +35,30 @@ from pathlib import Path
 PMO = "Federal Risk and Authorization Management Program"
 # From the Nov 3, 2026 export the PMO's own entry on 20x listings is named for its parent agency.
 # GSA is also a real sponsor of traditional authorizations, so the alias applies to 20x listings only.
-PMO_20X = {PMO, "General Services Administration"}
+GSA = "General Services Administration"
+GSA_ID, PMO_ID = "22-019", "22-092"      # FedRAMP agency IDs (fedramp-agencies.json; the PMO has none listed)
+GENUINE_GSA: set[str] = set()            # listings with a GSA ATO recorded under GSA's own agency ID
+
+
+def load_genuine_gsa(ledger_path: Path | None) -> None:
+    """Listings where FedRAMP's ATO table or old feed records an ATO under GSA's own agency ID (22-019),
+    as opposed to the PMO (22-092), which the Nov 3, 2026 export showed under GSA's name."""
+    GENUINE_GSA.clear()
+    if not ledger_path or not ledger_path.exists():
+        return
+    for e in json.loads(ledger_path.read_text(encoding="utf-8")).get("atos", []):
+        if e.get("agency_key") == GSA_ID and set(e.get("sources", {})) & {"table", "legacy"}:
+            GENUINE_GSA.add(e["product_id"])
+
+
+def agency_skip(p: dict) -> set[str]:
+    """Agency names that are not agency ATOs on this listing. The PMO never is. GSA is dropped on 20x and
+    Program-path listings, where the export's name-only data can't tell GSA from the PMO, unless an
+    agency ID shows a GSA ATO of its own; on traditional Agency-path listings GSA counts as an agency."""
+    skip = {PMO}
+    if (p.get("cert_type") != "Rev5" or p.get("cert_path") == "Program") and p.get("id") not in GENUINE_GSA:
+        skip.add(GSA)
+    return skip
 GRC_TAG = "Governance, Risk, and Compliance (GRC)"
 REQUIRED_FIELDS = {"id", "csp", "cso", "status", "cert_type", "cert_date",
                    "cert_path", "cert_class", "impact_level",
@@ -67,16 +90,9 @@ def load_snapshot(path: Path) -> tuple[list[dict], str]:
     types = Counter(p.get("cert_type") for p in data)
     if "Rev5" not in types or not any(str(t).startswith("20x") for t in types):
         sys.exit(f"build_page: cert_type values unexpected: {dict(types)}")
-    # Meaning checks, not just shape. The Nov 3, 2026 export kept every field name but renamed the
-    # PMO entry on 20x listings to "General Services Administration" (counted as an agency ATO here)
-    # and set impact_level to "Unknown" on most listings. Refuse to build rather than publish that.
-    tw = [p for p in data if str(p.get("cert_type")).startswith("20x")
-          and str(p.get("status") or "").startswith("FedRAMP Certified")]
-    pmo = sum(1 for p in tw if PMO_20X & set(p.get("agency_authorizations") or []))
-    if tw and pmo < 0.5 * len(tw):
-        alt = Counter(a for p in tw for a in (p.get("agency_authorizations") or [])).most_common(3)
-        sys.exit(f"build_page: the FedRAMP PMO is listed on only {pmo} of {len(tw)} authorized 20x products "
-                 f"(most common entries: {alt}); the export may have renamed it. Not building.")
+    # The PMO-presence check that stood here (Nov 3 - Nov 11, 2026) is retired: FedRAMP deleted the PMO's
+    # records on Nov 6, so it could never pass again, and agency_skip() now drops the PMO and, on 20x and
+    # Program-path listings, GSA by name, so neither can be counted as an agency ATO.
     return data, digest
 
 
@@ -125,7 +141,7 @@ def timeline(p: dict, rev5: bool) -> dict:
 
 
 def normalise(p: dict, grc: set[str], ai: set[str] | None = None) -> dict:
-    skip = PMO_20X if p.get("cert_type") != "Rev5" else {PMO}
+    skip = agency_skip(p)
     agencies = [a for a in (p.get("agency_authorizations") or []) if a and a not in skip]
     a_kind, a_name = classify_assessor(p.get("independent_assessor") or "")
     assessor = assessor_label(a_name) if a_kind == "3pao" else a_name
@@ -1122,11 +1138,11 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                      f'lists every product\'s impact level as Unknown. Each listing keeps the impact level it carried in '
                      f'the latest earlier export ({ic["filled"]} listings); listings first seen after that stay Unknown.</li>')
     if a.get("gsa_pmo"):
-        carry_li += ('<li><b>The PMO under a new name.</b> From the November 3, 2026 export, the FedRAMP PMO\'s own entry '
-                     'on 20x listings appears as the General Services Administration, the agency FedRAMP sits in. On 20x '
-                     'listings it is treated as the PMO and excluded. GSA as a sponsor of traditional authorizations is '
-                     'counted as an agency, as before. The export gives names, not agency identifiers, so a GSA sponsorship of a 20x '
-                     'product would also be excluded.</li>')
+        carry_li += ('<li><b>GSA on 20x and Program-path listings.</b> The November 3, 2026 export showed the FedRAMP PMO\'s own '
+                     'entry under the name of the General Services Administration, the agency FedRAMP sits in, and the export gives '
+                     'names, not agency identifiers. So on 20x and Program-path listings GSA is not counted as an agency ATO, unless '
+                     'FedRAMP\'s ATO table records one under GSA\'s own agency ID. On traditional Agency-path authorizations GSA counts '
+                     'as an agency, as before.</li>')
     up = a.get("unlisted_pilots") or []
     if up:
         carry_li += ('<li id="unlisted-pilots"><b>20x listings the marketplace no longer shows.</b> FedRAMP\'s old '
@@ -1947,7 +1963,7 @@ def dropped_agency_atos(raw_dir: Path, current: Path, products: list[dict]) -> l
             if p["id"] not in now or p.get("cert_type") == "Rev5":
                 continue
             for ag in p.get("agency_authorizations") or []:
-                if ag and ag not in PMO_20X:
+                if ag and ag not in agency_skip(p):
                     k = (p["id"], agency_key(ag))
                     rec = seen.setdefault(k, {"id": p["id"], "agency": ag, "first": snapshot_date(f)})
                     rec["last"] = snapshot_date(f)
@@ -2391,6 +2407,7 @@ def main() -> None:
     args = ap.parse_args()
 
     load_assessors(args.assessors)
+    load_genuine_gsa(args.ato_ledger)
     products, digest = load_snapshot(args.snapshot)
     snap = snapshot_date(args.snapshot)
     grc_feed = json.loads(args.grc.read_text())
@@ -2415,8 +2432,7 @@ def main() -> None:
     a["unlisted_pilots"] = unlisted_pilots(args.old_feed_20x, products)
     a["dates_carried"] = dates_carried
     a["impact_carried"] = impact_carried
-    a["gsa_pmo"] = any("General Services Administration" in (p.get("agency_authorizations") or [])
-                       for p in products if p.get("cert_type") != "Rev5")
+    a["gsa_pmo"] = any(GSA in (p.get("agency_authorizations") or []) and GSA in agency_skip(p) for p in products)
     a["dropped_atos"] = dropped_agency_atos(args.raw_dir, args.snapshot, products) if args.raw_dir else []
     a["grc_date"] = grc_feed.get("updated") or snap
     checks = {}

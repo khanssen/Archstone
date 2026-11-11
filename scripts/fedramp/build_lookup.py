@@ -112,7 +112,8 @@ def build_listings(products: list[dict], rules: dict, ov: dict) -> list[dict]:
                     corrected[f] = [rec[f], o[f]]
                     rec[f] = o[f]
         case, _ = assign_case(rec)
-        agencies = [a for a in (p.get("agency_authorizations") or []) if a and a != bp.PMO]
+        skip = bp.agency_skip(p)
+        agencies = [a for a in (p.get("agency_authorizations") or []) if a and a not in skip]
         kind, name = bp.classify_assessor(p.get("independent_assessor") or "")
         out.append({
             "id": p["id"],
@@ -1062,6 +1063,7 @@ def main() -> None:
     ap.add_argument("--history-index", type=Path, help="build_history.py index: listings no longer on the marketplace, searchable with their history")
     args = ap.parse_args()
 
+    bp.load_genuine_gsa(args.ato_ledger)
     products, digest = bp.load_snapshot(args.snapshot)
     legacy = bp.apply_legacy(products, bp.load_legacy(args.legacy))
     bp.apply_pmo_dates(products, args.ato_ledger)
