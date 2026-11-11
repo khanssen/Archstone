@@ -72,6 +72,15 @@
         "20x": "DFARS 252.204-7012(b)(2)(ii)(D)",
         "hosted": "DFARS 252.204-7012(b)(2)(ii)(D) · no listing of its own"
       }
+    },
+    {
+      "key": "dod2",
+      "q": "DoD data, Impact Level 2",
+      "cite": {
+        "trad": "DISA IL2 reciprocity PA, Aug 15, 2019 · CC SRG §5.1.1",
+        "20x": "DISA IL2 reciprocity PA, Aug 15, 2019 · silent on 20x Classes",
+        "hosted": "DISA IL2 reciprocity PA · requires a Marketplace listing"
+      }
     }
   ],
   "cases": {
@@ -99,6 +108,10 @@
       "cuiD": [
         "lev",
         "Meets the FedRAMP Moderate baseline the clause names. The clause’s flow-down terms still have to be in the contract."
+      ],
+      "dod2": [
+        "lev",
+        "DISA's blanket IL2 authorization covers FedRAMP Moderate and High listings with US data centers. The DoD mission owner still issues its own ATO; data center location isn't in the marketplace data."
       ]
     },
     "trad_mod": {
@@ -125,6 +138,10 @@
       "cuiD": [
         "lev",
         "Meets the FedRAMP Moderate baseline the clause names. The clause’s flow-down terms still have to be in the contract."
+      ],
+      "dod2": [
+        "lev",
+        "DISA's blanket IL2 authorization covers FedRAMP Moderate listings with US data centers. The DoD mission owner still issues its own ATO; data center location isn't in the marketplace data."
       ]
     },
     "trad_low": {
@@ -151,6 +168,10 @@
       "cuiD": [
         "no",
         "Below the FedRAMP Moderate baseline the clause names."
+      ],
+      "dod2": [
+        "no",
+        "IL2 reciprocity starts at the Moderate baseline."
       ]
     },
     "trad_unknown": {
@@ -177,6 +198,10 @@
       "cuiD": [
         "dec",
         "Depends on the baseline, which the listing doesn’t state. Confirm in the package that it is Moderate or High."
+      ],
+      "dod2": [
+        "dec",
+        "The marketplace no longer gives a baseline for this listing, so whether it meets IL2's Moderate floor can't be confirmed from the listing."
       ]
     },
     "x20_A": {
@@ -203,6 +228,10 @@
       "cuiD": [
         "no",
         "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ],
+      "dod2": [
+        "no",
+        "Class A is a market-entry tier below the Moderate baseline IL2 reciprocity names."
       ]
     },
     "x20_B": {
@@ -229,6 +258,10 @@
       "cuiD": [
         "no",
         "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ],
+      "dod2": [
+        "no",
+        "Class B corresponds to Low; IL2 reciprocity starts at Moderate."
       ]
     },
     "x20_C": {
@@ -255,6 +288,10 @@
       "cuiD": [
         "no",
         "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ],
+      "dod2": [
+        "dec",
+        "DISA's 2019 reciprocity names the FedRAMP Moderate baseline. DISA has not said whether a 20x Class C certification counts; the mission owner decides."
       ]
     },
     "x20_D": {
@@ -281,6 +318,10 @@
       "cuiD": [
         "no",
         "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ],
+      "dod2": [
+        "dec",
+        "DISA's 2019 reciprocity names FedRAMP authorizations at Moderate and above. DISA has not said whether a 20x certification counts; the mission owner decides."
       ]
     },
     "x20_unknown": {
@@ -307,6 +348,10 @@
       "cuiD": [
         "no",
         "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ],
+      "dod2": [
+        "no",
+        "No class assigned; nothing for IL2 reciprocity to rest on."
       ]
     },
     "legacy_ready": {
@@ -333,6 +378,10 @@
       "cuiD": [
         "wait",
         "Nothing to leverage until the listing is authorized."
+      ],
+      "dod2": [
+        "no",
+        "FedRAMP Ready is not an authorization; IL2 reciprocity requires one."
       ]
     },
     "not_certified": {
@@ -359,6 +408,10 @@
       "cuiD": [
         "wait",
         "Nothing to leverage until the listing is authorized."
+      ],
+      "dod2": [
+        "wait",
+        "Not authorized yet. IL2 reciprocity applies once the listing is authorized at Moderate or above."
       ]
     },
     "hosted": {
@@ -385,6 +438,10 @@
       "cuiD": [
         "no",
         "Not established. It would need its own FedRAMP listing, a FedRAMP Moderate equivalency package, or the {host} package showing significant change testing of its addition. The clause’s incident-reporting and forensic duties (paragraphs (c) through (g)) fall on {service}’s own provider, not only on {host}."
+      ],
+      "dod2": [
+        "no",
+        "DISA's IL2 reciprocity applies to offerings listed on the FedRAMP Marketplace; this product has no listing of its own."
       ]
     },
     "x20p_B": {
@@ -411,6 +468,10 @@
       "cuiD": [
         "no",
         "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ],
+      "dod2": [
+        "no",
+        "Class B Pilot corresponds to Low; IL2 reciprocity starts at Moderate."
       ]
     },
     "x20p_C": {
@@ -437,6 +498,40 @@
       "cuiD": [
         "no",
         "Not the Moderate baseline the clause names. No rule maps a 20x class onto it."
+      ],
+      "dod2": [
+        "dec",
+        "A Class C Pilot certification predates CR26 and DISA has not addressed 20x; the mission owner decides."
+      ]
+    },
+    "off_market": {
+      "gate": [
+        "no",
+        "Not on the FedRAMP Marketplace. It was delisted or has left; its history is below."
+      ],
+      "low": [
+        "no",
+        "Not on the marketplace, so nothing here can be leveraged. Earlier status is in the history below."
+      ],
+      "mod": [
+        "no",
+        "Not on the marketplace, so nothing here can be leveraged. Earlier status is in the history below."
+      ],
+      "high": [
+        "no",
+        "Not on the marketplace, so nothing here can be leveraged. Earlier status is in the history below."
+      ],
+      "cuiA": [
+        "no",
+        "Not on the marketplace, so nothing here can be leveraged. Earlier status is in the history below."
+      ],
+      "cuiD": [
+        "no",
+        "Not on the marketplace, so nothing here can be leveraged. Earlier status is in the history below."
+      ],
+      "dod2": [
+        "no",
+        "Not on the marketplace, so nothing here can be leveraged. Earlier status is in the history below."
       ]
     }
   },

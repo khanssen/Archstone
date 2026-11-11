@@ -355,6 +355,22 @@ h1{margin:0;max-width:24ch}
 .ags ul{margin:0;padding-left:1.2em;columns:2 280px;column-gap:var(--s-5)}
 .ags li{font-size:var(--t-small);margin:0 0 4px;break-inside:avoid}
 .ags .ct{margin:var(--s-2) 0 0;font:var(--t-micro)/1.4 var(--mono);color:var(--ink-soft);max-width:none}
+.hx{margin:var(--s-5) 0 0;padding-top:var(--s-3);border-top:1px solid var(--rule)}
+.hx h3{margin:var(--s-4) 0 var(--s-2);font-size:var(--t-body)}
+.hx h3:first-child{margin-top:0}
+.hx .ct{margin:var(--s-1) 0 var(--s-2);font:var(--t-micro)/1.4 var(--mono);color:var(--ink-soft);max-width:none}
+.hx table{width:100%;border-collapse:collapse;font-size:var(--t-small)}
+.hx th,.hx td{text-align:left;vertical-align:top;padding:6px var(--s-2) 6px 0;border-bottom:1px solid var(--rule)}
+.hx th{font-weight:600;color:var(--ink-soft);width:38%}
+.hx td.v{word-break:break-word}
+.hx .flag{margin:var(--s-2) 0;padding:var(--s-2) var(--s-3);border-left:3px solid currentColor;font-size:var(--t-small)}
+.hx ol.tl{list-style:none;margin:0;padding:0}
+.hx ol.tl li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:var(--s-2);padding:5px 0;border-bottom:1px solid var(--rule);font-size:var(--t-small)}
+.hx ol.tl li.st{font-weight:600}
+.hx ol.tl .d{font-family:var(--mono);font-size:var(--t-micro);color:var(--ink-soft);padding-top:2px}
+.hx .src{font-family:var(--mono);font-size:var(--t-micro);color:var(--ink-soft)}
+.hx details{margin:var(--s-2) 0}
+.hx summary{cursor:pointer;font-size:var(--t-small)}
 .fn{margin:var(--s-4) 0 0;padding-top:var(--s-3);border-top:1px solid var(--rule);display:grid;gap:var(--s-2)}
 .fn p{margin:0;font-size:var(--t-small);color:var(--ink-soft);max-width:none}
 .fn b{color:var(--ink)}
@@ -444,6 +460,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
             <option value="ip">In process</option>
             <option value="ii">Initial implementation</option>
             <option value="ready">Legacy FedRAMP Ready</option>
+            <option value="off">Off the marketplace (history only)</option>
           </select>
           <label class="ck"><input id="lk-cui" type="checkbox"> Meets DFARS 7012 for CUI</label>
         </div>
@@ -518,13 +535,14 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
   }
   function statusGroup(s) {
     if (s === 'Hosted service') return 'hosted';
+    if (s === 'Not on the marketplace') return 'off';
     if (s.indexOf('FedRAMP Certified') === 0) return 'cert';
     if (s === 'Legacy FedRAMP Ready') return 'ready';
     if (s === 'Initial Implementation') return 'ii';
     return 'ip';
   }
   function shortStatus(s) {
-    return { cert: 'Certified', ready: 'Legacy Ready', ii: 'Initial implementation', ip: 'In process', hosted: 'No listing of its own' }[statusGroup(s)];
+    return { cert: 'Certified', ready: 'Legacy Ready', ii: 'Initial implementation', ip: 'In process', hosted: 'No listing of its own', off: 'Off the marketplace' }[statusGroup(s)];
   }
   function lg(r, k) {
     return r.lg && r.lg.indexOf(k) >= 0 && DATA.legacy
@@ -762,6 +780,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       (!h && r.ag.length ? '<section class="ags" id="lk-ag" aria-label="Agency authorizations"><h3>Agency ATOs (' + r.ag.length + ')' + lg(r, 'ag') + '</h3><ul>' +
         r.ag.map(function (i) { return DATA.agencies[i]; }).sort().map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') +
         '</ul><p class="ct">' + (lg(r, 'ag') ? 'Agencies the marketplace listed as having authorized this offering in its ' + esc(DATA.legacy.human) + ' export, other than the FedRAMP PMO. The current export lists none.' : 'Agencies the marketplace lists as having authorized this offering, other than the FedRAMP PMO.') + '</p></section>' : '') +
+      (h ? '' : '<section class="hx" id="lk-hx" aria-label="History and details"><p class="ct">Loading this listing\u2019s history\u2026</p></section>') +
       '<div class="fn">' +
         '<p><b>A ✓ is a starting point, not a permission.</b> For federal data and agency CUI, the agency still categorizes its own system, runs RMF and issues its own ATO. DFARS 7012 has no agency ATO step, so for DoD contractors the listing’s status is the bar itself.</p>' +
         (r.lg && r.lg.length && DATA.legacy ? '<p id="lk-lg"><b>* Kept from FedRAMP\u2019s earlier data.</b> ' +
@@ -771,6 +790,120 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       '</div>';
     card.hidden = false;
     empty.hidden = true;
+    if (!h) loadHistory(r);
+  }
+
+
+  var SRC = { export: 'marketplace export', old_feed: 'FedRAMP’s old feed', status_log: 'FedRAMP status changelog',
+              table: 'FedRAMP ATO table', legacy: 'FedRAMP’s old feed', former_dependents: 'former Dependent Products list' };
+  var FIELD = { csp: 'Provider', cso: 'Offering', status: 'Status', phase: 'Phase', cert_type: 'Track', cert_path: 'Path',
+    cert_class: 'Class', impact_level: 'Impact level', independent_assessor: 'Assessor', partnering_agency: 'Sponsor',
+    annual_assessment: 'Annual assessment', cert_date: 'Certified date', status_date: 'Status date', service_model: 'Service model',
+    deployment_model: 'Deployment model', business_categories: 'Business categories', uei: 'UEI', small_business: 'Small business',
+    under_cap: 'Under corrective action', fedramp_msg: 'FedRAMP’s listing message', website: 'Website',
+    trust_center: 'Trust center', independent_assessor_id: 'Assessor ID' };
+  function val(v) {
+    if (v === null || v === undefined || v === '') return '—';
+    if (Array.isArray(v)) return v.map(function (x) { return typeof x === 'object' ? (x.serviceName || x.name || JSON.stringify(x)) : x; }).join(', ');
+    if (typeof v === 'boolean') return v ? 'Yes' : 'No';
+    if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}/.test(v)) return fmtDate(v.slice(0, 10)) || v;
+    return String(v);
+  }
+  function link(id, label) {
+    return byId[id] ? '<button type="button" class="lnk" data-go="' + esc(id) + '">' + esc(label || byId[id].n) + '</button>'
+      : esc(label || id);
+  }
+  function loadHistory(r) {
+    var box = document.getElementById('lk-hx');
+    if (!box) return;
+    fetch('l/' + encodeURIComponent(r.id.replace(/[^A-Za-z0-9_-]/g, '_')) + '.json?v=' + DATA.snapshot).then(function (res) {
+      if (!res.ok) throw new Error(res.status);
+      return res.json();
+    }).then(function (x) {
+      if (!selected || selected.id !== r.id) return;
+      box.innerHTML = renderHistory(x);
+    }).catch(function () {
+      box.innerHTML = '<p class="ct">No history file for this listing yet.</p>';
+    });
+  }
+  function renderHistory(x) {
+    var out = [];
+    var cur = x.current;
+    if (cur) {
+      var keys = ['status', 'phase', 'cert_type', 'cert_path', 'cert_class', 'cert_date', 'status_date', 'independent_assessor',
+                  'service_model', 'deployment_model', 'business_categories', 'uei', 'small_business', 'under_cap', 'website', 'trust_center'];
+      out.push('<h3>As FedRAMP reports it today</h3><p class="ct">Marketplace export of ' + esc(DATA.snapshotHuman) + '. Empty fields are left out.</p><table>' +
+        keys.filter(function (k) { var v = cur[k]; return !(v === null || v === undefined || v === '' || v === 'Unknown' || (Array.isArray(v) && !v.length)); })
+          .map(function (k) { return '<tr><th>' + esc(FIELD[k] || k) + '</th><td class="v">' + esc(val(cur[k])) + '</td></tr>'; }).join('') + '</table>');
+    } else {
+      out.push('<h3>Not on the marketplace</h3><p class="ct">This listing is not in today’s marketplace export. What FedRAMP last published about it is below.</p>');
+    }
+    var kept = Object.keys(x.kept || {});
+    if (kept.length) {
+      out.push('<h3>Kept from earlier FedRAMP data<sup class="lg">*</sup></h3><p class="ct">' +
+        (cur ? 'Fields today’s export leaves empty. ' : '') + 'Each value is the last one FedRAMP published, with the source and the last date it was shown.</p><table>' +
+        kept.map(function (k) { var v = x.kept[k];
+          return '<tr><th>' + esc(v.label || FIELD[k] || k) + '<sup class="lg">*</sup></th><td class="v">' + esc(val(v.value)) +
+            ' <span class="src">' + esc(SRC[v.source] || v.source) + ', until ' + esc(fmtDate(v.shown_until) || v.shown_until) + '</span></td></tr>'; }).join('') + '</table>');
+    }
+    var rel = x.relationships;
+    if (rel) {
+      (rel.flags || []).forEach(function (f) { out.push('<p class="flag">' + esc(f.text) + '</p>'); });
+      var on = (rel.built_on || []).filter(function (b) { return b.certified; });
+      var unc = (rel.built_on || []).filter(function (b) { return !b.certified; });
+      if (on.length || unc.length) {
+        out.push('<h3>Built on</h3><p class="ct">What this listing declares inside its minimum assessment scope. Using a certified platform does not put this product inside that platform’s authorization.</p><table>' +
+          on.map(function (b) {
+            return '<tr><th>' + (b.id ? link(b.id, byId[b.id] ? null : (b.as_declared || b.id)) : esc(b.as_declared)) + '</th><td class="v">' +
+              (b.source === 'former_dependents' ? '<span class="src">from that listing’s former Dependent Products list</span>' : esc(b.use || '')) +
+              (b.id && !byId[b.id] ? ' <span class="src">not on the marketplace</span>' : '') + '</td></tr>'; }).join('') +
+          unc.map(function (b) { return '<tr><th>' + esc(b.as_declared) + '</th><td class="v"><span class="src">not FedRAMP Certified' + (b.provider ? ', ' + esc(b.provider) : '') + '</span> ' + esc(b.use || '') + '</td></tr>'; }).join('') +
+          '</table>');
+      }
+      var used = rel.used_by || [];
+      if (used.length) {
+        out.push('<details><summary><b>Used by ' + used.length + ' other listing' + (used.length === 1 ? '' : 's') + '</b></summary><ul class="ags">' +
+          used.map(function (u) { return '<li>' + link(u.id) + (u.source === 'former_dependents' ? ' <span class="src">former Dependent Products list</span>' : '') + '</li>'; }).join('') + '</ul></details>');
+      }
+      var hosted = rel.hosts || [];
+      if (hosted.length) {
+        out.push('<details><summary><b>Hosts ' + hosted.length + ' product' + (hosted.length === 1 ? '' : 's') + ' inside its package</b></summary><ul class="ags">' +
+          hosted.map(function (h2) { return '<li>' + esc(h2.name) + (h2.provider ? ' <span class="src">' + esc(h2.provider) + '</span>' : '') + (h2.own_listing ? ' · ' + link(h2.own_listing, 'own listing') : '') + '</li>'; }).join('') + '</ul></details>');
+      }
+      (rel.hosted_in || []).forEach(function (hi) { out.push('<p class="flag">Also runs inside ' + link(hi.id) + '’s package as “' + esc(hi.name) + '”.</p>'); });
+    }
+    var atos = (x.atos || []).filter(function (a) { return !a.pmo; });
+    var pmo = (x.atos || []).filter(function (a) { return a.pmo; });
+    if (atos.length || pmo.length) {
+      var gone = atos.filter(function (a) { return a.state === 'gone'; });
+      out.push('<details' + (gone.length ? ' open' : '') + '><summary><b>Agency ATOs on record: ' + atos.length + '</b>' +
+        (gone.length ? ' · ' + gone.length + ' no longer published<sup class="lg">*</sup>' : '') + '</summary><table>' +
+        atos.map(function (a) {
+          var srcs = Object.keys(a.sources).map(function (k) { var s = a.sources[k]; return (SRC[k] || k) + ' ' + (fmtDate(s.first) || s.first) + '–' + (fmtDate(s.last) || s.last); });
+          return '<tr><th>' + esc(a.agency) + (a.state === 'gone' ? '<sup class="lg">*</sup>' : '') + '</th><td class="v">' +
+            ({ published: 'Published', as_parent: 'Published under its parent department', inactive: 'In FedRAMP\u2019s ATO table, marked inactive', gone: 'No longer published' }[a.state] || 'No longer published') +
+            ' <span class="src">' + esc(srcs.join('; ')) + '</span></td></tr>'; }).join('') + '</table>' +
+        (pmo.length ? '<p class="ct">FedRAMP’s data also recorded the FedRAMP PMO itself as an authorizer of this listing until it deleted those records on November 6, 2026.</p>' : '') + '</details>');
+    }
+    var tl = (x.timeline || []).slice().reverse();
+    if (tl.length) {
+      var status = tl.filter(function (e) { return e.kind === 'status' || e.kind === 'listing'; });
+      var other = tl.filter(function (e) { return e.kind !== 'status' && e.kind !== 'listing'; });
+      var item = function (e) {
+        var t;
+        if (e.kind === 'status') t = (e.from ? esc(e.from) + ' → ' : '') + esc(e.to) + (e.track ? ' <span class="src">' + esc([e.track, e.path, e.class].filter(Boolean).join(' · ')) + '</span>' : '');
+        else if (e.kind === 'listing') t = esc(e.text);
+        else if (e.kind === 'ato') t = (e.pmo ? 'FedRAMP PMO' : esc(e.agency)) + ' ATO ' + esc(e.text);
+        else t = esc(e.label || e.field) + ': ' + (e.from !== null && e.from !== undefined ? esc(val(e.from)) + ' → ' : '') + (e.to === null ? '<i>emptied</i>' : esc(val(e.to)));
+        return '<li class="' + (e.kind === 'status' ? 'st' : '') + '"><span class="d">' + esc(fmtDate(e.date) || e.date) + '</span><span>' + t +
+          ' <span class="src">' + esc(SRC[e.source] || e.source) + '</span></span></li>';
+      };
+      out.push('<h3>Timeline</h3><p class="ct">Status changes back to ' + esc((status[status.length - 1] || tl[tl.length - 1]).date.slice(0, 4)) +
+        ', newest first. FedRAMP backfilled much of its status changelog in October 2026, so older dates are as FedRAMP recorded them.</p><ol class="tl">' +
+        status.map(item).join('') + '</ol>');
+      if (other.length) out.push('<details><summary>' + other.length + ' field and ATO changes</summary><ol class="tl">' + other.map(item).join('') + '</ol></details>');
+    }
+    return out.join('');
   }
 
   function select(id, opts) {
@@ -926,6 +1059,7 @@ def main() -> None:
     ap.add_argument("--raw-dir", type=Path, help="earlier snapshots, to keep certification dates the export has dropped")
     ap.add_argument("--legacy", type=Path, help="frozen traditional fields from freeze_legacy.py (data/fedramp/legacy/)")
     ap.add_argument("--ato-ledger", type=Path, help="data/fedramp/ato-ledger.json, for the PMO's own authorization dates")
+    ap.add_argument("--history-index", type=Path, help="build_history.py index: listings no longer on the marketplace, searchable with their history")
     args = ap.parse_args()
 
     products, digest = bp.load_snapshot(args.snapshot)
@@ -944,6 +1078,16 @@ def main() -> None:
     listings = build_listings(products, rules, ov)
     hosted = add_services(products, listings, json.loads(args.hosted.read_text(encoding="utf-8")))
     add_flags(products, listings, snap)
+    if args.history_index and args.history_index.exists():
+        for o in json.loads(args.history_index.read_text(encoding="utf-8"))["off_marketplace"]:
+            if not (o.get("n") or o.get("p")):
+                continue
+            t = o.get("track") or ""
+            listings.append({"id": o["id"], "p": o.get("p") or "", "n": o.get("n") or o["id"], "pk": bp.provider_key(o.get("p") or ""),
+                             "t": t, "tl": track_label(t) if t else "Unknown", "tk": "trad" if is_trad(t) or not t else "20x",
+                             "s": "Not on the marketplace", "c": "", "i": "", "path": "", "d": "", "ag": [], "a": "",
+                             "case": "off_market", "cui": False, "gone": o.get("last_date") or "",
+                             **({"was": o["last_status"]} if o.get("last_status") else {})})
 
     # Agencies repeat across hundreds of listings; send each name once and index it.
     agencies = sorted({a for r in listings for a in r["ag"]})

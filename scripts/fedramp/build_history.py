@@ -52,6 +52,8 @@ LABELS = {
 
 
 def empty(v) -> bool:
+    if isinstance(v, bool):
+        return False
     return v in (None, "", "Unknown", "N/A", "Not Active", [], {}, "0", 0)
 
 
@@ -100,6 +102,8 @@ def main() -> None:
         r = rec(pid)
         src(r, "old_feed", h["first"]); src(r, "old_feed", h["last"])
         for field, vals in h["fields"].items():
+            if field == "leveraged_systems":      # the old dependents lists; the graph carries them
+                continue
             prev = None
             for v in vals:
                 if v["value"] != prev:
@@ -164,9 +168,12 @@ def main() -> None:
                 r["names"].setdefault(k, p[k])
     for e in led["atos"]:
         r = rec(e["product_id"])
-        r["atos"].append({k: e[k] for k in ("agency_key", "agency", "pmo", "published_now") if k in e}
+        t = e["sources"].get("table") or {}
+        state = ("published" if e.get("published_now") else "as_parent" if e.get("published_as_parent")
+                 else "inactive" if t and t.get("last") == last.get("table") and not t.get("active") else "gone")
+        r["atos"].append({k: e[k] for k in ("agency_key", "agency", "pmo", "published_now") if k in e} | {"state": state}
                          | ({"published_as_parent": True} if e.get("published_as_parent") else {})
-                         | {"sources": e["sources"]})
+                         | {"sources": {k: {f: v for f, v in s.items() if f != "uuids"} for k, s in e["sources"].items()}})
         for s, v in e["sources"].items():
             r["timeline"].append({"date": v["first"], "kind": "ato", "source": s, "agency": e["agency"],
                                   "pmo": e.get("pmo", False), "text": "first shown"})
@@ -176,7 +183,7 @@ def main() -> None:
 
     # 5. Kept fields: today's export leaves them empty (or the listing is gone) and an earlier
     #    source carried them. Old feed first (field by field), then the last export that had a value.
-    tracked_feed = {f for h in feed["listings"].values() for f in h["fields"]}
+    tracked_feed = {f for h in feed["listings"].values() for f in h["fields"]} - {"leveraged_systems"}
     for pid, r in L.items():
         cur = r["current"] or {}
         for field in sorted(set(TRACKED) | tracked_feed):
