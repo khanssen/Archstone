@@ -780,12 +780,14 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       '<div class="ch" role="table" aria-label="What this listing supports">' + rows + '</div>' +
       (!h && r.ag.length ? '<section class="ags" id="lk-ag" aria-label="Agency authorizations"><h3>Agency ATOs (' + r.ag.length + ')' + lg(r, 'ag') + '</h3><ul>' +
         r.ag.map(function (i) { return DATA.agencies[i]; }).sort().map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') +
-        '</ul><p class="ct">' + (lg(r, 'ag') ? 'Agencies the marketplace listed as having authorized this offering in its ' + esc(DATA.legacy.human) + ' export, other than the FedRAMP PMO. The current export lists none.' : 'Agencies the marketplace lists as having authorized this offering, other than the FedRAMP PMO.') + '</p></section>' : '') +
+        '</ul><p class="ct">' + (lg(r, 'ag') ? (r.tk === 'trad' ? 'Agencies the marketplace listed as having authorized this offering in its ' + esc(DATA.legacy.human) + ' export, other than the FedRAMP PMO. The current export lists none.' : 'Agencies FedRAMP has recorded as authorizing this offering, other than the FedRAMP PMO, including ATOs its current export no longer shows. The history below says which.') : 'Agencies the marketplace lists as having authorized this offering, other than the FedRAMP PMO.') + '</p></section>' : '') +
       (h ? '' : '<section class="hx" id="lk-hx" aria-label="History and details"><p class="ct">Loading this listing\u2019s history\u2026</p></section>') +
       '<div class="fn">' +
         '<p><b>A ✓ is a starting point, not a permission.</b> For federal data and agency CUI, the agency still categorizes its own system, runs RMF and issues its own ATO. DFARS 7012 has no agency ATO step, so for DoD contractors the listing’s status is the bar itself.</p>' +
         (r.lg && r.lg.length && DATA.legacy ? '<p id="lk-lg"><b>* Kept from FedRAMP\u2019s earlier data.</b> ' +
-          (r.lg.filter(function (k) { return k !== 'pd'; }).length ? 'From November 3, 2026 the marketplace export stopped publishing impact levels and sponsors for traditional authorizations and dropped the agency ATO list from many of them, without notice. Where the current export has nothing, this listing keeps the value from the ' + esc(DATA.legacy.human) + ' export, the last complete one (<code>' + esc(DATA.legacy.file) + '</code>, SHA-256 <code>' + esc(DATA.legacy.sha256.slice(0, 12)) + '</code>). ' : '') +
+          (r.lg.filter(function (k) { return k !== 'pd'; }).length ? (r.tk === 'trad'
+            ? 'From November 3, 2026 the marketplace export stopped publishing impact levels and sponsors for traditional authorizations and dropped the agency ATO list from many of them, without notice. Where the current export has nothing, this listing keeps the value from the ' + esc(DATA.legacy.human) + ' export, the last complete one (<code>' + esc(DATA.legacy.file) + '</code>, SHA-256 <code>' + esc(DATA.legacy.sha256.slice(0, 12)) + '</code>). '
+            : 'From November 3, 2026 the marketplace export stopped showing some agency ATOs on 20x listings, without notice. Agency ATOs marked * are ones FedRAMP recorded for this listing earlier (in its old marketplace feed or earlier exports) and no longer publishes; the history below gives the dates. ') : '') +
           (r.lg.indexOf('pd') >= 0 ? 'The PMO authorization date is the FedRAMP PMO\u2019s own authorization of this listing, which FedRAMP\u2019s ATO table recorded until it deleted the PMO\u2019s records on November 6, 2026.' : '') + '</p>' : '') +
         '<p>DoD Impact Levels (IL2–IL5) are a separate DISA authorization and aren’t covered here. Listings are shown as the marketplace lists them, as of ' + esc(DATA.snapshotHuman) + ', unless marked as corrected or with *.</p>' +
       '</div>';
@@ -1067,6 +1069,7 @@ def main() -> None:
     products, digest = bp.load_snapshot(args.snapshot)
     legacy = bp.apply_legacy(products, bp.load_legacy(args.legacy))
     bp.apply_pmo_dates(products, args.ato_ledger)
+    bp.apply_ledger_20x(products, args.ato_ledger)
     if args.raw_dir:
         bp.carry_dates(args.raw_dir, args.snapshot, products)
         bp.carry_impact(args.raw_dir, args.snapshot, products)
