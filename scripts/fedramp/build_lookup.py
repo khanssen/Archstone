@@ -134,7 +134,11 @@ def build_listings(products: list[dict], rules: dict, ov: dict) -> list[dict]:
             "case": case,
             "cui": rules["cases"][case]["cuiD"][0] == "lev",
             # Fields taken from the frozen Nov 2 record (i = impact level, ag = agency ATOs), marked * on the page.
-            **({"lg": [k for f, k in (("impact_level", "i"), ("agency_authorizations", "ag"))
+            **({"sp": p["partnering_agency"]} if is_trad(rec["cert_type"]) and isinstance(p.get("partnering_agency"), str)
+               and p.get("partnering_agency") else {}),
+            **({"pd": p["pmo_auth_date"]} if p.get("pmo_auth_date") else {}),
+            **({"lg": [k for f, k in (("impact_level", "i"), ("agency_authorizations", "ag"),
+                                      ("partnering_agency", "sp"), ("pmo_auth_date", "pd"))
                        if f in p["_legacy"] and not (f == "impact_level" and "impact_level" in corrected)]}
                if p.get("_legacy") else {}),
             **({"ov": {"fields": corrected, "note": o["note"]}} if o else {}),
@@ -734,8 +738,8 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       ['Track', esc(r.tl)],
       [r.tk === 'trad' ? 'Impact level' : 'Class', esc(levelText(r)) + (r.tk === 'trad' ? lg(r, 'i') : '') + (r.tk === 'trad' && r.c ? '<small>labeled ' + esc(r.c) + '</small>' : '')],
       ['Status', esc(r.s || '—')],
-      ['Certified', esc(fmtDate(r.d) || '—')],
-      ['Path', esc(r.path || '—')],
+      ['Certified', esc(fmtDate(r.d) || '—') + (r.pd ? '<small>PMO authorization ' + esc(fmtDate(r.pd)) + lg(r, 'pd') + '</small>' : '')],
+      ['Path', esc(r.path || '—') + (r.sp ? '<small>sponsor: ' + esc(r.sp) + lg(r, 'sp') + '</small>' : '')],
       ['Agency ATOs', r.ag.length ? r.ag.length + lg(r, 'ag') + '<small><a href="#lk-ag">listed below</a></small>' : '0'],
       ['Assessor', esc(r.a || 'None listed')],
       ['Marketplace ID', '<a href="' + MARKET + encodeURIComponent(r.id) + '/" rel="noopener">' + esc(r.id) + '</a>']
@@ -760,7 +764,9 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
         '</ul><p class="ct">' + (lg(r, 'ag') ? 'Agencies the marketplace listed as having authorized this offering in its ' + esc(DATA.legacy.human) + ' export, other than the FedRAMP PMO. The current export lists none.' : 'Agencies the marketplace lists as having authorized this offering, other than the FedRAMP PMO.') + '</p></section>' : '') +
       '<div class="fn">' +
         '<p><b>A ✓ is a starting point, not a permission.</b> For federal data and agency CUI, the agency still categorizes its own system, runs RMF and issues its own ATO. DFARS 7012 has no agency ATO step, so for DoD contractors the listing’s status is the bar itself.</p>' +
-        (r.lg && r.lg.length && DATA.legacy ? '<p id="lk-lg"><b>* Kept from the ' + esc(DATA.legacy.human) + ' export.</b> From November 3, 2026 the marketplace export stopped publishing impact levels for traditional authorizations and dropped the agency ATO list from many of them, without notice. Where the current export has nothing, this listing keeps the value from the ' + esc(DATA.legacy.human) + ' export, the last complete one (<code>' + esc(DATA.legacy.file) + '</code>, SHA-256 <code>' + esc(DATA.legacy.sha256.slice(0, 12)) + '</code>).</p>' : '') +
+        (r.lg && r.lg.length && DATA.legacy ? '<p id="lk-lg"><b>* Kept from FedRAMP\u2019s earlier data.</b> ' +
+          (r.lg.filter(function (k) { return k !== 'pd'; }).length ? 'From November 3, 2026 the marketplace export stopped publishing impact levels and sponsors for traditional authorizations and dropped the agency ATO list from many of them, without notice. Where the current export has nothing, this listing keeps the value from the ' + esc(DATA.legacy.human) + ' export, the last complete one (<code>' + esc(DATA.legacy.file) + '</code>, SHA-256 <code>' + esc(DATA.legacy.sha256.slice(0, 12)) + '</code>). ' : '') +
+          (r.lg.indexOf('pd') >= 0 ? 'The PMO authorization date is the FedRAMP PMO\u2019s own authorization of this listing, which FedRAMP\u2019s ATO table recorded until it deleted the PMO\u2019s records on November 6, 2026.' : '') + '</p>' : '') +
         '<p>DoD Impact Levels (IL2–IL5) are a separate DISA authorization and aren’t covered here. Listings are shown as the marketplace lists them, as of ' + esc(DATA.snapshotHuman) + ', unless marked as corrected or with *.</p>' +
       '</div>';
     card.hidden = false;
@@ -919,10 +925,12 @@ def main() -> None:
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--raw-dir", type=Path, help="earlier snapshots, to keep certification dates the export has dropped")
     ap.add_argument("--legacy", type=Path, help="frozen traditional fields from freeze_legacy.py (data/fedramp/legacy/)")
+    ap.add_argument("--ato-ledger", type=Path, help="data/fedramp/ato-ledger.json, for the PMO's own authorization dates")
     args = ap.parse_args()
 
     products, digest = bp.load_snapshot(args.snapshot)
     legacy = bp.apply_legacy(products, bp.load_legacy(args.legacy))
+    bp.apply_pmo_dates(products, args.ato_ledger)
     if args.raw_dir:
         bp.carry_dates(args.raw_dir, args.snapshot, products)
         bp.carry_impact(args.raw_dir, args.snapshot, products)

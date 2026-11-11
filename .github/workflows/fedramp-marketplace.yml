@@ -170,6 +170,8 @@ jobs:
             --history data/fedramp/history.csv \
             --raw-dir data/fedramp/raw \
             --legacy data/fedramp/legacy/rev5-legacy-2026-11-02.json \
+            --ato-ledger data/fedramp/ato-ledger.json \
+            --old-feed-20x data/fedramp/legacy/20x-old-feed-listings.json \
             --dropped-checks data/fedramp/dropped-checks.json \
             --feature-target fedramp.html \
             --checked "$CHECKED"
@@ -186,6 +188,7 @@ jobs:
             --nav-source index.html \
             --raw-dir data/fedramp/raw \
             --legacy data/fedramp/legacy/rev5-legacy-2026-11-02.json \
+            --ato-ledger data/fedramp/ato-ledger.json \
             --out fedramp-lookup
 
       - name: Compare with the previous snapshot

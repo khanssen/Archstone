@@ -1127,6 +1127,14 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                      'listings it is treated as the PMO and excluded. GSA as a sponsor of traditional authorizations is '
                      'counted as an agency, as before. The export gives names, not agency identifiers, so a GSA sponsorship of a 20x '
                      'product would also be excluded.</li>')
+    up = a.get("unlisted_pilots") or []
+    if up:
+        carry_li += ('<li id="unlisted-pilots"><b>20x listings the marketplace no longer shows.</b> FedRAMP\'s old '
+                     'marketplace feed, which stopped changing on November 3, 2026, labeled these with a 20x level; '
+                     'today\'s export does not list them, and they are not counted on this page: '
+                     + "; ".join(f'{esc(r["cso"])} ({esc(r["csp"])}, {esc(r["level"])}'
+                                 + (f', PMO authorization {fmt_date(r["pmo_auth_date"])}' if r.get("pmo_auth_date") else "")
+                                 + f', in the feed until {fmt_date(r["last"])})' for r in up) + '.</li>')
     lg = a.get("legacy")
     if lg and (lg["impact_level"] or lg["agency_authorizations"]):
         carry_li += (f'<li id="legacy-fields"><b>Traditional fields FedRAMP stopped publishing<sup class="lg">*</sup>.</b> '
@@ -1882,6 +1890,39 @@ def apply_legacy(products: list[dict], legacy: dict | None) -> dict | None:
     return out
 
 
+def apply_pmo_dates(products: list[dict], ledger_path: Path | None) -> int:
+    """Program-path and 20x listings: the date the PMO itself authorized them, from the ATO ledger.
+
+    FedRAMP's ATO table recorded the PMO (agency 22-092) as issuing an "Initial Authorization" on each
+    of these until it deleted those records on Nov 6, 2026; the old marketplace feed carried the same
+    date until Nov 3. The ledger keeps both. The value is marked like any other kept field."""
+    if not ledger_path or not ledger_path.exists():
+        return 0
+    led = json.loads(ledger_path.read_text(encoding="utf-8"))
+    dates = {}
+    for e in led.get("atos", []):
+        if e.get("pmo"):
+            s = e["sources"]
+            d = (s.get("table") or {}).get("ato_date") or (s.get("legacy") or {}).get("ato_date") or ""
+            if d:
+                dates[e["product_id"]] = d[:10]
+    n = 0
+    for p in products:
+        if p["id"] in dates and (p.get("cert_path") == "Program" or p.get("cert_type") != "Rev5"):
+            p["pmo_auth_date"] = dates[p["id"]]
+            p["_legacy"] = list(p.get("_legacy") or []) + ["pmo_auth_date"]
+            n += 1
+    return n
+
+
+def unlisted_pilots(path: Path | None, products: list[dict]) -> list[dict]:
+    """20x listings in FedRAMP's old feed (frozen record) that today's export does not list."""
+    if not path or not path.exists():
+        return []
+    ids = {p["id"] for p in products}
+    return [r for r in json.loads(path.read_text(encoding="utf-8"))["pilots"] if r["id"] not in ids]
+
+
 def agency_key(name: str) -> str:
     """Match agency names across exports: the Nov 3, 2026 export drops the "U.S." prefix."""
     n = " ".join(name.split())
@@ -2344,6 +2385,8 @@ def main() -> None:
     ap.add_argument("--raw-dir", type=Path, help="directory of earlier snapshots, to find listings removed since")
     ap.add_argument("--dropped-checks", type=Path, help="product-page checks from check_dropped.py (optional)")
     ap.add_argument("--legacy", type=Path, help="frozen traditional fields from freeze_legacy.py (data/fedramp/legacy/)")
+    ap.add_argument("--ato-ledger", type=Path, help="data/fedramp/ato-ledger.json, for the PMO's own authorization dates")
+    ap.add_argument("--old-feed-20x", type=Path, help="data/fedramp/legacy/20x-old-feed-listings.json")
     ap.add_argument("--checked", help="date the marketplace was last checked (YYYY-MM-DD); defaults to the snapshot date")
     args = ap.parse_args()
 
@@ -2357,6 +2400,7 @@ def main() -> None:
         ai_feed = json.loads(args.ai.read_text())
         ai = {provider_key(s) for s in ai_feed["providers"]}
     legacy = apply_legacy(products, load_legacy(args.legacy))
+    apply_pmo_dates(products, args.ato_ledger)
     carried = carry_categories(args.raw_dir, args.snapshot, products) if args.raw_dir else None
     dates_carried = carry_dates(args.raw_dir, args.snapshot, products) if args.raw_dir else None
     impact_carried = carry_impact(args.raw_dir, args.snapshot, products) if args.raw_dir else None
@@ -2368,6 +2412,7 @@ def main() -> None:
     a["checked"] = args.checked or snap
     a["carried"] = carried
     a["legacy"] = legacy
+    a["unlisted_pilots"] = unlisted_pilots(args.old_feed_20x, products)
     a["dates_carried"] = dates_carried
     a["impact_carried"] = impact_carried
     a["gsa_pmo"] = any("General Services Administration" in (p.get("agency_authorizations") or [])
