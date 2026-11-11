@@ -133,6 +133,10 @@ def build_listings(products: list[dict], rules: dict, ov: dict) -> list[dict]:
             "a": bp.assessor_label(name) if kind == "3pao" else name,
             "case": case,
             "cui": rules["cases"][case]["cuiD"][0] == "lev",
+            # Fields taken from the frozen Nov 2 record (i = impact level, ag = agency ATOs), marked * on the page.
+            **({"lg": [k for f, k in (("impact_level", "i"), ("agency_authorizations", "ag"))
+                       if f in p["_legacy"] and not (f == "impact_level" and "impact_level" in corrected)]}
+               if p.get("_legacy") else {}),
             **({"ov": {"fields": corrected, "note": o["note"]}} if o else {}),
             **({"dis": disclosures[p["id"]]} if p["id"] in disclosures else {}),
         })
@@ -309,6 +313,7 @@ h1{margin:0;max-width:24ch}
 .cd-hd{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--s-2) var(--s-4);align-items:baseline}
 .cd-hd h2{margin:0;font-size:26px;overflow-wrap:anywhere}
 .cd-hd .by{margin:var(--s-1) 0 0;color:var(--ink-soft)}
+.lg{color:inherit;text-decoration:none;font-weight:600;margin-left:1px;vertical-align:super;font-size:.75em;line-height:0}
 .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:8px;overflow:hidden;margin:var(--s-4) 0 0}
 @media (max-width:1100px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .facts div{background:var(--paper);padding:10px 12px;min-width:0}
@@ -517,6 +522,10 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
   function shortStatus(s) {
     return { cert: 'Certified', ready: 'Legacy Ready', ii: 'Initial implementation', ip: 'In process', hosted: 'No listing of its own' }[statusGroup(s)];
   }
+  function lg(r, k) {
+    return r.lg && r.lg.indexOf(k) >= 0 && DATA.legacy
+      ? '<a class="lg" href="#lk-lg" title="From the ' + esc(DATA.legacy.human) + ' export" aria-label="From the ' + esc(DATA.legacy.human) + ' export">*</a>' : '';
+  }
   function levelText(r) {
     if (r.kind === 'h') return 'inside ' + byId[r.host].n;
     if (r.tk === 'trad') return r.i || r.c || 'Level not listed';
@@ -605,7 +614,7 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
     var body = rows.map(function (r) {
       var cur = selected && selected.id === r.id ? 'true' : 'false';
       var h = r.kind === 'h' ? byId[r.host] : null;
-      var ag = h ? '—' : String(r.ag.length);
+      var ag = h ? '—' : String(r.ag.length) + lg(r, 'ag');
       var flags = (r.fl || []).map(function (f) {
         return '<span class="fl' + (f.indexOf('Also listed') === 0 ? ' also' : '') + '">' + esc(f) + '</span>';
       }).join('');
@@ -723,11 +732,11 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       ['Host marketplace ID', '<a href="' + MARKET + encodeURIComponent(h.id) + '/" rel="noopener">' + esc(h.id) + '</a>']
     ] : [
       ['Track', esc(r.tl)],
-      [r.tk === 'trad' ? 'Impact level' : 'Class', esc(levelText(r)) + (r.tk === 'trad' && r.c ? '<small>labeled ' + esc(r.c) + '</small>' : '')],
+      [r.tk === 'trad' ? 'Impact level' : 'Class', esc(levelText(r)) + (r.tk === 'trad' ? lg(r, 'i') : '') + (r.tk === 'trad' && r.c ? '<small>labeled ' + esc(r.c) + '</small>' : '')],
       ['Status', esc(r.s || '—')],
       ['Certified', esc(fmtDate(r.d) || '—')],
       ['Path', esc(r.path || '—')],
-      ['Agency ATOs', r.ag.length ? r.ag.length + '<small><a href="#lk-ag">listed below</a></small>' : '0'],
+      ['Agency ATOs', r.ag.length ? r.ag.length + lg(r, 'ag') + '<small><a href="#lk-ag">listed below</a></small>' : '0'],
       ['Assessor', esc(r.a || 'None listed')],
       ['Marketplace ID', '<a href="' + MARKET + encodeURIComponent(r.id) + '/" rel="noopener">' + esc(r.id) + '</a>']
     ];
@@ -746,12 +755,13 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       '<dl class="facts">' + facts.map(function (f) { return '<div><dt>' + f[0] + '</dt><dd>' + f[1] + '</dd></div>'; }).join('') + '</dl>' +
       banners(r) +
       '<div class="ch" role="table" aria-label="What this listing supports">' + rows + '</div>' +
-      (!h && r.ag.length ? '<section class="ags" id="lk-ag" aria-label="Agency authorizations"><h3>Agency ATOs (' + r.ag.length + ')</h3><ul>' +
+      (!h && r.ag.length ? '<section class="ags" id="lk-ag" aria-label="Agency authorizations"><h3>Agency ATOs (' + r.ag.length + ')' + lg(r, 'ag') + '</h3><ul>' +
         r.ag.map(function (i) { return DATA.agencies[i]; }).sort().map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') +
-        '</ul><p class="ct">Agencies the marketplace lists as having authorized this offering, other than the FedRAMP PMO.</p></section>' : '') +
+        '</ul><p class="ct">' + (lg(r, 'ag') ? 'Agencies the marketplace listed as having authorized this offering in its ' + esc(DATA.legacy.human) + ' export, other than the FedRAMP PMO. The current export lists none.' : 'Agencies the marketplace lists as having authorized this offering, other than the FedRAMP PMO.') + '</p></section>' : '') +
       '<div class="fn">' +
         '<p><b>A ✓ is a starting point, not a permission.</b> For federal data and agency CUI, the agency still categorizes its own system, runs RMF and issues its own ATO. DFARS 7012 has no agency ATO step, so for DoD contractors the listing’s status is the bar itself.</p>' +
-        '<p>DoD Impact Levels (IL2–IL5) are a separate DISA authorization and aren’t covered here. Listings are shown as the marketplace lists them, as of ' + esc(DATA.snapshotHuman) + ', unless marked as corrected.</p>' +
+        (r.lg && r.lg.length && DATA.legacy ? '<p id="lk-lg"><b>* Kept from the ' + esc(DATA.legacy.human) + ' export.</b> From November 3, 2026 the marketplace export stopped publishing impact levels for traditional authorizations and dropped the agency ATO list from many of them, without notice. Where the current export has nothing, this listing keeps the value from the ' + esc(DATA.legacy.human) + ' export, the last complete one (<code>' + esc(DATA.legacy.file) + '</code>, SHA-256 <code>' + esc(DATA.legacy.sha256.slice(0, 12)) + '</code>).</p>' : '') +
+        '<p>DoD Impact Levels (IL2–IL5) are a separate DISA authorization and aren’t covered here. Listings are shown as the marketplace lists them, as of ' + esc(DATA.snapshotHuman) + ', unless marked as corrected or with *.</p>' +
       '</div>';
     card.hidden = false;
     empty.hidden = true;
@@ -908,9 +918,11 @@ def main() -> None:
     ap.add_argument("--nav-source", type=Path)
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--raw-dir", type=Path, help="earlier snapshots, to keep certification dates the export has dropped")
+    ap.add_argument("--legacy", type=Path, help="frozen traditional fields from freeze_legacy.py (data/fedramp/legacy/)")
     args = ap.parse_args()
 
     products, digest = bp.load_snapshot(args.snapshot)
+    legacy = bp.apply_legacy(products, bp.load_legacy(args.legacy))
     if args.raw_dir:
         bp.carry_dates(args.raw_dir, args.snapshot, products)
         bp.carry_impact(args.raw_dir, args.snapshot, products)
@@ -939,6 +951,7 @@ def main() -> None:
                   "hostedBanner": rules["hosted_banner"], "hostBanner": rules["host_banner"],
                   "pilotBanner": rules["pilot_banner"], "classABanner": rules["class_a_banner"]},
         "agencies": agencies,
+        **({"legacy": {**legacy, "human": bp.fmt_date(legacy["date"])}} if legacy else {}),
         "listings": listings,
         "hosted": hosted,
     }

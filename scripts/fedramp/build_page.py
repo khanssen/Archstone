@@ -146,6 +146,7 @@ def normalise(p: dict, grc: set[str], ai: set[str] | None = None) -> dict:
                            or [(p.get("status_date") or "")[:10]]),
         "agencies": agencies,
         "n_agencies": len(agencies),
+        "legacy": list(p.get("_legacy") or []),
         "assessor": assessor,
         "assessor_kind": a_kind,
         "assessor_id": a_name,
@@ -378,16 +379,20 @@ def analyse(rows: list[dict], snap: str) -> dict:
                          "impacts": impacts, **stats(ps)})
 
     rev5_by_agency = Counter(a for r in cert if r["track"] == "Rev5" for a in set(r["agencies"]))
+    # Traditional ATOs that come from the frozen Nov 2 record rather than the current export.
+    rev5_legacy = Counter(a for r in cert if r["track"] == "Rev5" and "agency_authorizations" in r["legacy"]
+                          for a in set(r["agencies"]))
     x20_by_agency = defaultdict(list)
     for r in tw_cert:
         for ag in set(r["agencies"]):
             x20_by_agency[ag].append(r)
     all_agencies = set(rev5_by_agency) | set(x20_by_agency)
     agency_adopters = sorted(
-        ({"agency": ag, "x20": sorted(ps, key=lambda r: r["date"]), "rev5": rev5_by_agency.get(ag, 0)}
+        ({"agency": ag, "x20": sorted(ps, key=lambda r: r["date"]), "rev5": rev5_by_agency.get(ag, 0),
+          "rev5_legacy": rev5_legacy.get(ag, 0)}
          for ag, ps in x20_by_agency.items()),
         key=lambda d: (-len(d["x20"]), -d["rev5"], d["agency"]))
-    top_rev5 = [{"agency": ag, "rev5": n, "x20": len(x20_by_agency.get(ag, []))}
+    top_rev5 = [{"agency": ag, "rev5": n, "rev5_legacy": rev5_legacy.get(ag, 0), "x20": len(x20_by_agency.get(ag, []))}
                 for ag, n in rev5_by_agency.most_common(10)]
 
     def share(ps, key):
@@ -768,6 +773,7 @@ td.n,th.n{text-align:right;white-space:nowrap}
 td.zero{color:var(--gap);font-weight:600}
 td.small{font-size:var(--t-small);color:var(--ink-soft)}
 tr.grp td{font-weight:600;color:var(--ink);border-bottom-color:var(--rule-strong);padding-top:var(--s-3)}
+.lg{color:inherit;text-decoration:none;font-weight:600;margin-left:1px;vertical-align:super;font-size:.75em;line-height:0}
 .tag{font-family:var(--mono);font-size:var(--t-micro);letter-spacing:.06em;text-transform:uppercase;border:1px solid currentColor;border-radius:4px;padding:1px 6px;white-space:nowrap}
 .tag.grc{color:var(--gap)}
 .tag.ag{color:var(--referent)}
@@ -882,6 +888,14 @@ def timeline_chart(a: dict) -> str:
 
 def days_between(a_: str, b_: str) -> int:
     return (date.fromisoformat(b_) - date.fromisoformat(a_)).days
+
+
+def legacy_mark(n: int, a: dict) -> str:
+    """Asterisk on a traditional ATO count that includes ATOs from the frozen legacy record."""
+    if not n or not a.get("legacy"):
+        return ""
+    t = f'{n} of these from the {fmt_date(a["legacy"]["date"])} export'
+    return f'<a class="lg" href="#legacy-fields" title="{esc(t)}" aria-label="{esc(t)}">*</a>'
 
 
 def legend_swatch(kind: str) -> str:
@@ -1113,6 +1127,17 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
                      'listings it is treated as the PMO and excluded. GSA as a sponsor of traditional authorizations is '
                      'counted as an agency, as before. The export gives names, not agency identifiers, so a GSA sponsorship of a 20x '
                      'product would also be excluded.</li>')
+    lg = a.get("legacy")
+    if lg and (lg["impact_level"] or lg["agency_authorizations"]):
+        carry_li += (f'<li id="legacy-fields"><b>Traditional fields FedRAMP stopped publishing<sup class="lg">*</sup>.</b> '
+                     f'From the November 3, 2026 export on, the marketplace lists every impact level as Unknown and '
+                     f'leaves the agency ATO list empty on many traditional authorizations, without notice. Where the '
+                     f'current export has nothing, traditional listings keep the value from the {fmt_date(lg["date"])} '
+                     f'export, the last complete one: the impact level on {lg["impact_level"]} listings and the agency '
+                     f'ATOs on {lg["agency_authorizations"]}. A traditional ATO count marked * includes ATOs taken from '
+                     f'that export. Anything FedRAMP still publishes is shown as published. Source: '
+                     f'<code>{esc(lg["file"])}</code>, SHA-256 <code>{esc(lg["sha256"][:12])}</code>, kept with the '
+                     f'other daily snapshots.</li>')
     dc = a.get("dates_carried")
     if dc and (dc["filled"] or dc["from_log"]):
         bits = []
@@ -1223,9 +1248,10 @@ def render(a: dict, digest: str, built: str, nav_items: list | None = None) -> s
 
     adopter_rows = "".join(
         f'<tr><td>{esc(d["agency"])}</td><td>{esc(", ".join(r["product"] for r in d["x20"]))}</td>'
-        f'<td class="n">{len(d["x20"])}</td><td class="n">{d["rev5"]}</td></tr>' for d in a["agency_adopters"])
+        f'<td class="n">{len(d["x20"])}</td><td class="n">{d["rev5"]}{legacy_mark(d["rev5_legacy"], a)}</td></tr>'
+        for d in a["agency_adopters"])
     top_rows = "".join(
-        f'<tr><td>{esc(d["agency"])}</td><td class="n">{d["rev5"]}</td>'
+        f'<tr><td>{esc(d["agency"])}</td><td class="n">{d["rev5"]}{legacy_mark(d["rev5_legacy"], a)}</td>'
         f'<td class="n{" zero" if d["x20"] == 0 else ""}">{d["x20"]}</td></tr>' for d in a["top_rev5"])
     gsa_txt = ""
     if a["gsa_rev5"] is not None:
@@ -1802,6 +1828,60 @@ def carry_impact(raw_dir: Path, current: Path, products: list[dict]) -> dict | N
     return {"filled": filled, "since": since, "from": max(d for d, _, _ in last.values())}
 
 
+LEGACY_NOTE = ("From the FedRAMP Marketplace export of {date}, the last before FedRAMP stopped publishing "
+               "this field for traditional authorizations.")
+
+
+def load_legacy(path: Path | None) -> dict | None:
+    """The frozen traditional-field record written by freeze_legacy.py, or None."""
+    if not path:
+        return None
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    if not doc.get("products") or not doc.get("cutoff"):
+        sys.exit(f"build_page: {path} is not a legacy record from freeze_legacy.py")
+    return doc
+
+
+def apply_legacy(products: list[dict], legacy: dict | None) -> dict | None:
+    """Fill traditional (Rev5) fields the export no longer carries from the frozen legacy record.
+
+    Only a field that is empty in the current export is filled, so anything FedRAMP still publishes
+    wins. Agency ATOs are filled only when the current list is empty: a list FedRAMP has shortened
+    or renamed is shown as published. Every filled field is named in p["_legacy"], which the pages
+    mark with an asterisk."""
+    if not legacy:
+        return None
+    lp = legacy["products"]
+    counts = {"impact_level": 0, "agency_authorizations": 0}
+    for p in products:
+        rec = lp.get(p["id"])
+        if p.get("cert_type") != "Rev5" or not rec:
+            continue
+        f, marked = rec["fields"], []
+        if unknown_impact(p) and "impact_level" in f:
+            p["impact_level"] = f["impact_level"]["value"]
+            if "impact_level_number" in f:
+                p["impact_level_number"] = f["impact_level_number"]["value"]
+            marked.append("impact_level")
+        if not p.get("agency_authorizations") and "agency_authorizations" in f:
+            p["agency_authorizations"] = list(f["agency_authorizations"]["value"])
+            if not p.get("agency_reuse") and "agency_reuse" in f:
+                p["agency_reuse"] = list(f["agency_reuse"]["value"])
+            marked.append("agency_authorizations")
+        if not p.get("partnering_agency") and "partnering_agency" in f:
+            p["partnering_agency"] = f["partnering_agency"]["value"]
+            marked.append("partnering_agency")
+        for k in counts:
+            counts[k] += k in marked
+        if marked:
+            p["_legacy"] = marked
+    src = next((s for s in legacy["sources"] if s["date"] == legacy["cutoff"]), {})
+    out = {"date": legacy["cutoff"], "sha256": src.get("sha256", ""), "file": src.get("file", ""), **counts}
+    print(f"build_page: legacy record {legacy['cutoff']}: impact level on {counts['impact_level']}, "
+          f"agency ATOs on {counts['agency_authorizations']} traditional listings", file=sys.stderr)
+    return out
+
+
 def agency_key(name: str) -> str:
     """Match agency names across exports: the Nov 3, 2026 export drops the "U.S." prefix."""
     n = " ".join(name.split())
@@ -2263,6 +2343,7 @@ def main() -> None:
     ap.add_argument("--ai", type=Path, help="AI provider classification list (applied to 20x only)")
     ap.add_argument("--raw-dir", type=Path, help="directory of earlier snapshots, to find listings removed since")
     ap.add_argument("--dropped-checks", type=Path, help="product-page checks from check_dropped.py (optional)")
+    ap.add_argument("--legacy", type=Path, help="frozen traditional fields from freeze_legacy.py (data/fedramp/legacy/)")
     ap.add_argument("--checked", help="date the marketplace was last checked (YYYY-MM-DD); defaults to the snapshot date")
     args = ap.parse_args()
 
@@ -2275,6 +2356,7 @@ def main() -> None:
     if args.ai:
         ai_feed = json.loads(args.ai.read_text())
         ai = {provider_key(s) for s in ai_feed["providers"]}
+    legacy = apply_legacy(products, load_legacy(args.legacy))
     carried = carry_categories(args.raw_dir, args.snapshot, products) if args.raw_dir else None
     dates_carried = carry_dates(args.raw_dir, args.snapshot, products) if args.raw_dir else None
     impact_carried = carry_impact(args.raw_dir, args.snapshot, products) if args.raw_dir else None
@@ -2285,6 +2367,7 @@ def main() -> None:
     a = analyse(rows, snap)
     a["checked"] = args.checked or snap
     a["carried"] = carried
+    a["legacy"] = legacy
     a["dates_carried"] = dates_carried
     a["impact_carried"] = impact_carried
     a["gsa_pmo"] = any("General Services Administration" in (p.get("agency_authorizations") or [])
