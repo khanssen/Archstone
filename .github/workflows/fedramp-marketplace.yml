@@ -86,6 +86,47 @@ jobs:
           echo "::error::Could not push the raw export after 3 attempts."
           exit 1
 
+      - name: Record agency ATOs from FedRAMP's own data
+        # Append-only ledger of every agency ATO any source has published (scripts/fedramp/build_ato_ledger.py).
+        # Also keeps a dated copy of FedRAMP's ATO table whenever it changes, so the ledger's evidence
+        # doesn't depend on FedRAMP's repository history. Runs before the build, which may refuse.
+        id: ledger
+        continue-on-error: true
+        run: |
+          git clone --quiet --depth 1 --filter=blob:none --sparse \
+            https://github.com/FedRAMP/marketplace-fedramp-gov-data "$RUNNER_TEMP/fedramp-ato"
+          git -C "$RUNNER_TEMP/fedramp-ato" sparse-checkout set --no-cone /data.json /fedramp-atos.json /fedramp-agencies.json
+          python scripts/fedramp/build_ato_ledger.py \
+            --fr-dir "$RUNNER_TEMP/fedramp-ato" \
+            --raw-dir data/fedramp/raw \
+            --ledger data/fedramp/ato-ledger.json \
+            --csv data/fedramp/ato-ledger.csv
+          mkdir -p data/fedramp/raw-atos
+          STAMP=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['metadata']['export_timestamp'][:10])" "$RUNNER_TEMP/fedramp-ato/fedramp-atos.json")
+          LAST=$(ls data/fedramp/raw-atos/fedramp-atos-*.json.gz 2>/dev/null | sort | tail -n 1)
+          python - "$RUNNER_TEMP/fedramp-ato/fedramp-atos.json" "$LAST" "data/fedramp/raw-atos/fedramp-atos-$STAMP.json.gz" <<'PY'
+          import gzip, json, sys
+          new = json.load(open(sys.argv[1]))
+          if sys.argv[2]:
+              old = json.load(gzip.open(sys.argv[2]))
+              if old["data"] == new["data"]:
+                  sys.exit(0)
+          with gzip.open(sys.argv[3], "wt", encoding="utf-8") as fh:
+              json.dump(new, fh, ensure_ascii=False)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fedramp/ato-ledger.json data/fedramp/ato-ledger.csv data/fedramp/raw-atos
+          if git diff --cached --quiet; then echo "ATO ledger unchanged."; exit 0; fi
+          git commit -m "FedRAMP agency ATO ledger $(date -u +%Y-%m-%d)"
+          for attempt in 1 2 3; do
+            git push && exit 0
+            git pull --rebase origin main
+            sleep $((attempt * 5))
+          done
+          echo "::error::Could not push the ATO ledger after 3 attempts."
+          exit 1
+
       - name: Check product pages of listings missing from the export
         # Evidence for the removals section: is the listing's own marketplace page still up?
         continue-on-error: true
