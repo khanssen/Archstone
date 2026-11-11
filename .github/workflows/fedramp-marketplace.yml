@@ -56,7 +56,11 @@ jobs:
       - name: Install Playwright and Chromium
         run: |
           python -m pip install --quiet playwright==1.56.0
-          python -m playwright install --with-deps chromium
+          # Chromium comes from Playwright's CDN. Its system packages come from Ubuntu's apt mirror,
+          # which the runner sometimes can't resolve (Nov 11, 2026); the 24.04 image already carries
+          # what headless Chromium needs, so a failed apt step is a warning, not a stop.
+          python -m playwright install chromium
+          python -m playwright install-deps chromium || echo "::warning::Couldn't install Chromium's system packages; continuing with the runner image's."
 
       - name: Download marketplace export
         id: fetch
