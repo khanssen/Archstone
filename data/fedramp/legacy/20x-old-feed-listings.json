@@ -1,0 +1,296 @@
+{
+ "description": "Every listing FedRAMP's old marketplace feed (data.json) ever labeled with a 20x level, Apr 14 to Nov 3, 2026, with the first and last day its content carried it (the feed is re-committed daily; only content changes count). Frozen: the feed stopped changing on Nov 3, 2026.",
+ "repository": "https://github.com/FedRAMP/marketplace-fedramp-gov-data",
+ "pilots": [
+  {
+   "id": "FR2335850594XL",
+   "csp": "Filevine",
+   "cso": "Filevine Platform",
+   "level": "20x Moderate",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-05-06",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2409863458XL",
+   "csp": "Confluent",
+   "cso": "Confluent Cloud for Government (CCG)",
+   "level": "20x Moderate",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-03-06",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2428769635XL",
+   "csp": "Paramify",
+   "cso": "Paramify Cloud",
+   "level": "20x Moderate",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-03-06",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2433985791XL",
+   "csp": "Vyond",
+   "cso": "Vyond for Government",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2025-12-05",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2504154395XL",
+   "csp": "Persona Identities, LLC",
+   "cso": "Persona for Government",
+   "level": "20x Moderate",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-04-10",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2525556241",
+   "csp": "Vanta",
+   "cso": "Vanta Trust Management Platform",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2025-07-25",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2525556241XM",
+   "csp": "Vanta",
+   "cso": "Vanta Government Cloud",
+   "level": "20x Moderate",
+   "first": "2026-04-25",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-04-24",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2525557617",
+   "csp": "InfusionPoints",
+   "cso": "XBU40",
+   "level": "20x Moderate",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-04-10",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2527955211",
+   "csp": "Flock Safety",
+   "cso": "Flock Safety Platform",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2025-07-25",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2527956755",
+   "csp": "Meridian Knowledge Solutions, LLC",
+   "cso": "Meridian LMS",
+   "level": "20x Moderate",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-03-06",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2529359931",
+   "csp": "Anitian",
+   "cso": "FedFlex",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2025-08-07",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2529360449",
+   "csp": "Secureframe",
+   "cso": "Secureframe Platform",
+   "level": "20x Moderate",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-06-23",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2531434700XL",
+   "csp": "Spectro Cloud",
+   "cso": "Palette VerteX",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2025-09-17",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2532557612",
+   "csp": "A-LIGN",
+   "cso": "A-SCEND",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2025-09-17",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2533155773",
+   "csp": "OpenAI",
+   "cso": "ChatGPT Enterprise and API Platform",
+   "level": "20x Moderate",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-01-09",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2533435144",
+   "csp": "Syneren Technologies Corporation",
+   "cso": "Configurable Case Management Application Platform (CMAP)",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2025-09-30",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2535435454",
+   "csp": "Transform9",
+   "cso": "Transform9",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-07-14",
+   "pmo_auth_date": "2025-12-05",
+   "commit_last": "18987c807290fc138aaab566a9a7d162086fcb31"
+  },
+  {
+   "id": "FR2535459082",
+   "csp": "stackArmor",
+   "cso": "The Armory20x",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2025-12-05",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2600167032",
+   "csp": "Drata",
+   "cso": "Drata Trust Management Platform",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2025-12-05",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2604643715",
+   "csp": "Perplexity AI",
+   "cso": "Perplexity Enterprise Pro for Government",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-02-01",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2604835605",
+   "csp": "Longevity Consulting",
+   "cso": "Riskuity",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-02-06",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2604952026",
+   "csp": "Google",
+   "cso": "Gemini for Government",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-01-21",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2604952842",
+   "csp": "MapLarge Inc.",
+   "cso": "MapLarge",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-02-09",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2605341343",
+   "csp": "IntelliGRC, Inc.",
+   "cso": "IntelliGRC",
+   "level": "20x Low",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2025-12-05",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2606141075",
+   "csp": "Entratus",
+   "cso": "Entratus Conversational AI Platform",
+   "level": "20x Moderate",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-05-06",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2615451803",
+   "csp": "Aeroplicity Inc.",
+   "cso": "Aeroplicity",
+   "level": "20x Moderate",
+   "first": "2026-04-14",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-04-10",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2619434440",
+   "csp": "ASSYST",
+   "cso": "ComplySyncATO",
+   "level": "20x Moderate",
+   "first": "2026-04-16",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-05-06",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2620235600",
+   "csp": "Anecdotes",
+   "cso": "Anecdotes",
+   "level": "20x Moderate",
+   "first": "2026-06-25",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-06-23",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  },
+  {
+   "id": "FR2621445678",
+   "csp": "Halo",
+   "cso": "Halo",
+   "level": "20x Moderate",
+   "first": "2026-05-07",
+   "last": "2026-11-03",
+   "pmo_auth_date": "2026-05-06",
+   "commit_last": "766eb83836cbf2774411e35b735e40b6b1fd20e6"
+  }
+ ]
+}

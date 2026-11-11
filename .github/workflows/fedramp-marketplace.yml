@@ -86,6 +86,50 @@ jobs:
           echo "::error::Could not push the raw export after 3 attempts."
           exit 1
 
+      - name: Record agency ATOs from FedRAMP's own data
+        # Append-only ledger of every agency ATO any source has published (scripts/fedramp/build_ato_ledger.py).
+        # Also keeps a dated copy of FedRAMP's ATO table whenever it changes, so the ledger's evidence
+        # doesn't depend on FedRAMP's repository history. Runs before the build, which may refuse.
+        id: ledger
+        continue-on-error: true
+        run: |
+          git clone --quiet --depth 1 --filter=blob:none --sparse \
+            https://github.com/FedRAMP/marketplace-fedramp-gov-data "$RUNNER_TEMP/fedramp-ato"
+          git -C "$RUNNER_TEMP/fedramp-ato" sparse-checkout set --no-cone /data.json /fedramp-atos.json /fedramp-agencies.json /fedramp-status-changelog.json
+          python scripts/fedramp/build_ato_ledger.py \
+            --fr-dir "$RUNNER_TEMP/fedramp-ato" \
+            --raw-dir data/fedramp/raw \
+            --ledger data/fedramp/ato-ledger.json \
+            --csv data/fedramp/ato-ledger.csv
+          mkdir -p data/fedramp/raw-atos
+          keep_if_changed() {   # $1 source file, $2 prefix in raw-atos/: keep a dated copy when its data changes
+            local last; last=$(ls data/fedramp/raw-atos/$2-*.json.gz 2>/dev/null | sort | tail -n 1)
+            python - "$1" "$last" "data/fedramp/raw-atos/$2-$(date -u +%Y-%m-%d).json.gz" <<'PY'
+          import gzip, json, sys
+          new = json.load(open(sys.argv[1]))
+          if sys.argv[2]:
+              old = json.load(gzip.open(sys.argv[2]))
+              if old["data"] == new["data"]:
+                  sys.exit(0)
+          with gzip.open(sys.argv[3], "wt", encoding="utf-8") as fh:
+              json.dump(new, fh, ensure_ascii=False)
+          PY
+          }
+          keep_if_changed "$RUNNER_TEMP/fedramp-ato/fedramp-atos.json" fedramp-atos
+          keep_if_changed "$RUNNER_TEMP/fedramp-ato/fedramp-status-changelog.json" fedramp-status-changelog
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fedramp/ato-ledger.json data/fedramp/ato-ledger.csv data/fedramp/raw-atos
+          if git diff --cached --quiet; then echo "ATO ledger unchanged."; exit 0; fi
+          git commit -m "FedRAMP agency ATO ledger $(date -u +%Y-%m-%d)"
+          for attempt in 1 2 3; do
+            git push && exit 0
+            git pull --rebase origin main
+            sleep $((attempt * 5))
+          done
+          echo "::error::Could not push the ATO ledger after 3 attempts."
+          exit 1
+
       - name: Check product pages of listings missing from the export
         # Evidence for the removals section: is the listing's own marketplace page still up?
         continue-on-error: true
@@ -128,6 +172,9 @@ jobs:
             --out fedramp-20x-adoption \
             --history data/fedramp/history.csv \
             --raw-dir data/fedramp/raw \
+            --legacy data/fedramp/legacy/rev5-legacy-2026-11-02.json \
+            --ato-ledger data/fedramp/ato-ledger.json \
+            --old-feed-20x data/fedramp/legacy/20x-old-feed-listings.json \
             --dropped-checks data/fedramp/dropped-checks.json \
             --feature-target fedramp.html \
             --checked "$CHECKED"
@@ -135,6 +182,22 @@ jobs:
       - name: Rebuild the marketplace lookup
         run: |
           SNAP=$(ls data/fedramp/raw/products-*.json.gz | sort | tail -n 1)
+          STATUS_LOG=$(ls data/fedramp/raw-atos/fedramp-status-changelog-*.json.gz | sort | tail -n 1)
+          gunzip -c "$STATUS_LOG" > "$RUNNER_TEMP/status-changelog.json"
+          python scripts/fedramp/build_graph.py \
+            --snapshot "$SNAP" \
+            --hosted data/fedramp/hosted-services.json \
+            --dependents data/fedramp/raw/products-2026-11-02.json.gz \
+            --out data/fedramp/graph.json
+          rm -rf fedramp-lookup/l
+          python scripts/fedramp/build_history.py \
+            --raw-dir data/fedramp/raw \
+            --old-feed data/fedramp/legacy/old-feed-history.json.gz \
+            --ledger data/fedramp/ato-ledger.json \
+            --status-log "$RUNNER_TEMP/status-changelog.json" \
+            --graph data/fedramp/graph.json \
+            --out fedramp-lookup/l \
+            --index data/fedramp/off-marketplace.json
           python scripts/fedramp/build_lookup.py \
             --snapshot "$SNAP" \
             --rules data/fedramp/usability-rules.json \
@@ -143,6 +206,9 @@ jobs:
             --assessors data/fedramp/assessors.json \
             --nav-source index.html \
             --raw-dir data/fedramp/raw \
+            --legacy data/fedramp/legacy/rev5-legacy-2026-11-02.json \
+            --ato-ledger data/fedramp/ato-ledger.json \
+            --history-index data/fedramp/off-marketplace.json \
             --out fedramp-lookup
 
       - name: Compare with the previous snapshot
