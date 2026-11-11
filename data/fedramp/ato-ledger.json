@@ -166215,23 +166215,6 @@
    "pmo": false
   },
   {
-   "key": "FR2317253567|22-019",
-   "product_id": "FR2317253567",
-   "agency_key": "22-019",
-   "agency": "General Services Administration",
-   "sources": {
-    "export": {
-     "first": "2026-11-03",
-     "last": "2026-11-03",
-     "kinds": [
-      "listed"
-     ]
-    }
-   },
-   "published_now": false,
-   "pmo": false
-  },
-  {
    "key": "FR2317253567|22-092",
    "product_id": "FR2317253567",
    "agency_key": "22-092",
@@ -166264,10 +166247,11 @@
     },
     "export": {
      "first": "2026-10-16",
-     "last": "2026-11-02",
+     "last": "2026-11-03",
      "kinds": [
       "listed"
-     ]
+     ],
+     "shown_as": "General Services Administration"
     }
    },
    "published_now": false,

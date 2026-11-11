@@ -185,6 +185,17 @@ class Ledger:
                 t["first"], t["last"] = min(t["first"], s["first"]), max(t["last"], s["last"])
                 t["kinds"] = sorted(set(t["kinds"]) | set(s["kinds"]))
             del self.atos[k]
+        # On Nov 3, 2026 the export showed the PMO's own entry as "General Services Administration" on every
+        # listing that carried it, traditional Program-path listings included. A GSA pair that only that
+        # export shows, on a product with a PMO entry, is the PMO.
+        for k in [k for k, e in self.atos.items() if e["agency_key"] == "22-019" and set(e["sources"]) == {"export"}
+                  and e["sources"]["export"]["first"] >= "2026-11-03"]:
+            pmo = self.atos.get(f'{self.atos[k]["product_id"]}|{PMO_ID}')
+            if pmo:
+                s, t = self.atos[k]["sources"]["export"], pmo["sources"].setdefault("export", dict(self.atos[k]["sources"]["export"]))
+                t["first"], t["last"] = min(t["first"], s["first"]), max(t["last"], s["last"])
+                t.setdefault("shown_as", "General Services Administration")
+                del self.atos[k]
         def now(e):
             s = e["sources"]
             in_table = "table" in s and s["table"]["last"] == self.seen.get("table") and s["table"].get("active")
