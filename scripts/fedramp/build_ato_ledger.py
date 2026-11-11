@@ -196,6 +196,25 @@ class Ledger:
                 t["first"], t["last"] = min(t["first"], s["first"]), max(t["last"], s["last"])
                 t.setdefault("shown_as", "General Services Administration")
                 del self.atos[k]
+        # From Nov 3, 2026 the export names only the parent department. A parent pair that only that
+        # export shows, on a product that already has ATOs from the parent's components, is those
+        # components under the parent's name, not a new ATO: fold its sightings into each component
+        # (as export_parent) instead of counting it again.
+        self.folded = 0
+        for k in [k for k, e in self.atos.items() if re.fullmatch(r"\d{2}-\d{3}", e["agency_key"])
+                  and set(e["sources"]) == {"export"} and e["sources"]["export"]["first"] >= "2026-11-03"]:
+            e = self.atos[k]
+            kids = [c for c in self.atos.values() if c["product_id"] == e["product_id"]
+                    and c["agency_key"].startswith(e["agency_key"] + "-")]
+            if not kids:
+                continue
+            s = e["sources"]["export"]
+            for c in kids:
+                t = c["sources"].setdefault("export_parent", dict(s, shown_as=e["agency"]))
+                t["first"], t["last"] = min(t["first"], s["first"]), max(t["last"], s["last"])
+                t["kinds"] = sorted(set(t["kinds"]) | set(s["kinds"]))
+            del self.atos[k]
+            self.folded += 1
         def now(e):
             s = e["sources"]
             in_table = "table" in s and s["table"]["last"] == self.seen.get("table") and s["table"].get("active")
@@ -212,7 +231,9 @@ class Ledger:
             e.pop("published_as_parent", None)
             if not e["published_now"] and m:
                 par = self.atos.get(f'{e["product_id"]}|{m.group(1)}')
-                if par and "export" in par["sources"] and par["sources"]["export"]["last"] == self.seen.get("export"):
+                ep = e["sources"].get("export_parent")
+                if (ep and ep["last"] == self.seen.get("export")) or \
+                        (par and "export" in par["sources"] and par["sources"]["export"]["last"] == self.seen.get("export")):
                     e["published_as_parent"] = True
         atos = sorted(self.atos.values(), key=lambda e: (e["product_id"], e["agency"]))
         return {"description": __doc__.split("\n\n")[0].strip(), "source_last_seen": self.seen,
@@ -314,7 +335,7 @@ def main() -> None:
                 L.read_export(f)
 
     doc = L.finish()
-    if old and len(doc["atos"]) < n_before:
+    if old and len(doc["atos"]) < n_before - L.folded:
         sys.exit(f"build_ato_ledger: ledger would shrink from {n_before} to {len(doc['atos'])} entries. Not writing.")
     args.ledger.parent.mkdir(parents=True, exist_ok=True)
     args.ledger.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
