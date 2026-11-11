@@ -38,7 +38,8 @@ concurrency:
 
 jobs:
   snapshot:
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest moved to 26.04 on Nov 10, 2026 and Playwright can't install Chromium there.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - name: Checkout
@@ -61,6 +62,25 @@ jobs:
         id: fetch
         continue-on-error: true
         run: python scripts/fedramp/fetch_marketplace.py --raw data/fedramp/raw --inbox data/fedramp/inbox
+
+      - name: Record the raw export before anything can refuse it
+        # The build steps below stop on exports they can't trust. The download itself is still the
+        # dated record, so commit it first; a refused build must not cost a day of history.
+        if: steps.fetch.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fedramp/raw
+          if git diff --cached --quiet; then echo "Raw export already recorded."; exit 0; fi
+          git commit -m "FedRAMP marketplace raw export $(date -u +%Y-%m-%d)"
+          for attempt in 1 2 3; do
+            git push && exit 0
+            echo "Push rejected (attempt $attempt); rebasing onto origin/main."
+            git pull --rebase origin main
+            sleep $((attempt * 5))
+          done
+          echo "::error::Could not push the raw export after 3 attempts."
+          exit 1
 
       - name: Check product pages of listings missing from the export
         # Evidence for the removals section: is the listing's own marketplace page still up?
