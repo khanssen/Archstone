@@ -33,7 +33,7 @@ permissions:
   issues: write     # open an issue when the data behind the page changes
 
 concurrency:
-  group: fedramp-snapshot
+  group: fedramp-snapshot-2   # renamed Nov 12, 2026: run #75 is stuck in GitHub holding the old group
   cancel-in-progress: false
 
 jobs:
