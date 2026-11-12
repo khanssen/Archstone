@@ -289,7 +289,16 @@ h1{margin:0;max-width:24ch}
 .lk{display:grid;grid-template-columns:minmax(300px,400px) minmax(0,1fr);gap:var(--s-4);margin-top:var(--s-5);align-items:start}
 .lk-list{background:var(--surface);border:1px solid var(--rule);border-radius:10px;display:flex;flex-direction:column;position:sticky;top:12px;max-height:calc(100vh - 24px)}
 .lk-tools{padding:var(--s-3);border-bottom:1px solid var(--rule);display:grid;gap:var(--s-2)}
-.lk-tools input[type=search]{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--rule-strong);border-radius:8px;background:var(--paper);color:var(--ink)}
+.lk-tools{background:var(--accent-fill);border-radius:10px 10px 0 0}
+.lk-q{position:relative}
+.lk-q svg{position:absolute;left:14px;top:50%;width:20px;height:20px;transform:translateY(-50%);color:var(--accent);pointer-events:none}
+.lk-q kbd{position:absolute;right:12px;top:50%;transform:translateY(-50%);font:500 var(--t-micro)/1 var(--mono);color:var(--ink-soft);border:1px solid var(--rule-strong);border-radius:4px;padding:3px 6px;background:var(--surface);pointer-events:none}
+.lk-q input:focus~kbd,.lk-q input:not(:placeholder-shown)~kbd{display:none}
+@media (pointer:coarse){.lk-q kbd{display:none}.lk-tools input[type=search]{padding-right:14px}}
+.lk-tools input[type=search]{width:100%;font:inherit;font-size:18px;font-weight:600;padding:14px 44px 14px 44px;border:2px solid var(--accent);border-radius:10px;background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.lk-tools input[type=search]::placeholder{font-weight:400;color:var(--ink-soft)}
+.lk-tools input[type=search]:focus{outline:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
+.lk-qlab{margin:0;font:600 var(--t-micro)/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
 .lk-f{display:flex;flex-wrap:wrap;gap:var(--s-2)}
 .lk-f select{font:inherit;font-size:var(--t-small);padding:8px 10px;border:1px solid var(--rule-strong);border-radius:8px;background:var(--surface);color:var(--ink);min-height:40px;flex:1 1 130px}
 .lk-f label.ck{display:flex;align-items:center;gap:8px;font-size:var(--t-small);min-height:40px;padding:0 4px;cursor:pointer;flex:1 1 100%}
@@ -443,8 +452,12 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
   <div class="lk">
     <section class="lk-list" aria-label="Marketplace listings">
       <div class="lk-tools">
-        <label class="sr" for="lk-q">Search listings</label>
-        <input id="lk-q" type="search" placeholder="Search provider, product, assessor or FR ID" autocomplete="off" spellcheck="false">
+        <label class="lk-qlab" for="lk-q">Search any listing, including delisted ones</label>
+        <div class="lk-q">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+          <input id="lk-q" type="search" placeholder="Product, provider, FR ID…" autocomplete="off" spellcheck="false">
+          <kbd aria-hidden="true">/</kbd>
+        </div>
         <div class="lk-f">
           <label class="sr" for="lk-track">Track</label>
           <select id="lk-track">
@@ -508,6 +521,13 @@ footer{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);margin-top:var(--s-
       card = document.getElementById('lk-card'), empty = document.getElementById('lk-empty');
   var selected = null, lastBtn = null;
   var mobile = window.matchMedia('(max-width: 860px)');
+  // "/" jumps to the search box from anywhere on the page, unless the reader is already typing somewhere.
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+    var t = e.target, tag = t && t.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
+    e.preventDefault(); q.focus(); q.select();
+  });
   var tbl = document.getElementById('lk-tbl'), scrim = document.getElementById('lk-scrim');
   var view = 'list', sortK = '', sortDir = 0;
   // Table columns. "first" is the direction a header's first click sorts in.
