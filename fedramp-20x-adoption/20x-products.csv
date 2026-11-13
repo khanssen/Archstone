@@ -9,8 +9,8 @@ snapshot,id,provider,product,cert_type,status,class,impact,authorized,grc_vendor
 2026-11-11,FR2605341343,"IntelliGRC, Inc.",IntelliGRC,20x Pilot,FedRAMP Certified,Class B,Unknown,2025-12-05,yes,yes,0,,A-LIGN
 2026-11-11,FR2535459082,stackArmor,The Armory20x,20x Pilot,FedRAMP Certified,Class B,Unknown,2025-12-05,yes,no,0,,Kratos
 2026-11-11,FR2433985791XL,Vyond,Vyond for Government,20x Pilot,FedRAMP Certified,Class B,Unknown,2025-12-05,no,no,0,,Kratos
-2026-11-11,FR2533155773,OpenAI,ChatGPT Enterprise and API Platform,20x Pilot,FedRAMP Certified,Class C,Unknown,2026-01-09,no,no,2,Department of Veterans Affairs; U.S. Election Assistance Commission,Schellman
-2026-11-11,FR2604952026,Google,Gemini for Government,20x Pilot,FedRAMP Certified,Class B,Unknown,2026-01-21,no,no,1,U.S. Election Assistance Commission,
+2026-11-11,FR2533155773,OpenAI,ChatGPT Enterprise and API Platform,20x Pilot,FedRAMP Certified,Class C,Unknown,2026-01-09,no,no,1,Department of Veterans Affairs,Schellman
+2026-11-11,FR2604952026,Google,Gemini for Government,20x Pilot,FedRAMP Certified,Class B,Unknown,2026-01-21,no,no,0,,
 2026-11-11,FR2604835605,Longevity Consulting,Riskuity,20x Pilot,FedRAMP Certified,Class B,Unknown,2026-02-06,yes,no,0,,Excentium
 2026-11-11,FR2604952842,MapLarge Inc.,MapLarge,20x Pilot,FedRAMP Certified,Class B,Unknown,2026-02-09,no,no,0,,A-LIGN
 2026-11-11,FR2409863458XL,Confluent,Confluent Cloud for Government (CCG),20x Pilot,FedRAMP Certified,Class C,Unknown,2026-03-06,no,no,0,,Fortreum
@@ -31,7 +31,7 @@ snapshot,id,provider,product,cert_type,status,class,impact,authorized,grc_vendor
 2026-11-11,FR2631054539,Mycroft Technologies Inc,Mycroft GRC Platform,20x,FedRAMP Certified,Class A,Unknown,2026-09-24,yes,yes,0,,Insight Assurance
 2026-11-11,FR2631258132,"Harness, Inc.",Harness for Government,20x,FedRAMP Certified,Class A,Unknown,2026-10-06,no,no,0,,
 2026-11-11,FR2631654537,Wisedocs USA Inc.,Wisedocs for Government,20x,FedRAMP Certified,Class A,Unknown,2026-10-20,no,no,0,,
-2026-11-11,FR2604643715,"Perplexity AI, Inc.",Perplexity Enterprise and API Platform,20x,FedRAMP Certified,Class C,Unknown,2026-10-28,no,no,2,Department of Agriculture; U.S. Election Assistance Commission,360 Advanced
+2026-11-11,FR2604643715,"Perplexity AI, Inc.",Perplexity Enterprise and API Platform,20x,FedRAMP Certified,Class C,Unknown,2026-10-28,no,no,1,Department of Agriculture,360 Advanced
 2026-11-11,FR2631054484,"Anysphere, Inc.",Cursor,20x,FedRAMP Certified,Class A,Unknown,2026-10-29,no,no,0,,A-LIGN
 2026-11-11,FR2632054495,"JupiterOne, Inc.",JupiterOne GovCloud,20x,FedRAMP Certified,Class A,Unknown,2026-11-02,no,no,0,,
 2026-11-11,FR2632436493,"Rohirrim, Inc.",Unified Acquisition Platform,20x,FedRAMP Certified,Class A,Unknown,2026-11-03,no,no,0,,
