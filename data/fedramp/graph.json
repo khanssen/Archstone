@@ -1,13 +1,13 @@
 {
  "description": "Build the built-on / used-by graph between marketplace listings.",
- "snapshot": "products-2026-11-11.json.gz",
+ "snapshot": "products-2026-11-14.json.gz",
  "listings": {
   "AGENCYAMAZONEW": {
    "built_on": [],
    "used_by": [
     {
      "id": "FR2631258135",
-     "use": "AWS US East/West — supporting services: Amazon SES (outbound transactional email and, since 2026-10-29, email received for project addresses), Route 53 (DNS), S3 (CI build cache, CloudTrail audit logs, a legacy database-backup bucket from the pre-2026 hosting platform, and received email), SQS (received-email notifications), GuardDuty (threat detection), and Amazon Bedrock (Claude model inference entered in us-west-2 through global cross-Region inference profiles, which may process requests in any AWS commercial Region; for organizations not in CUI mode only; prompts may include customer document text). For an organization not in CUI mode, notification bodies may carry project content, and a submittal-review notification attaches the marked-up review PDF (on unless the project turns it off) and the review spreadsheet (off unless the project turns it on). Since 2026-10-21 05:32 UTC an organization in CUI mode receives, in place of each notification that can carry project content, a notice with a link and no project content or attachment; the link resolves only for an authenticated member of the organization. Since 2026-10-29 Amazon SES also receives email for project addresses (projects.specset.com): SES accepts the message outside the boundary, scans it, writes it to a KMS-encrypted S3 bucket in the same account and notifies an encrypted SQS queue, and the workers read the queue and the object and delete them. Project addresses are only for organizations with the project email feature and never for organizations in CUI mode; no organization has the feature as of 2026-10-30, and the bucket deletes a message after four days."
+     "use": "AWS US East/West — supporting services: Amazon SES (outbound transactional email and, since 2026-10-29, email received for project addresses), Route 53 (DNS), S3 (CI build cache, CloudTrail audit logs, and received email), SQS (received-email notifications), GuardDuty (threat detection), and Amazon Bedrock (Claude model inference entered in us-west-2 through global cross-Region inference profiles, which may process requests in any AWS commercial Region; for organizations not in CUI mode only; prompts may include customer document text). For an organization not in CUI mode, notification bodies may carry project content, and a submittal-review notification attaches the marked-up review PDF (on unless the project turns it off) and the review spreadsheet (off unless the project turns it on). Since 2026-10-21 05:32 UTC an organization in CUI mode receives, in place of each notification that can carry project content, a notice with a link and no project content or attachment; the link resolves only for an authenticated member of the organization. Since 2026-10-29 Amazon SES also receives email for project addresses (projects.specset.com): SES accepts the message outside the boundary, scans it, writes it to a KMS-encrypted S3 bucket in the same account and notifies an encrypted SQS queue, and the workers read the queue and the object and delete them. Project addresses are only for organizations with the project email feature and never for organizations in CUI mode; no organization has the feature as of 2026-10-30, and the bucket deletes a message after four days."
     },
     {
      "id": "FR2632731472",
@@ -15,7 +15,7 @@
     },
     {
      "id": "FR2702852019",
-     "use": "AWS infrastructure supporting application hosting, storage, containers, and\nnetworking."
+     "use": "Infrastructure provider hosting the EVP service: compute (EC2, including Elastic Load Balancing and Auto Scaling; EBS), storage (S3), networking and delivery (VPC, CloudFront), containers (ECS, ECR), serverless (Lambda), messaging (SQS), email (SES), keys and secrets (KMS, Secrets Manager), identity and governance (IAM, IAM Identity Center, Organizations), logging and monitoring (CloudTrail, CloudWatch, Athena, Config, Inspector, Systems Manager, Macie), and the optional AI features (Transcribe, Translate, Polly, Bedrock with Anthropic Claude, Rekognition)."
     },
     {
      "id": "FR2702851992",
@@ -107,11 +107,7 @@
     },
     {
      "id": "FR2619254906",
-     "use": "AWS US East/West, FedRAMP Moderate. AWS Bedrock-powered model inference for the platform's AI features through US cross-region inference profiles that route only to us-east-1, us-east-2 and us-west-2, reached only through the platform's documented transport bridge. Bedrock receives user prompts and the content supplied with them and returns model output; model invocation logging is not enabled in the bridge account, so prompts and outputs are not retained there."
-    },
-    {
-     "id": "FR2619254906",
-     "use": "AWS US East/West, FedRAMP Moderate. Amazon Bedrock AgentCore managed web search (AgentCore Web Search Tool), reached only through the platform's documented transport bridge."
+     "use": "AWS US East/West, FedRAMP Moderate. Not used for inference since 2026-11-11: inference runs in AWS GovCloud (US), and managed web search is off. Bridge retirement: the GovCloud VPN path was removed on 2026-11-12. The commercial gateways, log collector, fetcher and associated connectivity were removed by 2026-11-13. The account remains in scope for retained logs, administrative records and dormant network configuration; it no longer provides inference or web-fetch workloads."
     },
     {
      "id": "FR2528033654",
@@ -126,8 +122,12 @@
      "use": "Underlying IaaS. Vanta operates compute (ECS Fargate, Lambda, Batch), networking (VPC, ALB/NLB, CloudFront, WAF, API Gateway, PrivateLink, NAT Gateway, Route53), data services (Aurora, ElastiCache, S3), messaging (SQS, SNS, SES), key management (KMS), configuration (SSM Parameter Store), container registry (ECR), and monitoring (CloudWatch, GuardDuty)."
     },
     {
+     "id": "FR1821856903",
+     "use": "Provides the cloud infrastructure platform and services supporting the Zendesk for Government trust boundary. Zendesk inherits IaaS/PaaS controls from AWS according to its Customer Responsibility Matrix."
+    },
+    {
      "id": "F1605107898",
-     "use": "AWS infrastructure supporting application hosting, storage, containers, and\nnetworking."
+     "use": "Infrastructure provider hosting the EVP service: compute (EC2, including Elastic Load Balancing and Auto Scaling; EBS), storage (S3), networking and delivery (VPC, CloudFront), containers (ECS, ECR), serverless (Lambda), messaging (SQS), email (SES), keys and secrets (KMS, Secrets Manager), identity and governance (IAM, IAM Identity Center, Organizations), logging and monitoring (CloudTrail, CloudWatch, Athena, Config, Inspector, Systems Manager, Macie), and the optional AI features (Transcribe, Translate, Polly, Bedrock with Anthropic Claude, Rekognition)."
     },
     {
      "id": "F1206111371",
@@ -137,7 +137,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 29
+   "platform_dependents": 30
   },
   "AGENCYNITCIAAS": {
    "built_on": [],
@@ -1325,7 +1325,7 @@
    "used_by": [
     {
      "id": "FR2631258135",
-     "use": "Azure Commercial Cloud — Azure OpenAI (GPT model inference for organizations not in CUI mode; prompts may include customer document text), Microsoft Entra ID application registrations for customer 'Sign in with Microsoft' single sign-on, and a Windows evaluation lab in the same subscription, whose runbook allows public or synthetic files only (not technically enforced)."
+     "use": "Azure Commercial Cloud — Azure OpenAI (GPT model inference for organizations not in CUI mode; prompts may include customer document text. A route for organizations in CUI mode, to the US Data Zone deployments only, is provisioned and not enabled: the setting that turns it on is off, so no organization in CUI mode uses Azure OpenAI. By Microsoft's default, prompts and completions are stored for abuse monitoring in the account's US geography, and content the monitoring flags can be reviewed by authorized Microsoft employees; Specset plans to apply modified abuse monitoring to the deployments organizations in CUI mode would use by 2026-12-31, or to keep them off Azure OpenAI until it is applied), Microsoft Entra ID application registrations for customer 'Sign in with Microsoft' single sign-on, and a Windows evaluation lab in the same subscription, whose runbook allows public or synthetic files only (not technically enforced)."
     },
     {
      "id": "FR2631654537",
@@ -2462,15 +2462,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [
@@ -2808,15 +2799,6 @@
     },
     {
      "id": "FR1823149273",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -3232,15 +3214,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1206061353",
      "as_declared": null,
      "certified": true,
@@ -3480,15 +3453,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -3546,6 +3510,10 @@
     {
      "id": "FR2628943630",
      "use": "The CARTN FedRAMP SaaS offering uses Okta Identity-as-a-Service (IDaaS) Regulated Cloud to provide user authentication and authorization for the CARTN web portal and mobile application. Okta manages end-user identities, enforces multi-factor authentication, and applies access policies that govern which users may access CARTN and the data and functions available to them, providing centralized and auditable identity management for the service."
+    },
+    {
+     "id": "FR1821856903",
+     "use": "Provides centralized identity and access management for Zendesk employees with access to the trust boundary."
     },
     {
      "id": "FR2000174962",
@@ -4279,6 +4247,14 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2704160211",
+     "use": "AWS GovCloud (US) us-gov-east-1 provides the underlying IaaS infrastructure; Knowtex inherits controls as a leveraged authorization."
+    },
+    {
+     "id": "FR2631258135",
+     "use": "AWS GovCloud (US): Amazon Bedrock (Claude model inference) for organizations in CUI mode, with the IAM role the production application assumes for those calls, CloudTrail, KMS and GuardDuty. Not enabled: the setting that turns the route on is off, so no organization's data reaches it, and organizations in CUI mode use only Vertex AI in the Assured Workloads project for model calls."
+    },
+    {
      "id": "FR2702851998",
      "use": "AWS GovCloud (US) is an AWS Region designed to allow US government agencies and customers supporting the US government to move more sensitive workloads into the cloud. In addition to complying with FedRAMP requirements, the AWS GovCloud (US) framework adheres to U.S. International Traffic in Arms Regulations (ITAR) regulations. Additional information is available at http://aws.amazon.com/govcloud-us/. Federal agencies interested in collaborative continuous monitoring with AWS should reach out to: aws-collaborative-conmon@amazon.com"
     },
@@ -4348,7 +4324,7 @@
     },
     {
      "id": "FR2619254906",
-     "use": "AWS GovCloud (US), FedRAMP High. Infrastructure hosting: VulcanGov infrastructure and federal customer data reside in AWS GovCloud (US), apart from the disclosed cross-boundary resources listed here."
+     "use": "AWS GovCloud (US), FedRAMP High. Infrastructure hosting and, since 2026-11-11, model inference (Amazon Bedrock, Anthropic Claude models in us-gov-east-1 and us-gov-west-1; model invocation logging is not enabled). VulcanGov infrastructure and federal customer data reside in AWS GovCloud (US), apart from the disclosed cross-boundary resources listed here."
     },
     {
      "id": "FR2023601671",
@@ -4358,7 +4334,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 19
+   "platform_dependents": 21
   },
   "F1603077867": {
    "built_on": [
@@ -4841,15 +4817,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1603087869",
      "as_declared": null,
      "certified": true,
@@ -4979,15 +4946,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [
@@ -5013,16 +4971,102 @@
      "id": "AGENCYAMAZONEW",
      "as_declared": "AGENCYAMAZONEW",
      "certified": true,
-     "use": "AWS infrastructure supporting application hosting, storage, containers, and\nnetworking.",
+     "use": "Infrastructure provider hosting the EVP service: compute (EC2, including Elastic Load Balancing and Auto Scaling; EBS), storage (S3), networking and delivery (VPC, CloudFront), containers (ECS, ECR), serverless (Lambda), messaging (SQS), email (SES), keys and secrets (KMS, Secrets Manager), identity and governance (IAM, IAM Identity Center, Organizations), logging and monitoring (CloudTrail, CloudWatch, Athena, Config, Inspector, Systems Manager, Macie), and the optional AI features (Transcribe, Translate, Polly, Bedrock with Anthropic Claude, Rekognition).",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR1823447014",
+     "as_declared": "FR1823447014",
+     "certified": true,
+     "use": "Operations alert visibility.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2428769635XL",
+     "as_declared": "FR2428769635XL",
+     "certified": true,
+     "use": "GRC platform and Trust Center.",
      "resolved": "id",
      "listed": true
     },
     {
      "id": null,
-     "as_declared": "CrowdStrike Falcon (Exposure Management / Cloud\nSecurity Posture Management)",
+     "as_declared": "CrowdStrike Falcon",
      "provider": "CrowdStrike, Inc.",
      "certified": false,
-     "use": "Cloud security services - Vulnerability Management, Cloud Security Posture\nManagement"
+     "use": "Endpoint detection and response, vulnerability management, container image scanning, CSPM and DSPM."
+    },
+    {
+     "id": null,
+     "as_declared": "Microsoft Entra ID",
+     "provider": "Microsoft Corporation",
+     "certified": false,
+     "use": "Workforce identity source for administrative access."
+    },
+    {
+     "id": null,
+     "as_declared": "GitHub Enterprise Cloud",
+     "provider": "GitHub, Inc.",
+     "certified": false,
+     "use": "Source control for software and infrastructure code deployed to production."
+    },
+    {
+     "id": null,
+     "as_declared": "Atlassian Jira",
+     "provider": "Atlassian Corporation",
+     "certified": false,
+     "use": "Change and work authorization."
+    },
+    {
+     "id": null,
+     "as_declared": "Salesforce",
+     "provider": "Salesforce, Inc.",
+     "certified": false,
+     "use": "Customer support cases and customer maintenance notifications."
+    },
+    {
+     "id": null,
+     "as_declared": "Qualys Policy Audit",
+     "provider": "Qualys, Inc.",
+     "certified": false,
+     "use": "Configuration compliance scanning."
+    },
+    {
+     "id": null,
+     "as_declared": "PagerDuty",
+     "provider": "PagerDuty, Inc.",
+     "certified": false,
+     "use": "On-call alerting."
+    },
+    {
+     "id": null,
+     "as_declared": "Site24x7",
+     "provider": "Zoho Corporation",
+     "certified": false,
+     "use": "External availability monitoring."
+    },
+    {
+     "id": null,
+     "as_declared": "Cobalt",
+     "provider": "Cobalt Labs, Inc.",
+     "certified": false,
+     "use": "Independent penetration testing."
+    },
+    {
+     "id": null,
+     "as_declared": "nOps Compute Copilot",
+     "provider": "nOps",
+     "certified": false,
+     "use": "Compute cost optimization for autoscaled capacity."
+    },
+    {
+     "id": null,
+     "as_declared": "Harness",
+     "provider": "Harness Inc.",
+     "certified": false,
+     "use": "Deployment orchestration."
     }
    ],
    "used_by": [],
@@ -5617,23 +5661,6 @@
     }
    ]
   },
-  "FR1711546389": {
-   "built_on": [
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    }
-   ],
-   "used_by": [],
-   "hosts": [],
-   "hosted_in": [],
-   "flags": []
-  },
   "FR1712871948": {
    "built_on": [
     {
@@ -5664,15 +5691,6 @@
     },
     {
      "id": "FR1913470600",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -5990,15 +6008,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
@@ -6212,15 +6221,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1206061351",
      "as_declared": null,
      "certified": true,
@@ -6407,8 +6407,12 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2631154499",
+     "use": "Hosting for every service: Cloud Spanner, Cloud Run, Compute Engine, App Engine, BigQuery, Cloud Logging."
+    },
+    {
      "id": "FR2631258135",
-     "use": "Google Cloud Platform (Google Services) — primary hosting of all production infrastructure in project specset-prod-assured (Assured Workloads): GKE Autopilot, Cloud SQL, Cloud Storage, Memorystore, Cloud KMS, Cloud Load Balancing and Cloud Armor, Cloud Logging and Monitoring, Secret Manager, Artifact Registry, and Vertex AI (Gemini) model inference, embeddings and Web Grounding for Enterprise. Organizations in CUI mode use Vertex AI in the Assured Workloads project at location us only; other organizations use Vertex AI in a peer Google Cloud project, specbook-production, outside Assured Workloads. Stores and processes customer data. A third Google Cloud project, specbook-development, holds the development user-content buckets, development service identity and development vendor-key secrets; it sits outside Assured Workloads and inside the assessment scope because it shares integration credentials and software delivery with production. It does not handle federal customer data. A founder-run project-clone tool is built to copy a production project into the founder's local development environment on their laptop for debugging, not into this project (a full clone does not check that its object store is local), so a founder's laptop may hold customer content of organizations not in CUI mode. Specset enables CUI mode on any tenant provisioned for a federal customer before federal content is uploaded; the clone tool refuses any organization in CUI mode, for a full clone since 2026-10-12 and for a re-copy of an already-cloned project's files since 2026-10-13, and no organization now in CUI mode has been cloned. Two further Google Cloud projects are inside the assessment scope and hold no customer content: specset-dataroom, an investor data room with no connection to the offering, and vanta-scanner, which holds the compliance scanner's federated identity and read-only custom roles outside the boundary project."
+     "use": "Google Cloud Platform (Google Services) — primary hosting of all production infrastructure in project specset-prod-assured (Assured Workloads): GKE Autopilot, Cloud SQL, Cloud Storage, Memorystore, Cloud KMS, Cloud Load Balancing and Cloud Armor, Cloud Logging and Monitoring, Secret Manager, Artifact Registry, and Vertex AI (Gemini) model inference, embeddings and Web Grounding for Enterprise. Organizations in CUI mode use Vertex AI in the Assured Workloads project at location us only; other organizations use Vertex AI at location global (not US-only) in a peer Google Cloud project, specbook-production, outside Assured Workloads. Stores and processes customer data. A third Google Cloud project, specbook-development, holds the development user-content buckets, development service identity and development vendor-key secrets; it sits outside Assured Workloads and inside the assessment scope because it shares integration credentials and software delivery with production. It does not handle federal customer data. A founder-run project-clone tool is built to copy a production project into the founder's local development environment on their laptop for debugging, not into this project (a full clone does not check that its object store is local), so a founder's laptop may hold customer content of organizations not in CUI mode. Specset enables CUI mode on any tenant provisioned for a federal customer before federal content is uploaded; the clone tool refuses any organization in CUI mode, for a full clone since 2026-10-12 and for a re-copy of an already-cloned project's files since 2026-10-13, and no organization now in CUI mode has been cloned. Two further Google Cloud projects are inside the assessment scope and hold no customer content: specset-dataroom, an investor data room with no connection to the offering, and vanta-scanner, which holds the compliance scanner's federated identity and read-only custom roles outside the boundary project."
     },
     {
      "id": "FR2604643715",
@@ -6457,10 +6461,6 @@
     {
      "id": "FR2631258127",
      "use": "Google Cloud Platform products and underlying infrastructure."
-    },
-    {
-     "id": "FR2631154499",
-     "use": "Hosting for every service: Cloud Spanner, Cloud Run, Compute Engine, App Engine, BigQuery, Cloud Logging."
     },
     {
      "id": "FR2628647233",
@@ -7024,6 +7024,10 @@
      "id": "FR2501644859",
      "use": "",
      "source": "former_dependents"
+    },
+    {
+     "id": "FR1821856903",
+     "use": "Provides data warehousing and supports Analytics functionality of the Zendesk platform. Also serves as the SIEM for the trust boundary."
     }
    ],
    "hosts": [],
@@ -7084,15 +7088,6 @@
    "built_on": [
     {
      "id": "F1209051525",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -7487,15 +7482,6 @@
    "built_on": [
     {
      "id": "F1206081364",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -8354,6 +8340,74 @@
      "source": "former_dependents"
     },
     {
+     "id": "AGENCYAMAZONEW",
+     "as_declared": "AGENCYAMAZONEW",
+     "certified": true,
+     "use": "Provides the cloud infrastructure platform and services supporting the Zendesk for Government trust boundary. Zendesk inherits IaaS/PaaS controls from AWS according to its Customer Responsibility Matrix.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR1809360201",
+     "as_declared": "FR1809360201",
+     "certified": true,
+     "use": "Provides data warehousing and supports Analytics functionality of the Zendesk platform. Also serves as the SIEM for the trust boundary.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "F1512167750",
+     "as_declared": "F1512167750",
+     "certified": true,
+     "use": "Provides centralized identity and access management for Zendesk employees with access to the trust boundary.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2533155773",
+     "as_declared": "FR2533155773",
+     "certified": true,
+     "use": "Provides generative artifician intelligence and natural language processing services for the Zendesk platform.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2308034636A",
+     "as_declared": "FR2308034636A",
+     "certified": true,
+     "use": "Provides overarching cloud security posture management and vulnerability management capabilities.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "MongoDB Atlas",
+     "provider": "MongoDB, Inc.",
+     "certified": false,
+     "use": "Managed NoSQL document database service supporting application data for the offering, deployed in AWS US East / West."
+    },
+    {
+     "id": null,
+     "as_declared": "Datadog",
+     "provider": "Datadog, Inc.",
+     "certified": false,
+     "use": "Logging and monitoring platform for production services."
+    },
+    {
+     "id": null,
+     "as_declared": "Sentry",
+     "provider": "Functional Software, Inc.",
+     "certified": false,
+     "use": "Error reporting platform for production services."
+    },
+    {
+     "id": null,
+     "as_declared": "Cloudflare",
+     "provider": "Cloudflare, Inc.",
+     "certified": false,
+     "use": "Zendesk's edge proxy layer. Performs DNS, TLS termination, WAF, and rate limiting for customer traffic."
+    },
+    {
      "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
@@ -8385,201 +8439,8 @@
     {
      "id": "FR2632755834",
      "use": "Zendesk Customer Support and Help Desk Platform is used for customer support and help desk functions."
-    },
-    {
-     "id": "FR2106555313",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2403745080",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2031222637",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1814168113",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1923743650A",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2424553196",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2009476860A",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2530025267",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2220549818",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2014656304",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2000863987A",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2013059515",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2023864279A",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1932554201",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1834348080",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1919750997",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1831429369",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2122038682",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1718334757",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2201340492",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2218073444",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2524416446",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2432218524",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2313477206",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1605027892",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1722838693",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2425742814",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2002367706",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2213722684",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1918740338",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2134635186",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2433985791",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1924344515",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2308034636A",
-     "use": "",
-     "source": "former_dependents"
     }
    ],
-   "hosts": [],
-   "hosted_in": [],
-   "flags": [
-    {
-     "kind": "dependents_shown_as_resources",
-     "count": 34,
-     "text": "FedRAMP's page lists 34 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
-    }
-   ]
-  },
-  "FR1821933307": {
-   "built_on": [
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    }
-   ],
-   "used_by": [],
    "hosts": [],
    "hosted_in": [],
    "flags": []
@@ -8942,6 +8803,10 @@
      "use": "Slack — operational alerting and change-notification channel for the provider (infrastructure change notifications, security alerts), and delivery of prospect inquiries from the public website's contact form. Resource metadata and prospect contact details only; no customer content or customer-user data."
     },
     {
+     "id": "FR2702852019",
+     "use": "Operations alert visibility."
+    },
+    {
      "id": "FR2631654537",
      "use": "Slack (Moderate, Agency authorized). Internal team communication and collaboration."
     },
@@ -8956,6 +8821,10 @@
     {
      "id": "FR2631054539",
      "use": "Slack (Moderate, Agency authorized). Internal team communication and collaboration."
+    },
+    {
+     "id": "FR2618542150",
+     "use": "Slack has transformed business communication. It's the leading channels-based messaging platform, used by millions to align their teams, unify their systems, and drive their businesses forward. Only Slack offers a secure, enterprise-grade environment that can scale with the largest companies in the world. It is a new layer of the business technology stack where people can work together more effectively, connect all their other software tools and services, and find the information they need to do their best work. Slack is where work happens. Slack can support customers who are seeking both an Li-SaaS (FedRAMP low impact level) and FedRAMP Moderate impact level authorization or ATO. The Enterprise Grid plan is for customers who require compliance with FedRAMP Moderate. Enterprise Select is no longer offered as of 8/1/2025. Slack's Pro and Business+ plans are for customers who require compliance with FedRAMP Li-SaaS or Low."
     },
     {
      "id": "FR2525556241",
@@ -9330,6 +9199,10 @@
      "id": "FR2113557839",
      "use": "",
      "source": "former_dependents"
+    },
+    {
+     "id": "F1605107898",
+     "use": "Operations alert visibility."
     }
    ],
    "hosts": [],
@@ -9352,6 +9225,10 @@
     {
      "id": "FR2700754082",
      "use": "Microsoft 365 GCC High: administrator identity lifecycle and the FedRAMP Security Inbox (security@platformoneinc.com). Holds no federal customer data."
+    },
+    {
+     "id": "FR2618542150",
+     "use": "Microsoft 365 (M365) Government Community Cloud-High (GCC-H) is a product family of cloud-hosted messaging and collaboration services. These cloud-based services are designed to provide organizations with streamlined communication, high availability, comprehensive security, and simplified information technology (IT) management. M365 GCC-H provides the interactivity of on-premises client and server applications with the flexibility and scalability of web-based services. M365 leverages Azure as the IaaS/PaaS for the underlying infrastructure and hardware. Therefore, M365 relies on Azure-inherited services. For more information on these Azure services, refer to the Azure ATO package. Federal agencies interested in collaborative continuous monitoring with Microsoft should reach out to: M365CollabConMon@microsoft.com"
     },
     {
      "id": "FR2035056105",
@@ -9565,15 +9442,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1607057910",
      "as_declared": null,
      "certified": true,
@@ -9739,15 +9607,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
@@ -9820,15 +9679,6 @@
     },
     {
      "id": "F1508207205",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -9998,15 +9848,6 @@
     },
     {
      "id": "F1302201919",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -10562,15 +10403,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1719759604",
      "as_declared": null,
      "certified": true,
@@ -10800,15 +10632,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1206061353",
      "as_declared": null,
      "certified": true,
@@ -10826,6 +10649,10 @@
     {
      "id": "FR2628647233",
      "use": "FedRAMP-authorized Endpoint Detection and Response (EDR) providing continuous threat monitoring and response for the DZTE service infrastructure and administrative endpoints."
+    },
+    {
+     "id": "FR2618542150",
+     "use": "The SentinelOne Singularity platform is a unified, cloud-delivered security platform that provides customers with automation, endpoint detection and response and security information and event management (SIEM) capabilities integrated with a unified data lake to ingest and centralize structured and unstructured data. SentinelOne leverages advanced machine learning algorithms and behavioral AI to analyze and automatically contextualize endpoint data collected across Windows, macOS, Linux, and Cloud Workloads. Data is contextualized and correlated into our patented Storylines technology, which accelerates triage and reduces mean time to detect/respond. Data is organized into a cohesive threat narrative which allows analysts to easily identify threat-related events as well as pivot and hunt to scope threat tactics, techniques, and impact. This gives our customers the ability to quickly stop ransomware and cyber attacks at machine speed with 1-click automated remediation and rollback of malicious activities and changes. Additionally, SentinelOne offers world-class managed detection and response (MDR), digital forensics and incident response (DFIR), and threat hunting services. Our MDR service not only augments security teams by triaging active or suspicious alerts and mitigating and blocking threats as needed, but also keeps them informed and protected from global advanced persistent threat (APT) campaigns, novel attacker techniques, and emerging trends in cybercrime with included threat hunting services. Customers can also call on SentinelOne's integrated DFIR team for deeper forensic analysis of an event and assistance with incident response. Singularity Cloud Native Security (CNS) is an agentless CNAPP capability for protecting cloud environments and assets. Combined with our agent-based Cloud Workload Security capabilities, agencies have a comprehensive build-time to run-time security solution for their cloud infrastructure. CNS leverages a unique offensive security engine to prioritize vulnerabilities and misconfigurations that are truly exploitable to save time for SOC analysts in triage and investigation efforts CNS includes full capabilities covering CSPM, CIEM, KSPM, IAC Scanning, Secrets Scanning, CDR, and CWP use cases and security requirements. Singularity Hyperautomation is a powerful no-code automation solution for streamlining security operations, accelerating threat response, and boosting operational efficiency for security operations teams. Hyperautomation offers analysts the ability to build multi-step automation playbooks taking advantage of unified workflows, pre-built integrations, out-of-the-box templates, and flexible customizations for simplifying delivery of SOAR capabilities from within the unified Singularity platform. Purple AI is an agentic-AI powered capability to enable security analysts to detect earlier, respond faster, and stay ahead of modern attacks and threat actors. Integrating innovative LLM, Generative AI, and Natural Language processing technologies, Purple AI is a force multiplier for analysts by reducing manual triage and investigation and, with informed reasoning and decision making, unlocking the ability to take action with human oversight and governance. Purple AI simplifies the complex, amplifies every analyst, and delivers autonomous responses to accelerate security operations. The following SentinelOne Singularity Platform services are FedRAMP High Authorized: -Cloud Funnel -Cloud Workload Protection (CWP) -Digital Forensics & Incident Response (DFIR) services -Endpoint Detection and Response (EDR) -Endpoint Protection Platform (EPP) -Extended Detection and Response (XDR) -Purple AI Foundations for Public Sector -RemoteOps and RemoteOps Forensics -SentineOne Agent (Windows, macOS, Linux, and cloud-native Kubernetes) -SentinelOne Management Console -Singularity Cloud Native Security (CNS) -Singularity Data Lake -Singularity Hyperautomation -Singularity Marketplace -Singularity Network Discovery -Singularity Operations Center (OpsCenter) -Singularity Threat Intelligence -Singularity Vulnerability Management -Vigilance Managed Detection and Response (MDR) services -WatchTower and WatchTower Pro Threat Hunting services"
     },
     {
      "id": "FR2403745080",
@@ -10919,15 +10746,6 @@
     },
     {
      "id": "FR1823447014",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -11066,15 +10884,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1607057910",
      "as_declared": null,
      "certified": true,
@@ -11101,15 +10910,6 @@
   "FR1924344515": {
    "built_on": [
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1603087869",
      "as_declared": null,
      "certified": true,
@@ -11120,15 +10920,6 @@
     },
     {
      "id": "FR1812058188",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -11277,15 +11068,6 @@
   "FR1932554201": {
    "built_on": [
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
@@ -11372,15 +11154,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -11430,15 +11203,6 @@
     },
     {
      "id": "FR1823447014",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -11542,15 +11306,6 @@
    "built_on": [
     {
      "id": "F1512167750",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -11710,15 +11465,6 @@
     },
     {
      "id": "FR1913470600",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -11962,15 +11708,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1209051525",
      "as_declared": null,
      "certified": true,
@@ -12050,15 +11787,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1512167750",
      "as_declared": null,
      "certified": true,
@@ -12095,15 +11823,6 @@
     },
     {
      "id": "FR1823447014",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -12166,15 +11885,6 @@
     },
     {
      "id": "F1209051525",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -12431,15 +12141,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -12460,15 +12161,6 @@
     },
     {
      "id": "FR1823447014",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -12548,15 +12240,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -12586,15 +12269,6 @@
     },
     {
      "id": "FR1823447014",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -12739,15 +12413,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -12795,15 +12460,6 @@
     },
     {
      "id": "F1508207205",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -12858,15 +12514,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1607057910",
      "as_declared": null,
      "certified": true,
@@ -12886,15 +12533,6 @@
     },
     {
      "id": "F1209051525",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -12921,15 +12559,6 @@
     },
     {
      "id": "F1512167750",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -12991,15 +12620,6 @@
     },
     {
      "id": "F1609267945",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -13138,15 +12758,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -13217,15 +12828,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -13273,32 +12875,6 @@
     },
     {
      "id": "F1508207205",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    }
-   ],
-   "used_by": [],
-   "hosts": [],
-   "hosted_in": [],
-   "flags": []
-  },
-  "FR2100740435": {
-   "built_on": [
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -13645,15 +13221,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1209051525",
      "as_declared": null,
      "certified": true,
@@ -13682,15 +13249,6 @@
     },
     {
      "id": "F1508207205",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -13838,15 +13396,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -13867,15 +13416,6 @@
     },
     {
      "id": "F1305072116",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -14124,6 +13664,10 @@
     {
      "id": "FR2633841585",
      "use": "Keeper Security Government Cloud stores staff credentials, occasionally including credentials a customer supplies, and provides the one-time codes and passkeys staff use to sign in."
+    },
+    {
+     "id": "FR2618542150",
+     "use": "Keeper Security Government Cloud is a FedRAMP and StateRAMP Authorized zero-knowledge, zero-trust platform for password, secrets and privileged access management, hosted in AWS GovCloud for U.S. federal, state and local agencies. It gives agencies encrypted credential vaults, secrets management for DevOps and infrastructure, privileged session management and audit reporting, which supports controls such as IA-5 authenticator management and AC-2 account management."
     }
    ],
    "hosts": [],
@@ -14186,15 +13730,6 @@
     },
     {
      "id": "F1512167750",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -14411,15 +13946,6 @@
   },
   "FR2122038682": {
    "built_on": [
-    {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
     {
      "id": "F1508207205",
      "as_declared": null,
@@ -14690,15 +14216,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -14719,15 +14236,6 @@
     },
     {
      "id": "F1512167750",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -14841,15 +14349,6 @@
     },
     {
      "id": "FR1913470600",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -15178,15 +14677,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -15207,15 +14697,6 @@
     },
     {
      "id": "FR1913470600",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -15427,15 +14908,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1919750997",
      "as_declared": null,
      "certified": true,
@@ -15507,15 +14979,6 @@
     },
     {
      "id": "F1209051525",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -15654,15 +15117,6 @@
    "built_on": [
     {
      "id": "F1209051525",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -15996,15 +15450,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1512167750",
      "as_declared": null,
      "certified": true,
@@ -16085,15 +15530,6 @@
     },
     {
      "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -16200,15 +15636,6 @@
     },
     {
      "id": "F1206081364",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -16380,15 +15807,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1607057910",
      "as_declared": null,
      "certified": true,
@@ -16475,15 +15893,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -16531,15 +15940,6 @@
     },
     {
      "id": "FR1812058188",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -16703,15 +16103,6 @@
     },
     {
      "id": "F1603087869",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -17160,15 +16551,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -17216,15 +16598,6 @@
     },
     {
      "id": "F1512167750",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -17530,15 +16903,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -17593,15 +16957,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1209051525",
      "as_declared": null,
      "certified": true,
@@ -17632,6 +16987,10 @@
     {
      "id": "FR2619254906",
      "use": "Wiz for U.S. Government, FedRAMP High. Cloud security posture management and agentless vulnerability scanning of the VulcanGov AWS GovCloud (US) environment."
+    },
+    {
+     "id": "FR1821856903",
+     "use": "Provides overarching cloud security posture management and vulnerability management capabilities."
     }
    ],
    "hosts": [],
@@ -17826,6 +17185,10 @@
    ],
    "used_by": [
     {
+     "id": "FR2618542150",
+     "use": "The PagerDuty Operations Cloud is a comprehensive platform that enables automated detection, diagnosis, and response to a wide range of events, including customer support alerts, suspicious or abnormal behavior, system disruptions, and performance-impacting incidents. By leveraging advanced event orchestration and intelligent aggregation features, PagerDuty enhances the signal-to-noise ratio, allowing organizations to prioritize critical alerts while minimizing distractions from less significant events. With automated actions, the platform can trigger predefined workflows before human intervention is needed, accelerating resolution times and ensuring seamless incident management. On-call scheduling capabilities ensure continuous 24/7 coverage of critical activities, empowering teams to swiftly triage events, including customer support tickets, system alerts, and operational disruptions, and effectively mobilize the appropriate responders to manage incident resolution and recovery. Real-time status updates and external-facing status pages keep stakeholders informed throughout the resolution process."
+    },
+    {
      "id": "FR2527132001",
      "use": "",
      "source": "former_dependents"
@@ -17979,15 +17342,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -18025,15 +17379,6 @@
    "built_on": [
     {
      "id": "FR2122150307",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -18582,15 +17927,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -18646,15 +17982,6 @@
     },
     {
      "id": "F1209051525",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -19148,23 +18475,6 @@
    "hosted_in": [],
    "flags": []
   },
-  "FR2333756970": {
-   "built_on": [
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    }
-   ],
-   "used_by": [],
-   "hosts": [],
-   "hosted_in": [],
-   "flags": []
-  },
   "FR2334748657": {
    "built_on": [
     {
@@ -19422,15 +18732,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1301101857",
      "as_declared": null,
      "certified": true,
@@ -19552,15 +18853,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -19581,15 +18873,6 @@
     },
     {
      "id": "FR1918150046",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -19805,15 +19088,6 @@
    "built_on": [
     {
      "id": "F1512167750",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -20293,15 +19567,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -20345,15 +19610,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -20389,15 +19645,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -20409,15 +19656,6 @@
    "built_on": [
     {
      "id": "F1512167750",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -20529,15 +19767,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [
@@ -20603,15 +19832,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -20664,15 +19884,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -20684,15 +19895,6 @@
    "built_on": [
     {
      "id": "FR1814276801",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -20760,15 +19962,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -20807,15 +20000,6 @@
     },
     {
      "id": "F1512167750",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -20869,15 +20053,6 @@
     },
     {
      "id": "F1506096710",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -20946,6 +20121,10 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2704160192",
+     "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes including compliance planning, solution implementation, gap assessments, and continuous reporting. Civic uses Paramify Cloud to manage its FedRAMP compliance program and to host its FedRAMP Trust Center. Paramify Cloud publishes Civic's Certification Package Overview and other certification deliverables, and manages agency access requests for restricted deliverables. Paramify Cloud does not store or process Civic customer data."
+    },
+    {
      "id": "FR2703560539",
      "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes including compliance planning, solution implementation, gap assessments, and continuous reporting. Knocknoc uses Paramify Cloud to manage its FedRAMP compliance program and to host its FedRAMP Trust Center. Paramify Cloud publishes Knocknoc’s Certification Package Overview and other certification deliverables, and manages agency access requests for restricted deliverables. Paramify Cloud does not store or process Knocknoc customer data."
     },
@@ -20956,6 +20135,10 @@
     {
      "id": "FR2633957417",
      "use": "Supports security authorization, control documentation, and compliance management activities for the CSO."
+    },
+    {
+     "id": "FR2618542150",
+     "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes - including compliance planning, solution implementation, gap assessments, and continuous reporting - for cloud service providers, government agencies, and members of the Defense Industrial Base (DIB). Trusted by leading CSPs like Adobe, Cisco, Trellix, Palo Alto Networks, and Flock Safety. Living Gap Assessment Visualize compliance progress with Paramify's intuitive real-time dashboard. Track controls, manage gaps, and easily organize people, places, and components, ensuring audit readiness for FedRAMP 20X, GovRAMP, and other frameworks. Instant Audit-Ready Documentation Automate compliance, generate audit-ready deliverables like System Security Plans (SSPs), POA&Ms, and Customer Responsibility Matrices in days, not months. Continuously validate compliance with real-time automated validation tools for FedRAMP 20X and other frameworks. Fast, Cost-Effective Monitoring Continuously monitor, validate, and report compliance 90% faster at a quarter of the cost. Paramify's automated tools and Evidence Repository simplify compliance, reducing costs and enhancing efficiency. Integrated with issue management tools like Jira, it streamlines workflows, helping you meet tight deadlines."
     }
    ],
    "hosts": [],
@@ -20965,6 +20148,10 @@
   "FR2428769635XL": {
    "built_on": [],
    "used_by": [
+    {
+     "id": "FR2702852019",
+     "use": "GRC platform and Trust Center."
+    },
     {
      "id": "FR2700857472",
      "use": "Governance, risk, and compliance platform where CLEATUS maintains its security plan, certification package, and control evidence. It receives approved compliance evidence from in-boundary collectors and holds no customer data."
@@ -20996,6 +20183,10 @@
     {
      "id": "FR2631054533",
      "use": "Paramify Cloud: control implementation records and evidence for the FedRAMP Certification Package; no federal customer data."
+    },
+    {
+     "id": "F1605107898",
+     "use": "GRC platform and Trust Center."
     }
    ],
    "hosts": [],
@@ -21235,25 +20426,7 @@
   "FR2432218524": {
    "built_on": [
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1603087869",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -21360,15 +20533,6 @@
     },
     {
      "id": "FR1918740338",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -22007,15 +21171,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [
@@ -22278,15 +21433,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -22341,25 +21487,7 @@
   "FR2524416446": {
    "built_on": [
     {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1603087869",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "MSO365MT",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -22756,7 +21884,12 @@
      "source": "former_dependents"
     }
    ],
-   "used_by": [],
+   "used_by": [
+    {
+     "id": "FR2618542150",
+     "use": "Knox Systems provides a FedRAMP-authorized, multi-tenant cloud platform that delivers commercial software to federal customers on managed infrastructure across AWS, Azure and Google Cloud Platform. Knox handles 24/7 security and network operations for the workloads it hosts, including continuous monitoring, vulnerability scanning, patch management and incident response. SpaceXSI uses Knox only for Upwind, our cloud security monitoring service, and no other Knox-hosted offering is part of our system."
+    }
+   ],
    "hosts": [
     {
      "name": "Adobe Connect",
@@ -23018,15 +22151,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -23045,12 +22169,11 @@
      "listed": true
     },
     {
-     "id": "MSO365MT",
+     "id": null,
      "as_declared": "MSO365MT",
      "certified": true,
      "use": "Change Authorization Record, incident records, compliance artifacts (Microsoft 365 GCC)",
-     "resolved": "id",
-     "listed": true
+     "resolved": "unresolved"
     },
     {
      "id": "FR2000863987A",
@@ -23078,7 +22201,12 @@
    "used_by": [],
    "hosts": [],
    "hosted_in": [],
-   "flags": []
+   "flags": [
+    {
+     "kind": "certified_resource_not_found",
+     "text": "Declares \"MSO365MT\" as a FedRAMP Certified resource; no listing by that name or ID"
+    }
+   ]
   },
   "FR2533155773": {
    "built_on": [],
@@ -23094,6 +22222,10 @@
     {
      "id": "FR2632054530",
      "use": "OpenAI API Platform: primary summarization (GPT-4o / GPT-4.1) via the dedicated gov.api.openai.com endpoint."
+    },
+    {
+     "id": "FR1821856903",
+     "use": "Provides generative artifician intelligence and natural language processing services for the Zendesk platform."
     }
    ],
    "hosts": [],
@@ -23383,6 +22515,103 @@
    ],
    "flags": []
   },
+  "FR2618542150": {
+   "built_on": [
+    {
+     "id": "FR2528033654",
+     "as_declared": "Knox Systems FedRAMP High Managed Platform",
+     "certified": true,
+     "use": "Knox Systems provides a FedRAMP-authorized, multi-tenant cloud platform that delivers commercial software to federal customers on managed infrastructure across AWS, Azure and Google Cloud Platform. Knox handles 24/7 security and network operations for the workloads it hosts, including continuous monitoring, vulnerability scanning, patch management and incident response. SpaceXSI uses Knox only for Upwind, our cloud security monitoring service, and no other Knox-hosted offering is part of our system.",
+     "resolved": "name",
+     "listed": true
+    },
+    {
+     "id": "FR1824057433",
+     "as_declared": "Microsoft 365 Government Community Cloud-High",
+     "certified": true,
+     "use": "Microsoft 365 (M365) Government Community Cloud-High (GCC-H) is a product family of cloud-hosted messaging and collaboration services. These cloud-based services are designed to provide organizations with streamlined communication, high availability, comprehensive security, and simplified information technology (IT) management. M365 GCC-H provides the interactivity of on-premises client and server applications with the flexibility and scalability of web-based services. M365 leverages Azure as the IaaS/PaaS for the underlying infrastructure and hardware. Therefore, M365 relies on Azure-inherited services. For more information on these Azure services, refer to the Azure ATO package. Federal agencies interested in collaborative continuous monitoring with Microsoft should reach out to: M365CollabConMon@microsoft.com",
+     "resolved": "name",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "Okta GHC",
+     "certified": true,
+     "use": "Okta for Government High service offering provides centralized identity and access management capabilities to customers who want to manage access across any application or device, whether they are on-premises in the customer's office/data center or in the cloud. The Okta IDaaS platform is the primary application platform provided to customers. The IDaaS application provides several important features/capabilities, which are listed below. - Universal Directory: Okta Universal Directory provides a single view across all these groups with AD and LDAP directory integrations and out-of-the-box connections with HR systems, CSV files, and third-party IdPs. Integration with Applications: Okta comes with pre-integrated applications that customers can select to allow their users to access them through the Okta Integration Network, either in their enterprise or in a cloud - Okta API Integration: Customers can also integrate their own applications with Okta API - Okta Sign-In Widget (SIW): SIW is the out of the box end user experience that our customers can deploy in an Okta hosted environment. SIW provides configurable user registration, sign in and recovery experience. - Okta Software Development Kit (SDKs): SDKs allow customers to build their own identity experience using Okta as a back end. - Okta Customer Organization Logging: Okta's prebuilt monitoring, logging, and reporting tools make it easy to analyze security posture, user access events, lifecycle management transitions, security risks and other identity-related data. - Okta Admin Dashboard: Okta's Admin Dashboard provides central administration and provisioning of users and the applications they can access. - Adaptive Multi-Factor Authentication (aMFA): Adaptive MFA provides an additional layer of security for access control, which gives Okta customers the ability to create contextual access policies that assess risk factors such as device, network, location, travel, IP, and other context at each step of the authentication process. Single Sign-On (SSO): Okta SSO creates a seamless user experience by providing single sign-on to all the web and mobile applications users need to access. - Okta Verify: Okta Verify is Okta's native desktop and mobile application that can be used for mobile client-based MFA authentication. Okta Verify supports the following authentication mechanisms against a customers' organization: Time-based One-time Password (TOTP), Okta Push Challenge-Response, and Okta FastPass (signed once challenge) - Okta FastPass - NIST 800-63B AAL2/AAL3 authenticator",
+     "resolved": "unresolved"
+    },
+    {
+     "id": "FR2310974411",
+     "as_declared": "PagerDuty Operations Cloud",
+     "certified": true,
+     "use": "The PagerDuty Operations Cloud is a comprehensive platform that enables automated detection, diagnosis, and response to a wide range of events, including customer support alerts, suspicious or abnormal behavior, system disruptions, and performance-impacting incidents. By leveraging advanced event orchestration and intelligent aggregation features, PagerDuty enhances the signal-to-noise ratio, allowing organizations to prioritize critical alerts while minimizing distractions from less significant events. With automated actions, the platform can trigger predefined workflows before human intervention is needed, accelerating resolution times and ensuring seamless incident management. On-call scheduling capabilities ensure continuous 24/7 coverage of critical activities, empowering teams to swiftly triage events, including customer support tickets, system alerts, and operational disruptions, and effectively mobilize the appropriate responders to manage incident resolution and recovery. Real-time status updates and external-facing status pages keep stakeholders informed throughout the resolution process.",
+     "resolved": "name",
+     "listed": true
+    },
+    {
+     "id": "FR2428769635",
+     "as_declared": "Paramify Cloud - 20x Moderate",
+     "certified": true,
+     "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes - including compliance planning, solution implementation, gap assessments, and continuous reporting - for cloud service providers, government agencies, and members of the Defense Industrial Base (DIB). Trusted by leading CSPs like Adobe, Cisco, Trellix, Palo Alto Networks, and Flock Safety. Living Gap Assessment Visualize compliance progress with Paramify's intuitive real-time dashboard. Track controls, manage gaps, and easily organize people, places, and components, ensuring audit readiness for FedRAMP 20X, GovRAMP, and other frameworks. Instant Audit-Ready Documentation Automate compliance, generate audit-ready deliverables like System Security Plans (SSPs), POA&Ms, and Customer Responsibility Matrices in days, not months. Continuously validate compliance with real-time automated validation tools for FedRAMP 20X and other frameworks. Fast, Cost-Effective Monitoring Continuously monitor, validate, and report compliance 90% faster at a quarter of the cost. Paramify's automated tools and Evidence Repository simplify compliance, reducing costs and enhancing efficiency. Integrated with issue management tools like Jira, it streamlines workflows, helping you meet tight deadlines.",
+     "resolved": "name",
+     "listed": true
+    },
+    {
+     "id": "FR1919071020A",
+     "as_declared": "SentinelOne Singularity Platform High",
+     "certified": true,
+     "use": "The SentinelOne Singularity platform is a unified, cloud-delivered security platform that provides customers with automation, endpoint detection and response and security information and event management (SIEM) capabilities integrated with a unified data lake to ingest and centralize structured and unstructured data. SentinelOne leverages advanced machine learning algorithms and behavioral AI to analyze and automatically contextualize endpoint data collected across Windows, macOS, Linux, and Cloud Workloads. Data is contextualized and correlated into our patented Storylines technology, which accelerates triage and reduces mean time to detect/respond. Data is organized into a cohesive threat narrative which allows analysts to easily identify threat-related events as well as pivot and hunt to scope threat tactics, techniques, and impact. This gives our customers the ability to quickly stop ransomware and cyber attacks at machine speed with 1-click automated remediation and rollback of malicious activities and changes. Additionally, SentinelOne offers world-class managed detection and response (MDR), digital forensics and incident response (DFIR), and threat hunting services. Our MDR service not only augments security teams by triaging active or suspicious alerts and mitigating and blocking threats as needed, but also keeps them informed and protected from global advanced persistent threat (APT) campaigns, novel attacker techniques, and emerging trends in cybercrime with included threat hunting services. Customers can also call on SentinelOne's integrated DFIR team for deeper forensic analysis of an event and assistance with incident response. Singularity Cloud Native Security (CNS) is an agentless CNAPP capability for protecting cloud environments and assets. Combined with our agent-based Cloud Workload Security capabilities, agencies have a comprehensive build-time to run-time security solution for their cloud infrastructure. CNS leverages a unique offensive security engine to prioritize vulnerabilities and misconfigurations that are truly exploitable to save time for SOC analysts in triage and investigation efforts CNS includes full capabilities covering CSPM, CIEM, KSPM, IAC Scanning, Secrets Scanning, CDR, and CWP use cases and security requirements. Singularity Hyperautomation is a powerful no-code automation solution for streamlining security operations, accelerating threat response, and boosting operational efficiency for security operations teams. Hyperautomation offers analysts the ability to build multi-step automation playbooks taking advantage of unified workflows, pre-built integrations, out-of-the-box templates, and flexible customizations for simplifying delivery of SOAR capabilities from within the unified Singularity platform. Purple AI is an agentic-AI powered capability to enable security analysts to detect earlier, respond faster, and stay ahead of modern attacks and threat actors. Integrating innovative LLM, Generative AI, and Natural Language processing technologies, Purple AI is a force multiplier for analysts by reducing manual triage and investigation and, with informed reasoning and decision making, unlocking the ability to take action with human oversight and governance. Purple AI simplifies the complex, amplifies every analyst, and delivers autonomous responses to accelerate security operations. The following SentinelOne Singularity Platform services are FedRAMP High Authorized: -Cloud Funnel -Cloud Workload Protection (CWP) -Digital Forensics & Incident Response (DFIR) services -Endpoint Detection and Response (EDR) -Endpoint Protection Platform (EPP) -Extended Detection and Response (XDR) -Purple AI Foundations for Public Sector -RemoteOps and RemoteOps Forensics -SentineOne Agent (Windows, macOS, Linux, and cloud-native Kubernetes) -SentinelOne Management Console -Singularity Cloud Native Security (CNS) -Singularity Data Lake -Singularity Hyperautomation -Singularity Marketplace -Singularity Network Discovery -Singularity Operations Center (OpsCenter) -Singularity Threat Intelligence -Singularity Vulnerability Management -Vigilance Managed Detection and Response (MDR) services -WatchTower and WatchTower Pro Threat Hunting services",
+     "resolved": "name",
+     "listed": true
+    },
+    {
+     "id": "FR1823447014",
+     "as_declared": "Slack",
+     "certified": true,
+     "use": "Slack has transformed business communication. It's the leading channels-based messaging platform, used by millions to align their teams, unify their systems, and drive their businesses forward. Only Slack offers a secure, enterprise-grade environment that can scale with the largest companies in the world. It is a new layer of the business technology stack where people can work together more effectively, connect all their other software tools and services, and find the information they need to do their best work. Slack is where work happens. Slack can support customers who are seeking both an Li-SaaS (FedRAMP low impact level) and FedRAMP Moderate impact level authorization or ATO. The Enterprise Grid plan is for customers who require compliance with FedRAMP Moderate. Enterprise Select is no longer offered as of 8/1/2025. Slack's Pro and Business+ plans are for customers who require compliance with FedRAMP Li-SaaS or Low.",
+     "resolved": "name",
+     "listed": true
+    },
+    {
+     "id": "FR2116544598A",
+     "as_declared": "Keeper",
+     "certified": true,
+     "use": "Keeper Security Government Cloud is a FedRAMP and StateRAMP Authorized zero-knowledge, zero-trust platform for password, secrets and privileged access management, hosted in AWS GovCloud for U.S. federal, state and local agencies. It gives agencies encrypted credential vaults, secrets management for DevOps and infrastructure, privileged session management and audit reporting, which supports controls such as IA-5 authenticator management and AC-2 account management.",
+     "resolved": "name (partial)",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "Linear",
+     "provider": "Linear Orbit, Inc.",
+     "certified": false,
+     "use": "A software development project management component that enables users to create and manage tasks and projects, assign responsibilities, and track progress."
+    },
+    {
+     "id": null,
+     "as_declared": "Origin",
+     "provider": "Cursor",
+     "certified": false,
+     "use": "A code collaboration and version control component provided by Cursor that enables teams to securely store and manage source code."
+    },
+    {
+     "id": null,
+     "as_declared": "Cloudflare",
+     "provider": "Cloudflare, Inc.",
+     "certified": false,
+     "use": "Public DNS service provider."
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": [
+    {
+     "kind": "certified_resource_not_found",
+     "text": "Declares \"Okta GHC\" as a FedRAMP Certified resource; no listing by that name or ID"
+    }
+   ]
+  },
   "FR2618738935": {
    "built_on": [
     {
@@ -23413,7 +22642,7 @@
      "id": "F1603047866",
      "as_declared": "F1603047866",
      "certified": true,
-     "use": "AWS GovCloud (US), FedRAMP High. Infrastructure hosting: VulcanGov infrastructure and federal customer data reside in AWS GovCloud (US), apart from the disclosed cross-boundary resources listed here.",
+     "use": "AWS GovCloud (US), FedRAMP High. Infrastructure hosting and, since 2026-11-11, model inference (Amazon Bedrock, Anthropic Claude models in us-gov-east-1 and us-gov-west-1; model invocation logging is not enabled). VulcanGov infrastructure and federal customer data reside in AWS GovCloud (US), apart from the disclosed cross-boundary resources listed here.",
      "resolved": "id",
      "listed": true
     },
@@ -23421,15 +22650,7 @@
      "id": "AGENCYAMAZONEW",
      "as_declared": "AGENCYAMAZONEW",
      "certified": true,
-     "use": "AWS US East/West, FedRAMP Moderate. AWS Bedrock-powered model inference for the platform's AI features through US cross-region inference profiles that route only to us-east-1, us-east-2 and us-west-2, reached only through the platform's documented transport bridge. Bedrock receives user prompts and the content supplied with them and returns model output; model invocation logging is not enabled in the bridge account, so prompts and outputs are not retained there.",
-     "resolved": "id",
-     "listed": true
-    },
-    {
-     "id": "AGENCYAMAZONEW",
-     "as_declared": "AGENCYAMAZONEW",
-     "certified": true,
-     "use": "AWS US East/West, FedRAMP Moderate. Amazon Bedrock AgentCore managed web search (AgentCore Web Search Tool), reached only through the platform's documented transport bridge.",
+     "use": "AWS US East/West, FedRAMP Moderate. Not used for inference since 2026-11-11: inference runs in AWS GovCloud (US), and managed web search is off. Bridge retirement: the GovCloud VPN path was removed on 2026-11-12. The commercial gateways, log collector, fetcher and associated connectivity were removed by 2026-11-13. The account remains in scope for retained logs, administrative records and dormant network configuration; it no longer provides inference or web-fetch workloads.",
      "resolved": "id",
      "listed": true
     },
@@ -23614,10 +22835,10 @@
     },
     {
      "id": null,
-     "as_declared": "Amazon Route 53 (commercial account)",
+     "as_declared": "Amazon Route 53 (AWS GovCloud account)",
      "provider": "Amazon Web Services",
      "certified": false,
-     "use": "Authoritative DNS for enablement.cc. Route 53 is not available in GovCloud, so the zone is hosted in the commercial account. DNS carries no customer data."
+     "use": "Authoritative public DNS for enablement.cc and enablement.us, served by Route 53 in the AWS GovCloud account (checked from public DNS on 2026-11-12). DNS carries no customer data."
     },
     {
      "id": null,
@@ -24242,7 +23463,7 @@
      "id": "FR1805751477",
      "as_declared": "FR1805751477",
      "certified": true,
-     "use": "Google Cloud Platform (Google Services) — primary hosting of all production infrastructure in project specset-prod-assured (Assured Workloads): GKE Autopilot, Cloud SQL, Cloud Storage, Memorystore, Cloud KMS, Cloud Load Balancing and Cloud Armor, Cloud Logging and Monitoring, Secret Manager, Artifact Registry, and Vertex AI (Gemini) model inference, embeddings and Web Grounding for Enterprise. Organizations in CUI mode use Vertex AI in the Assured Workloads project at location us only; other organizations use Vertex AI in a peer Google Cloud project, specbook-production, outside Assured Workloads. Stores and processes customer data. A third Google Cloud project, specbook-development, holds the development user-content buckets, development service identity and development vendor-key secrets; it sits outside Assured Workloads and inside the assessment scope because it shares integration credentials and software delivery with production. It does not handle federal customer data. A founder-run project-clone tool is built to copy a production project into the founder's local development environment on their laptop for debugging, not into this project (a full clone does not check that its object store is local), so a founder's laptop may hold customer content of organizations not in CUI mode. Specset enables CUI mode on any tenant provisioned for a federal customer before federal content is uploaded; the clone tool refuses any organization in CUI mode, for a full clone since 2026-10-12 and for a re-copy of an already-cloned project's files since 2026-10-13, and no organization now in CUI mode has been cloned. Two further Google Cloud projects are inside the assessment scope and hold no customer content: specset-dataroom, an investor data room with no connection to the offering, and vanta-scanner, which holds the compliance scanner's federated identity and read-only custom roles outside the boundary project.",
+     "use": "Google Cloud Platform (Google Services) — primary hosting of all production infrastructure in project specset-prod-assured (Assured Workloads): GKE Autopilot, Cloud SQL, Cloud Storage, Memorystore, Cloud KMS, Cloud Load Balancing and Cloud Armor, Cloud Logging and Monitoring, Secret Manager, Artifact Registry, and Vertex AI (Gemini) model inference, embeddings and Web Grounding for Enterprise. Organizations in CUI mode use Vertex AI in the Assured Workloads project at location us only; other organizations use Vertex AI at location global (not US-only) in a peer Google Cloud project, specbook-production, outside Assured Workloads. Stores and processes customer data. A third Google Cloud project, specbook-development, holds the development user-content buckets, development service identity and development vendor-key secrets; it sits outside Assured Workloads and inside the assessment scope because it shares integration credentials and software delivery with production. It does not handle federal customer data. A founder-run project-clone tool is built to copy a production project into the founder's local development environment on their laptop for debugging, not into this project (a full clone does not check that its object store is local), so a founder's laptop may hold customer content of organizations not in CUI mode. Specset enables CUI mode on any tenant provisioned for a federal customer before federal content is uploaded; the clone tool refuses any organization in CUI mode, for a full clone since 2026-10-12 and for a re-copy of an already-cloned project's files since 2026-10-13, and no organization now in CUI mode has been cloned. Two further Google Cloud projects are inside the assessment scope and hold no customer content: specset-dataroom, an investor data room with no connection to the offering, and vanta-scanner, which holds the compliance scanner's federated identity and read-only custom roles outside the boundary project.",
      "resolved": "id",
      "listed": true
     },
@@ -24250,7 +23471,15 @@
      "id": "AGENCYAMAZONEW",
      "as_declared": "AGENCYAMAZONEW",
      "certified": true,
-     "use": "AWS US East/West — supporting services: Amazon SES (outbound transactional email and, since 2026-10-29, email received for project addresses), Route 53 (DNS), S3 (CI build cache, CloudTrail audit logs, a legacy database-backup bucket from the pre-2026 hosting platform, and received email), SQS (received-email notifications), GuardDuty (threat detection), and Amazon Bedrock (Claude model inference entered in us-west-2 through global cross-Region inference profiles, which may process requests in any AWS commercial Region; for organizations not in CUI mode only; prompts may include customer document text). For an organization not in CUI mode, notification bodies may carry project content, and a submittal-review notification attaches the marked-up review PDF (on unless the project turns it off) and the review spreadsheet (off unless the project turns it on). Since 2026-10-21 05:32 UTC an organization in CUI mode receives, in place of each notification that can carry project content, a notice with a link and no project content or attachment; the link resolves only for an authenticated member of the organization. Since 2026-10-29 Amazon SES also receives email for project addresses (projects.specset.com): SES accepts the message outside the boundary, scans it, writes it to a KMS-encrypted S3 bucket in the same account and notifies an encrypted SQS queue, and the workers read the queue and the object and delete them. Project addresses are only for organizations with the project email feature and never for organizations in CUI mode; no organization has the feature as of 2026-10-30, and the bucket deletes a message after four days.",
+     "use": "AWS US East/West — supporting services: Amazon SES (outbound transactional email and, since 2026-10-29, email received for project addresses), Route 53 (DNS), S3 (CI build cache, CloudTrail audit logs, and received email), SQS (received-email notifications), GuardDuty (threat detection), and Amazon Bedrock (Claude model inference entered in us-west-2 through global cross-Region inference profiles, which may process requests in any AWS commercial Region; for organizations not in CUI mode only; prompts may include customer document text). For an organization not in CUI mode, notification bodies may carry project content, and a submittal-review notification attaches the marked-up review PDF (on unless the project turns it off) and the review spreadsheet (off unless the project turns it on). Since 2026-10-21 05:32 UTC an organization in CUI mode receives, in place of each notification that can carry project content, a notice with a link and no project content or attachment; the link resolves only for an authenticated member of the organization. Since 2026-10-29 Amazon SES also receives email for project addresses (projects.specset.com): SES accepts the message outside the boundary, scans it, writes it to a KMS-encrypted S3 bucket in the same account and notifies an encrypted SQS queue, and the workers read the queue and the object and delete them. Project addresses are only for organizations with the project email feature and never for organizations in CUI mode; no organization has the feature as of 2026-10-30, and the bucket deletes a message after four days.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "F1603047866",
+     "as_declared": "F1603047866",
+     "certified": true,
+     "use": "AWS GovCloud (US): Amazon Bedrock (Claude model inference) for organizations in CUI mode, with the IAM role the production application assumes for those calls, CloudTrail, KMS and GuardDuty. Not enabled: the setting that turns the route on is off, so no organization's data reaches it, and organizations in CUI mode use only Vertex AI in the Assured Workloads project for model calls.",
      "resolved": "id",
      "listed": true
     },
@@ -24258,7 +23487,7 @@
      "id": "F1209051525",
      "as_declared": "F1209051525",
      "certified": true,
-     "use": "Azure Commercial Cloud — Azure OpenAI (GPT model inference for organizations not in CUI mode; prompts may include customer document text), Microsoft Entra ID application registrations for customer 'Sign in with Microsoft' single sign-on, and a Windows evaluation lab in the same subscription, whose runbook allows public or synthetic files only (not technically enforced).",
+     "use": "Azure Commercial Cloud — Azure OpenAI (GPT model inference for organizations not in CUI mode; prompts may include customer document text. A route for organizations in CUI mode, to the US Data Zone deployments only, is provisioned and not enabled: the setting that turns it on is off, so no organization in CUI mode uses Azure OpenAI. By Microsoft's default, prompts and completions are stored for abuse monitoring in the account's US geography, and content the monitoring flags can be reviewed by authorized Microsoft employees; Specset plans to apply modified abuse monitoring to the deployments organizations in CUI mode would use by 2026-12-31, or to keep them off Azure OpenAI until it is applied), Microsoft Entra ID application registrations for customer 'Sign in with Microsoft' single sign-on, and a Windows evaluation lab in the same subscription, whose runbook allows public or synthetic files only (not technically enforced).",
      "resolved": "id",
      "listed": true
     },
@@ -24301,13 +23530,6 @@
      "use": "Perplexity Enterprise and API Platform (FedRAMP Certified, Class B) — web search for AI features of organizations not in CUI mode. Receives model-generated search queries; customer documents are not sent. Never called for organizations in CUI mode: their web lookups run on Vertex AI Web Grounding for Enterprise inside the Google Cloud Assured Workloads project.",
      "resolved": "id",
      "listed": true
-    },
-    {
-     "id": null,
-     "as_declared": "Anthropic API (Claude, direct)",
-     "provider": "Anthropic, PBC",
-     "certified": false,
-     "use": "Direct Claude model inference for a small set of models not served through Amazon Bedrock, selectable only by Specset administrators; prompts may include customer document text. Never enabled for organizations in CUI mode. Retired on 2026-11-05: the application no longer calls this API and its egress allowance is removed, so no information flow reaches it; the entry stays until the information-resources inventory edition that retires the record."
     },
     {
      "id": null,
@@ -24370,14 +23592,21 @@
      "as_declared": "OpenAI Codex — engineering assistant",
      "provider": "OpenAI",
      "certified": false,
-     "use": "Coding assistant run on operator laptops by the two technical founders and, since 2026-10-23, a developer, in the assessment scope on the same terms as Claude Code. It acts with the operator's own access, under the operator's responsibility for what it reads and the rule that data of organizations in CUI mode must not reach an engineering assistant. It reads the infrastructure as the same read-only service account, which has no write permission on production, and reads database rows through the same SELECT-only, time-limited tunnel, whose start the person running it approves. Every tunnel start is recorded as an Admin Activity audit entry, and an alert fires on any write by that account. What it reads is sent to the model provider."
+     "use": "Coding assistant run on operator laptops by the two technical founders and, since 2026-10-23, a developer, in the assessment scope on the same terms as Claude Code. It acts with the operator's own access, under the operator's responsibility for what it reads and the rule that data of organizations in CUI mode must not reach an engineering assistant. It reads the infrastructure as the same read-only service account, which has no write permission on production, and reads database rows through the same SELECT-only, time-limited tunnel once the person running it has started the tunnel from their own terminal or approved its start in Claude Code; Codex's hook refuses tunnel starts. Every tunnel start is recorded as an Admin Activity audit entry, and an alert fires on any write by that account. What it reads is sent to the model provider."
+    },
+    {
+     "id": null,
+     "as_declared": "Google Antigravity — engineering assistant",
+     "provider": "Google LLC",
+     "certified": false,
+     "use": "Coding assistant run on operator laptops, in the assessment scope on the same terms as Claude Code and OpenAI Codex; before 2026-11-10, one technical founder had used it, on code and documentation only. It acts with the operator's own access, under the operator's responsibility for what it reads and the rule that data of organizations in CUI mode must not reach an engineering assistant. A repository hook runs every shell command as the same read-only service account, which has no write permission on production, and refuses what the other assistants' guard refuses. It reads database rows through the same SELECT-only, time-limited tunnel once the person running it has started the tunnel from their own terminal or approved its start in Claude Code; the hook refuses tunnel starts in Antigravity, as Codex's does. Every tunnel start is recorded as an Admin Activity audit entry, and an alert fires on any write by that account. What it reads is sent to Google."
     },
     {
      "id": null,
      "as_declared": "Cursor (Anysphere) — coding agent",
      "provider": "Anysphere, Inc.",
      "certified": false,
-     "use": "Coding agent. Its GitHub App, installed on the marketing website repository only, has read that site's source and proposed changes to it since 2026-09-29; since 2026-10-23 a developer also uses its local agent on the application and infrastructure source. Model inference runs through Cursor's service. It was outside the assessment scope while it reached only the marketing website, and is in it since the local agent began, because its edits affect software integrity and because a script it writes could use the developer's own credentials. Specset's rule is that it works on code only and reads no customer data, and a fail-closed hook in the application and infrastructure repositories refuses the known paths to production, customer data and credentials; what the developer's credentials reach is bounded by Google Cloud IAM (no production access beyond minting the read-only service account's tokens, and no grant on customer documents) and by the application. Changes reach the application, the infrastructure and www.specset.com only through pull requests that a founder approves under each repository's branch protection."
+     "use": "Coding agent. Its GitHub App, installed on the marketing website repository only, has read that site's source and proposed changes to it since 2026-09-29; since 2026-10-23 a developer also uses its local agent on the application and infrastructure source. Model inference runs through Cursor's service. It was outside the assessment scope while it reached only the marketing website, and is in it since the local agent began, because its edits affect software integrity and because a script it writes could use the developer's own credentials. Specset's rule is that it works on code only and reads no customer data, and a fail-closed hook in the application and infrastructure repositories refuses the known paths to production, customer data and credentials, including the local development database, object store and vector database, which can hold projects cloned from production; what the developer's credentials reach is bounded by Google Cloud IAM (no production access beyond minting the read-only service account's tokens, and no grant on customer documents) and by the application. Changes reach the application, the infrastructure and www.specset.com only through pull requests that a founder approves under each repository's branch protection."
     },
     {
      "id": null,
@@ -24389,9 +23618,9 @@
     {
      "id": null,
      "as_declared": "Customer single sign-on identity providers (Google Sign-In and customer-configured OpenID Connect providers)",
-     "provider": "The customer's own identity provider (Google Sign-In, or any OpenID Connect provider a customer configures)",
+     "provider": "The customer's own identity provider: Google Sign-In, or an OpenID Connect provider such as Okta that the customer configures and Specset enables by adding its hostnames to the egress allow-list",
      "certified": false,
-     "use": "Customer-chosen authentication for customer users. Specset receives the identity assertion and the claims the customer's provider releases; no project document or row leaves the boundary. Each provider is the customer's own information resource under the customer's own administration, so its certification status is the customer's decision. Corporate Google single sign-on is enforced for Specset staff and superadmin access."
+     "use": "Customer-chosen authentication for customer users. Specset receives the identity assertion and the claims the customer's provider releases; no project document or row leaves the boundary. A customer-configured provider is reachable only after Specset adds its hostnames to the egress allow-list at the organization's request; none had been added as of this edition. Each provider is the customer's own information resource under the customer's own administration, so its certification status is the customer's decision. Corporate Google single sign-on is enforced for Specset staff and superadmin access."
     }
    ],
    "used_by": [],
@@ -24942,6 +24171,20 @@
      "provider": "Google LLC",
      "certified": false,
      "use": "Corporate email and productivity (FedRAMP High authorized); limited handling of federal customer communications."
+    },
+    {
+     "id": null,
+     "as_declared": "Braintrust",
+     "provider": "Braintrust Data",
+     "certified": false,
+     "use": "Evaluation and monitoring telemetry for the Hub's anomaly-detection judge: metrics-only spans and evaluation results exported from production over a bounded OTLP exporter (off unless enabled). Mitigations: Telemetry is limited to evaluation metrics and does not include Federal Customer Data; dedicated project and service identity; TLS in transit; tracked in Ultra's Vanta vendor inventory."
+    },
+    {
+     "id": null,
+     "as_declared": "Stripe",
+     "provider": "Stripe, Inc.",
+     "certified": false,
+     "use": "Self-serve plans and payments: customer billing contact, payment-method tokens (card entry is Stripe-hosted, so card data goes directly to Stripe), and monthly per-organization action counts for invoicing. Mitigations: No Federal Customer Data sent to Stripe (billing contact, payment tokens and usage counts only); Stripe-hosted card elements; TLS in transit; tracked in Ultra's Vanta vendor inventory."
     }
    ],
    "used_by": [],
@@ -26327,13 +25570,6 @@
     },
     {
      "id": null,
-     "as_declared": "OpenAI",
-     "provider": "OpenAI",
-     "certified": false,
-     "use": "AI and language model API services. Provides access to GPT models for natural language processing and generation."
-    },
-    {
-     "id": null,
      "as_declared": "Rippling",
      "provider": "Rippling",
      "certified": false,
@@ -26687,16 +25923,102 @@
      "id": "AGENCYAMAZONEW",
      "as_declared": "AGENCYAMAZONEW",
      "certified": true,
-     "use": "AWS infrastructure supporting application hosting, storage, containers, and\nnetworking.",
+     "use": "Infrastructure provider hosting the EVP service: compute (EC2, including Elastic Load Balancing and Auto Scaling; EBS), storage (S3), networking and delivery (VPC, CloudFront), containers (ECS, ECR), serverless (Lambda), messaging (SQS), email (SES), keys and secrets (KMS, Secrets Manager), identity and governance (IAM, IAM Identity Center, Organizations), logging and monitoring (CloudTrail, CloudWatch, Athena, Config, Inspector, Systems Manager, Macie), and the optional AI features (Transcribe, Translate, Polly, Bedrock with Anthropic Claude, Rekognition).",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR1823447014",
+     "as_declared": "FR1823447014",
+     "certified": true,
+     "use": "Operations alert visibility.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2428769635XL",
+     "as_declared": "FR2428769635XL",
+     "certified": true,
+     "use": "GRC platform and Trust Center.",
      "resolved": "id",
      "listed": true
     },
     {
      "id": null,
-     "as_declared": "CrowdStrike Falcon (Exposure Management / Cloud\nSecurity Posture Management)",
+     "as_declared": "CrowdStrike Falcon",
      "provider": "CrowdStrike, Inc.",
      "certified": false,
-     "use": "Cloud security services - Vulnerability Management, Cloud Security Posture\nManagement"
+     "use": "Endpoint detection and response, vulnerability management, container image scanning, CSPM and DSPM."
+    },
+    {
+     "id": null,
+     "as_declared": "Microsoft Entra ID",
+     "provider": "Microsoft Corporation",
+     "certified": false,
+     "use": "Workforce identity source for administrative access."
+    },
+    {
+     "id": null,
+     "as_declared": "GitHub Enterprise Cloud",
+     "provider": "GitHub, Inc.",
+     "certified": false,
+     "use": "Source control for software and infrastructure code deployed to production."
+    },
+    {
+     "id": null,
+     "as_declared": "Atlassian Jira",
+     "provider": "Atlassian Corporation",
+     "certified": false,
+     "use": "Change and work authorization."
+    },
+    {
+     "id": null,
+     "as_declared": "Salesforce",
+     "provider": "Salesforce, Inc.",
+     "certified": false,
+     "use": "Customer support cases and customer maintenance notifications."
+    },
+    {
+     "id": null,
+     "as_declared": "Qualys Policy Audit",
+     "provider": "Qualys, Inc.",
+     "certified": false,
+     "use": "Configuration compliance scanning."
+    },
+    {
+     "id": null,
+     "as_declared": "PagerDuty",
+     "provider": "PagerDuty, Inc.",
+     "certified": false,
+     "use": "On-call alerting."
+    },
+    {
+     "id": null,
+     "as_declared": "Site24x7",
+     "provider": "Zoho Corporation",
+     "certified": false,
+     "use": "External availability monitoring."
+    },
+    {
+     "id": null,
+     "as_declared": "Cobalt",
+     "provider": "Cobalt Labs, Inc.",
+     "certified": false,
+     "use": "Independent penetration testing."
+    },
+    {
+     "id": null,
+     "as_declared": "nOps Compute Copilot",
+     "provider": "nOps",
+     "certified": false,
+     "use": "Compute cost optimization for autoscaled capacity."
+    },
+    {
+     "id": null,
+     "as_declared": "Harness",
+     "provider": "Harness Inc.",
+     "certified": false,
+     "use": "Deployment orchestration."
     }
    ],
    "used_by": [],
@@ -26800,12 +26122,11 @@
      "listed": true
     },
     {
-     "id": "MSO365MT",
+     "id": null,
      "as_declared": "Microsoft 365 GCC MSO365MT",
      "certified": true,
      "use": "Corporate productivity and M-Files for Microsoft 365 integration target.",
-     "resolved": "id",
-     "listed": true
+     "resolved": "unresolved"
     },
     {
      "id": "F1603087869",
@@ -26834,7 +26155,12 @@
    "used_by": [],
    "hosts": [],
    "hosted_in": [],
-   "flags": []
+   "flags": [
+    {
+     "kind": "certified_resource_not_found",
+     "text": "Declares \"Microsoft 365 GCC MSO365MT\" as a FedRAMP Certified resource; no listing by that name or ID"
+    }
+   ]
   },
   "FR2703560539": {
    "built_on": [
@@ -26845,6 +26171,45 @@
      "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes including compliance planning, solution implementation, gap assessments, and continuous reporting. Knocknoc uses Paramify Cloud to manage its FedRAMP compliance program and to host its FedRAMP Trust Center. Paramify Cloud publishes Knocknoc’s Certification Package Overview and other certification deliverables, and manages agency access requests for restricted deliverables. Paramify Cloud does not store or process Knocknoc customer data.",
      "resolved": "name",
      "listed": true
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2704160192": {
+   "built_on": [
+    {
+     "id": "FR2428769635",
+     "as_declared": "Paramify Cloud",
+     "certified": true,
+     "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes including compliance planning, solution implementation, gap assessments, and continuous reporting. Civic uses Paramify Cloud to manage its FedRAMP compliance program and to host its FedRAMP Trust Center. Paramify Cloud publishes Civic's Certification Package Overview and other certification deliverables, and manages agency access requests for restricted deliverables. Paramify Cloud does not store or process Civic customer data.",
+     "resolved": "name",
+     "listed": true
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2704160211": {
+   "built_on": [
+    {
+     "id": "F1603047866",
+     "as_declared": "F1603047866",
+     "certified": true,
+     "use": "AWS GovCloud (US) us-gov-east-1 provides the underlying IaaS infrastructure; Knowtex inherits controls as a leveraged authorization.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "DuploCloud",
+     "provider": "DuploCloud, Inc.",
+     "certified": false,
+     "use": "Infrastructure provisioning and DevSecOps automation for the Knowtex environment in AWS GovCloud."
     }
    ],
    "used_by": [],
@@ -26873,350 +26238,10 @@
      "source": "former_dependents"
     }
    ],
-   "used_by": [
-    {
-     "id": "FR2703461005",
-     "use": "Corporate productivity and M-Files for Microsoft 365 integration target."
-    },
-    {
-     "id": "FR2532557612",
-     "use": "Change Authorization Record, incident records, compliance artifacts (Microsoft 365 GCC)"
-    },
-    {
-     "id": "FR2000174962",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2425960757",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2106555313",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2031936863",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2031222637",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2427142353",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2410056366",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2025827270",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2333756970",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2401047002",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2035056105",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2518163100",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1511207635",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1605107897",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2523656707",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2306445868",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2234550858",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2029183077",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1509217359",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2416856649",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2402468053",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1834740315",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2419537309",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2016131254",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2023601671",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2311952621",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1311252651",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1811073663A",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2234334891",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2035860874",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2417469779",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2029331613",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821933307",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2027958176",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2324452533",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2032565438",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2118080669",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2422436886",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2129953050",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2225648574",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1902240018",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2126176344",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1711546389",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1508127183",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2134455708",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2100059668",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2524416446",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2202555908",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2432218524",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2224752400",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2322855016",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2125653037",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2418039495",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2214346691",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1919071020A",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2000945223",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1730842236",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2100740435",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2110342613",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2226231529",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2110836406",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2421252644",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2421252636",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1924344515",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2207643307",
-     "use": "",
-     "source": "former_dependents"
-    }
-   ],
+   "used_by": [],
    "hosts": [],
    "hosted_in": [],
-   "flags": [
-    {
-     "kind": "dependents_shown_as_resources",
-     "count": 65,
-     "text": "FedRAMP's page lists 65 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
-    }
-   ]
+   "flags": []
   },
   "SOCRATA": {
    "built_on": [],
