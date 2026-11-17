@@ -1,10 +1,14 @@
 {
  "description": "Build the built-on / used-by graph between marketplace listings.",
- "snapshot": "products-2026-11-14.json.gz",
+ "snapshot": "products-2026-11-17.json.gz",
  "listings": {
   "AGENCYAMAZONEW": {
    "built_on": [],
    "used_by": [
+    {
+     "id": "FR2700555844",
+     "use": "Cloud services and AI model inference for Linear AI features."
+    },
     {
      "id": "FR2631258135",
      "use": "AWS US East/West — supporting services: Amazon SES (outbound transactional email and, since 2026-10-29, email received for project addresses), Route 53 (DNS), S3 (CI build cache, CloudTrail audit logs, and received email), SQS (received-email notifications), GuardDuty (threat detection), and Amazon Bedrock (Claude model inference entered in us-west-2 through global cross-Region inference profiles, which may process requests in any AWS commercial Region; for organizations not in CUI mode only; prompts may include customer document text). For an organization not in CUI mode, notification bodies may carry project content, and a submittal-review notification attaches the marked-up review PDF (on unless the project turns it off) and the review spreadsheet (off unless the project turns it on). Since 2026-10-21 05:32 UTC an organization in CUI mode receives, in place of each notification that can carry project content, a notice with a link and no project content or attachment; the link resolves only for an authenticated member of the organization. Since 2026-10-29 Amazon SES also receives email for project addresses (projects.specset.com): SES accepts the message outside the boundary, scans it, writes it to a KMS-encrypted S3 bucket in the same account and notifies an encrypted SQS queue, and the workers read the queue and the object and delete them. Project addresses are only for organizations with the project email feature and never for organizations in CUI mode; no organization has the feature as of 2026-10-30, and the bucket deletes a message after four days."
@@ -56,10 +60,6 @@
     {
      "id": "FR2700857464",
      "use": "Cloud infrastructure"
-    },
-    {
-     "id": "FR2700555844",
-     "use": "Cloud services and AI model inference for Linear AI features."
     },
     {
      "id": "FR2700137041",
@@ -211,6 +211,10 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "MSO365MTA",
+     "use": "The M365 GCC information system leverages the Akamai CDN to enhance customer load times and reduce latency for web content."
+    },
+    {
      "id": "FR2108360349",
      "use": "",
      "source": "former_dependents"
@@ -340,7 +344,7 @@
      "text": "FedRAMP's page lists 24 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
     }
    ],
-   "platform_dependents": 24
+   "platform_dependents": 25
   },
   "F1206081364": {
    "built_on": [
@@ -355,6 +359,14 @@
     }
    ],
    "used_by": [
+    {
+     "id": "FR2618738935",
+     "use": "Google Workspace provides the internal documentation repository for ATX Defense CMMC Space developers and administrators."
+    },
+    {
+     "id": "FR2700555844",
+     "use": "Employee identity and single sign-on for administrative access to production systems."
+    },
     {
      "id": "FR2631258135",
      "use": "Google Workspace — provider identity (Cloud Identity) for staff access to production through Identity-Aware Proxy, with security-key or passkey 2-Step Verification enforced for all staff; staff email including the FedRAMP Security Inbox. No customer data."
@@ -376,16 +388,16 @@
      "use": "Identity provider for CLEATUS staff, with enforced multi-factor authentication, and staff email and documents."
     },
     {
-     "id": "FR2700555844",
-     "use": "Employee identity and single sign-on for administrative access to production systems."
-    },
-    {
      "id": "FR2631054539",
-     "use": "Google Workspace (High, JAB authorized). Corporate productivity, email, and collaboration suite."
+     "use": "Provides a cloud-based suite of productivity, collaboration, and communication tools including corporate email, cloud storage, and shared document management. Enables distributed teams to securely create files, manage schedules, and conduct video conferencing within an integrated ecosystem"
     },
     {
      "id": "FR2632054491",
      "use": "Email, calendar, and internal document collaboration for OpenClinica staff."
+    },
+    {
+     "id": "FR2628943632",
+     "use": "Usage and configuration. Google Workspace is the identity provider for Pryme staff and the company's mail and document suite. Staff sign in to GitHub, Datadog and Twingate through Workspace single sign-on, and Twingate syncs its users and groups from the Workspace directory, which is also the roster that the nightly account reconciliation checks IAM Identity Center, GitHub, Datadog, Twingate and Cognito against. The FedRAMP Administrators organizational unit, which holds every account with privileged access to the system, has been restricted to security keys and passkeys since 2026-10-21 (YubiKey 5 FIPS, CMVP #5291), and two-step verification cannot be weakened. The security@ mailbox is a Workspace group monitored every business day by the CTO with a designated backup, with fedramp.gov and gsa.gov on its approved-senders list. A read-only service account lets the daily posture check read these settings.\nJustification. Google Workspace is FedRAMP High authorized on the edition Pryme uses, and one identity source for every administrative system keeps joiner, mover and leaver control in a single place.\nMitigation measures. No operational data reaches Workspace: the application's data stays in AWS GovCloud. Workspace mail may hold agency personnel contact details from support correspondence (names, titles, agency addresses and work phone numbers), never operational records. Workspace audit events stream to the Cloud SIEM, access is reviewed quarterly under the Google Workspace Logical Access Review, the authentication posture is validated daily by automated checks, and the vendor is reviewed at least annually in Vanta under the Third-Party Management Policy. A known limit, tracked in the POA&M, is that Workspace cannot tell a hardware-bound security key from a synced passkey.\nCompensating controls. None are needed beyond the authorization; support correspondence is handled under the Data Management Policy as confidential customer data."
     },
     {
      "id": "FR2631054533",
@@ -398,10 +410,6 @@
     {
      "id": "FR2628647233",
      "use": "Corporate identity, email, and collaboration services supporting Dispel personnel who operate and administer the DZTE service."
-    },
-    {
-     "id": "FR2618738935",
-     "use": "Google Workspace provides the internal documentation repository for ATX Defense CMMC Space developers and administrators."
     },
     {
      "id": "FR2335047392",
@@ -4295,6 +4303,10 @@
      "use": "AWS GovCloud Simple Email Service provides transactional email for non-sensitive Qanapi account information."
     },
     {
+     "id": "FR2628943632",
+     "use": "Usage and configuration. AWS GovCloud (US) is the infrastructure the whole offering runs on. Pryme operates four accounts in the aws-us-gov partition (management, production west, staging west and production east) under one AWS Organization. The system runs in us-gov-west-1; us-gov-east-1 holds the cold disaster-recovery copy, dormant until a runbook activates it. The services used are EKS and ECR for the application, Aurora PostgreSQL behind RDS Proxy, EFS, S3 and ElastiCache for data, Cognito, DynamoDB and Lambda for authentication, SES for mail, KMS, Secrets Manager and ACM for keys and secrets, Route 53, the Application Load Balancer, WAF, Network Firewall and Transit Gateway for the network, CloudTrail, GuardDuty, Security Hub, Inspector and Config for security monitoring, CodePipeline and CodeBuild for builds, AWS Backup, and IAM Identity Center for staff access. All federal customer data is processed and stored here: each agency has its own database, S3 bucket and KMS key, and backups and the east replicas stay inside the partition.\nJustification. AWS GovCloud (US) holds a FedRAMP High (Class D) JAB authorization, is operated by US citizens on US soil, and offers every service the offering needs, so AWS-native services are used instead of third-party SaaS wherever possible. Pryme's commercial AWS partition hosts non-government workloads only, is out of scope and has no connectivity to this boundary.\nMitigation measures. Data at rest is encrypted with AES-256 under customer-managed KMS keys in FIPS 140-3 Level 3 HSMs (CMVP #4884), one key per tenant. Data in transit terminates at the load balancer on a FIPS TLS 1.3 and 1.2 policy, and every SDK client and Terraform provider uses the FIPS endpoints. Staff reach the console only through IAM Identity Center behind Twingate zero trust access with security-key multi-factor authentication. All egress leaves through the Network Firewall, CloudTrail streams to the Cloud SIEM, and the infrastructure is defined in Terraform with daily drift detection.\nCompensating controls. None are needed for the leveraged services: the authorization covers them, and the controls Pryme operates above the shared-responsibility line are the subject of this package."
+    },
+    {
      "id": "FR2631258113",
      "use": "AWS GovCloud (US) — FedRAMP-authorized foundational IaaS (Rev5, High baseline; listed on the FedRAMP Marketplace as Class D (High), Agency path) per package F1603047866, hosting the entire TRM Labs on GovCloud trust boundary in us-gov-west-1; inherit IaaS/PaaS controls via the AWS Customer Responsibility Matrix. Inheritance is a claim TRM verifies against the AWS CRM, not a default."
     },
@@ -4334,7 +4346,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 21
+   "platform_dependents": 22
   },
   "F1603077867": {
    "built_on": [
@@ -6407,6 +6419,14 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2618738935",
+     "use": "Google Cloud (Google Services / GCP products and underlying infrastructure) hosts the CMMC Space VDI."
+    },
+    {
+     "id": "FR2700555844",
+     "use": "Primary hosting infrastructure: compute, databases, storage, networking, logging, and AI model inference."
+    },
+    {
      "id": "FR2631154499",
      "use": "Hosting for every service: Cloud Spanner, Cloud Run, Compute Engine, App Engine, BigQuery, Cloud Logging."
     },
@@ -6431,16 +6451,12 @@
      "use": "Hosts all Replit compute, storage, databases, key\nmanagement and Vertex AI model inference."
     },
     {
-     "id": "FR2700555844",
-     "use": "Primary hosting infrastructure: compute, databases, storage, networking, logging, and AI model inference."
-    },
-    {
      "id": "FR2700137045",
      "use": "Primary cloud hosting for the RegScale service offering: Cloud Run compute, managed PostgreSQL (Cloud SQL) and Redis (Memorystore), Cloud Storage buckets, VPC networking, and Secret Manager."
     },
     {
      "id": "FR2631054539",
-     "use": "Google Cloud Platform (High Impact, JAB authorized). Primary cloud infrastructure provider hosting the Mycroft GRC Platform."
+     "use": "Provides a comprehensive suite of cloud computing services, including scalable infrastructure, data storage, and advanced analytics. Enables organizations to build, deploy, and manage applications securely on Google's global infrastructure."
     },
     {
      "id": "FR2628647238",
@@ -6465,10 +6481,6 @@
     {
      "id": "FR2628647233",
      "use": "FedRAMP-authorized SIEM/SOAR platform providing security information and event management (SIEM) and security orchestration, automation, and response (SOAR) for continuous security monitoring of the DZTE service."
-    },
-    {
-     "id": "FR2618738935",
-     "use": "Google Cloud (Google Services / GCP products and underlying infrastructure) hosts the CMMC Space VDI."
     },
     {
      "id": "FR2528033654",
@@ -7179,8 +7191,12 @@
      "use": "GitHub Enterprise Cloud (FedRAMP Certified at Class B, Low; agency path): source code, code review, secret-scanning push protection and Dependabot. Holds no federal customer data."
     },
     {
+     "id": "FR2700137045",
+     "use": "Source control and CI/CD: code repositories and GitHub Actions pipelines (deploy-gcp-v2.yml, trunk-pr.yml) that build, test, and deploy the offering."
+    },
+    {
      "id": "FR2631054539",
-     "use": "GitHub Enterprise Cloud (Low, Agency authorized). Source code management and CI/CD for platform development."
+     "use": "Source code repository and version control platform. Stores proprietary code, development workflows, and technical documentation."
     },
     {
      "id": "FR2632755834",
@@ -7197,6 +7213,10 @@
     {
      "id": "FR2629068830",
      "use": "GitHub Enterprise Cloud provides source control and GitOps automation used for CSO change management and deployment workflows."
+    },
+    {
+     "id": "FR2618542150",
+     "use": "A code collaboration and version control component provided by Github that enables teams to securely store and manage source code."
     },
     {
      "id": "FR2211452029",
@@ -8799,6 +8819,10 @@
    ],
    "used_by": [
     {
+     "id": "FR2700555844",
+     "use": "Internal collaboration and customer support channels."
+    },
+    {
      "id": "FR2631258135",
      "use": "Slack — operational alerting and change-notification channel for the provider (infrastructure change notifications, security alerts), and delivery of prospect inquiries from the public website's contact form. Resource metadata and prospect contact details only; no customer content or customer-user data."
     },
@@ -8815,12 +8839,8 @@
      "use": "Receives one-way security and operational alerts from in-boundary monitoring through incoming webhooks. No CUI is sent."
     },
     {
-     "id": "FR2700555844",
-     "use": "Internal collaboration and customer support channels."
-    },
-    {
      "id": "FR2631054539",
-     "use": "Slack (Moderate, Agency authorized). Internal team communication and collaboration."
+     "use": "Team communication and collaboration platform. Facilitates internal messaging, file sharing, and workflow integrations."
     },
     {
      "id": "FR2618542150",
@@ -11254,7 +11274,7 @@
     },
     {
      "id": "FR2631054539",
-     "use": "Cloudflare for Government (High, Agency authorized). Content delivery network, DNS, and web application security."
+     "use": "Provides cloud-based web security, content delivery network (CDN), and distributed domain name server (DNS) services. Optimizes website performance while protecting digital infrastructure from distributed denial-of-service (DDoS) attacks and malicious traffic."
     },
     {
      "id": "FR2532557612",
@@ -11491,6 +11511,10 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2631054539",
+     "use": "Customer relationship management platform. Manages sales, customer data, marketing automation, and business processes."
+    },
+    {
      "id": "FR2633957417",
      "use": "Provides CRM capabilities supporting customer-related business processes within the CSO."
     }
@@ -11498,7 +11522,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 1
+   "platform_dependents": 2
   },
   "FR2004146362": {
    "built_on": [
@@ -12186,6 +12210,10 @@
     {
      "id": "FR2633841585",
      "use": "Datadog for Government (US1-FED) provides observability, security monitoring, incident investigation, and audit evidence."
+    },
+    {
+     "id": "FR2628943632",
+     "use": "Usage and configuration. Datadog for Government is the offering's monitoring platform and security information and event management system. The Datadog Agent runs on the EKS clusters inside the boundary and sends container logs, metrics and Kubernetes state over HTTPS to the US1-FED site (ddog-gov.com), authenticated with an API key held in AWS Secrets Manager. Cloud SIEM also ingests the organization CloudTrail, EKS audit logs, VPC flow logs, the application's security event stream, the production PostgreSQL log, GuardDuty findings, GitHub and Google Workspace audit events, and Identity Center, Cognito and Twingate sign-in and connection logs; a read-only cross-account role lets Datadog read AWS configuration. Pryme uses logs, metrics, monitors, SLOs, synthetics, Cloud SIEM, Incident Management and Case Management; application performance monitoring, real user monitoring and cloud security management are switched off. Staff sign in through Google Workspace single sign-on with multi-factor authentication, roles are defined as code, and the assessor has a read-only role.\nJustification. Datadog for Government is FedRAMP High authorized and hosted in AWS GovCloud, and it is Pryme's record of truth for security signals and incidents, so the offering leverages it rather than operating its own logging and SIEM stack.\nMitigation measures. Telemetry carries metadata and identifiers only: tenant, user and request identifiers, resource names, counts and error text. The application's redaction enricher removes personal fields before a log line is written, and no record content is logged by design, so an agency's operational data does not reach Datadog. The AWS integration role is read-only, the API keys are rotated by a person and never embedded in code, the SIEM index is retained for 365 days with archives in Object-Locked S3, Datadog access is reviewed quarterly under the Datadog Logical Access Review, and the vendor is reviewed at least annually in Vanta under the Third-Party Management Policy.\nCompensating controls. None are needed beyond the authorization; the data minimization above bounds what the platform could expose."
     },
     {
      "id": "FR2631054533",
@@ -13664,10 +13692,6 @@
     {
      "id": "FR2633841585",
      "use": "Keeper Security Government Cloud stores staff credentials, occasionally including credentials a customer supplies, and provides the one-time codes and passkeys staff use to sign in."
-    },
-    {
-     "id": "FR2618542150",
-     "use": "Keeper Security Government Cloud is a FedRAMP and StateRAMP Authorized zero-knowledge, zero-trust platform for password, secrets and privileged access management, hosted in AWS GovCloud for U.S. federal, state and local agencies. It gives agencies encrypted credential vaults, secrets management for DevOps and infrastructure, privileged session management and audit reporting, which supports controls such as IA-5 authenticator management and AC-2 account management."
     }
    ],
    "hosts": [],
@@ -14474,6 +14498,10 @@
     {
      "id": "FR2619254906",
      "use": "Okta for Government High (Okta IDaaS Government High Cloud), FedRAMP High. Identity and single sign-on for VulcanGov users."
+    },
+    {
+     "id": "FR2618542150",
+     "use": "Okta for Government High service offering provides centralized identity and access management capabilities to customers who want to manage access across any application or device, whether they are on-premises in the customer's office/data center or in the cloud. The Okta IDaaS platform is the primary application platform provided to customers. The IDaaS application provides several important features/capabilities, which are listed below. - Universal Directory: Okta Universal Directory provides a single view across all these groups with AD and LDAP directory integrations and out-of-the-box connections with HR systems, CSV files, and third-party IdPs. Integration with Applications: Okta comes with pre-integrated applications that customers can select to allow their users to access them through the Okta Integration Network, either in their enterprise or in a cloud - Okta API Integration: Customers can also integrate their own applications with Okta API - Okta Sign-In Widget (SIW): SIW is the out of the box end user experience that our customers can deploy in an Okta hosted environment. SIW provides configurable user registration, sign in and recovery experience. - Okta Software Development Kit (SDKs): SDKs allow customers to build their own identity experience using Okta as a back end. - Okta Customer Organization Logging: Okta's prebuilt monitoring, logging, and reporting tools make it easy to analyze security posture, user access events, lifecycle management transitions, security risks and other identity-related data. - Okta Admin Dashboard: Okta's Admin Dashboard provides central administration and provisioning of users and the applications they can access. - Adaptive Multi-Factor Authentication (aMFA): Adaptive MFA provides an additional layer of security for access control, which gives Okta customers the ability to create contextual access policies that assess risk factors such as device, network, location, travel, IP, and other context at each step of the authentication process. Single Sign-On (SSO): Okta SSO creates a seamless user experience by providing single sign-on to all the web and mobile applications users need to access. - Okta Verify: Okta Verify is Okta's native desktop and mobile application that can be used for mobile client-based MFA authentication. Okta Verify supports the following authentication mechanisms against a customers' organization: Time-based One-time Password (TOTP), Okta Push Challenge-Response, and Okta FastPass (signed once challenge) - Okta FastPass - NIST 800-63B AAL2/AAL3 authenticator"
     },
     {
      "id": "FR2612446381",
@@ -15361,7 +15389,7 @@
   "FR2213647361": {
    "built_on": [
     {
-     "id": "FR1919071020A",
+     "id": "FR2122150307",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -15370,7 +15398,7 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR2122150307",
+     "id": "FR1919071020A",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -15546,7 +15574,7 @@
   "FR2215045786": {
    "built_on": [
     {
-     "id": "FR2131856836",
+     "id": "FR2122150307",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -15555,7 +15583,7 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR2122150307",
+     "id": "FR2131856836",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -16317,7 +16345,7 @@
   "FR2230451369": {
    "built_on": [
     {
-     "id": "FR1807853629A",
+     "id": "FR2122150307",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -16326,7 +16354,7 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR2122150307",
+     "id": "FR1807853629A",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -16976,6 +17004,10 @@
     }
    ],
    "used_by": [
+    {
+     "id": "FR2700137045",
+     "use": "Cloud security posture management (CSPM) and vulnerability scanning across the GCP boundary; findings feed RegScale continuous monitoring."
+    },
     {
      "id": "FR2633957417",
      "use": "Provides cloud security posture, vulnerability, and risk visibility supporting CSO security monitoring."
@@ -17866,7 +17898,7 @@
   "FR2322855016": {
    "built_on": [
     {
-     "id": "FR1919071020A",
+     "id": "FR2122150307",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -17875,7 +17907,7 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR2122150307",
+     "id": "FR1919071020A",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -18978,6 +19010,15 @@
   "FR2406651384": {
    "built_on": [
     {
+     "id": "FR2122150307",
+     "as_declared": null,
+     "certified": true,
+     "use": "",
+     "resolved": "id",
+     "listed": true,
+     "source": "former_dependents"
+    },
+    {
      "id": "FR2406651384",
      "as_declared": null,
      "certified": true,
@@ -18997,15 +19038,6 @@
     },
     {
      "id": "FR2317253567",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2122150307",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -20135,10 +20167,6 @@
     {
      "id": "FR2633957417",
      "use": "Supports security authorization, control documentation, and compliance management activities for the CSO."
-    },
-    {
-     "id": "FR2618542150",
-     "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes - including compliance planning, solution implementation, gap assessments, and continuous reporting - for cloud service providers, government agencies, and members of the Defense Industrial Base (DIB). Trusted by leading CSPs like Adobe, Cisco, Trellix, Palo Alto Networks, and Flock Safety. Living Gap Assessment Visualize compliance progress with Paramify's intuitive real-time dashboard. Track controls, manage gaps, and easily organize people, places, and components, ensuring audit readiness for FedRAMP 20X, GovRAMP, and other frameworks. Instant Audit-Ready Documentation Automate compliance, generate audit-ready deliverables like System Security Plans (SSPs), POA&Ms, and Customer Responsibility Matrices in days, not months. Continuously validate compliance with real-time automated validation tools for FedRAMP 20X and other frameworks. Fast, Cost-Effective Monitoring Continuously monitor, validate, and report compliance 90% faster at a quarter of the cost. Paramify's automated tools and Evidence Repository simplify compliance, reducing costs and enhancing efficiency. Integrated with issue management tools like Jira, it streamlines workflows, helping you meet tight deadlines."
     }
    ],
    "hosts": [],
@@ -20181,8 +20209,16 @@
      "use": "Paramify SaaS is used for FedRAMP compliance documentation and internal security control assessment support."
     },
     {
+     "id": "FR2628943632",
+     "use": "Usage and configuration. Paramify Cloud is the compliance platform and package of record for this certification. It holds the FedRAMP 20x Class C program, the solution capabilities and control implementations, the evidence sets and their validators, and it generates the Security Decision Record, the Certification Package Overview and the Ongoing Certification Report, which are published on the Paramify Trust Center (trust.paramify.com/prymeinfil) from FIPS S3 endpoints in us-gov-west-1. Four CodeBuild pipelines inside the boundary upload evidence artifacts to Paramify over HTTPS every day, each with its own upload token held in AWS Secrets Manager; the management-account runner reads AWS, Datadog, GitHub, Google Workspace, Vanta and Jira with read-only credentials and never touches a database. Staff use the web application; the operator's read key lives in the macOS Keychain and is never written to a file.\nJustification. Paramify Cloud is FedRAMP 20x certified at Class C, the same class as this offering, and is built for the certification package, so Pryme leverages it rather than assembling the package by hand.\nMitigation measures. Uploaded evidence consists of identifiers, counts and configuration values, never a token, a credential or an end user's personal data; tenant database names are hashed, Cognito pool names are withheld, and no resource identifier that could name a customer is emitted. The fetchers are read-only against every source, the upload tokens are scoped to evidence, issues, capabilities, validators and pipelines with an expiry, the read key is never on the runner, and the artifacts also stay in a 365-day compliance-locked evidence bucket inside the boundary as the copy of record. The vendor is reviewed at least annually in Vanta under the Third-Party Management Policy.\nCompensating controls. None are needed beyond the certification; no federal customer data is uploaded to Paramify."
+    },
+    {
      "id": "FR2631054533",
      "use": "Paramify Cloud: control implementation records and evidence for the FedRAMP Certification Package; no federal customer data."
+    },
+    {
+     "id": "FR2618542150",
+     "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes - including compliance planning, solution implementation, gap assessments, and continuous reporting - for cloud service providers, government agencies, and members of the Defense Industrial Base (DIB). Trusted by leading CSPs like Adobe, Cisco, Trellix, Palo Alto Networks, and Flock Safety. Living Gap Assessment Visualize compliance progress with Paramify's intuitive real-time dashboard. Track controls, manage gaps, and easily organize people, places, and components, ensuring audit readiness for FedRAMP 20X, GovRAMP, and other frameworks. Instant Audit-Ready Documentation Automate compliance, generate audit-ready deliverables like System Security Plans (SSPs), POA&Ms, and Customer Responsibility Matrices in days, not months. Continuously validate compliance with real-time automated validation tools for FedRAMP 20X and other frameworks. Fast, Cost-Effective Monitoring Continuously monitor, validate, and report compliance 90% faster at a quarter of the cost. Paramify's automated tools and Evidence Repository simplify compliance, reducing costs and enhancing efficiency. Integrated with issue management tools like Jira, it streamlines workflows, helping you meet tight deadlines."
     },
     {
      "id": "F1605107898",
@@ -20258,7 +20294,7 @@
   "FR2430123303": {
    "built_on": [
     {
-     "id": "FR2201340492",
+     "id": "FR2122150307",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -20267,7 +20303,7 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR2122150307",
+     "id": "FR2201340492",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -21381,7 +21417,7 @@
   "FR2523656707": {
    "built_on": [
     {
-     "id": "FR2518163100",
+     "id": "FR2122150307",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -21390,7 +21426,7 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR2122150307",
+     "id": "FR2518163100",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -21653,7 +21689,7 @@
   "FR2525556241XM": {
    "built_on": [
     {
-     "id": "FR1807853629A",
+     "id": "FR2122150307",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -21662,7 +21698,7 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR2122150307",
+     "id": "FR1807853629A",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -21887,7 +21923,7 @@
    "used_by": [
     {
      "id": "FR2618542150",
-     "use": "Knox Systems provides a FedRAMP-authorized, multi-tenant cloud platform that delivers commercial software to federal customers on managed infrastructure across AWS, Azure and Google Cloud Platform. Knox handles 24/7 security and network operations for the workloads it hosts, including continuous monitoring, vulnerability scanning, patch management and incident response. SpaceXSI uses Knox only for Upwind, our cloud security monitoring service, and no other Knox-hosted offering is part of our system."
+     "use": "Knox Systems provides a multi-tenant cloud platform for delivering commercial software to federal government customers. Customer applications deploy on Knox's managed infrastructure across AWS, Azure, and Google Cloud Platform using Kubernetes containers, serverless functions, or virtual machines. Knox provides 24/7 Security Operations Center and Network Operations Center management, continuous security monitoring, vulnerability scanning, patch management, and incident response for all customer workloads. This includes: Adobe Connect is designed for immersive synchronous online meeting experiences for training, large-scale webinars, and virtual classroom meetings for a distributed workforce. Backupta is a Resilience Platform for Okta that ensures uninterrupted identity and access management. It delivers secure backup, disaster recovery, and rapid restoration of tenants or objects. Tenant cloning and failover strengthen business continuity, while proactive monitoring and audit logs enhance security. Peregrine enables public safety and government agencies to integrate, model, and access data from agency and authorized partner systems within a unified platform, allowing information about people, places, and events to be understood in context across systems. Peregrine supports workflows such as search, analysis, reporting, alerting, relationship mapping, and operational monitoring by providing a secure, continuously updated, permission-aware view of agency data for authorized users. Sift is a SaaS platform for time-series telemetry ingestion, storage, visualization, and rule-based monitoring of mission-critical hardware systems. It serves mission operators, test engineers, and data analysts across federal agencies and their defense and aerospace contractors, providing interactive dashboards and programmatic query access to machine telemetry and associated operational metadata. Altana Product Network (APN) is a SaaS offering in AWS GovCloud that uses artificial intelligence to create a single source of truth for the global supply chain. It integrates customer and external datasets to map suppliers, shipments, compliance, and risk, and is used by customer administrators and end users through a web portal with SAML 2.0 federation. The boundary is supported by EKS-based microservices, Databricks data pipelines, and core AWS services such as RDS, S3, OpenSearch, and ElastiCache. Sierra is a multi-tenant SaaS Cloud Service Offering (CSO) that enables Federal agencies to build, deploy, and operate conversational AI agents that interact with the agency's constituents and employees across chat, voice, email, and other channels primarily to handle customer support, case intake, benefits inquiries, and similar service workflows autonomously so agencies can resolve high-volume citizen interactions at scale economically. The Acsense IAM Resilience Platform is a cloud-based SaaS solution that serves as an Identity Control Plane, providing unified backup & recovery, disaster recovery on a separate remote tenant, configuration management, and compliance assurance capabilities for enterprise identity and access management (IAM) environments. The platform is IDP-agnostic by design, primarily supporting both Okta (Workforce and CIAM) and Microsoft Entra ID deployments.The system enables authorized administrators to back up enterprise identity infrastructure (including human and non-human identities/machine identities), track and compare configuration changes with full role attribution, map dependencies, detect configuration drift in approximately 10 minutes, and leverage Continuous Resilience Validation to ensure a tested ~10-minute Recovery Time Objective (RTO) during operational incidents, ransomware attacks, or outages. The authorization boundary includes the Acsense SaaS application, supporting management services, application APIs, data processing services, and storage components operated in cloud infrastructure environments. The platform is used by enterprise and government administrators, security teams, and IT operations personnel to process identity-related business data and limited personally identifiable information (PII) associated with IAM objects and user accounts. The service is delivered as a multi-tenant SaaS platform with customer-isolated data storage (or as a single, separated tenant) and relies on external identity provider APIs and cloud infrastructure services to perform authorized backup, synchronization, monitoring, and recovery operations. Swimlane's Turbine is a multi-tenant SaaS agentic AI security automation platform which uses low-code technology to unify disparate cybersecurity tools into a centralized system of action. By utilizing agentic AI (Hero AI) alongside a visual, drag-and-drop playbook builder, the platform automates complex Security Operations Center (SOC) workflows, vulnerability management, and incident triage without requiring extensive custom coding. This comprehensive AI SOC orchestration eliminates alert fatigue for security teams, tracks compliance, and provides real-time ROI reporting to accelerate threat responses and protect large organizations globally. Determinate is an SDLC collaboration and deployment automation platform. It specifically caters to the Nix ecosystem for reproducible and declarative software projects. Determinate processes and delivers software source code (FlakeHub, a source artifact repository) and compiled artifacts (FlakeHub Cache, a binary artifact repository) to end users as multi-tenant SaaS. Users publish their software via the customer's coding forge, like GitHub or GitLab. The Vannevar platform supports government agencies and other authorized government users by running guided, agent-assisted workflows across disparate datasets and proprietary data to reduce the time required to turn raw information into investigative outputs. Within the platform, users can ingest and analyze digital artifacts and other government-provided data, correlate and search across those sources, and leverage agents to generate consistent work products. These workflows enable digital forensic sensemaking, investigative development and enrichment, and the production of shareable products for downstream action. Tractian is an asset health monitoring platform that gives government agencies the intelligence to keep critical physical assets running in support of mission readiness, with security and compliance built for U.S. federal requirements. Wireless sensors and AI analytics support the whole asset health lifecycle, detecting developing failures, tracking how they progress, and guiding teams through to resolution before an issue becomes downtime or a safety event. The platform is deployed within Knox's FedRAMP High Authorized environment on AWS GovCloud, and it helps agencies and contractors get more output and reliability from the equipment they already have, without adding headcount, capital expense, or new risk. MissionML Studio is a platform used to build, prototype, and productionize AI-enabled government workflow applications and securely host and monitor them. It is deployed as a secure, fully managed, single-tenant cloud platform where government program managers build and prototype custom AI workflow applications tailored to their mission needs and process operational, analytical, and mission data, while ensuring isolation for each customer environment. Vectra AI delivers AI-native security and observability that helps federal security teams build and demonstrate resilience against modern cyber threats. The platform provides unified observability across on-premises networks, identity, cloud, SaaS, IoT/OT, edge, and AI infrastructure to identify active threats, prioritize investigation and response, and help agencies proactively reduce cyber risk and strengthen security posture. Federal security analysts, incident responders, administrators, and security leaders use the platform to monitor activity, investigate suspicious behavior, hunt for threats, contain compromised identities or devices, and assess gaps in security coverage. The platform provides contextual investigation, natural-language assistance, attack-path visualization, operational reporting, and evidence that supports continuous monitoring, compliance, and SOC optimization. More than 2,000 organizations use Vectra AI, which was named a Leader in the 2025 and 2026 Gartner Magic Quadrant for Network Detection and Response."
     }
    ],
    "hosts": [
@@ -22212,12 +22248,12 @@
    "built_on": [],
    "used_by": [
     {
-     "id": "FR2604643715",
-     "use": "OpenAI is a cloud provider used for artificial intelligence research and deployment. OpenAI models are offered as selectable third-party models."
-    },
-    {
      "id": "FR2700555844",
      "use": "AI model inference for Linear AI features."
+    },
+    {
+     "id": "FR2604643715",
+     "use": "OpenAI is a cloud provider used for artificial intelligence research and deployment. OpenAI models are offered as selectable third-party models."
     },
     {
      "id": "FR2632054530",
@@ -22519,65 +22555,66 @@
    "built_on": [
     {
      "id": "FR2528033654",
-     "as_declared": "Knox Systems FedRAMP High Managed Platform",
+     "as_declared": "FR2528033654",
      "certified": true,
-     "use": "Knox Systems provides a FedRAMP-authorized, multi-tenant cloud platform that delivers commercial software to federal customers on managed infrastructure across AWS, Azure and Google Cloud Platform. Knox handles 24/7 security and network operations for the workloads it hosts, including continuous monitoring, vulnerability scanning, patch management and incident response. SpaceXSI uses Knox only for Upwind, our cloud security monitoring service, and no other Knox-hosted offering is part of our system.",
-     "resolved": "name",
+     "use": "Knox Systems provides a multi-tenant cloud platform for delivering commercial software to federal government customers. Customer applications deploy on Knox's managed infrastructure across AWS, Azure, and Google Cloud Platform using Kubernetes containers, serverless functions, or virtual machines. Knox provides 24/7 Security Operations Center and Network Operations Center management, continuous security monitoring, vulnerability scanning, patch management, and incident response for all customer workloads. This includes: Adobe Connect is designed for immersive synchronous online meeting experiences for training, large-scale webinars, and virtual classroom meetings for a distributed workforce. Backupta is a Resilience Platform for Okta that ensures uninterrupted identity and access management. It delivers secure backup, disaster recovery, and rapid restoration of tenants or objects. Tenant cloning and failover strengthen business continuity, while proactive monitoring and audit logs enhance security. Peregrine enables public safety and government agencies to integrate, model, and access data from agency and authorized partner systems within a unified platform, allowing information about people, places, and events to be understood in context across systems. Peregrine supports workflows such as search, analysis, reporting, alerting, relationship mapping, and operational monitoring by providing a secure, continuously updated, permission-aware view of agency data for authorized users. Sift is a SaaS platform for time-series telemetry ingestion, storage, visualization, and rule-based monitoring of mission-critical hardware systems. It serves mission operators, test engineers, and data analysts across federal agencies and their defense and aerospace contractors, providing interactive dashboards and programmatic query access to machine telemetry and associated operational metadata. Altana Product Network (APN) is a SaaS offering in AWS GovCloud that uses artificial intelligence to create a single source of truth for the global supply chain. It integrates customer and external datasets to map suppliers, shipments, compliance, and risk, and is used by customer administrators and end users through a web portal with SAML 2.0 federation. The boundary is supported by EKS-based microservices, Databricks data pipelines, and core AWS services such as RDS, S3, OpenSearch, and ElastiCache. Sierra is a multi-tenant SaaS Cloud Service Offering (CSO) that enables Federal agencies to build, deploy, and operate conversational AI agents that interact with the agency's constituents and employees across chat, voice, email, and other channels primarily to handle customer support, case intake, benefits inquiries, and similar service workflows autonomously so agencies can resolve high-volume citizen interactions at scale economically. The Acsense IAM Resilience Platform is a cloud-based SaaS solution that serves as an Identity Control Plane, providing unified backup & recovery, disaster recovery on a separate remote tenant, configuration management, and compliance assurance capabilities for enterprise identity and access management (IAM) environments. The platform is IDP-agnostic by design, primarily supporting both Okta (Workforce and CIAM) and Microsoft Entra ID deployments.The system enables authorized administrators to back up enterprise identity infrastructure (including human and non-human identities/machine identities), track and compare configuration changes with full role attribution, map dependencies, detect configuration drift in approximately 10 minutes, and leverage Continuous Resilience Validation to ensure a tested ~10-minute Recovery Time Objective (RTO) during operational incidents, ransomware attacks, or outages. The authorization boundary includes the Acsense SaaS application, supporting management services, application APIs, data processing services, and storage components operated in cloud infrastructure environments. The platform is used by enterprise and government administrators, security teams, and IT operations personnel to process identity-related business data and limited personally identifiable information (PII) associated with IAM objects and user accounts. The service is delivered as a multi-tenant SaaS platform with customer-isolated data storage (or as a single, separated tenant) and relies on external identity provider APIs and cloud infrastructure services to perform authorized backup, synchronization, monitoring, and recovery operations. Swimlane's Turbine is a multi-tenant SaaS agentic AI security automation platform which uses low-code technology to unify disparate cybersecurity tools into a centralized system of action. By utilizing agentic AI (Hero AI) alongside a visual, drag-and-drop playbook builder, the platform automates complex Security Operations Center (SOC) workflows, vulnerability management, and incident triage without requiring extensive custom coding. This comprehensive AI SOC orchestration eliminates alert fatigue for security teams, tracks compliance, and provides real-time ROI reporting to accelerate threat responses and protect large organizations globally. Determinate is an SDLC collaboration and deployment automation platform. It specifically caters to the Nix ecosystem for reproducible and declarative software projects. Determinate processes and delivers software source code (FlakeHub, a source artifact repository) and compiled artifacts (FlakeHub Cache, a binary artifact repository) to end users as multi-tenant SaaS. Users publish their software via the customer's coding forge, like GitHub or GitLab. The Vannevar platform supports government agencies and other authorized government users by running guided, agent-assisted workflows across disparate datasets and proprietary data to reduce the time required to turn raw information into investigative outputs. Within the platform, users can ingest and analyze digital artifacts and other government-provided data, correlate and search across those sources, and leverage agents to generate consistent work products. These workflows enable digital forensic sensemaking, investigative development and enrichment, and the production of shareable products for downstream action. Tractian is an asset health monitoring platform that gives government agencies the intelligence to keep critical physical assets running in support of mission readiness, with security and compliance built for U.S. federal requirements. Wireless sensors and AI analytics support the whole asset health lifecycle, detecting developing failures, tracking how they progress, and guiding teams through to resolution before an issue becomes downtime or a safety event. The platform is deployed within Knox's FedRAMP High Authorized environment on AWS GovCloud, and it helps agencies and contractors get more output and reliability from the equipment they already have, without adding headcount, capital expense, or new risk. MissionML Studio is a platform used to build, prototype, and productionize AI-enabled government workflow applications and securely host and monitor them. It is deployed as a secure, fully managed, single-tenant cloud platform where government program managers build and prototype custom AI workflow applications tailored to their mission needs and process operational, analytical, and mission data, while ensuring isolation for each customer environment. Vectra AI delivers AI-native security and observability that helps federal security teams build and demonstrate resilience against modern cyber threats. The platform provides unified observability across on-premises networks, identity, cloud, SaaS, IoT/OT, edge, and AI infrastructure to identify active threats, prioritize investigation and response, and help agencies proactively reduce cyber risk and strengthen security posture. Federal security analysts, incident responders, administrators, and security leaders use the platform to monitor activity, investigate suspicious behavior, hunt for threats, contain compromised identities or devices, and assess gaps in security coverage. The platform provides contextual investigation, natural-language assistance, attack-path visualization, operational reporting, and evidence that supports continuous monitoring, compliance, and SOC optimization. More than 2,000 organizations use Vectra AI, which was named a Leader in the 2025 and 2026 Gartner Magic Quadrant for Network Detection and Response.",
+     "resolved": "id",
      "listed": true
     },
     {
      "id": "FR1824057433",
-     "as_declared": "Microsoft 365 Government Community Cloud-High",
+     "as_declared": "FR1824057433",
      "certified": true,
      "use": "Microsoft 365 (M365) Government Community Cloud-High (GCC-H) is a product family of cloud-hosted messaging and collaboration services. These cloud-based services are designed to provide organizations with streamlined communication, high availability, comprehensive security, and simplified information technology (IT) management. M365 GCC-H provides the interactivity of on-premises client and server applications with the flexibility and scalability of web-based services. M365 leverages Azure as the IaaS/PaaS for the underlying infrastructure and hardware. Therefore, M365 relies on Azure-inherited services. For more information on these Azure services, refer to the Azure ATO package. Federal agencies interested in collaborative continuous monitoring with Microsoft should reach out to: M365CollabConMon@microsoft.com",
-     "resolved": "name",
+     "resolved": "id",
      "listed": true
     },
     {
-     "id": null,
-     "as_declared": "Okta GHC",
+     "id": "FR2131856836",
+     "as_declared": "FR2131856836",
      "certified": true,
      "use": "Okta for Government High service offering provides centralized identity and access management capabilities to customers who want to manage access across any application or device, whether they are on-premises in the customer's office/data center or in the cloud. The Okta IDaaS platform is the primary application platform provided to customers. The IDaaS application provides several important features/capabilities, which are listed below. - Universal Directory: Okta Universal Directory provides a single view across all these groups with AD and LDAP directory integrations and out-of-the-box connections with HR systems, CSV files, and third-party IdPs. Integration with Applications: Okta comes with pre-integrated applications that customers can select to allow their users to access them through the Okta Integration Network, either in their enterprise or in a cloud - Okta API Integration: Customers can also integrate their own applications with Okta API - Okta Sign-In Widget (SIW): SIW is the out of the box end user experience that our customers can deploy in an Okta hosted environment. SIW provides configurable user registration, sign in and recovery experience. - Okta Software Development Kit (SDKs): SDKs allow customers to build their own identity experience using Okta as a back end. - Okta Customer Organization Logging: Okta's prebuilt monitoring, logging, and reporting tools make it easy to analyze security posture, user access events, lifecycle management transitions, security risks and other identity-related data. - Okta Admin Dashboard: Okta's Admin Dashboard provides central administration and provisioning of users and the applications they can access. - Adaptive Multi-Factor Authentication (aMFA): Adaptive MFA provides an additional layer of security for access control, which gives Okta customers the ability to create contextual access policies that assess risk factors such as device, network, location, travel, IP, and other context at each step of the authentication process. Single Sign-On (SSO): Okta SSO creates a seamless user experience by providing single sign-on to all the web and mobile applications users need to access. - Okta Verify: Okta Verify is Okta's native desktop and mobile application that can be used for mobile client-based MFA authentication. Okta Verify supports the following authentication mechanisms against a customers' organization: Time-based One-time Password (TOTP), Okta Push Challenge-Response, and Okta FastPass (signed once challenge) - Okta FastPass - NIST 800-63B AAL2/AAL3 authenticator",
-     "resolved": "unresolved"
+     "resolved": "id",
+     "listed": true
     },
     {
      "id": "FR2310974411",
-     "as_declared": "PagerDuty Operations Cloud",
+     "as_declared": "FR2310974411",
      "certified": true,
      "use": "The PagerDuty Operations Cloud is a comprehensive platform that enables automated detection, diagnosis, and response to a wide range of events, including customer support alerts, suspicious or abnormal behavior, system disruptions, and performance-impacting incidents. By leveraging advanced event orchestration and intelligent aggregation features, PagerDuty enhances the signal-to-noise ratio, allowing organizations to prioritize critical alerts while minimizing distractions from less significant events. With automated actions, the platform can trigger predefined workflows before human intervention is needed, accelerating resolution times and ensuring seamless incident management. On-call scheduling capabilities ensure continuous 24/7 coverage of critical activities, empowering teams to swiftly triage events, including customer support tickets, system alerts, and operational disruptions, and effectively mobilize the appropriate responders to manage incident resolution and recovery. Real-time status updates and external-facing status pages keep stakeholders informed throughout the resolution process.",
-     "resolved": "name",
+     "resolved": "id",
      "listed": true
     },
     {
-     "id": "FR2428769635",
-     "as_declared": "Paramify Cloud - 20x Moderate",
+     "id": "FR2428769635XL",
+     "as_declared": "FR2428769635XL",
      "certified": true,
      "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes - including compliance planning, solution implementation, gap assessments, and continuous reporting - for cloud service providers, government agencies, and members of the Defense Industrial Base (DIB). Trusted by leading CSPs like Adobe, Cisco, Trellix, Palo Alto Networks, and Flock Safety. Living Gap Assessment Visualize compliance progress with Paramify's intuitive real-time dashboard. Track controls, manage gaps, and easily organize people, places, and components, ensuring audit readiness for FedRAMP 20X, GovRAMP, and other frameworks. Instant Audit-Ready Documentation Automate compliance, generate audit-ready deliverables like System Security Plans (SSPs), POA&Ms, and Customer Responsibility Matrices in days, not months. Continuously validate compliance with real-time automated validation tools for FedRAMP 20X and other frameworks. Fast, Cost-Effective Monitoring Continuously monitor, validate, and report compliance 90% faster at a quarter of the cost. Paramify's automated tools and Evidence Repository simplify compliance, reducing costs and enhancing efficiency. Integrated with issue management tools like Jira, it streamlines workflows, helping you meet tight deadlines.",
-     "resolved": "name",
+     "resolved": "id",
      "listed": true
     },
     {
      "id": "FR1919071020A",
-     "as_declared": "SentinelOne Singularity Platform High",
+     "as_declared": "FR1919071020A",
      "certified": true,
      "use": "The SentinelOne Singularity platform is a unified, cloud-delivered security platform that provides customers with automation, endpoint detection and response and security information and event management (SIEM) capabilities integrated with a unified data lake to ingest and centralize structured and unstructured data. SentinelOne leverages advanced machine learning algorithms and behavioral AI to analyze and automatically contextualize endpoint data collected across Windows, macOS, Linux, and Cloud Workloads. Data is contextualized and correlated into our patented Storylines technology, which accelerates triage and reduces mean time to detect/respond. Data is organized into a cohesive threat narrative which allows analysts to easily identify threat-related events as well as pivot and hunt to scope threat tactics, techniques, and impact. This gives our customers the ability to quickly stop ransomware and cyber attacks at machine speed with 1-click automated remediation and rollback of malicious activities and changes. Additionally, SentinelOne offers world-class managed detection and response (MDR), digital forensics and incident response (DFIR), and threat hunting services. Our MDR service not only augments security teams by triaging active or suspicious alerts and mitigating and blocking threats as needed, but also keeps them informed and protected from global advanced persistent threat (APT) campaigns, novel attacker techniques, and emerging trends in cybercrime with included threat hunting services. Customers can also call on SentinelOne's integrated DFIR team for deeper forensic analysis of an event and assistance with incident response. Singularity Cloud Native Security (CNS) is an agentless CNAPP capability for protecting cloud environments and assets. Combined with our agent-based Cloud Workload Security capabilities, agencies have a comprehensive build-time to run-time security solution for their cloud infrastructure. CNS leverages a unique offensive security engine to prioritize vulnerabilities and misconfigurations that are truly exploitable to save time for SOC analysts in triage and investigation efforts CNS includes full capabilities covering CSPM, CIEM, KSPM, IAC Scanning, Secrets Scanning, CDR, and CWP use cases and security requirements. Singularity Hyperautomation is a powerful no-code automation solution for streamlining security operations, accelerating threat response, and boosting operational efficiency for security operations teams. Hyperautomation offers analysts the ability to build multi-step automation playbooks taking advantage of unified workflows, pre-built integrations, out-of-the-box templates, and flexible customizations for simplifying delivery of SOAR capabilities from within the unified Singularity platform. Purple AI is an agentic-AI powered capability to enable security analysts to detect earlier, respond faster, and stay ahead of modern attacks and threat actors. Integrating innovative LLM, Generative AI, and Natural Language processing technologies, Purple AI is a force multiplier for analysts by reducing manual triage and investigation and, with informed reasoning and decision making, unlocking the ability to take action with human oversight and governance. Purple AI simplifies the complex, amplifies every analyst, and delivers autonomous responses to accelerate security operations. The following SentinelOne Singularity Platform services are FedRAMP High Authorized: -Cloud Funnel -Cloud Workload Protection (CWP) -Digital Forensics & Incident Response (DFIR) services -Endpoint Detection and Response (EDR) -Endpoint Protection Platform (EPP) -Extended Detection and Response (XDR) -Purple AI Foundations for Public Sector -RemoteOps and RemoteOps Forensics -SentineOne Agent (Windows, macOS, Linux, and cloud-native Kubernetes) -SentinelOne Management Console -Singularity Cloud Native Security (CNS) -Singularity Data Lake -Singularity Hyperautomation -Singularity Marketplace -Singularity Network Discovery -Singularity Operations Center (OpsCenter) -Singularity Threat Intelligence -Singularity Vulnerability Management -Vigilance Managed Detection and Response (MDR) services -WatchTower and WatchTower Pro Threat Hunting services",
-     "resolved": "name",
+     "resolved": "id",
      "listed": true
     },
     {
      "id": "FR1823447014",
-     "as_declared": "Slack",
+     "as_declared": "FR1823447014",
      "certified": true,
      "use": "Slack has transformed business communication. It's the leading channels-based messaging platform, used by millions to align their teams, unify their systems, and drive their businesses forward. Only Slack offers a secure, enterprise-grade environment that can scale with the largest companies in the world. It is a new layer of the business technology stack where people can work together more effectively, connect all their other software tools and services, and find the information they need to do their best work. Slack is where work happens. Slack can support customers who are seeking both an Li-SaaS (FedRAMP low impact level) and FedRAMP Moderate impact level authorization or ATO. The Enterprise Grid plan is for customers who require compliance with FedRAMP Moderate. Enterprise Select is no longer offered as of 8/1/2025. Slack's Pro and Business+ plans are for customers who require compliance with FedRAMP Li-SaaS or Low.",
-     "resolved": "name",
+     "resolved": "id",
      "listed": true
     },
     {
-     "id": "FR2116544598A",
-     "as_declared": "Keeper",
+     "id": "FR1812058188",
+     "as_declared": "FR1812058188",
      "certified": true,
-     "use": "Keeper Security Government Cloud is a FedRAMP and StateRAMP Authorized zero-knowledge, zero-trust platform for password, secrets and privileged access management, hosted in AWS GovCloud for U.S. federal, state and local agencies. It gives agencies encrypted credential vaults, secrets management for DevOps and infrastructure, privileged session management and audit reporting, which supports controls such as IA-5 authenticator management and AC-2 account management.",
-     "resolved": "name (partial)",
+     "use": "A code collaboration and version control component provided by Github that enables teams to securely store and manage source code.",
+     "resolved": "id",
      "listed": true
     },
     {
@@ -22596,21 +22633,23 @@
     },
     {
      "id": null,
-     "as_declared": "Cloudflare",
+     "as_declared": "SpaceXSI Compute",
+     "provider": "SpaceXSI Compute",
+     "certified": false,
+     "use": "SpaceXSI provides the CPU and GPU compute for the Grok for Government environment within our own data centers."
+    },
+    {
+     "id": null,
+     "as_declared": "Cloudflare DNS",
      "provider": "Cloudflare, Inc.",
      "certified": false,
-     "use": "Public DNS service provider."
+     "use": "Cloudflare is leveraged for Public DNS"
     }
    ],
    "used_by": [],
    "hosts": [],
    "hosted_in": [],
-   "flags": [
-    {
-     "kind": "certified_resource_not_found",
-     "text": "Declares \"Okta GHC\" as a FedRAMP Certified resource; no listing by that name or ID"
-    }
-   ]
+   "flags": []
   },
   "FR2618738935": {
    "built_on": [
@@ -22954,6 +22993,137 @@
    "hosted_in": [],
    "flags": []
   },
+  "FR2628943632": {
+   "built_on": [
+    {
+     "id": "F1603047866",
+     "as_declared": "F1603047866",
+     "certified": true,
+     "use": "Usage and configuration. AWS GovCloud (US) is the infrastructure the whole offering runs on. Pryme operates four accounts in the aws-us-gov partition (management, production west, staging west and production east) under one AWS Organization. The system runs in us-gov-west-1; us-gov-east-1 holds the cold disaster-recovery copy, dormant until a runbook activates it. The services used are EKS and ECR for the application, Aurora PostgreSQL behind RDS Proxy, EFS, S3 and ElastiCache for data, Cognito, DynamoDB and Lambda for authentication, SES for mail, KMS, Secrets Manager and ACM for keys and secrets, Route 53, the Application Load Balancer, WAF, Network Firewall and Transit Gateway for the network, CloudTrail, GuardDuty, Security Hub, Inspector and Config for security monitoring, CodePipeline and CodeBuild for builds, AWS Backup, and IAM Identity Center for staff access. All federal customer data is processed and stored here: each agency has its own database, S3 bucket and KMS key, and backups and the east replicas stay inside the partition.\nJustification. AWS GovCloud (US) holds a FedRAMP High (Class D) JAB authorization, is operated by US citizens on US soil, and offers every service the offering needs, so AWS-native services are used instead of third-party SaaS wherever possible. Pryme's commercial AWS partition hosts non-government workloads only, is out of scope and has no connectivity to this boundary.\nMitigation measures. Data at rest is encrypted with AES-256 under customer-managed KMS keys in FIPS 140-3 Level 3 HSMs (CMVP #4884), one key per tenant. Data in transit terminates at the load balancer on a FIPS TLS 1.3 and 1.2 policy, and every SDK client and Terraform provider uses the FIPS endpoints. Staff reach the console only through IAM Identity Center behind Twingate zero trust access with security-key multi-factor authentication. All egress leaves through the Network Firewall, CloudTrail streams to the Cloud SIEM, and the infrastructure is defined in Terraform with daily drift detection.\nCompensating controls. None are needed for the leveraged services: the authorization covers them, and the controls Pryme operates above the shared-responsibility line are the subject of this package.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2023864279A",
+     "as_declared": "FR2023864279A",
+     "certified": true,
+     "use": "Usage and configuration. Datadog for Government is the offering's monitoring platform and security information and event management system. The Datadog Agent runs on the EKS clusters inside the boundary and sends container logs, metrics and Kubernetes state over HTTPS to the US1-FED site (ddog-gov.com), authenticated with an API key held in AWS Secrets Manager. Cloud SIEM also ingests the organization CloudTrail, EKS audit logs, VPC flow logs, the application's security event stream, the production PostgreSQL log, GuardDuty findings, GitHub and Google Workspace audit events, and Identity Center, Cognito and Twingate sign-in and connection logs; a read-only cross-account role lets Datadog read AWS configuration. Pryme uses logs, metrics, monitors, SLOs, synthetics, Cloud SIEM, Incident Management and Case Management; application performance monitoring, real user monitoring and cloud security management are switched off. Staff sign in through Google Workspace single sign-on with multi-factor authentication, roles are defined as code, and the assessor has a read-only role.\nJustification. Datadog for Government is FedRAMP High authorized and hosted in AWS GovCloud, and it is Pryme's record of truth for security signals and incidents, so the offering leverages it rather than operating its own logging and SIEM stack.\nMitigation measures. Telemetry carries metadata and identifiers only: tenant, user and request identifiers, resource names, counts and error text. The application's redaction enricher removes personal fields before a log line is written, and no record content is logged by design, so an agency's operational data does not reach Datadog. The AWS integration role is read-only, the API keys are rotated by a person and never embedded in code, the SIEM index is retained for 365 days with archives in Object-Locked S3, Datadog access is reviewed quarterly under the Datadog Logical Access Review, and the vendor is reviewed at least annually in Vanta under the Third-Party Management Policy.\nCompensating controls. None are needed beyond the authorization; the data minimization above bounds what the platform could expose.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "F1206081364",
+     "as_declared": "F1206081364",
+     "certified": true,
+     "use": "Usage and configuration. Google Workspace is the identity provider for Pryme staff and the company's mail and document suite. Staff sign in to GitHub, Datadog and Twingate through Workspace single sign-on, and Twingate syncs its users and groups from the Workspace directory, which is also the roster that the nightly account reconciliation checks IAM Identity Center, GitHub, Datadog, Twingate and Cognito against. The FedRAMP Administrators organizational unit, which holds every account with privileged access to the system, has been restricted to security keys and passkeys since 2026-10-21 (YubiKey 5 FIPS, CMVP #5291), and two-step verification cannot be weakened. The security@ mailbox is a Workspace group monitored every business day by the CTO with a designated backup, with fedramp.gov and gsa.gov on its approved-senders list. A read-only service account lets the daily posture check read these settings.\nJustification. Google Workspace is FedRAMP High authorized on the edition Pryme uses, and one identity source for every administrative system keeps joiner, mover and leaver control in a single place.\nMitigation measures. No operational data reaches Workspace: the application's data stays in AWS GovCloud. Workspace mail may hold agency personnel contact details from support correspondence (names, titles, agency addresses and work phone numbers), never operational records. Workspace audit events stream to the Cloud SIEM, access is reviewed quarterly under the Google Workspace Logical Access Review, the authentication posture is validated daily by automated checks, and the vendor is reviewed at least annually in Vanta under the Third-Party Management Policy. A known limit, tracked in the POA&M, is that Workspace cannot tell a hardware-bound security key from a synced passkey.\nCompensating controls. None are needed beyond the authorization; support correspondence is handled under the Data Management Policy as confidential customer data.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2428769635XL",
+     "as_declared": "FR2428769635XL",
+     "certified": true,
+     "use": "Usage and configuration. Paramify Cloud is the compliance platform and package of record for this certification. It holds the FedRAMP 20x Class C program, the solution capabilities and control implementations, the evidence sets and their validators, and it generates the Security Decision Record, the Certification Package Overview and the Ongoing Certification Report, which are published on the Paramify Trust Center (trust.paramify.com/prymeinfil) from FIPS S3 endpoints in us-gov-west-1. Four CodeBuild pipelines inside the boundary upload evidence artifacts to Paramify over HTTPS every day, each with its own upload token held in AWS Secrets Manager; the management-account runner reads AWS, Datadog, GitHub, Google Workspace, Vanta and Jira with read-only credentials and never touches a database. Staff use the web application; the operator's read key lives in the macOS Keychain and is never written to a file.\nJustification. Paramify Cloud is FedRAMP 20x certified at Class C, the same class as this offering, and is built for the certification package, so Pryme leverages it rather than assembling the package by hand.\nMitigation measures. Uploaded evidence consists of identifiers, counts and configuration values, never a token, a credential or an end user's personal data; tenant database names are hashed, Cognito pool names are withheld, and no resource identifier that could name a customer is emitted. The fetchers are read-only against every source, the upload tokens are scoped to evidence, issues, capabilities, validators and pipelines with an expiry, the read key is never on the runner, and the artifacts also stay in a 365-day compliance-locked evidence bucket inside the boundary as the copy of record. The vendor is reviewed at least annually in Vanta under the Third-Party Management Policy.\nCompensating controls. None are needed beyond the certification; no federal customer data is uploaded to Paramify.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "Atlantis",
+     "provider": "Atlantis",
+     "certified": false,
+     "use": "Usage and configuration. Atlantis is the open-source Terraform automation server that applies Pryme's infrastructure code. It runs on the staging EKS cluster in AWS GovCloud, from a digest-pinned image. GitHub sends it pull-request webhooks over HTTPS 443 through an internet-facing network load balancer whose security group admits only GitHub's webhook addresses, and an internal load balancer that forwards only the Atlantis events host, path and method and checks the webhook secret. Atlantis runs a plan on every pull request and applies only a reviewed, undiverged branch under a GitHub ruleset, with code owners gating the production, management and east roots. It assumes a dedicated automation role in each account through EKS Pod Identity, keeps state in per-root encrypted S3 buckets with locking, and its web interface is reachable only through Twingate.\nJustification. Pull-request-driven infrastructure change, reviewed and recorded in GitHub and applied from inside the boundary, is the control the configuration management process relies on; no hosted alternative is needed.\nMitigation measures. The inbound path is restricted by source address, host, path, method and secret, and is the only internet-facing entry besides the production load balancer. The pod is hardened in a namespace that denies ingress by default, egress leaves through the Network Firewall, custom workflows and apply-all are disabled, and a separate daily drift job in the management account plans every root with plan-only roles and reports any difference.\nCompensating controls. Atlantis receives, processes and stores no federal customer data; that absence is the compensating control. It handles infrastructure code and Terraform state only, has no credentials for the application's databases or buckets, and the Aurora databases are not managed in Terraform at all."
+    },
+    {
+     "id": null,
+     "as_declared": "CodeQL",
+     "provider": "GitHub, Inc.",
+     "certified": false,
+     "use": "Usage and configuration. CodeQL is GitHub's static analysis engine, run by GitHub Actions on the application repository on every pull request and on the default branch. It reads the source code already hosted on GitHub Enterprise Cloud and writes its findings to the repository's code scanning alerts; the daily GitHub CI results fetcher reads whether the check reported and uploads the result to Paramify as evidence.\nJustification. Static analysis at the source, inside the same GitHub tenancy that holds the code, adds no new data flow and gives the secure development process a repeatable vulnerability check on every change.\nMitigation measures. CodeQL sees source code only, which holds no customer data, and its alerts are tracked under the vulnerability management process with the same remediation timelines as scanner findings.\nCompensating controls. CodeQL receives, processes and stores no federal customer data; that absence is the compensating control. The application's data lives in AWS GovCloud and never enters a repository, and secret scanning on the repository keeps credentials out of the code it reads."
+    },
+    {
+     "id": null,
+     "as_declared": "Dependabot",
+     "provider": "GitHub, Inc.",
+     "certified": false,
+     "use": "Usage and configuration. Dependabot is GitHub's dependency monitor, enabled on the application repository on GitHub Enterprise Cloud. It reads the npm and NuGet manifests and lock files, raises an alert when a dependency has a published vulnerability, and opens update pull requests that go through the normal review and CI. The daily branch protection fetcher reads whether Dependabot alerts are enabled and uploads the result to Paramify.\nJustification. Continuous software composition analysis on the manifests, inside the GitHub tenancy that already holds them, supports the supply chain and vulnerability management processes without another vendor.\nMitigation measures. Dependabot reads dependency manifests only; its pull requests are reviewed like any other change and must pass CI before they merge.\nCompensating controls. Dependabot receives, processes and stores no federal customer data; that absence is the compensating control. The repositories hold code and infrastructure definitions only, and the application's data never enters them."
+    },
+    {
+     "id": null,
+     "as_declared": "Firebase Cloud Messaging",
+     "provider": "Firebase Cloud Messaging",
+     "certified": false,
+     "use": "Usage and configuration. Firebase Cloud Messaging delivers push notifications from the Pryme API to agency users' mobile devices, and to iOS devices through Apple's push service behind it. The API pods send each request over HTTPS through the egress VPC and the Network Firewall, authenticated with a per-tenant Firebase service-account credential that is stored encrypted in the tenant registry under a KMS-backed key. Every push is a wake-up signal only: a category, a generic title and body such as \"Pryme: New message\", and a random notification identifier. On receipt the app fetches the content from the Pryme API over TLS with the user's session, and the API re-checks that the caller is the recipient and still has access.\nJustification. Push delivery to a mobile device is only possible through the platform vendors' services. Firebase Cloud Messaging is outside Google's FedRAMP scope and no certified substitute exists for this last hop, so Pryme declares it and minimizes what it carries.\nMitigation measures. The payload builder emits no name, address, location, message body, event or record field, and unit tests pin the exact keys of every push shape. Google and Apple see device tokens, delivery timing, the category and a hashed collapse identifier that lets repeat pushes replace each other; none of these identifies a record or a person. The credentials are per tenant and encrypted, and the vendor is reviewed at least annually in Vanta under the Third-Party Management Policy.\nCompensating controls. Firebase Cloud Messaging receives, processes and stores no federal customer data; that absence is the compensating control, enforced in the payload code and its tests, with the content delivered only by Pryme's own authenticated API."
+    },
+    {
+     "id": null,
+     "as_declared": "FluxCD",
+     "provider": "GitOps",
+     "certified": false,
+     "use": "Usage and configuration. FluxCD is the open-source GitOps controller that deploys the application. Its controllers run in each EKS cluster inside AWS GovCloud and reconcile the cluster with the manifests on the main branch of the GitOps repository on GitHub Enterprise Cloud, which they pull with a deploy credential scoped to that repository. Image automation scans the in-region ECR registry every minute through EKS Pod Identity and commits the new image version tag back to the repository; the nodes then pull the image from ECR. Drift detection and rollback are enabled on every Helm release. The east cluster's controllers are dormant with the rest of the cold disaster-recovery site.\nJustification. Declarative deployment from a reviewed repository makes every change to the clusters a commit, which the configuration management and change control processes rely on; the controllers run inside the boundary.\nMitigation measures. Flux's credentials reach only the GitOps repository and the ECR registry, reconciliation is restricted to the main branch, CI validates the manifests and Helm values before merge, and the deployments are reviewed under the SDLC review. The controller images are pulled from the vendor's public registry by pinned version; mirroring them into ECR is planned.\nCompensating controls. FluxCD receives, processes and stores no federal customer data; that absence is the compensating control. It handles manifests and image tags only and has no access to the application's databases or buckets."
+    },
+    {
+     "id": null,
+     "as_declared": "GitHub Enterprise Cloud",
+     "provider": "GitHub Enterprise Cloud",
+     "certified": false,
+     "use": "Usage and configuration. GitHub Enterprise Cloud, with data residency in the United States, hosts the application source code, the Terraform infrastructure code and the Kubernetes deployment manifests. Staff sign in through Google Workspace single sign-on with multi-factor authentication. A push to the application repository triggers AWS CodePipeline through a webhook, and CodePipeline pulls the source with an access token; GitHub also sends pull-request webhooks to Atlantis through a restricted load balancer path, and FluxCD pulls the deployment manifests and commits image version tags with a deploy credential. All connections use HTTPS on port 443. Repository rulesets require review, code owners gate the infrastructure applies, CodeQL and gitleaks report on every pull request, Dependabot alerts and secret scanning with push protection are on for the application repository, and the enterprise audit log is streamed to the Datadog Cloud SIEM.\nJustification. GitHub Enterprise Cloud is the source control and continuous integration service the development life cycle is built on. GitHub's own FedRAMP authorization is at the Low level, below this offering's, so it is declared as a non-certified resource.\nMitigation measures. Review rulesets and code owners, scanning on every change, audit events in the SIEM, credentials scoped to single repositories (the evidence fetchers use a read-only GitHub App), and GitHub's encryption in transit and at rest. The vendor is reviewed at least annually in Vanta under the Third-Party Management Policy. Replacing the CodePipeline access token with a GitHub App is planned.\nCompensating controls. GitHub Enterprise Cloud receives, processes and stores no federal customer data; that absence is the compensating control. The repositories hold code and infrastructure definitions only, the application's data never enters them, and secret scanning with push protection and code review keep credentials and data out."
+    },
+    {
+     "id": null,
+     "as_declared": "Gitleaks",
+     "provider": "GitHub, Inc.",
+     "certified": false,
+     "use": "Usage and configuration. Gitleaks is an open-source secret scanner. GitHub Actions runs it on every pull request to the application repository on GitHub Enterprise Cloud, where it scans the changed source for credentials, tokens and keys and reports a check; the daily GitHub CI results fetcher reads whether the check reported and uploads the result to Paramify. It complements GitHub's native secret scanning with push protection on the same repository.\nJustification. A second, independent secret scanner on every change keeps credentials out of the repositories, which is a supply chain control and a precondition for declaring that the repositories hold code only.\nMitigation measures. Gitleaks reads source code only and runs inside the GitHub tenancy that already holds it; a finding is treated as a credential exposure and the credential is rotated under the incident response and vulnerability management processes.\nCompensating controls. Gitleaks receives, processes and stores no federal customer data; that absence is the compensating control. The application's data never enters a repository, and the scanner exists to keep secrets out of the code it reads."
+    },
+    {
+     "id": null,
+     "as_declared": "Jira",
+     "provider": "Atlassian",
+     "certified": false,
+     "use": "Usage and configuration. Jira, on Atlassian's commercial cloud at pryme.atlassian.net, is Pryme's issue tracker. It holds the engineering backlog, the program's change requests and configuration exceptions and the tracking of vulnerability remediation. Staff sign in with single sign-on and multi-factor authentication. The evidence fetchers read it over HTTPS with a service account that has the Viewer role and read-only scopes and a token capped at one year. Security incidents are not recorded in Jira: they stay in Datadog Incident Management.\nJustification. Jira is the tracker the development and change management processes run on. Pryme's site is on Atlassian's commercial cloud, not Atlassian Government Cloud, so it is declared as a non-certified resource.\nMitigation measures. The data classification policy prohibits controlled unclassified information in tickets, incidents and their details are kept out of Jira, the integration is read-only, access is by single sign-on with multi-factor authentication, and the vendor is reviewed at least annually in Vanta under the Third-Party Management Policy.\nCompensating controls. Jira receives, processes and stores no federal customer data; that absence is the compensating control, kept true by the no-CUI rule for tickets and by recording incidents in Datadog rather than Jira."
+    },
+    {
+     "id": null,
+     "as_declared": "Kubescape",
+     "provider": "Kubescape",
+     "certified": false,
+     "use": "Usage and configuration. Kubescape is the open-source Kubernetes security scanner that scores the clusters against the CIS EKS and NSA-CISA benchmarks. It runs as a weekly scheduled job inside the staging and production EKS clusters in AWS GovCloud, deployed through the GitOps repository, and writes its results as JSON to a results bucket in the same account. The Kubescape benchmark fetcher reads the control identifiers and counts from that bucket and uploads them to Paramify as evidence. The job reports nothing to the vendor's cloud service.\nJustification. A benchmark scan of the running clusters gives the configuration management process a repeatable, in-boundary measure of hardening; an open-source scanner run locally avoids sending cluster configuration to another vendor.\nMitigation measures. The scanner reads Kubernetes configuration and manifests only, its results hold control identifiers and counts, and the results stay in an encrypted bucket inside the boundary. The scanner image is pulled by pinned version.\nCompensating controls. Kubescape receives, processes and stores no federal customer data; that absence is the compensating control. It reads cluster configuration, never workload data, and has no credentials for the application's databases or buckets."
+    },
+    {
+     "id": null,
+     "as_declared": "OpenWeatherMap",
+     "provider": "OpenWeatherMap",
+     "certified": false,
+     "use": "Usage and configuration. OpenWeatherMap supplies the weather shown for an event's location. The Pryme API calls it server-side over HTTPS through the egress VPC and the Network Firewall, using an API key delivered from AWS Secrets Manager. A request carries the event's city, state and country only (the county when no city resolves): never the caller's coordinates, a bounding box or a postal code. OpenWeatherMap geocodes that place name to its own city-level point and returns the forecast, and Pryme caches the result.\nJustification. Weather is part of operational planning in the offering. OpenWeatherMap is not FedRAMP authorized, so it is declared as a non-certified resource; the federal weather.gov API is a deferred alternative.\nMitigation measures. The city-and-state limit is enforced in code by the weather provider catalog, a startup validator that refuses any configuration allowing coordinates, and guardrail tests. The API key is a managed secret, egress passes the Network Firewall, and the vendor is reviewed at least annually in Vanta under the Third-Party Management Policy.\nCompensating controls. OpenWeatherMap receives, processes and stores no federal customer data; that absence is the compensating control. An event's exact location never leaves the boundary: the service sees only a city and state, and the code-enforced limit keeps it that way."
+    },
+    {
+     "id": null,
+     "as_declared": "Terraform",
+     "provider": "HashiCorp",
+     "certified": false,
+     "use": "Usage and configuration. Terraform is the open-source infrastructure-as-code tool that defines the four AWS GovCloud accounts. Version 1.10 or later with the AWS provider 6.x runs inside the boundary: in Atlantis for plans and applies, in a daily CodeBuild drift job that plans every root with plan-only roles, and occasionally on an engineer's workstation. Every provider and state backend uses the FIPS endpoints. State lives in a per-root S3 bucket encrypted with a customer-managed KMS key, with deletion protection and state locking. The only connection to HashiCorp is the download of the CLI and providers from its public release and registry endpoints over HTTPS.\nJustification. A declarative, reviewed definition of the infrastructure, with daily drift detection against it, is the basis of the configuration management process; the tool runs inside the boundary and sends nothing to the vendor.\nMitigation measures. State buckets are encrypted, locked and protected from deletion; the Aurora databases and their contents are not managed in Terraform; drift reports carry resource addresses only; and changes reach production only through Atlantis under review.\nCompensating controls. Terraform receives, processes and stores no federal customer data; that absence is the compensating control. Its state holds resource configuration, never application data."
+    },
+    {
+     "id": null,
+     "as_declared": "Twingate Cloud Edge",
+     "provider": "Twingate Cloud Edge",
+     "certified": false,
+     "use": "Usage and configuration. Twingate Cloud Edge is the control plane of the zero trust network access service through which Pryme administrators reach private resources in AWS GovCloud: the EKS private endpoints, the internal load balancer for Atlantis and other tools, Aurora through RDS Proxy, and the AWS console through IAM Identity Center. Administrators sign in through Google Workspace, and Twingate syncs its users and groups from the Workspace directory. Pryme-operated connectors, one EC2 instance per environment plus an in-cluster connector, make outbound-only connections to Twingate and terminate the end-to-end encrypted sessions from administrator devices; Twingate relays forward that encrypted traffic only when a direct connection cannot be made and cannot decrypt it. The control plane issues short-lived access decisions and policy and stores identity records, access policies and connection events. Connection logs stream to the Datadog Cloud SIEM, and the nightly account reconciliation checks the Twingate user list against the Workspace roster.\nJustification. Zero trust access removes bastion hosts and inbound administrative ports from the boundary. Twingate is not FedRAMP authorized, so it is declared as a non-certified resource and will be replaced before the Class D phase.\nMitigation measures. Each session requires a device certificate and an identity from Workspace with security-key multi-factor authentication. Twingate's transport encryption does not use FIPS 140 validated modules, so the administrative protocols inside the tunnel rely on their own TLS sessions to FIPS endpoints; the connector hosts run Amazon Linux 2023 in FIPS mode. Sessions are logged in the SIEM, and the vendor is reviewed at least annually in Vanta under the Third-Party Management Policy.\nCompensating controls. Twingate Cloud Edge receives, processes and stores no federal customer data; that absence is the compensating control. The control plane sees brokering metadata and policy only, and the data plane is encrypted end to end between the administrator's device and connectors inside the boundary."
+    },
+    {
+     "id": null,
+     "as_declared": "Vanta SaaS",
+     "provider": "Vanta Inc",
+     "certified": false,
+     "use": "Usage and configuration. Vanta is the trust management platform Pryme uses for its SOC 2 program, policies, vendor risk management, training records and the Vanta Trust Center. It reads configuration through read-only, least-privilege integrations: a read-only scanner role that Vanta assumes in the production and external AWS accounts, and read access to GitHub. The evidence fetchers read Vanta's tests and vendor records over HTTPS with a read-only API application, and a separate write application, used only from the operator's laptop, uploads documents. Pryme's tenant is on Vanta's commercial service at app.vanta.com.\nJustification. Vanta operates the vendor risk management and SOC 2 monitoring that the Third-Party Management Policy requires and gives agencies a second trust portal. It is declared as a non-certified resource.\nMitigation measures. The integrations are read-only and scoped, Vanta receives configuration and compliance metadata and records about Pryme's own program, the API applications are read-only except for document upload, and the connection is reviewed at least annually under the Third-Party Management Policy.\nCompensating controls. Vanta receives, processes and stores no federal customer data; that absence is the compensating control. Its integrations read infrastructure configuration, not application data, and the documents in it describe Pryme's program, not any agency's operations."
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
   "FR2629068830": {
    "built_on": [
     {
@@ -23152,26 +23322,18 @@
   "FR2631054539": {
    "built_on": [
     {
-     "id": "FR1805751477",
-     "as_declared": "FR1805751477",
-     "certified": true,
-     "use": "Google Cloud Platform (High Impact, JAB authorized). Primary cloud infrastructure provider hosting the Mycroft GRC Platform.",
-     "resolved": "id",
-     "listed": true
-    },
-    {
-     "id": "F1206081364",
-     "as_declared": "F1206081364",
-     "certified": true,
-     "use": "Google Workspace (High, JAB authorized). Corporate productivity, email, and collaboration suite.",
-     "resolved": "id",
-     "listed": true
-    },
-    {
      "id": "FR2000863987A",
      "as_declared": "FR2000863987A",
      "certified": true,
-     "use": "Cloudflare for Government (High, Agency authorized). Content delivery network, DNS, and web application security.",
+     "use": "Provides cloud-based web security, content delivery network (CDN), and distributed domain name server (DNS) services. Optimizes website performance while protecting digital infrastructure from distributed denial-of-service (DDoS) attacks and malicious traffic.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR1805751477",
+     "as_declared": "FR1805751477",
+     "certified": true,
+     "use": "Provides a comprehensive suite of cloud computing services, including scalable infrastructure, data storage, and advanced analytics. Enables organizations to build, deploy, and manage applications securely on Google's global infrastructure.",
      "resolved": "id",
      "listed": true
     },
@@ -23179,7 +23341,23 @@
      "id": "FR1812058188",
      "as_declared": "FR1812058188",
      "certified": true,
-     "use": "GitHub Enterprise Cloud (Low, Agency authorized). Source code management and CI/CD for platform development.",
+     "use": "Source code repository and version control platform. Stores proprietary code, development workflows, and technical documentation.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "F1206081364",
+     "as_declared": "F1206081364",
+     "certified": true,
+     "use": "Provides a cloud-based suite of productivity, collaboration, and communication tools including corporate email, cloud storage, and shared document management. Enables distributed teams to securely create files, manage schedules, and conduct video conferencing within an integrated ecosystem",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2003061248",
+     "as_declared": "FR2003061248",
+     "certified": true,
+     "use": "Customer relationship management platform. Manages sales, customer data, marketing automation, and business processes.",
      "resolved": "id",
      "listed": true
     },
@@ -23187,7 +23365,7 @@
      "id": "FR1823447014",
      "as_declared": "FR1823447014",
      "certified": true,
-     "use": "Slack (Moderate, Agency authorized). Internal team communication and collaboration.",
+     "use": "Team communication and collaboration platform. Facilitates internal messaging, file sharing, and workflow integrations.",
      "resolved": "id",
      "listed": true
     },
@@ -23196,56 +23374,42 @@
      "as_declared": "1Password",
      "provider": "1Password",
      "certified": false,
-     "use": "Password manager."
+     "use": "Password management and credential storage solution. Secures and manages organizational passwords and secrets."
     },
     {
      "id": null,
-     "as_declared": "Linear",
-     "provider": "Linear",
+     "as_declared": "Clickhouse",
+     "provider": "Clickhouse",
      "certified": false,
-     "use": "Project management software."
+     "use": "For the risk operations centre data warehouse"
     },
     {
      "id": null,
-     "as_declared": "Resend",
-     "provider": "Resend",
+     "as_declared": "FleetDM",
+     "provider": "FleetDM",
      "certified": false,
-     "use": "Transactional email provider."
+     "use": "Provides open-source endpoint management and security monitoring powered by osquery. Enables security and IT operations teams to track asset inventory, query device states, and maintain real-time compliance across laptops, servers, and cloud infrastructure."
     },
     {
      "id": null,
-     "as_declared": "Twilio SendGrid",
-     "provider": "Twilio",
+     "as_declared": "Humi (by Employment Hero)",
+     "provider": "Humi (by Employment Hero)",
      "certified": false,
-     "use": "Transactional email provider."
-    },
-    {
-     "id": null,
-     "as_declared": "PropelAuth",
-     "provider": "PropelAuth",
-     "certified": false,
-     "use": "Authentication gateway."
+     "use": "Provides a cloud-based human resources information system (HRIS), payroll, and benefits administration platform built specifically for Canadian businesses (acquired by Employment Hero in 2025). Enables organizations to centralize employee records, automate compliant payroll processing and tax remittances across provinces, manage recruiting and onboarding workflows, and track time, attendance, and performance."
     },
     {
      "id": null,
      "as_declared": "PostHog",
      "provider": "PostHog",
      "certified": false,
-     "use": "Product analytics."
+     "use": "Product analytics and feature management platform. Tracks user behavior, A/B testing, and product insights."
     },
     {
      "id": null,
-     "as_declared": "Mycroft",
-     "provider": "Mycroft Technologies Inc",
+     "as_declared": "PropelAuth",
+     "provider": "PropelAuth",
      "certified": false,
-     "use": "Compliance automation and technology stack."
-    },
-    {
-     "id": null,
-     "as_declared": "Pylon",
-     "provider": "Pylon",
-     "certified": false,
-     "use": "Customer support ticket management."
+     "use": "Authentication and user management for B2B applications. Provides multi-tenant auth, SSO, and user provisioning."
     }
    ],
    "used_by": [
@@ -24824,6 +24988,14 @@
   "FR2700137045": {
    "built_on": [
     {
+     "id": "FR1812058188",
+     "as_declared": "FR1812058188",
+     "certified": true,
+     "use": "Source control and CI/CD: code repositories and GitHub Actions pipelines (deploy-gcp-v2.yml, trunk-pr.yml) that build, test, and deploy the offering.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
      "id": "FR1805751477",
      "as_declared": "FR1805751477",
      "certified": true,
@@ -24832,11 +25004,12 @@
      "listed": true
     },
     {
-     "id": null,
-     "as_declared": "GitHub",
-     "provider": "GitHub, Inc. (Microsoft)",
-     "certified": false,
-     "use": "Source control and CI/CD: code repositories and GitHub Actions pipelines (deploy-gcp-v2.yml, trunk-pr.yml) that build, test, and deploy the offering."
+     "id": "FR2308034636A",
+     "as_declared": "FR2308034636A",
+     "certified": true,
+     "use": "Cloud security posture management (CSPM) and vulnerability scanning across the GCP boundary; findings feed RegScale continuous monitoring.",
+     "resolved": "id",
+     "listed": true
     },
     {
      "id": null,
@@ -24844,13 +25017,6 @@
      "provider": "SonarSource S.A.",
      "certified": false,
      "use": "Static application security testing (SAST) and code-quality analysis executed in the CI pipeline."
-    },
-    {
-     "id": null,
-     "as_declared": "Wiz",
-     "provider": "Wiz, Inc.",
-     "certified": false,
-     "use": "Cloud security posture management (CSPM) and vulnerability scanning across the GCP boundary; findings feed RegScale continuous monitoring."
     }
    ],
    "used_by": [],
@@ -26236,6 +26402,22 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "MSO365MTA": {
+   "built_on": [
+    {
+     "id": "F1206061353",
+     "as_declared": "F1206061353",
+     "certified": true,
+     "use": "The M365 GCC information system leverages the Akamai CDN to enhance customer load times and reduce latency for web content.",
+     "resolved": "id",
+     "listed": true
     }
    ],
    "used_by": [],
