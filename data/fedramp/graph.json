@@ -1,6 +1,6 @@
 {
  "description": "Build the built-on / used-by graph between marketplace listings.",
- "snapshot": "products-2026-11-17.json.gz",
+ "snapshot": "products-2026-11-18.json.gz",
  "listings": {
   "AGENCYAMAZONEW": {
    "built_on": [],
@@ -389,7 +389,7 @@
     },
     {
      "id": "FR2631054539",
-     "use": "Provides a cloud-based suite of productivity, collaboration, and communication tools including corporate email, cloud storage, and shared document management. Enables distributed teams to securely create files, manage schedules, and conduct video conferencing within an integrated ecosystem"
+     "use": "Google Workspace (High, JAB authorized). Corporate productivity, email, and collaboration suite."
     },
     {
      "id": "FR2632054491",
@@ -4255,6 +4255,10 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2628647242",
+     "use": "Cloud infrastructure hosting the Bland service."
+    },
+    {
      "id": "FR2704160211",
      "use": "AWS GovCloud (US) us-gov-east-1 provides the underlying IaaS infrastructure; Knowtex inherits controls as a leveraged authorization."
     },
@@ -4293,10 +4297,6 @@
     {
      "id": "FR2633841585",
      "use": "AWS GovCloud (US) hosts the offering and provides managed services, including Amazon SES delivery of system-generated email and Amazon Bedrock inference. Bedrock serves only Anthropic Claude and OpenAI gpt-oss models that AWS lists as FedRAMP Class D in AWS GovCloud (US) at https://aws.amazon.com/compliance/services-in-scope/FedRAMP/amazon-bedrock-models/, and the Bedrock endpoint policy denies every other model."
-    },
-    {
-     "id": "FR2628647242",
-     "use": "Cloud infrastructure hosting the Bland service."
     },
     {
      "id": "FR2513256853",
@@ -6456,7 +6456,7 @@
     },
     {
      "id": "FR2631054539",
-     "use": "Provides a comprehensive suite of cloud computing services, including scalable infrastructure, data storage, and advanced analytics. Enables organizations to build, deploy, and manage applications securely on Google's global infrastructure."
+     "use": "Google Cloud Platform (High Impact, JAB authorized). Primary cloud infrastructure provider hosting the Mycroft GRC Platform."
     },
     {
      "id": "FR2628647238",
@@ -7196,7 +7196,7 @@
     },
     {
      "id": "FR2631054539",
-     "use": "Source code repository and version control platform. Stores proprietary code, development workflows, and technical documentation."
+     "use": "GitHub Enterprise Cloud (Low, Agency authorized). Source code management and CI/CD for platform development."
     },
     {
      "id": "FR2632755834",
@@ -8840,7 +8840,7 @@
     },
     {
      "id": "FR2631054539",
-     "use": "Team communication and collaboration platform. Facilitates internal messaging, file sharing, and workflow integrations."
+     "use": "Slack (Moderate, Agency authorized). Internal team communication and collaboration."
     },
     {
      "id": "FR2618542150",
@@ -11273,10 +11273,6 @@
      "use": "Cloudflare is a cloud monitoring provider used for edge network and security infrastructure. DDoS and WAF protection for the public apex zone."
     },
     {
-     "id": "FR2631054539",
-     "use": "Provides cloud-based web security, content delivery network (CDN), and distributed domain name server (DNS) services. Optimizes website performance while protecting digital infrastructure from distributed denial-of-service (DDoS) attacks and malicious traffic."
-    },
-    {
      "id": "FR2532557612",
      "use": "WAF and sole network ingress point (Cloudflare for Government)"
     }
@@ -11284,7 +11280,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 3
+   "platform_dependents": 2
   },
   "FR2000939520": {
    "built_on": [
@@ -11511,10 +11507,6 @@
    "built_on": [],
    "used_by": [
     {
-     "id": "FR2631054539",
-     "use": "Customer relationship management platform. Manages sales, customer data, marketing automation, and business processes."
-    },
-    {
      "id": "FR2633957417",
      "use": "Provides CRM capabilities supporting customer-related business processes within the CSO."
     }
@@ -11522,7 +11514,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 2
+   "platform_dependents": 1
   },
   "FR2004146362": {
    "built_on": [
@@ -19230,6 +19222,12 @@
      "own_listing": null
     },
     {
+     "name": "Obviant",
+     "provider": "",
+     "since": "",
+     "own_listing": null
+    },
+    {
      "name": "Onebrief",
      "provider": "",
      "since": "",
@@ -19269,6 +19267,10 @@
     {
      "kind": "hosted_without_listing",
      "text": "MCheck (by HiLabs) runs inside this platform's package and has no marketplace listing of its own"
+    },
+    {
+     "kind": "hosted_without_listing",
+     "text": "Obviant runs inside this platform's package and has no marketplace listing of its own"
     },
     {
      "kind": "hosted_without_listing",
@@ -22940,13 +22942,6 @@
      "provider": "Microsoft Corporation",
      "certified": false,
      "use": "Source control, build orchestration, deployment and compliance-evidence workflows that can affect production. This is a supporting assessment dependency; Azure Commercial authorization is not asserted as authorization of this separate SaaS service."
-    },
-    {
-     "id": null,
-     "as_declared": "Tarly Microsoft 365 / SharePoint Online integration",
-     "provider": "Microsoft Corporation (tenant operated by Tarly)",
-     "certified": false,
-     "use": "Dormant SharePoint search/import capability retained in the assessment inventory. The owner confirms the integration is not in use. On 2026-11-04 the Tarly test application was disabled and its tenant-wide Sites.Read.All grant, delegated User.Read consent and all requested API permissions were removed. No agency/customer SharePoint connection is authorized. Tenant/environment eligibility and selected-site read-only validation are required before future use; no GCC, GCC High or agency authorization is claimed for the test tenant."
     }
    ],
    "used_by": [],
@@ -23322,26 +23317,10 @@
   "FR2631054539": {
    "built_on": [
     {
-     "id": "FR2000863987A",
-     "as_declared": "FR2000863987A",
-     "certified": true,
-     "use": "Provides cloud-based web security, content delivery network (CDN), and distributed domain name server (DNS) services. Optimizes website performance while protecting digital infrastructure from distributed denial-of-service (DDoS) attacks and malicious traffic.",
-     "resolved": "id",
-     "listed": true
-    },
-    {
      "id": "FR1805751477",
      "as_declared": "FR1805751477",
      "certified": true,
-     "use": "Provides a comprehensive suite of cloud computing services, including scalable infrastructure, data storage, and advanced analytics. Enables organizations to build, deploy, and manage applications securely on Google's global infrastructure.",
-     "resolved": "id",
-     "listed": true
-    },
-    {
-     "id": "FR1812058188",
-     "as_declared": "FR1812058188",
-     "certified": true,
-     "use": "Source code repository and version control platform. Stores proprietary code, development workflows, and technical documentation.",
+     "use": "Google Cloud Platform (High Impact, JAB authorized). Primary cloud infrastructure provider hosting the Mycroft GRC Platform.",
      "resolved": "id",
      "listed": true
     },
@@ -23349,15 +23328,15 @@
      "id": "F1206081364",
      "as_declared": "F1206081364",
      "certified": true,
-     "use": "Provides a cloud-based suite of productivity, collaboration, and communication tools including corporate email, cloud storage, and shared document management. Enables distributed teams to securely create files, manage schedules, and conduct video conferencing within an integrated ecosystem",
+     "use": "Google Workspace (High, JAB authorized). Corporate productivity, email, and collaboration suite.",
      "resolved": "id",
      "listed": true
     },
     {
-     "id": "FR2003061248",
-     "as_declared": "FR2003061248",
+     "id": "FR1812058188",
+     "as_declared": "FR1812058188",
      "certified": true,
-     "use": "Customer relationship management platform. Manages sales, customer data, marketing automation, and business processes.",
+     "use": "GitHub Enterprise Cloud (Low, Agency authorized). Source code management and CI/CD for platform development.",
      "resolved": "id",
      "listed": true
     },
@@ -23365,51 +23344,86 @@
      "id": "FR1823447014",
      "as_declared": "FR1823447014",
      "certified": true,
-     "use": "Team communication and collaboration platform. Facilitates internal messaging, file sharing, and workflow integrations.",
+     "use": "Slack (Moderate, Agency authorized). Internal team communication and collaboration.",
      "resolved": "id",
      "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "Cloudflare (Business plan)",
+     "provider": "Cloudflare, Inc.",
+     "certified": false,
+     "use": "Managed web application firewall in front of production. Mycroft is moving to Cloudflare for Government (FR2000863987A), planned by 2026-12-31."
     },
     {
      "id": null,
      "as_declared": "1Password",
      "provider": "1Password",
      "certified": false,
-     "use": "Password management and credential storage solution. Secures and manages organizational passwords and secrets."
+     "use": "Password manager."
     },
     {
      "id": null,
-     "as_declared": "Clickhouse",
-     "provider": "Clickhouse",
+     "as_declared": "Linear",
+     "provider": "Linear",
      "certified": false,
-     "use": "For the risk operations centre data warehouse"
+     "use": "Project management software."
     },
     {
      "id": null,
-     "as_declared": "FleetDM",
-     "provider": "FleetDM",
+     "as_declared": "Resend",
+     "provider": "Resend",
      "certified": false,
-     "use": "Provides open-source endpoint management and security monitoring powered by osquery. Enables security and IT operations teams to track asset inventory, query device states, and maintain real-time compliance across laptops, servers, and cloud infrastructure."
+     "use": "Transactional email provider."
     },
     {
      "id": null,
-     "as_declared": "Humi (by Employment Hero)",
-     "provider": "Humi (by Employment Hero)",
+     "as_declared": "Twilio SendGrid",
+     "provider": "Twilio",
      "certified": false,
-     "use": "Provides a cloud-based human resources information system (HRIS), payroll, and benefits administration platform built specifically for Canadian businesses (acquired by Employment Hero in 2025). Enables organizations to centralize employee records, automate compliant payroll processing and tax remittances across provinces, manage recruiting and onboarding workflows, and track time, attendance, and performance."
-    },
-    {
-     "id": null,
-     "as_declared": "PostHog",
-     "provider": "PostHog",
-     "certified": false,
-     "use": "Product analytics and feature management platform. Tracks user behavior, A/B testing, and product insights."
+     "use": "Transactional email provider."
     },
     {
      "id": null,
      "as_declared": "PropelAuth",
      "provider": "PropelAuth",
      "certified": false,
-     "use": "Authentication and user management for B2B applications. Provides multi-tenant auth, SSO, and user provisioning."
+     "use": "Authentication gateway."
+    },
+    {
+     "id": null,
+     "as_declared": "PostHog",
+     "provider": "PostHog",
+     "certified": false,
+     "use": "Product analytics."
+    },
+    {
+     "id": null,
+     "as_declared": "Mycroft",
+     "provider": "Mycroft Technologies Inc",
+     "certified": false,
+     "use": "Compliance automation and technology stack."
+    },
+    {
+     "id": null,
+     "as_declared": "Pylon",
+     "provider": "Pylon",
+     "certified": false,
+     "use": "Customer support ticket management."
+    },
+    {
+     "id": null,
+     "as_declared": "Turbopuffer",
+     "provider": "Turbopuffer",
+     "certified": false,
+     "use": "Document index for documents uploaded to Mycroft and for the CISO knowledge base."
+    },
+    {
+     "id": null,
+     "as_declared": "Clickhouse",
+     "provider": "Clickhouse",
+     "certified": false,
+     "use": "Risk operations centre data warehouse."
     }
    ],
    "used_by": [
