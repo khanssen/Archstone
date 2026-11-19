@@ -1,10 +1,18 @@
 {
  "description": "Build the built-on / used-by graph between marketplace listings.",
- "snapshot": "products-2026-11-18.json.gz",
+ "snapshot": "products-2026-11-19.json.gz",
  "listings": {
   "AGENCYAMAZONEW": {
    "built_on": [],
    "used_by": [
+    {
+     "id": "FR2704735984",
+     "use": "AWS US East/West hosts the Certiv cloud service (EKS, Aurora PostgreSQL, S3, KMS, CloudFront, Bedrock, SES)."
+    },
+    {
+     "id": "FR2704735972",
+     "use": "Amazon Web Services (AWS US East/West). Hosts the government offering in US regions only, including compute, relational databases (Amazon RDS), load balancing, web application firewall, and centralized logging, monitoring, and security event alerting (Amazon CloudWatch, used as GroveWare's SIEM)."
+    },
     {
      "id": "FR2700555844",
      "use": "Cloud services and AI model inference for Linear AI features."
@@ -137,7 +145,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 30
+   "platform_dependents": 32
   },
   "AGENCYNITCIAAS": {
    "built_on": [],
@@ -1332,6 +1340,10 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2704735972",
+     "use": "Microsoft Entra ID (Azure Commercial Cloud). OAuth2 identity provider used to authenticate users and administrators accessing the platform."
+    },
+    {
      "id": "FR2631258135",
      "use": "Azure Commercial Cloud — Azure OpenAI (GPT model inference for organizations not in CUI mode; prompts may include customer document text. A route for organizations in CUI mode, to the US Data Zone deployments only, is provisioned and not enabled: the setting that turns it on is off, so no organization in CUI mode uses Azure OpenAI. By Microsoft's default, prompts and completions are stored for abuse monitoring in the account's US geography, and content the monitoring flags can be reviewed by authorized Microsoft employees; Specset plans to apply modified abuse monitoring to the deployments organizations in CUI mode would use by 2026-12-31, or to keep them off Azure OpenAI until it is applied), Microsoft Entra ID application registrations for customer 'Sign in with Microsoft' single sign-on, and a Windows evaluation lab in the same subscription, whose runbook allows public or synthetic files only (not technically enforced)."
     },
@@ -1786,7 +1798,7 @@
      "text": "FedRAMP's page lists 81 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
     }
    ],
-   "platform_dependents": 90
+   "platform_dependents": 91
   },
   "F1211011660": {
    "built_on": [],
@@ -2597,6 +2609,10 @@
    ],
    "used_by": [
     {
+     "id": "FR2531940362",
+     "use": "DataBank colocation facilities hosting SGC2 infrastructure; physical and environmental (PE) controls are inherited from DataBank."
+    },
+    {
      "id": "FR1818459251",
      "use": "",
      "source": "former_dependents"
@@ -2616,7 +2632,7 @@
      "text": "FedRAMP's page lists 2 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
     }
    ],
-   "platform_dependents": 2
+   "platform_dependents": 3
   },
   "F1408115175": {
    "built_on": [
@@ -10470,6 +10486,10 @@
    ],
    "used_by": [
     {
+     "id": "FR2531940362",
+     "use": "Sumo Logic log aggregation, retention, and security monitoring for SGC2 audit and event logs."
+    },
+    {
      "id": "FR2211452029",
      "use": ""
     },
@@ -13678,6 +13698,10 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2531940362",
+     "use": "Keeper password vault for Sand Solutions administrative credentials and secrets."
+    },
+    {
      "id": "FR2520254824",
      "use": "Keeper Security Government Cloud Password Manager and Privileged Access Manager provides secure storage and management of system-level secrets, passwords, and privileged credentials supporting InEight Document US Government."
     },
@@ -15701,6 +15725,10 @@
     }
    ],
    "used_by": [
+    {
+     "id": "FR2531940362",
+     "use": "Lucid GovSuite for SGC2 architecture and data flow diagrams."
+    },
     {
      "id": "FR2432940371",
      "use": "",
@@ -19210,13 +19238,13 @@
      "own_listing": null
     },
     {
-     "name": "Kaizen Labs",
+     "name": "Kaizen",
      "provider": "",
      "since": "",
      "own_listing": null
     },
     {
-     "name": "MCheck (by HiLabs)",
+     "name": "MCheck® Provider",
      "provider": "",
      "since": "",
      "own_listing": null
@@ -19262,11 +19290,11 @@
     },
     {
      "kind": "hosted_without_listing",
-     "text": "Kaizen Labs runs inside this platform's package and has no marketplace listing of its own"
+     "text": "Kaizen runs inside this platform's package and has no marketplace listing of its own"
     },
     {
      "kind": "hosted_without_listing",
-     "text": "MCheck (by HiLabs) runs inside this platform's package and has no marketplace listing of its own"
+     "text": "MCheck® Provider runs inside this platform's package and has no marketplace listing of its own"
     },
     {
      "kind": "hosted_without_listing",
@@ -20178,6 +20206,10 @@
   "FR2428769635XL": {
    "built_on": [],
    "used_by": [
+    {
+     "id": "FR2531940362",
+     "use": "Paramify Cloud for FedRAMP documentation, control management, and the SGC2 Trust Center."
+    },
     {
      "id": "FR2702852019",
      "use": "GRC platform and Trust Center."
@@ -22196,6 +22228,62 @@
    "hosted_in": [],
    "flags": []
   },
+  "FR2531940362": {
+   "built_on": [
+    {
+     "id": "F1404304159",
+     "as_declared": "F1404304159",
+     "certified": true,
+     "use": "DataBank colocation facilities hosting SGC2 infrastructure; physical and environmental (PE) controls are inherited from DataBank.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR1918740338",
+     "as_declared": "FR1918740338",
+     "certified": true,
+     "use": "Sumo Logic log aggregation, retention, and security monitoring for SGC2 audit and event logs.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2218073444",
+     "as_declared": "FR2218073444",
+     "certified": true,
+     "use": "Lucid GovSuite for SGC2 architecture and data flow diagrams.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2116544598A",
+     "as_declared": "FR2116544598A",
+     "certified": true,
+     "use": "Keeper password vault for Sand Solutions administrative credentials and secrets.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2428769635XL",
+     "as_declared": "FR2428769635XL",
+     "certified": true,
+     "use": "Paramify Cloud for FedRAMP documentation, control management, and the SGC2 Trust Center.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "Microsoft 365 (Commercial)",
+     "provider": "Microsoft",
+     "certified": false,
+     "use": "Sand Solutions corporate email, collaboration, and staff authentication."
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": [],
+   "platform_dependents": 0
+  },
   "FR2532557612": {
    "built_on": [
     {
@@ -23428,6 +23516,10 @@
    ],
    "used_by": [
     {
+     "id": "FR2704735972",
+     "use": "Mycroft GRC Platform (Mycroft Technologies Inc). Compliance automation software used by GroveWare to support the design, implementation, operation, monitoring, and documentation of internal controls."
+    },
+    {
      "id": "FR2632731472",
      "use": "Mycroft GRC Platform (Mycroft Technologies Inc). Compliance automation software used to support the design, implementation, operation, monitoring, and documentation of internal controls via API-based integrations."
     },
@@ -23575,6 +23667,34 @@
      "certified": true,
      "use": "DataDog for Government for monitoring and observability.",
      "resolved": "unresolved"
+    },
+    {
+     "id": null,
+     "as_declared": "Twilio Programmable Messaging",
+     "provider": "Twilio Inc.",
+     "certified": false,
+     "use": "Outbound-only SMS notifications. Outside the FedRAMP authorization boundary (MAS DOC-1.1 X2); provider-side delivery logs and recipient contact data stay with Twilio. Not FedRAMP authorized as used."
+    },
+    {
+     "id": null,
+     "as_declared": "SendGrid",
+     "provider": "Twilio Inc.",
+     "certified": false,
+     "use": "Outbound-only email notifications. Outside the FedRAMP authorization boundary (MAS DOC-1.1 X2); provider-side delivery logs and recipient contact data stay with SendGrid. Not FedRAMP authorized as used."
+    },
+    {
+     "id": null,
+     "as_declared": "Zoho Desk",
+     "provider": "Zoho Corporation",
+     "certified": false,
+     "use": "Corporate incident-support and ticketing system referenced in IR Standard DOC-1.2 s.3.1. Outside the FedRAMP authorization boundary (MAS DOC-1.1 X5); tickets do not contain federal customer data."
+    },
+    {
+     "id": null,
+     "as_declared": "Vanta for Government",
+     "provider": "Vanta Inc.",
+     "certified": false,
+     "use": "Compliance automation and hosting of the public Trust Center (https://trust.nexgenam.com). FedRAMP package ID pending confirmation; listed as non-certified until confirmed."
     }
    ],
    "used_by": [],
@@ -26390,6 +26510,103 @@
      "provider": "DuploCloud, Inc.",
      "certified": false,
      "use": "Infrastructure provisioning and DevSecOps automation for the Knowtex environment in AWS GovCloud."
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2704735972": {
+   "built_on": [
+    {
+     "id": "AGENCYAMAZONEW",
+     "as_declared": "AGENCYAMAZONEW",
+     "certified": true,
+     "use": "Amazon Web Services (AWS US East/West). Hosts the government offering in US regions only, including compute, relational databases (Amazon RDS), load balancing, web application firewall, and centralized logging, monitoring, and security event alerting (Amazon CloudWatch, used as GroveWare's SIEM).",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "F1209051525",
+     "as_declared": "F1209051525",
+     "certified": true,
+     "use": "Microsoft Entra ID (Azure Commercial Cloud). OAuth2 identity provider used to authenticate users and administrators accessing the platform.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2631054539",
+     "as_declared": "FR2631054539",
+     "certified": true,
+     "use": "Mycroft GRC Platform (Mycroft Technologies Inc). Compliance automation software used by GroveWare to support the design, implementation, operation, monitoring, and documentation of internal controls.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "GitHub",
+     "provider": "GitHub (Microsoft)",
+     "certified": false,
+     "use": "Source code hosting and version control, including pull request review and approval workflows."
+    },
+    {
+     "id": null,
+     "as_declared": "Jira",
+     "provider": "Atlassian",
+     "certified": false,
+     "use": "Ticketing and issue tracking, including monitoring alerts, incident response, vulnerability remediation, and change requests."
+    },
+    {
+     "id": null,
+     "as_declared": "1Password",
+     "provider": "1Password (AgileBits Inc.)",
+     "certified": false,
+     "use": "Password and secrets management for GroveWare personnel, including credentials used to administer the platform."
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2704735984": {
+   "built_on": [
+    {
+     "id": "AGENCYAMAZONEW",
+     "as_declared": "AGENCYAMAZONEW",
+     "certified": true,
+     "use": "AWS US East/West hosts the Certiv cloud service (EKS, Aurora PostgreSQL, S3, KMS, CloudFront, Bedrock, SES).",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "Stytch",
+     "provider": "Stytch, Inc.",
+     "certified": false,
+     "use": "Customer sign-in, single sign-on and organization membership for the console."
+    },
+    {
+     "id": null,
+     "as_declared": "Sentry",
+     "provider": "Functional Software, Inc.",
+     "certified": false,
+     "use": "Error monitoring for the API and console."
+    },
+    {
+     "id": null,
+     "as_declared": "PostHog",
+     "provider": "PostHog, Inc.",
+     "certified": false,
+     "use": "Product usage analytics for the console."
+    },
+    {
+     "id": null,
+     "as_declared": "Google Cloud DLP",
+     "provider": "Google LLC",
+     "certified": false,
+     "use": "Optional content scanning, used only when a customer turns on the DLP integration."
     }
    ],
    "used_by": [],
