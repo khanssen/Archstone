@@ -1,10 +1,14 @@
 {
  "description": "Build the built-on / used-by graph between marketplace listings.",
- "snapshot": "products-2026-11-19.json.gz",
+ "snapshot": "products-2026-11-20.json.gz",
  "listings": {
   "AGENCYAMAZONEW": {
    "built_on": [],
    "used_by": [
+    {
+     "id": "FR2704861270",
+     "use": "AWS US East/West (FedRAMP Certified). Primary cloud infrastructure hosting the BuildOps platform in US East (N. Virginia, us-east-1), with US East (Ohio, us-east-2) as the standby recovery region. All other third-party information resources are listed in informationResources."
+    },
     {
      "id": "FR2704735984",
      "use": "AWS US East/West hosts the Certiv cloud service (EKS, Aurora PostgreSQL, S3, KMS, CloudFront, Bedrock, SES)."
@@ -145,7 +149,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 32
+   "platform_dependents": 33
   },
   "AGENCYNITCIAAS": {
    "built_on": [],
@@ -1186,6 +1190,12 @@
      "provider": "",
      "since": "2026-11-02",
      "own_listing": null
+    },
+    {
+     "name": "Sirion",
+     "provider": "",
+     "since": "2026-11-19",
+     "own_listing": null
     }
    ],
    "hosted_in": [],
@@ -1289,6 +1299,10 @@
     {
      "kind": "hosted_without_listing",
      "text": "OpenPolicy runs inside this platform's package and has no marketplace listing of its own"
+    },
+    {
+     "kind": "hosted_without_listing",
+     "text": "Sirion runs inside this platform's package and has no marketplace listing of its own"
     }
    ]
   },
@@ -1339,6 +1353,10 @@
   "F1209051525": {
    "built_on": [],
    "used_by": [
+    {
+     "id": "FR2704861258",
+     "use": "Microsoft Azure Commercial Cloud (includes Microsoft Entra ID), FedRAMP High: workforce identity provider for AWS IAM Identity Center via SAML and SCIM. Conditional Access requires phishing-resistant MFA for all GovCloud access."
+    },
     {
      "id": "FR2704735972",
      "use": "Microsoft Entra ID (Azure Commercial Cloud). OAuth2 identity provider used to authenticate users and administrators accessing the platform."
@@ -1798,7 +1816,7 @@
      "text": "FedRAMP's page lists 81 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
     }
    ],
-   "platform_dependents": 91
+   "platform_dependents": 92
   },
   "F1211011660": {
    "built_on": [],
@@ -4271,6 +4289,10 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2704861258",
+     "use": "AWS GovCloud (US), FedRAMP High: hosting for all in-boundary compute, storage, databases, IoT, workforce access (AWS IAM Identity Center) and security services in us-gov-west-1 and us-gov-east-1."
+    },
+    {
      "id": "FR2628647242",
      "use": "Cloud infrastructure hosting the Bland service."
     },
@@ -4362,7 +4384,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 22
+   "platform_dependents": 23
   },
   "F1603077867": {
    "built_on": [
@@ -26607,6 +26629,67 @@
      "provider": "Google LLC",
      "certified": false,
      "use": "Optional content scanning, used only when a customer turns on the DLP integration."
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2704861258": {
+   "built_on": [
+    {
+     "id": "F1603047866",
+     "as_declared": "F1603047866",
+     "certified": true,
+     "use": "AWS GovCloud (US), FedRAMP High: hosting for all in-boundary compute, storage, databases, IoT, workforce access (AWS IAM Identity Center) and security services in us-gov-west-1 and us-gov-east-1.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "F1209051525",
+     "as_declared": "F1209051525",
+     "certified": true,
+     "use": "Microsoft Azure Commercial Cloud (includes Microsoft Entra ID), FedRAMP High: workforce identity provider for AWS IAM Identity Center via SAML and SCIM. Conditional Access requires phishing-resistant MFA for all GovCloud access.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "Cloudflare Zero Trust (WARP)",
+     "provider": "Cloudflare",
+     "certified": false,
+     "use": "Network access for administrators to internal administrative endpoints. The commercial Cloudflare service is used; Cloudflare's FedRAMP-authorized offering (Cloudflare for Government) is not."
+    },
+    {
+     "id": null,
+     "as_declared": "GitHub (Team plan)",
+     "provider": "GitHub",
+     "certified": false,
+     "use": "Source control and pull-request change management for infrastructure as code. GitHub's FedRAMP authorization covers GitHub Enterprise Cloud, not the Team plan in use."
+    },
+    {
+     "id": null,
+     "as_declared": "Amazon Route 53 (commercial partition)",
+     "provider": "Amazon Web Services",
+     "certified": false,
+     "use": "Public DNS for the plumsense.com domain, including the custom domains of in-boundary GovCloud endpoints. Hosted in a commercial AWS account outside the GovCloud boundary; DNS records contain no federal data."
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2704861270": {
+   "built_on": [
+    {
+     "id": "AGENCYAMAZONEW",
+     "as_declared": "AGENCYAMAZONEW",
+     "certified": true,
+     "use": "AWS US East/West (FedRAMP Certified). Primary cloud infrastructure hosting the BuildOps platform in US East (N. Virginia, us-east-1), with US East (Ohio, us-east-2) as the standby recovery region. All other third-party information resources are listed in informationResources.",
+     "resolved": "id",
+     "listed": true
     }
    ],
    "used_by": [],
