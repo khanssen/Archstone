@@ -1,10 +1,18 @@
 {
  "description": "Build the built-on / used-by graph between marketplace listings.",
- "snapshot": "products-2026-11-20.json.gz",
+ "snapshot": "products-2026-11-23.json.gz",
  "listings": {
   "AGENCYAMAZONEW": {
    "built_on": [],
    "used_by": [
+    {
+     "id": "FR2704958443",
+     "use": "Provides the cloud infrastructure platform and services supporting the Zendesk for Government trust boundary. Zendesk inherits IaaS/PaaS controls from AWS according to its Customer Responsibility Matrix."
+    },
+    {
+     "id": "FR2704958436",
+     "use": "Amazon Web Services (commercial, us-east-1) hosts the Ignis platform, including compute, container registry, databases, storage, networking, and security services."
+    },
     {
      "id": "FR2704861270",
      "use": "AWS US East/West (FedRAMP Certified). Primary cloud infrastructure hosting the BuildOps platform in US East (N. Virginia, us-east-1), with US East (Ohio, us-east-2) as the standby recovery region. All other third-party information resources are listed in informationResources."
@@ -22,12 +30,20 @@
      "use": "Cloud services and AI model inference for Linear AI features."
     },
     {
+     "id": "FR2703860264",
+     "use": "Amazon Web Services (AWS US East/West) hosts the entire federal offering in a dedicated AWS account: application and data in us-east-1, the availability status page in us-west-2. Services used: CloudFront, AWS WAF, API Gateway, Lambda, S3, DynamoDB, Cognito, Secrets Manager (agency-configured Tableau and Microsoft credentials), KMS, VPC, Route 53, Certificate Manager, CloudTrail, CloudWatch, Config, Security Hub, GuardDuty, SNS, EventBridge, IAM and IAM Identity Center."
+    },
+    {
      "id": "FR2631258135",
      "use": "AWS US East/West — supporting services: Amazon SES (outbound transactional email and, since 2026-10-29, email received for project addresses), Route 53 (DNS), S3 (CI build cache, CloudTrail audit logs, and received email), SQS (received-email notifications), GuardDuty (threat detection), and Amazon Bedrock (Claude model inference entered in us-west-2 through global cross-Region inference profiles, which may process requests in any AWS commercial Region; for organizations not in CUI mode only; prompts may include customer document text). For an organization not in CUI mode, notification bodies may carry project content, and a submittal-review notification attaches the marked-up review PDF (on unless the project turns it off) and the review spreadsheet (off unless the project turns it on). Since 2026-10-21 05:32 UTC an organization in CUI mode receives, in place of each notification that can carry project content, a notice with a link and no project content or attachment; the link resolves only for an authenticated member of the organization. Since 2026-10-29 Amazon SES also receives email for project addresses (projects.specset.com): SES accepts the message outside the boundary, scans it, writes it to a KMS-encrypted S3 bucket in the same account and notifies an encrypted SQS queue, and the workers read the queue and the object and delete them. Project addresses are only for organizations with the project email feature and never for organizations in CUI mode; no organization has the feature as of 2026-10-30, and the bucket deletes a message after four days."
     },
     {
      "id": "FR2632731472",
      "use": "Primary cloud infrastructure subservice organization providing the networking, compute, storage, and database components underlying Casco, including AWS Lambda (compute), Amazon Aurora (database), AWS WAF, AWS CloudFront (CDN), AWS Certificate Manager, AWS KMS (key management), AWS CloudTrail, AWS CloudWatch, AWS GuardDuty, and AWS Inspector."
+    },
+    {
+     "id": "FR2702852030",
+     "use": "AWS US East/West, region us-east-1: Amazon Cognito (user directory, sign-in, multi-factor authentication), Amazon API Gateway and AWS Lambda (account, subscription and takeoff APIs), Amazon RDS for PostgreSQL (account and takeoff records) and Amazon Textract (table extraction from uploaded drawings)."
     },
     {
      "id": "FR2702852019",
@@ -55,7 +71,15 @@
     },
     {
      "id": "FR2701557044",
+     "use": "AI model provider: answers the pipeline's AI steps with Anthropic Claude models served by Amazon Bedrock. Customer source code and extracted business rules are sent to Amazon Bedrock inside the AWS environment over an encrypted connection; model calls to any other address are refused."
+    },
+    {
+     "id": "FR2701557044",
      "use": "Stores the platform's signed container images"
+    },
+    {
+     "id": "FR2701557044",
+     "use": "Sends the platform's notification e-mail from the AWS environment through Amazon Simple Email Service over an encrypted connection (TLS): monitoring and security alerts, compliance reminders and monthly summaries. Messages carry alert text only (the system name, the problem and counts); they do not carry customer source code or extracted business rules."
     },
     {
      "id": "FR2701557044",
@@ -149,7 +173,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 33
+   "platform_dependents": 37
   },
   "AGENCYNITCIAAS": {
    "built_on": [],
@@ -371,6 +395,10 @@
     }
    ],
    "used_by": [
+    {
+     "id": "FR2704958436",
+     "use": "Google Workspace provides workforce identity federated to AWS IAM Identity Center."
+    },
     {
      "id": "FR2618738935",
      "use": "Google Workspace provides the internal documentation repository for ATX Defense CMMC Space developers and administrators."
@@ -3550,6 +3578,10 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2704958443",
+     "use": "Provides centralized identity and access management for Zendesk employees with access to the trust boundary."
+    },
+    {
      "id": "FR2628943630",
      "use": "The CARTN FedRAMP SaaS offering uses Okta Identity-as-a-Service (IDaaS) Regulated Cloud to provide user authentication and authorization for the CARTN web portal and mobile application. Okta manages end-user identities, enforces multi-factor authentication, and applies access policies that govern which users may access CARTN and the data and functions available to them, providing centralized and auditable identity management for the service."
     },
@@ -4289,6 +4321,10 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2704958428",
+     "use": "Primary production cloud infrastructure (AWS GovCloud (US)) hosting isolated per-tenant agency accounts, compute, managed PostgreSQL, object storage, KMS encryption, and centralized security logging."
+    },
+    {
      "id": "FR2704861258",
      "use": "AWS GovCloud (US), FedRAMP High: hosting for all in-boundary compute, storage, databases, IoT, workforce access (AWS IAM Identity Center) and security services in us-gov-west-1 and us-gov-east-1."
     },
@@ -4384,7 +4420,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 23
+   "platform_dependents": 24
   },
   "F1603077867": {
    "built_on": [
@@ -4434,6 +4470,10 @@
   "F1603087869": {
    "built_on": [],
    "used_by": [
+    {
+     "id": "FR2704958413",
+     "use": "Provides the government cloud infrastructure supporting CTME, including virtual desktop hosting, networking, compute, and associated enclave infrastructure."
+    },
     {
      "id": "FR2703461005",
      "use": "Hosting platform. AKS, Azure SQL Database, Cosmos DB, Storage, Key Vault, Load Balancer, Private Link, NSGs, DDoS Protection, Backup, Monitor, Log Analytics, Application Insights, Sentinel (SIEM), Defender for Cloud and Endpoint, Entra ID, Azure Virtual Desktop, Azure DNS."
@@ -4834,7 +4874,7 @@
      "text": "FedRAMP's page lists 66 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
     }
    ],
-   "platform_dependents": 76
+   "platform_dependents": 77
   },
   "F1603297883": {
    "built_on": [],
@@ -6457,12 +6497,20 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2704958436",
+     "use": "Google Cloud Firebase Authentication signs users in and issues tokens."
+    },
+    {
      "id": "FR2618738935",
      "use": "Google Cloud (Google Services / GCP products and underlying infrastructure) hosts the CMMC Space VDI."
     },
     {
      "id": "FR2700555844",
      "use": "Primary hosting infrastructure: compute, databases, storage, networking, logging, and AI model inference."
+    },
+    {
+     "id": "FR2704160183",
+     "use": "Google Cloud Platform (FedRAMP High) — all production compute (Kubernetes), managed PostgreSQL, object storage, networking, and Security Command Center monitoring in us-central1. Physical security, hypervisor isolation, and hardware controls are inherited from this authorization."
     },
     {
      "id": "FR2631154499",
@@ -6486,7 +6534,7 @@
     },
     {
      "id": "FR2701457579",
-     "use": "Hosts all Replit compute, storage, databases, key\nmanagement and Vertex AI model inference."
+     "use": "Hosts all Replit compute, storage, databases, key management and Vertex AI model inference."
     },
     {
      "id": "FR2700137045",
@@ -6856,7 +6904,7 @@
      "text": "FedRAMP's page lists 62 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
     }
    ],
-   "platform_dependents": 81
+   "platform_dependents": 83
   },
   "FR1807853629A": {
    "built_on": [
@@ -6977,6 +7025,10 @@
     }
    ],
    "used_by": [
+    {
+     "id": "FR2704958443",
+     "use": "Provides data warehousing and supports Analytics functionality of the Zendesk platform. Also serves as the SIEM for the trust boundary."
+    },
     {
      "id": "FR2604643715",
      "use": "Snowflake is a data storage and processing provider used as a cloud data warehouse and analytics platform. Data warehouse/analytics and data movement, including the Polytomic Snowflake ↔ Salesforce workflow."
@@ -7212,6 +7264,10 @@
     }
    ],
    "used_by": [
+    {
+     "id": "FR2704958436",
+     "use": "GitHub Enterprise Cloud hosts source code and supports code review."
+    },
     {
      "id": "FR2631258135",
      "use": "GitHub Enterprise Cloud — source control and CI/CD for the application and infrastructure-as-code. Dependabot security alerts and CodeQL code scanning run on the application and infrastructure repositories, with Dependabot version updates on the infrastructure repository. Deploys to production through OpenID Connect workload identity federation. GitHub also hosts the marketing website repository, whose continuous integration publishes the website and the public copy of this document; Dependabot runs on it, and the website publisher can write only the website bucket. No customer data."
@@ -9276,6 +9332,10 @@
   "FR1824057433": {
    "built_on": [],
    "used_by": [
+    {
+     "id": "FR2704958413",
+     "use": "Provides government cloud productivity and collaboration capabilities supporting CTME, including identity integration, email, document storage, and secure file collaboration."
+    },
     {
      "id": "FR2520254824",
      "use": "Microsoft 365 Government Community Cloud-High provides authorized collaboration and support services supporting InEight Document US Government."
@@ -17047,6 +17107,10 @@
    ],
    "used_by": [
     {
+     "id": "FR2704958443",
+     "use": "Provides overarching cloud security posture management and vulnerability management capabilities."
+    },
+    {
      "id": "FR2700137045",
      "use": "Cloud security posture management (CSPM) and vulnerability scanning across the GCP boundary; findings feed RegScale continuous monitoring."
     },
@@ -17514,27 +17578,10 @@
      "source": "former_dependents"
     }
    ],
-   "used_by": [
-    {
-     "id": "FR2520950455",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2526948870",
-     "use": "",
-     "source": "former_dependents"
-    }
-   ],
+   "used_by": [],
    "hosts": [],
    "hosted_in": [],
-   "flags": [
-    {
-     "kind": "dependents_shown_as_resources",
-     "count": 2,
-     "text": "FedRAMP's page lists 2 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
-    }
-   ]
+   "flags": []
   },
   "FR2315464863": {
    "built_on": [
@@ -21369,15 +21416,6 @@
   "FR2520950455": {
    "built_on": [
     {
-     "id": "FR2314156865",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR2230252267",
      "as_declared": null,
      "certified": true,
@@ -21797,15 +21835,6 @@
   },
   "FR2526948870": {
    "built_on": [
-    {
-     "id": "FR2314156865",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
     {
      "id": "F1206081364",
      "as_declared": null,
@@ -22359,6 +22388,10 @@
   "FR2533155773": {
    "built_on": [],
    "used_by": [
+    {
+     "id": "FR2704958443",
+     "use": "Provides generative artifician intelligence and natural language processing services for the Zendesk platform."
+    },
     {
      "id": "FR2700555844",
      "use": "AI model inference for Linear AI features."
@@ -24918,6 +24951,18 @@
     }
    ]
   },
+  "FR2634450946": {
+   "built_on": [],
+   "used_by": [
+    {
+     "id": "FR2704160183",
+     "use": "Pinecone — managed vector database deployed Bring-Your-Own-Cloud (BYOC) inside Juume AI's GCP project; embeddings derived from customer content remain within the Juume AI GCP boundary. Pinecone's control plane is covered by its FedRAMP package."
+    }
+   ],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
   "FR2634659079": {
    "built_on": [
     {
@@ -25651,9 +25696,9 @@
    "built_on": [
     {
      "id": "FR1805751477",
-     "as_declared": "FR1805751477 (Google Services: Google Cloud Platform\nProducts and underlying Infrastructure)",
+     "as_declared": "FR1805751477",
      "certified": true,
-     "use": "Hosts all Replit compute, storage, databases, key\nmanagement and Vertex AI model inference.",
+     "use": "Hosts all Replit compute, storage, databases, key management and Vertex AI model inference.",
      "resolved": "id",
      "listed": true
     },
@@ -25662,7 +25707,7 @@
      "as_declared": "Claude models",
      "provider": "Anthropic",
      "certified": false,
-     "use": "AI model inference for Replit Agent and AI features. Models\ncan be enabled or disabled based on customer preferences"
+     "use": "AI model inference for Replit Agent and AI features. Models can be enabled or disabled based on customer preferences"
     },
     {
      "id": null,
@@ -25718,7 +25763,7 @@
      "as_declared": "WorkOS",
      "provider": "WorkOS, Inc.",
      "certified": false,
-     "use": "Single sign-on and audit log integration for customer\norganizations."
+     "use": "Single sign-on and audit log integration for customer organizations."
     },
     {
      "id": null,
@@ -25821,7 +25866,23 @@
      "id": "AGENCYAMAZONEW",
      "as_declared": "AGENCYAMAZONEW",
      "certified": true,
+     "use": "AI model provider: answers the pipeline's AI steps with Anthropic Claude models served by Amazon Bedrock. Customer source code and extracted business rules are sent to Amazon Bedrock inside the AWS environment over an encrypted connection; model calls to any other address are refused.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "AGENCYAMAZONEW",
+     "as_declared": "AGENCYAMAZONEW",
+     "certified": true,
      "use": "Stores the platform's signed container images",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "AGENCYAMAZONEW",
+     "as_declared": "AGENCYAMAZONEW",
+     "certified": true,
+     "use": "Sends the platform's notification e-mail from the AWS environment through Amazon Simple Email Service over an encrypted connection (TLS): monitoring and security alerts, compliance reminders and monthly summaries. Messages carry alert text only (the system name, the problem and counts); they do not carry customer source code or extracted business rules.",
      "resolved": "id",
      "listed": true
     },
@@ -25835,24 +25896,10 @@
     },
     {
      "id": null,
-     "as_declared": "Anthropic API",
-     "provider": "Anthropic",
-     "certified": false,
-     "use": "AI model provider: answers the pipeline's AI steps. Customer source code and extracted business rules are sent to the API over an encrypted connection to a restricted list of allowed addresses. This service is not FedRAMP-authorized."
-    },
-    {
-     "id": null,
      "as_declared": "GitLab",
      "provider": "GitLab",
      "certified": false,
      "use": "Self-hosted GitLab, operated by the provider outside the AWS environment, that holds Moderniza source code and the generated applications and runs the CI/CD pipeline"
-    },
-    {
-     "id": null,
-     "as_declared": "SMTP relay",
-     "provider": "SMTP relay",
-     "certified": false,
-     "use": "Sends notification e-mail"
     },
     {
      "id": null,
@@ -26348,6 +26395,106 @@
    "hosted_in": [],
    "flags": []
   },
+  "FR2702852030": {
+   "built_on": [
+    {
+     "id": "AGENCYAMAZONEW",
+     "as_declared": "AGENCYAMAZONEW",
+     "certified": true,
+     "use": "AWS US East/West, region us-east-1: Amazon Cognito (user directory, sign-in, multi-factor authentication), Amazon API Gateway and AWS Lambda (account, subscription and takeoff APIs), Amazon RDS for PostgreSQL (account and takeoff records) and Amazon Textract (table extraction from uploaded drawings).",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "Cloudflare Pages, Workers, D1, R2 and network services",
+     "provider": "Cloudflare, Inc.",
+     "certified": false,
+     "use": "Hosts the application and its server functions, the job and catalog databases (D1) and stored documents (R2), and provides DNS, TLS and the content delivery network. This is Cloudflare's standard commercial service, not the FedRAMP Authorized Cloudflare for Government offering (FR2000863987A)."
+    },
+    {
+     "id": null,
+     "as_declared": "Anthropic API (Claude)",
+     "provider": "Anthropic, PBC",
+     "certified": false,
+     "use": "Language model behind the AI assistant and drafting aids (RFI and preconstruction drafts, reading uploaded documents, merging bill-of-material lines from text-only documents). Receives the prompt and the customer records or document text needed to answer it."
+    },
+    {
+     "id": null,
+     "as_declared": "Perplexity API",
+     "provider": "Perplexity AI, Inc.",
+     "certified": false,
+     "use": "Public web research for material prices (returned with a cited source for a person to accept), lead-time estimates and manufacturer details. Receives item descriptions and manufacturer names. Perplexity has a FedRAMP listing (FR2604643715); RMPAC has not confirmed that its API account is covered by it."
+    },
+    {
+     "id": null,
+     "as_declared": "xAI API",
+     "provider": "X.AI Corp.",
+     "certified": false,
+     "use": "Public web research for material prices, returned with a cited source for a person to accept. Receives item descriptions."
+    },
+    {
+     "id": null,
+     "as_declared": "1build API",
+     "provider": "1build, Inc.",
+     "certified": false,
+     "use": "Construction cost reference data. Receives material descriptions and locations."
+    },
+    {
+     "id": null,
+     "as_declared": "Resend",
+     "provider": "Resend, Inc.",
+     "certified": false,
+     "use": "Sends transactional email (invitations, notices, alerts). Receives recipient addresses and message content."
+    },
+    {
+     "id": null,
+     "as_declared": "Stripe",
+     "provider": "Stripe, Inc.",
+     "certified": false,
+     "use": "Subscription billing. Card data is entered on Stripe and never reaches RMPAC ONE."
+    },
+    {
+     "id": null,
+     "as_declared": "Google and Apple sign-in",
+     "provider": "Google LLC; Apple Inc.",
+     "certified": false,
+     "use": "Optional federated sign-in. Returns the user's name and email address to Amazon Cognito."
+    },
+    {
+     "id": null,
+     "as_declared": "SAM.gov Opportunities API",
+     "provider": "U.S. General Services Administration",
+     "certified": false,
+     "use": "Reads public federal contract opportunity data. Receives search terms only."
+    },
+    {
+     "id": null,
+     "as_declared": "Open-Meteo",
+     "provider": "Open-Meteo",
+     "certified": false,
+     "use": "Weather observations for daily logs. Receives a job site's latitude and longitude."
+    },
+    {
+     "id": null,
+     "as_declared": "OpenStreetMap (Nominatim geocoding and map tiles) and Zippopotam.us",
+     "provider": "OpenStreetMap Foundation; Zippopotam.us",
+     "certified": false,
+     "use": "Places company and job locations by city or ZIP code, and draws map tiles for shipment tracking. Receives city, state or ZIP code and map coordinates."
+    },
+    {
+     "id": null,
+     "as_declared": "Public script and font networks (unpkg, jsDelivr, cdnjs, Google Fonts)",
+     "provider": "Various",
+     "certified": false,
+     "use": "Deliver open-source browser libraries (PDF rendering, OCR, maps, zip files) and web fonts to the user's browser. They receive the user's IP address and the page address, not customer records."
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
   "FR2703160237": {
    "built_on": [
     {
@@ -26493,6 +26640,74 @@
      "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes including compliance planning, solution implementation, gap assessments, and continuous reporting. Knocknoc uses Paramify Cloud to manage its FedRAMP compliance program and to host its FedRAMP Trust Center. Paramify Cloud publishes Knocknoc’s Certification Package Overview and other certification deliverables, and manages agency access requests for restricted deliverables. Paramify Cloud does not store or process Knocknoc customer data.",
      "resolved": "name",
      "listed": true
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2703860264": {
+   "built_on": [
+    {
+     "id": "AGENCYAMAZONEW",
+     "as_declared": "AGENCYAMAZONEW",
+     "certified": true,
+     "use": "Amazon Web Services (AWS US East/West) hosts the entire federal offering in a dedicated AWS account: application and data in us-east-1, the availability status page in us-west-2. Services used: CloudFront, AWS WAF, API Gateway, Lambda, S3, DynamoDB, Cognito, Secrets Manager (agency-configured Tableau and Microsoft credentials), KMS, VPC, Route 53, Certificate Manager, CloudTrail, CloudWatch, Config, Security Hub, GuardDuty, SNS, EventBridge, IAM and IAM Identity Center.",
+     "resolved": "id",
+     "listed": true
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2704160183": {
+   "built_on": [
+    {
+     "id": "FR1805751477",
+     "as_declared": "FR1805751477",
+     "certified": true,
+     "use": "Google Cloud Platform (FedRAMP High) — all production compute (Kubernetes), managed PostgreSQL, object storage, networking, and Security Command Center monitoring in us-central1. Physical security, hypervisor isolation, and hardware controls are inherited from this authorization.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2634450946",
+     "as_declared": "FR2634450946",
+     "certified": true,
+     "use": "Pinecone — managed vector database deployed Bring-Your-Own-Cloud (BYOC) inside Juume AI's GCP project; embeddings derived from customer content remain within the Juume AI GCP boundary. Pinecone's control plane is covered by its FedRAMP package.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "GitHub",
+     "provider": "GitHub, Inc.",
+     "certified": false,
+     "use": "Source-code management, peer review, and CI/CD deployment pipeline for the platform. Does not handle customer data."
+    },
+    {
+     "id": null,
+     "as_declared": "Rippling",
+     "provider": "People Center, Inc.",
+     "certified": false,
+     "use": "Workforce identity, single sign-on, HRIS, and endpoint device management for Juume AI personnel."
+    },
+    {
+     "id": null,
+     "as_declared": "SentinelOne",
+     "provider": "SentinelOne, Inc.",
+     "certified": false,
+     "use": "Endpoint detection and response on company-managed devices."
+    },
+    {
+     "id": null,
+     "as_declared": "Jira",
+     "provider": "Atlassian Pty Ltd",
+     "certified": false,
+     "use": "Change, vulnerability, and incident tracking."
     }
    ],
    "used_by": [],
@@ -26690,6 +26905,239 @@
      "use": "AWS US East/West (FedRAMP Certified). Primary cloud infrastructure hosting the BuildOps platform in US East (N. Virginia, us-east-1), with US East (Ohio, us-east-2) as the standby recovery region. All other third-party information resources are listed in informationResources.",
      "resolved": "id",
      "listed": true
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2704958413": {
+   "built_on": [
+    {
+     "id": "F1603087869",
+     "as_declared": "F1603087869",
+     "certified": true,
+     "use": "Provides the government cloud infrastructure supporting CTME, including virtual desktop hosting, networking, compute, and associated enclave infrastructure.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR1824057433",
+     "as_declared": "FR1824057433",
+     "certified": true,
+     "use": "Provides government cloud productivity and collaboration capabilities supporting CTME, including identity integration, email, document storage, and secure file collaboration.",
+     "resolved": "id",
+     "listed": true
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2704958428": {
+   "built_on": [
+    {
+     "id": "F1603047866",
+     "as_declared": "F1603047866",
+     "certified": true,
+     "use": "Primary production cloud infrastructure (AWS GovCloud (US)) hosting isolated per-tenant agency accounts, compute, managed PostgreSQL, object storage, KMS encryption, and centralized security logging.",
+     "resolved": "id",
+     "listed": true
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2704958436": {
+   "built_on": [
+    {
+     "id": "AGENCYAMAZONEW",
+     "as_declared": "AGENCYAMAZONEW",
+     "certified": true,
+     "use": "Amazon Web Services (commercial, us-east-1) hosts the Ignis platform, including compute, container registry, databases, storage, networking, and security services.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR1805751477",
+     "as_declared": "FR1805751477",
+     "certified": true,
+     "use": "Google Cloud Firebase Authentication signs users in and issues tokens.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "F1206081364",
+     "as_declared": "F1206081364",
+     "certified": true,
+     "use": "Google Workspace provides workforce identity federated to AWS IAM Identity Center.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR1812058188",
+     "as_declared": "FR1812058188",
+     "certified": true,
+     "use": "GitHub Enterprise Cloud hosts source code and supports code review.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "Firebase Cloud Messaging",
+     "provider": "Google",
+     "certified": false,
+     "use": "Delivers push notifications to the mobile apps."
+    },
+    {
+     "id": null,
+     "as_declared": "Cloudflare",
+     "provider": "Cloudflare",
+     "certified": false,
+     "use": "Provides DNS, TLS termination, edge protection, API proxying, Workers for tile caching, Queues, and R2 storage for images, video, and documents. FedRAMP coverage for this deployment is pending verification."
+    },
+    {
+     "id": null,
+     "as_declared": "Tailscale",
+     "provider": "Tailscale",
+     "certified": false,
+     "use": "Provides mesh VPN access for administrators to the production VPC."
+    },
+    {
+     "id": null,
+     "as_declared": "GitHub Actions",
+     "provider": "GitHub",
+     "certified": false,
+     "use": "Runs build and deployment workflows. FedRAMP coverage for this use is pending verification."
+    },
+    {
+     "id": null,
+     "as_declared": "Pulumi",
+     "provider": "Pulumi",
+     "certified": false,
+     "use": "Manages infrastructure as code and stores deployment state."
+    },
+    {
+     "id": null,
+     "as_declared": "Ditto Cloud",
+     "provider": "DittoLive Incorporated",
+     "certified": false,
+     "use": "Synchronizes incident map points, lines, and polygons across devices through peer-to-peer and cloud sync, including offline. The future hosting model is under review."
+    },
+    {
+     "id": null,
+     "as_declared": "Confluent Cloud (commercial)",
+     "provider": "Confluent",
+     "certified": false,
+     "use": "Provides managed Kafka for aircraft location and event streams."
+    },
+    {
+     "id": null,
+     "as_declared": "Mapbox",
+     "provider": "Mapbox",
+     "certified": false,
+     "use": "Provides basemap tiles and place search in client applications."
+    },
+    {
+     "id": null,
+     "as_declared": "Blacksmith",
+     "provider": "Blacksmith",
+     "certified": false,
+     "use": "Provides hosted runners for GitHub Actions workflows."
+    },
+    {
+     "id": null,
+     "as_declared": "Oneleet",
+     "provider": "Oneleet",
+     "certified": false,
+     "use": "Collects audit evidence and monitors security controls for SOC 2 Type II and PCI DSS."
+    },
+    {
+     "id": null,
+     "as_declared": "Buf Schema Registry",
+     "provider": "Buf",
+     "certified": false,
+     "use": "Hosts Protobuf schemas and publishes generated SDKs for iOS and Android builds."
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": []
+  },
+  "FR2704958443": {
+   "built_on": [
+    {
+     "id": "AGENCYAMAZONEW",
+     "as_declared": "AGENCYAMAZONEW",
+     "certified": true,
+     "use": "Provides the cloud infrastructure platform and services supporting the Zendesk for Government trust boundary. Zendesk inherits IaaS/PaaS controls from AWS according to its Customer Responsibility Matrix.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR1809360201",
+     "as_declared": "FR1809360201",
+     "certified": true,
+     "use": "Provides data warehousing and supports Analytics functionality of the Zendesk platform. Also serves as the SIEM for the trust boundary.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "F1512167750",
+     "as_declared": "F1512167750",
+     "certified": true,
+     "use": "Provides centralized identity and access management for Zendesk employees with access to the trust boundary.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2533155773",
+     "as_declared": "FR2533155773",
+     "certified": true,
+     "use": "Provides generative artifician intelligence and natural language processing services for the Zendesk platform.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2308034636A",
+     "as_declared": "FR2308034636A",
+     "certified": true,
+     "use": "Provides overarching cloud security posture management and vulnerability management capabilities.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "MongoDB Atlas",
+     "provider": "MongoDB, Inc.",
+     "certified": false,
+     "use": "Managed NoSQL document database service supporting application data for the offering, deployed in AWS US East / West."
+    },
+    {
+     "id": null,
+     "as_declared": "Datadog",
+     "provider": "Datadog, Inc.",
+     "certified": false,
+     "use": "Logging and monitoring platform for production services."
+    },
+    {
+     "id": null,
+     "as_declared": "Sentry",
+     "provider": "Functional Software, Inc.",
+     "certified": false,
+     "use": "Error reporting platform for production services."
+    },
+    {
+     "id": null,
+     "as_declared": "Cloudflare",
+     "provider": "Cloudflare, Inc.",
+     "certified": false,
+     "use": "Zendesk's edge proxy layer. Performs DNS, TLS termination, WAF, and rate limiting for customer traffic."
     }
    ],
    "used_by": [],
