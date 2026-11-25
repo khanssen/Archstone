@@ -1,6 +1,6 @@
 {
  "description": "Build the built-on / used-by graph between marketplace listings.",
- "snapshot": "products-2026-11-23.json.gz",
+ "snapshot": "products-2026-11-25.json.gz",
  "listings": {
   "AGENCYAMAZONEW": {
    "built_on": [],
@@ -40,6 +40,10 @@
     {
      "id": "FR2632731472",
      "use": "Primary cloud infrastructure subservice organization providing the networking, compute, storage, and database components underlying Casco, including AWS Lambda (compute), Amazon Aurora (database), AWS WAF, AWS CloudFront (CDN), AWS Certificate Manager, AWS KMS (key management), AWS CloudTrail, AWS CloudWatch, AWS GuardDuty, and AWS Inspector."
+    },
+    {
+     "id": "FR2602138115",
+     "use": "Amazon US East/West is a multi-tenant public cloud for Federal, State and Local Government customers, as well as commercial customers, designed to meet a wide range of regulatory requirements, to include government compliance and security requirements. AWS leverages the Infrastructure-as-a-Service (IaaS) cloud computing model, which enables convenient, on-demand Internet access to a shared pool of configurable computing resources such as servers, storage, network infrastructure, and various other web services. Customers can rapidly provision or release computing resources on demand. Federal agencies interested in collaborative continuous monitoring with AWS should reach out to: aws-collaborative-conmon@amazon.com"
     },
     {
      "id": "FR2702852030",
@@ -173,7 +177,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 37
+   "platform_dependents": 38
   },
   "AGENCYNITCIAAS": {
    "built_on": [],
@@ -383,17 +387,7 @@
    "platform_dependents": 25
   },
   "F1206081364": {
-   "built_on": [
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    }
-   ],
+   "built_on": [],
    "used_by": [
     {
      "id": "FR2704958436",
@@ -981,15 +975,6 @@
    "built_on": [
     {
      "id": "F1603087869",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -1867,17 +1852,7 @@
    "platform_dependents": 1
   },
   "F1212191840A": {
-   "built_on": [
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    }
-   ],
+   "built_on": [],
    "used_by": [
     {
      "id": "FR2513256853",
@@ -4341,6 +4316,10 @@
      "use": "AWS GovCloud (US): Amazon Bedrock (Claude model inference) for organizations in CUI mode, with the IAM role the production application assumes for those calls, CloudTrail, KMS and GuardDuty. Not enabled: the setting that turns the route on is off, so no organization's data reaches it, and organizations in CUI mode use only Vertex AI in the Assured Workloads project for model calls."
     },
     {
+     "id": "FR2602138115",
+     "use": "AWS GovCloud (US) is an AWS Region designed to allow US government agencies and customers supporting the US government to move more sensitive workloads into the cloud. In addition to complying with FedRAMP requirements, the AWS GovCloud (US) framework adheres to U.S. International Traffic in Arms Regulations (ITAR) regulations. Additional information is available at http://aws.amazon.com/govcloud-us/. Federal agencies interested in collaborative continuous monitoring with AWS should reach out to: aws-collaborative-conmon@amazon.com"
+    },
+    {
      "id": "FR2702851998",
      "use": "AWS GovCloud (US) is an AWS Region designed to allow US government agencies and customers supporting the US government to move more sensitive workloads into the cloud. In addition to complying with FedRAMP requirements, the AWS GovCloud (US) framework adheres to U.S. International Traffic in Arms Regulations (ITAR) regulations. Additional information is available at http://aws.amazon.com/govcloud-us/. Federal agencies interested in collaborative continuous monitoring with AWS should reach out to: aws-collaborative-conmon@amazon.com"
     },
@@ -4415,12 +4394,16 @@
     {
      "id": "FR2023601671",
      "use": "AWS GovCloud (US) hosts the eGain Suite infrastructure (compute, storage, networking)."
+    },
+    {
+     "id": "FR1818161169",
+     "use": "MuleSoft uses AWS GovCloud as its IaaS provider."
     }
    ],
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 24
+   "platform_dependents": 26
   },
   "F1603077867": {
    "built_on": [
@@ -4471,10 +4454,6 @@
    "built_on": [],
    "used_by": [
     {
-     "id": "FR2704958413",
-     "use": "Provides the government cloud infrastructure supporting CTME, including virtual desktop hosting, networking, compute, and associated enclave infrastructure."
-    },
-    {
      "id": "FR2703461005",
      "use": "Hosting platform. AKS, Azure SQL Database, Cosmos DB, Storage, Key Vault, Load Balancer, Private Link, NSGs, DDoS Protection, Backup, Monitor, Log Analytics, Application Insights, Sentinel (SIEM), Defender for Cloud and Endpoint, Entra ID, Azure Virtual Desktop, Azure DNS."
     },
@@ -4485,6 +4464,10 @@
     {
      "id": "FR2703461005",
      "use": "Analytics and log processing."
+    },
+    {
+     "id": "FR2602138115",
+     "use": "Microsoft Azure Government is an open and flexible cloud platform that enables customers to quickly build, test, deploy, and manage their applications, services, and product development across a network of Microsoft-managed datacenters within the United States. The Microsoft Azure Government exports savings to the customer by delivering the software, platform, and information technology infrastructure resources where and when it is needed via the Internet. Microsoft Azure Government is used for building, deploying, and managing applications and services through a network of Microsoft-managed data centers. It provides Software as a Service (SaaS), Platform as a Service (PaaS), and Infrastructure as a Service (IaaS) and supports many different programming languages, tools, and frameworks, including both Microsoft-specific and third-party software and systems. The advantages of using Microsoft Azure Government include the ability to build large scalable applications serving large populations of users by scaling up or scaling down in relatively short periods of time. Federal agencies interested in collaborative continuous monitoring with Microsoft should reach out to: AzureCollabConMon@microsoft.com"
     },
     {
      "id": "FR2632436493",
@@ -4994,15 +4977,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1812058188",
      "as_declared": null,
      "certified": true,
@@ -5019,15 +4993,6 @@
   },
   "F1605107897": {
    "built_on": [
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
     {
      "id": "F1508207205",
      "as_declared": null,
@@ -5230,15 +5195,6 @@
     },
     {
      "id": "F1603087869",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -5612,15 +5568,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1512167750",
      "as_declared": null,
      "certified": true,
@@ -5942,15 +5889,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1720454205",
      "as_declared": null,
      "certified": true,
@@ -6070,15 +6008,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -6090,15 +6019,6 @@
    "built_on": [
     {
      "id": "FR1823447014",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -6185,15 +6105,6 @@
   },
   "FR1726564822": {
    "built_on": [
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
     {
      "id": "F1512167750",
      "as_declared": null,
@@ -6581,344 +6492,19 @@
      "use": "Production authorization boundary and SIEM (Google Services / GCP)"
     },
     {
-     "id": "FR2425960757",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2214062312",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2431264500",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2412062433",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1814168113",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2226322745",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1918442180",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2424553196",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2504148525",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1212191840A",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2000939520",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2125059322",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1605107897",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2014656304",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2000863987A",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1706403967",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2234550858",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2325657620",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2200507410",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1206111371",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1807853629A",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2100845343",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2414718666",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1814557199",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2410060106",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2004446306",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2510664395",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1932554201",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1834348080",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1918150046",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1206081364",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2031155471",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2212912561",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1927682057",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2226144516",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1910758409",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2234963115",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2119265538",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2105946715",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1913470600",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1606097904A",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1722838693",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2309954376",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2204842850",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2234256499",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2214346691",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2033152148",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2035740126",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1722532017",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2130949241",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2134635186",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1901136437",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2213647361",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2215045786",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2009746321",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "F1605037894",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2433985791",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1825232355A",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2103344623",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1726564822",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1821856903",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1720454205",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
      "id": "F1206111371",
      "use": "Underlying IaaS for customer workloads."
     }
    ],
    "hosts": [],
    "hosted_in": [],
-   "flags": [
-    {
-     "kind": "dependents_shown_as_resources",
-     "count": 62,
-     "text": "FedRAMP's page lists 62 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
-    }
-   ],
-   "platform_dependents": 83
+   "flags": [],
+   "platform_dependents": 22
   },
   "FR1807853629A": {
    "built_on": [
     {
      "id": "F1206081364",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -6982,6 +6568,10 @@
      "id": "FR2525556241XM",
      "use": "",
      "source": "former_dependents"
+    },
+    {
+     "id": "FR1818161169",
+     "use": "MuleSoft uses CrowdStrike as a centrally managed antivirus protection and endpoint detection and response platform. This service is used to provide system visibility across the environment, anti-virus protection, endpoint detection and response, and security response control during incidents or investigations."
     }
    ],
    "hosts": [],
@@ -7275,6 +6865,10 @@
     {
      "id": "FR2632731472",
      "use": "Source code repository and version control, CI/CD pipeline (GitHub Actions), and vulnerability scanning (GitHub Dependabot) for the Casco codebase."
+    },
+    {
+     "id": "FR2602138115",
+     "use": "GitHub is a collaborative development platform inspired by the way you work. From open source (https://github.com/open-source) to business (https://github.com/business), you can plan, build, review, and ship software at work - all while tracking bugs and discussing ideas. You can securely develop your organization's software on GitHub, whether you work for a small startup or a large agency."
     },
     {
      "id": "FR2700857472",
@@ -7596,15 +7190,6 @@
    "built_on": [
     {
      "id": "F1206081364",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -7970,15 +7555,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1812058188",
      "as_declared": null,
      "certified": true,
@@ -8170,29 +7746,45 @@
    "flags": []
   },
   "FR1818161169": {
-   "built_on": [],
-   "used_by": [
+   "built_on": [
     {
-     "id": "FR2607452240",
-     "use": "",
-     "source": "former_dependents"
+     "id": "FR1918740338",
+     "as_declared": "FR1918740338",
+     "certified": true,
+     "use": "MuleSoft utilizes Sumo Logic as a log aggregation tool to capture, index, and correlate real-time data into a searchable repository from which it can generate graphs, reports, alerts, dashboards and visualizations. The service is used for system and application log aggregation. The use of Sumo Logic is dedicated to MSGov. Sumo Logic is configured and used in alignment with FedRAMP requirements as described within this SSP.",
+     "resolved": "id",
+     "listed": true
     },
     {
-     "id": "FR1825941347A",
-     "use": "",
-     "source": "former_dependents"
+     "id": "FR1807853629A",
+     "as_declared": "FR1807853629A",
+     "certified": true,
+     "use": "MuleSoft uses CrowdStrike as a centrally managed antivirus protection and endpoint detection and response platform. This service is used to provide system visibility across the environment, anti-virus protection, endpoint detection and response, and security response control during incidents or investigations.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2120962552",
+     "as_declared": "FR2120962552",
+     "certified": true,
+     "use": "MuleSoft uses LaunchDarkly for its feature flagging capability. Data sent to and from this service is limited to the custom name of the feature flag, the status of the flag (“on”/”off”), and a Unique User Identifier (UUID). No customer data or critical system data will leave the boundary through this service. The use of LaunchDarkly is dedicated to the MSGov. LaunchDarkly is configured and used in alignment with FedRAMP requirements as described within this SSP.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "F1603047866",
+     "as_declared": "F1603047866",
+     "certified": true,
+     "use": "MuleSoft uses AWS GovCloud as its IaaS provider.",
+     "resolved": "id",
+     "listed": true
     }
    ],
+   "used_by": [],
    "hosts": [],
    "hosted_in": [],
-   "flags": [
-    {
-     "kind": "dependents_shown_as_resources",
-     "count": 2,
-     "text": "FedRAMP's page lists 2 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
-    }
-   ],
-   "platform_dependents": 2
+   "flags": [],
+   "platform_dependents": 0
   },
   "FR1818240234": {
    "built_on": [
@@ -8520,15 +8112,6 @@
      "provider": "Cloudflare, Inc.",
      "certified": false,
      "use": "Zendesk's edge proxy layer. Performs DNS, TLS termination, WAF, and rate limiting for customer traffic."
-    },
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     },
     {
      "id": "FR1812058188",
@@ -9333,8 +8916,8 @@
    "built_on": [],
    "used_by": [
     {
-     "id": "FR2704958413",
-     "use": "Provides government cloud productivity and collaboration capabilities supporting CTME, including identity integration, email, document storage, and secure file collaboration."
+     "id": "FR2602138115",
+     "use": "Microsoft 365 (M365) Government Community Cloud-High (GCC-H) is a product family of cloud-hosted messaging and collaboration services. These cloud-based services are designed to provide organizations with streamlined communication, high availability, comprehensive security, and simplified information technology (IT) management. M365 GCC-H provides the interactivity of on-premises client and server applications with the flexibility and scalability of web-based services. M365 leverages Azure as the IaaS/PaaS for the underlying infrastructure and hardware. Therefore, M365 relies on Azure-inherited services. For more information on these Azure services, refer to the Azure ATO package. Federal agencies interested in collaborative continuous monitoring with Microsoft should reach out to: M365CollabConMon@microsoft.com"
     },
     {
      "id": "FR2520254824",
@@ -9387,15 +8970,6 @@
   "FR1825232355A": {
    "built_on": [
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1512167750",
      "as_declared": null,
      "certified": true,
@@ -9432,15 +9006,6 @@
     },
     {
      "id": "F1305072116",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1818161169",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -9725,15 +9290,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1823149273",
      "as_declared": null,
      "certified": true,
@@ -9805,43 +9361,11 @@
      "source": "former_dependents"
     }
    ],
-   "used_by": [
-    {
-     "id": "FR2527132001",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2412062433",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2324740262",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2310974411",
-     "use": "",
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR2230451369",
-     "use": "",
-     "source": "former_dependents"
-    }
-   ],
+   "used_by": [],
    "hosts": [],
    "hosted_in": [],
-   "flags": [
-    {
-     "kind": "dependents_shown_as_resources",
-     "count": 5,
-     "text": "FedRAMP's page lists 5 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
-    }
-   ],
-   "platform_dependents": 5
+   "flags": [],
+   "platform_dependents": 0
   },
   "FR1900048743": {
    "built_on": [],
@@ -9877,15 +9401,6 @@
    "built_on": [
     {
      "id": "F1603087869",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -10069,15 +9584,6 @@
   "FR1910758409": {
    "built_on": [
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1209051525",
      "as_declared": null,
      "certified": true,
@@ -10138,15 +9644,6 @@
   },
   "FR1913470600": {
    "built_on": [
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
     {
      "id": "F1512167750",
      "as_declared": null,
@@ -10418,15 +9915,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [
@@ -10459,15 +9947,6 @@
     },
     {
      "id": "F1603087869",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -10694,6 +10173,10 @@
      "id": "FR2219763604",
      "use": "",
      "source": "former_dependents"
+    },
+    {
+     "id": "FR1818161169",
+     "use": "MuleSoft utilizes Sumo Logic as a log aggregation tool to capture, index, and correlate real-time data into a searchable repository from which it can generate graphs, reports, alerts, dashboards and visualizations. The service is used for system and application log aggregation. The use of Sumo Logic is dedicated to MSGov. Sumo Logic is configured and used in alignment with FedRAMP requirements as described within this SSP."
     }
    ],
    "hosts": [],
@@ -11090,23 +10573,6 @@
    "hosted_in": [],
    "flags": []
   },
-  "FR1927682057": {
-   "built_on": [
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    }
-   ],
-   "used_by": [],
-   "hosts": [],
-   "hosted_in": [],
-   "flags": []
-  },
   "FR1930046270": {
    "built_on": [
     {
@@ -11189,15 +10655,6 @@
   },
   "FR1932554201": {
    "built_on": [
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
     {
      "id": "F1512167750",
      "as_declared": null,
@@ -11333,15 +10790,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1209051525",
      "as_declared": null,
      "certified": true,
@@ -11397,15 +10845,6 @@
     },
     {
      "id": "FR1918740338",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -11609,6 +11048,10 @@
    "built_on": [],
    "used_by": [
     {
+     "id": "FR2602138115",
+     "use": "Salesforce is the #1 CRM, enabling public sector organizations to modernize service. Salesforce helps public sector organizations to transform digital service delivery, achieve faster time to value, and improve mission success with automation tools, purpose-built solutions, and smart insights that help move the mission forward - all within a compliant cloud environment. Government Cloud Plus is a dedicated instance of Salesforce's industry leading Platform as a Service (PaaS) and Software as a Service (SaaS) applications, enabling organizations to scale and secure apps on an authorized government cloud so they can accelerate mission success. Government Cloud Plus has been designed to provide high levels of performance, reliability, and security. Learn more at Salesforce.com/Government A list of current in-scope Salesforce products included in the authorization boundary is available at: https://help.salesforce.com/s/articleView?id=000384503&type=1"
+    },
+    {
      "id": "FR2633957417",
      "use": "Provides CRM capabilities supporting customer-related business processes within the CSO."
     }
@@ -11616,7 +11059,7 @@
    "hosts": [],
    "hosted_in": [],
    "flags": [],
-   "platform_dependents": 1
+   "platform_dependents": 2
   },
   "FR2004146362": {
    "built_on": [
@@ -11639,15 +11082,6 @@
    "built_on": [
     {
      "id": "FR1823447014",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -11850,15 +11284,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -11941,15 +11366,6 @@
     },
     {
      "id": "FR1823447014",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -12298,6 +11714,10 @@
    ],
    "used_by": [
     {
+     "id": "FR2602138115",
+     "use": "Datadog is an AI-powered observability and security platform that unifies metrics, traces, logs, security signals, and more across your stack into a single pane of glass. Observe any stack at any scale, secure applications from code to cloud, and act faster with automated workflows all in Datadog. Streamline collaboration between Development, Operations, and Security teams with AI-powered insights and automated remediation for faster troubleshooting and improved system health and security. Datadog for Government extends these capabilities to U.S. government agencies, educational institutions, and the organizations that support them. Hosted on AWS GovCloud, it supports hybrid, multi-cloud, and on-prem environments. Federal, state, and local teams can accelerate IT modernization, strengthen security posture, and support initiatives like Zero Trust and cloud migration-delivering secure, reliable digital services with confidence. The services in scope for Datadog for Government are: Infrastructure Metrics - Observe, analyze, and alert on metrics across hosts, containers, and cloud environments. Cloud Network Monitoring - Provide multi-cloud visibility into network flows in granular detail and enable users to aggregate and monitor that data. Network Device Monitoring - Monitor the health and performance of network devices such as routers, switches, and firewalls. Cloud Cost Management - Analyze and optimize cloud spend with visibility into resource usage and cost drivers. Application Performance Monitoring (APM) - Collect, search, and analyze traces across fully distributed architectures. Continuous Profiler - Continuously analyze code-level performance to identify resource bottlenecks and optimize application efficiency. Serverless Monitoring - Monitor the performance and execution of serverless functions across cloud environments. Database Monitoring - Provide visibility into database performance, query activity, and resource utilization. Log Management - Collect, enrich, monitor, and analyze logs from all systems for troubleshooting, auditing, visualization, and alerting. Error Tracking - Capture, visualize, and browse errors reported by services. Sensitive Data Scanner - Identify and monitor sensitive data within logs to support compliance and data protection requirements. Audit Trail - Track user activity and configuration changes for auditing and compliance purposes. Archive Search - Enable long-term retention and search of log data for compliance and forensic analysis. Cloud Security Monitoring - Enable real time threat detection and investigate security alerts across infrastructure metrics, distributed traces, and logs. This capability encompasses Cloud SIEM, Cloud Workload Security, Cloud Security Platform Monitoring, and Cloud Security Vulnerability Management. Real User Monitoring (RUM) - Collect user actions (e.g., button clicks) to understand user activity within a page. Session Replay - Reconstruct user sessions to visually analyze user behavior and troubleshoot issues. Synthetic Monitoring - Monitor applications and API endpoints via simulated user requests and browser rendering. Incident Management - Detect, manage, and respond to incidents with workflows for alerting, collaboration, and resolution. Mobile Application - Access the Datadog platform from mobile devices."
+    },
+    {
      "id": "FR2604643715",
      "use": "Datadog is a cloud monitoring provider used for cloud monitoring and observability. Operational monitoring and alerting of platform health and security/availability signals."
     },
@@ -12607,23 +12027,6 @@
     }
    ]
   },
-  "FR2031155471": {
-   "built_on": [
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    }
-   ],
-   "used_by": [],
-   "hosts": [],
-   "hosted_in": [],
-   "flags": []
-  },
   "FR2031222637": {
    "built_on": [
     {
@@ -12809,15 +12212,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -12889,15 +12283,6 @@
   },
   "FR2035740126": {
    "built_on": [
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
     {
      "id": "FR1823149273",
      "as_declared": null,
@@ -13023,15 +12408,6 @@
     },
     {
      "id": "FR1814276801",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -13220,15 +12596,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1508207205",
      "as_declared": null,
      "certified": true,
@@ -13282,15 +12649,6 @@
     },
     {
      "id": "F1206081364",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -13784,6 +13142,10 @@
      "use": "Keeper password vault for Sand Solutions administrative credentials and secrets."
     },
     {
+     "id": "FR2602138115",
+     "use": "Keeper ICAM & Identity Security Platform for Government is a cloud-native platform built on zero-trust and zero-knowledge principles that secures access for human and non-person entities across servers, web applications and databases. It unifies password and credential management, secrets management, privileged access management, secure remote access, session monitoring and recording, and remote browser isolation in one platform, delivering the credential, privileged access, secrets, and non-person-entity pillars of ICAM. Authorized at the FedRAMP High baseline, Keeper ICAM & Identity Security Platform for Government continuously verifies every access request regardless of location or device, and simplifies compliance with delegated administration, enforcement policies, event tracking and customizable audit logs."
+    },
+    {
      "id": "FR2520254824",
      "use": "Keeper Security Government Cloud Password Manager and Privileged Access Manager provides secure storage and management of system-level secrets, passwords, and privileged credentials supporting InEight Document US Government."
     },
@@ -13939,15 +13301,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1823149273",
      "as_declared": null,
      "certified": true,
@@ -14054,6 +13407,10 @@
      "id": "FR2308034636A",
      "use": "",
      "source": "former_dependents"
+    },
+    {
+     "id": "FR1818161169",
+     "use": "MuleSoft uses LaunchDarkly for its feature flagging capability. Data sent to and from this service is limited to the custom name of the feature flag, the status of the flag (“on”/”off”), and a Unique User Identifier (UUID). No customer data or critical system data will leave the boundary through this service. The use of LaunchDarkly is dedicated to the MSGov. LaunchDarkly is configured and used in alignment with FedRAMP requirements as described within this SSP."
     }
    ],
    "hosts": [],
@@ -14208,15 +13565,6 @@
    "built_on": [
     {
      "id": "FR1913470600",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -14488,15 +13836,6 @@
    "built_on": [
     {
      "id": "F1206081364",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -14831,15 +14170,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1823149273",
      "as_declared": null,
      "certified": true,
@@ -14981,15 +14311,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1512167750",
      "as_declared": null,
      "certified": true,
@@ -15053,6 +14374,10 @@
     }
    ],
    "used_by": [
+    {
+     "id": "FR2602138115",
+     "use": "The KnowBe4 Platform includes the following in-scope: KSAT Learning Management System and all included training content (ModStore, Compliance Plus), KSAT Simulated Phishing Platform, PhishER / PhishER Plus, Phish Alert Button, SecurityCoach (SCH) and AI Defense Agents (AIDA) (excluding AIDA Deepfakes). KnowBe4 products currently excluded from scope: Free Tools (SecondChance, RanSim, Password Exposure Test, Weak Password Test, Breached Password Test, Browser Password Inspector), AIDA Deepfakes, KCES (KnowBe4 Cloud Email Security of Defend / Prevent), Protect, Workspace and Webform. KSAT (KnowBe4 Security Awareness Training), which includes security awareness training and simulated phishing, is designed to provide users with an interactive platform to better manage IT security problems of social engineering, spear-phishing, and ransomware attacks. The ModStore and Compliance Plus are libraries of available training modules that can be used within the KSAT platform or in external learning management systems. PhishER (and its add-on PhishER Plus) is a Security Orchestration, Automation, and Response (SOAR) platform that can be used to manage emails that KSAT users report as suspicious or malicious. The purpose of this platform is to provide an organization with a way to evaluate suspicious emails making it through to the inbox of users. SecurityCoach (SCH) helps strengthen your organization's security culture by delivering immediate feedback to your users at the moment risky behavior occurs. AI Defense Agents (AIDA) is a suite of AI Agents for human risk management that continuously automates administration and content personalization so security teams can focus on strategic risk decisions rather than operational tasks. Each included AIDA Agent is optional to enable. The Phish Alert Button (PAB) is an optional component placed in the inbox of a customer end user. This allows end users to report a suspected phishing simulation and any suspicious email message to their security team. The PAB integrates with KSAT and PhishER / PhishER Plus. KnowBe4 products share a central configuration and authentication settings area located within the KnowBe4 Platform. This is included in scope and is used throughout the KnowBe4 suite of products."
+    },
     {
      "id": "FR2700857472",
      "use": "Security awareness and role-based training for CLEATUS staff. It holds no system or customer data and has no connection to the boundary."
@@ -15122,15 +14447,6 @@
    "built_on": [
     {
      "id": "FR1823447014",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -15467,23 +14783,6 @@
     }
    ]
   },
-  "FR2212912561": {
-   "built_on": [
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    }
-   ],
-   "used_by": [],
-   "hosts": [],
-   "hosted_in": [],
-   "flags": []
-  },
   "FR2213647361": {
    "built_on": [
     {
@@ -15524,15 +14823,6 @@
     },
     {
      "id": "FR2016131254",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -15618,15 +14908,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -15647,15 +14928,6 @@
     },
     {
      "id": "F1206081364",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -15691,15 +14963,6 @@
     },
     {
      "id": "FR1809360201",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -16114,15 +15377,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1812058188",
      "as_declared": null,
      "certified": true,
@@ -16259,15 +15513,6 @@
     },
     {
      "id": "F1607057910",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -16465,15 +15710,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1834740315",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1206081364",
      "as_declared": null,
      "certified": true,
@@ -16630,15 +15866,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1512167750",
      "as_declared": null,
      "certified": true,
@@ -16718,15 +15945,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1512167750",
      "as_declared": null,
      "certified": true,
@@ -16784,15 +16002,6 @@
     },
     {
      "id": "FR2004446306",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -17223,15 +16432,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1209051525",
      "as_declared": null,
      "certified": true,
@@ -17250,15 +16450,6 @@
    "built_on": [
     {
      "id": "FR2120962552",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1834740315",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -18145,15 +17336,6 @@
   "FR2324740262": {
    "built_on": [
     {
-     "id": "FR1834740315",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1206081364",
      "as_declared": null,
      "certified": true,
@@ -18199,37 +17381,16 @@
      "source": "former_dependents"
     }
    ],
-   "used_by": [
-    {
-     "id": "FR2516365096",
-     "use": "",
-     "source": "former_dependents"
-    }
-   ],
+   "used_by": [],
    "hosts": [],
    "hosted_in": [],
-   "flags": [
-    {
-     "kind": "dependents_shown_as_resources",
-     "count": 1,
-     "text": "FedRAMP's page lists 1 products that use this listing as third-party resources inside its minimum assessment scope; they were its Dependent Products until Nov 2, 2026"
-    }
-   ],
-   "platform_dependents": 1
+   "flags": [],
+   "platform_dependents": 0
   },
   "FR2325657620": {
    "built_on": [
     {
      "id": "F1206081364",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -19232,15 +18393,6 @@
      "resolved": "id",
      "listed": true,
      "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
     }
    ],
    "used_by": [],
@@ -19458,25 +18610,7 @@
   "FR2412062433": {
    "built_on": [
     {
-     "id": "FR1834740315",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "FR1814276801",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -19568,15 +18702,6 @@
     },
     {
      "id": "FR1920363607",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -20034,15 +19159,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1512167750",
      "as_declared": null,
      "certified": true,
@@ -20113,15 +19229,6 @@
     },
     {
      "id": "F1603087869",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -20278,6 +19385,10 @@
     {
      "id": "FR2531940362",
      "use": "Paramify Cloud for FedRAMP documentation, control management, and the SGC2 Trust Center."
+    },
+    {
+     "id": "FR2602138115",
+     "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes - including compliance planning, solution implementation, gap assessments, and continuous reporting - for cloud service providers, government agencies, and members of the Defense Industrial Base (DIB). Trusted by leading CSPs like Adobe, Cisco, Trellix, Palo Alto Networks, and Flock Safety. Living Gap Assessment Visualize compliance progress with Paramify's intuitive real-time dashboard. Track controls, manage gaps, and easily organize people, places, and components, ensuring audit readiness for FedRAMP 20X, GovRAMP, and other frameworks. Instant Audit-Ready Documentation Automate compliance, generate audit-ready deliverables like System Security Plans (SSPs), POA&Ms, and Customer Responsibility Matrices in days, not months. Continuously validate compliance with real-time automated validation tools for FedRAMP 20X and other frameworks. Fast, Cost-Effective Monitoring Continuously monitor, validate, and report compliance 90% faster at a quarter of the cost. Paramify's automated tools and Evidence Repository simplify compliance, reducing costs and enhancing efficiency. Integrated with issue management tools like Jira, it streamlines workflows, helping you meet tight deadlines."
     },
     {
      "id": "FR2702852019",
@@ -20539,15 +19650,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1508207205",
      "as_declared": null,
      "certified": true,
@@ -20672,15 +19774,6 @@
     },
     {
      "id": "FR1918740338",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -20863,15 +19956,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1805751477",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1305072116",
      "as_declared": null,
      "certified": true,
@@ -20952,15 +20036,6 @@
     },
     {
      "id": "F1206081364",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1805751477",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -21159,15 +20234,6 @@
   },
   "FR2516365096": {
    "built_on": [
-    {
-     "id": "FR2324740262",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
     {
      "id": "FR1824057433",
      "as_declared": null,
@@ -21889,15 +20955,6 @@
      "source": "former_dependents"
     },
     {
-     "id": "FR1834740315",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
      "id": "F1206081364",
      "as_declared": null,
      "certified": true,
@@ -22413,6 +21470,106 @@
    "hosted_in": [],
    "flags": []
   },
+  "FR2602138115": {
+   "built_on": [
+    {
+     "id": "AGENCYAMAZONEW",
+     "as_declared": "AGENCYAMAZONEW",
+     "certified": true,
+     "use": "Amazon US East/West is a multi-tenant public cloud for Federal, State and Local Government customers, as well as commercial customers, designed to meet a wide range of regulatory requirements, to include government compliance and security requirements. AWS leverages the Infrastructure-as-a-Service (IaaS) cloud computing model, which enables convenient, on-demand Internet access to a shared pool of configurable computing resources such as servers, storage, network infrastructure, and various other web services. Customers can rapidly provision or release computing resources on demand. Federal agencies interested in collaborative continuous monitoring with AWS should reach out to: aws-collaborative-conmon@amazon.com",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "F1603047866",
+     "as_declared": "F1603047866",
+     "certified": true,
+     "use": "AWS GovCloud (US) is an AWS Region designed to allow US government agencies and customers supporting the US government to move more sensitive workloads into the cloud. In addition to complying with FedRAMP requirements, the AWS GovCloud (US) framework adheres to U.S. International Traffic in Arms Regulations (ITAR) regulations. Additional information is available at http://aws.amazon.com/govcloud-us/. Federal agencies interested in collaborative continuous monitoring with AWS should reach out to: aws-collaborative-conmon@amazon.com",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "F1603087869",
+     "as_declared": "F1603087869",
+     "certified": true,
+     "use": "Microsoft Azure Government is an open and flexible cloud platform that enables customers to quickly build, test, deploy, and manage their applications, services, and product development across a network of Microsoft-managed datacenters within the United States. The Microsoft Azure Government exports savings to the customer by delivering the software, platform, and information technology infrastructure resources where and when it is needed via the Internet. Microsoft Azure Government is used for building, deploying, and managing applications and services through a network of Microsoft-managed data centers. It provides Software as a Service (SaaS), Platform as a Service (PaaS), and Infrastructure as a Service (IaaS) and supports many different programming languages, tools, and frameworks, including both Microsoft-specific and third-party software and systems. The advantages of using Microsoft Azure Government include the ability to build large scalable applications serving large populations of users by scaling up or scaling down in relatively short periods of time. Federal agencies interested in collaborative continuous monitoring with Microsoft should reach out to: AzureCollabConMon@microsoft.com",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2023864279A",
+     "as_declared": "FR2023864279A",
+     "certified": true,
+     "use": "Datadog is an AI-powered observability and security platform that unifies metrics, traces, logs, security signals, and more across your stack into a single pane of glass. Observe any stack at any scale, secure applications from code to cloud, and act faster with automated workflows all in Datadog. Streamline collaboration between Development, Operations, and Security teams with AI-powered insights and automated remediation for faster troubleshooting and improved system health and security. Datadog for Government extends these capabilities to U.S. government agencies, educational institutions, and the organizations that support them. Hosted on AWS GovCloud, it supports hybrid, multi-cloud, and on-prem environments. Federal, state, and local teams can accelerate IT modernization, strengthen security posture, and support initiatives like Zero Trust and cloud migration-delivering secure, reliable digital services with confidence. The services in scope for Datadog for Government are: Infrastructure Metrics - Observe, analyze, and alert on metrics across hosts, containers, and cloud environments. Cloud Network Monitoring - Provide multi-cloud visibility into network flows in granular detail and enable users to aggregate and monitor that data. Network Device Monitoring - Monitor the health and performance of network devices such as routers, switches, and firewalls. Cloud Cost Management - Analyze and optimize cloud spend with visibility into resource usage and cost drivers. Application Performance Monitoring (APM) - Collect, search, and analyze traces across fully distributed architectures. Continuous Profiler - Continuously analyze code-level performance to identify resource bottlenecks and optimize application efficiency. Serverless Monitoring - Monitor the performance and execution of serverless functions across cloud environments. Database Monitoring - Provide visibility into database performance, query activity, and resource utilization. Log Management - Collect, enrich, monitor, and analyze logs from all systems for troubleshooting, auditing, visualization, and alerting. Error Tracking - Capture, visualize, and browse errors reported by services. Sensitive Data Scanner - Identify and monitor sensitive data within logs to support compliance and data protection requirements. Audit Trail - Track user activity and configuration changes for auditing and compliance purposes. Archive Search - Enable long-term retention and search of log data for compliance and forensic analysis. Cloud Security Monitoring - Enable real time threat detection and investigate security alerts across infrastructure metrics, distributed traces, and logs. This capability encompasses Cloud SIEM, Cloud Workload Security, Cloud Security Platform Monitoring, and Cloud Security Vulnerability Management. Real User Monitoring (RUM) - Collect user actions (e.g., button clicks) to understand user activity within a page. Session Replay - Reconstruct user sessions to visually analyze user behavior and troubleshoot issues. Synthetic Monitoring - Monitor applications and API endpoints via simulated user requests and browser rendering. Incident Management - Detect, manage, and respond to incidents with workflows for alerting, collaboration, and resolution. Mobile Application - Access the Datadog platform from mobile devices.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR1812058188",
+     "as_declared": "FR1812058188",
+     "certified": true,
+     "use": "GitHub is a collaborative development platform inspired by the way you work. From open source (https://github.com/open-source) to business (https://github.com/business), you can plan, build, review, and ship software at work - all while tracking bugs and discussing ideas. You can securely develop your organization's software on GitHub, whether you work for a small startup or a large agency.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2116544598A",
+     "as_declared": "FR2116544598A",
+     "certified": true,
+     "use": "Keeper ICAM & Identity Security Platform for Government is a cloud-native platform built on zero-trust and zero-knowledge principles that secures access for human and non-person entities across servers, web applications and databases. It unifies password and credential management, secrets management, privileged access management, secure remote access, session monitoring and recording, and remote browser isolation in one platform, delivering the credential, privileged access, secrets, and non-person-entity pillars of ICAM. Authorized at the FedRAMP High baseline, Keeper ICAM & Identity Security Platform for Government continuously verifies every access request regardless of location or device, and simplifies compliance with delegated administration, enforcement policies, event tracking and customizable audit logs.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2201340492",
+     "as_declared": "FR2201340492",
+     "certified": true,
+     "use": "The KnowBe4 Platform includes the following in-scope: KSAT Learning Management System and all included training content (ModStore, Compliance Plus), KSAT Simulated Phishing Platform, PhishER / PhishER Plus, Phish Alert Button, SecurityCoach (SCH) and AI Defense Agents (AIDA) (excluding AIDA Deepfakes). KnowBe4 products currently excluded from scope: Free Tools (SecondChance, RanSim, Password Exposure Test, Weak Password Test, Breached Password Test, Browser Password Inspector), AIDA Deepfakes, KCES (KnowBe4 Cloud Email Security of Defend / Prevent), Protect, Workspace and Webform. KSAT (KnowBe4 Security Awareness Training), which includes security awareness training and simulated phishing, is designed to provide users with an interactive platform to better manage IT security problems of social engineering, spear-phishing, and ransomware attacks. The ModStore and Compliance Plus are libraries of available training modules that can be used within the KSAT platform or in external learning management systems. PhishER (and its add-on PhishER Plus) is a Security Orchestration, Automation, and Response (SOAR) platform that can be used to manage emails that KSAT users report as suspicious or malicious. The purpose of this platform is to provide an organization with a way to evaluate suspicious emails making it through to the inbox of users. SecurityCoach (SCH) helps strengthen your organization's security culture by delivering immediate feedback to your users at the moment risky behavior occurs. AI Defense Agents (AIDA) is a suite of AI Agents for human risk management that continuously automates administration and content personalization so security teams can focus on strategic risk decisions rather than operational tasks. Each included AIDA Agent is optional to enable. The Phish Alert Button (PAB) is an optional component placed in the inbox of a customer end user. This allows end users to report a suspected phishing simulation and any suspicious email message to their security team. The PAB integrates with KSAT and PhishER / PhishER Plus. KnowBe4 products share a central configuration and authentication settings area located within the KnowBe4 Platform. This is included in scope and is used throughout the KnowBe4 suite of products.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": null,
+     "as_declared": "MSO365MTA",
+     "certified": true,
+     "use": "Microsoft 365 (M365) Government Community Cloud (GCC) is a suite of cloud-hosted messaging and collaboration services to meet the unique and evolving requirements of the United States Federal, State, Local, and Tribal governments, as well as contractors holding or processing data on behalf of the US Government. These cloud-based services are designed to provide organizations with streamlined communication, high availability, comprehensive security, and simplified information technology (IT) management. M365 GCC provides the interactivity of on-premises client and server applications with the flexibility and scalability of web-based services. M365 GCC leverages Azure Government as the IaaS/PaaS for the underlying infrastructure and hardware. Therefore, M365 GCC relies on Azure Government-inherited services. For more information on these Azure Government services, refer to the Azure Government ATO package. Federal agencies interested in collaborative continuous monitoring with Microsoft should reach out to: M365CollabConMon@microsoft.com",
+     "resolved": "unresolved"
+    },
+    {
+     "id": "FR1824057433",
+     "as_declared": "FR1824057433",
+     "certified": true,
+     "use": "Microsoft 365 (M365) Government Community Cloud-High (GCC-H) is a product family of cloud-hosted messaging and collaboration services. These cloud-based services are designed to provide organizations with streamlined communication, high availability, comprehensive security, and simplified information technology (IT) management. M365 GCC-H provides the interactivity of on-premises client and server applications with the flexibility and scalability of web-based services. M365 leverages Azure as the IaaS/PaaS for the underlying infrastructure and hardware. Therefore, M365 relies on Azure-inherited services. For more information on these Azure services, refer to the Azure ATO package. Federal agencies interested in collaborative continuous monitoring with Microsoft should reach out to: M365CollabConMon@microsoft.com",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2428769635XL",
+     "as_declared": "FR2428769635XL",
+     "certified": true,
+     "use": "The Paramify Cloud (Paramify) is a software platform that automates risk management processes - including compliance planning, solution implementation, gap assessments, and continuous reporting - for cloud service providers, government agencies, and members of the Defense Industrial Base (DIB). Trusted by leading CSPs like Adobe, Cisco, Trellix, Palo Alto Networks, and Flock Safety. Living Gap Assessment Visualize compliance progress with Paramify's intuitive real-time dashboard. Track controls, manage gaps, and easily organize people, places, and components, ensuring audit readiness for FedRAMP 20X, GovRAMP, and other frameworks. Instant Audit-Ready Documentation Automate compliance, generate audit-ready deliverables like System Security Plans (SSPs), POA&Ms, and Customer Responsibility Matrices in days, not months. Continuously validate compliance with real-time automated validation tools for FedRAMP 20X and other frameworks. Fast, Cost-Effective Monitoring Continuously monitor, validate, and report compliance 90% faster at a quarter of the cost. Paramify's automated tools and Evidence Repository simplify compliance, reducing costs and enhancing efficiency. Integrated with issue management tools like Jira, it streamlines workflows, helping you meet tight deadlines.",
+     "resolved": "id",
+     "listed": true
+    },
+    {
+     "id": "FR2003061248",
+     "as_declared": "FR2003061248",
+     "certified": true,
+     "use": "Salesforce is the #1 CRM, enabling public sector organizations to modernize service. Salesforce helps public sector organizations to transform digital service delivery, achieve faster time to value, and improve mission success with automation tools, purpose-built solutions, and smart insights that help move the mission forward - all within a compliant cloud environment. Government Cloud Plus is a dedicated instance of Salesforce's industry leading Platform as a Service (PaaS) and Software as a Service (SaaS) applications, enabling organizations to scale and secure apps on an authorized government cloud so they can accelerate mission success. Government Cloud Plus has been designed to provide high levels of performance, reliability, and security. Learn more at Salesforce.com/Government A list of current in-scope Salesforce products included in the authorization boundary is available at: https://help.salesforce.com/s/articleView?id=000384503&type=1",
+     "resolved": "id",
+     "listed": true
+    }
+   ],
+   "used_by": [],
+   "hosts": [],
+   "hosted_in": [],
+   "flags": [
+    {
+     "kind": "certified_resource_not_found",
+     "text": "Declares \"MSO365MTA\" as a FedRAMP Certified resource; no listing by that name or ID"
+    }
+   ]
+  },
   "FR2604643715": {
    "built_on": [
     {
@@ -22585,15 +21742,6 @@
     },
     {
      "id": "F1305072116",
-     "as_declared": null,
-     "certified": true,
-     "use": "",
-     "resolved": "id",
-     "listed": true,
-     "source": "former_dependents"
-    },
-    {
-     "id": "FR1818161169",
      "as_declared": null,
      "certified": true,
      "use": "",
@@ -26903,30 +26051,6 @@
      "as_declared": "AGENCYAMAZONEW",
      "certified": true,
      "use": "AWS US East/West (FedRAMP Certified). Primary cloud infrastructure hosting the BuildOps platform in US East (N. Virginia, us-east-1), with US East (Ohio, us-east-2) as the standby recovery region. All other third-party information resources are listed in informationResources.",
-     "resolved": "id",
-     "listed": true
-    }
-   ],
-   "used_by": [],
-   "hosts": [],
-   "hosted_in": [],
-   "flags": []
-  },
-  "FR2704958413": {
-   "built_on": [
-    {
-     "id": "F1603087869",
-     "as_declared": "F1603087869",
-     "certified": true,
-     "use": "Provides the government cloud infrastructure supporting CTME, including virtual desktop hosting, networking, compute, and associated enclave infrastructure.",
-     "resolved": "id",
-     "listed": true
-    },
-    {
-     "id": "FR1824057433",
-     "as_declared": "FR1824057433",
-     "certified": true,
-     "use": "Provides government cloud productivity and collaboration capabilities supporting CTME, including identity integration, email, document storage, and secure file collaboration.",
      "resolved": "id",
      "listed": true
     }
