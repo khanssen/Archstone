@@ -1,7 +1,7 @@
 {
   "source": "FedRAMP Marketplace assessor directory (github.com/FedRAMP/marketplace-fedramp-gov-data, assessors/)",
-  "updated": "2026-10-15",
-  "note": "FedRAMP-recognized assessors (A2LA-accredited 3PAOs). 'display' is the short name shown on the page; 'aliases' are spellings providers use in the marketplace assessor field. Add an alias when a new spelling appears; refresh the list when the directory changes.",
+  "updated": "2026-11-28",
+  "note": "FedRAMP-recognized assessors (A2LA-accredited 3PAOs). 'display' is the short name shown on the page; 'aliases' are spellings providers use in the marketplace assessor field. Add an alias when a new spelling appears; refresh the list when the directory changes. 'a2la' is the A2LA organization number; 'a2la_other' lists any other A2LA identifier FedRAMP publishes for the same firm (the schema-2.0 directory files use the certificate number, e.g. 3706.01).",
   "assessors": [
     {
       "name": "Schellman",
@@ -56,15 +56,24 @@
       "name": "Emagine IT",
       "display": "Emagine IT",
       "a2la": "137046",
+      "a2la_other": [
+        "3706.01"
+      ],
       "aliases": [
-        "EmagineIT"
+        "EmagineIT",
+        "Emagine IT, Inc."
       ]
     },
     {
       "name": "Lazarus Alliance, Inc.",
       "display": "Lazarus Alliance, Inc.",
       "a2la": "137047",
-      "aliases": []
+      "a2la_other": [
+        "3822.01"
+      ],
+      "aliases": [
+        "Lazarus Alliance"
+      ]
     },
     {
       "name": "Department of Transportation (DOT) Enterprise Services Center (ESC)",

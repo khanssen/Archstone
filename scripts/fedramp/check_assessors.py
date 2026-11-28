@@ -63,12 +63,25 @@ def main() -> None:
         sys.exit(f"check_assessors: only {len(up)} assessor files in {args.dir}; not comparing")
 
     doc = json.loads(args.assessors.read_text(encoding="utf-8"))
-    local = {str(a["a2la"]): a for a in doc["assessors"]}
+    # A firm can sit in FedRAMP's directory under more than one A2LA identifier: the older
+    # files use the A2LA organization number (e.g. 137046), the schema-2.0 files use the
+    # certificate number (e.g. 3706.01), and FedRAMP has left both in place while it migrates.
+    # "a2la" is the primary ID; "a2la_other" lists the rest. Every ID maps to the same firm.
+    local = {}
+    for a in doc["assessors"]:
+        for i in [a["a2la"]] + a.get("a2la_other", []):
+            local[str(i)] = a
+
+    def names_of(a: dict) -> set[str]:
+        return {norm(n) for n in [a["name"], a.get("display", "")] + a.get("aliases", []) if n}
 
     added = [(i, up[i]) for i in sorted(up) if i not in local]
-    dropped = [(i, local[i]) for i in sorted(local) if i not in up]
+    # A firm is dropped only when none of its IDs is still in the directory.
+    dropped = [(str(a["a2la"]), a) for a in doc["assessors"]
+               if not any(str(i) in up for i in [a["a2la"]] + a.get("a2la_other", []))]
+    # A rename is an upstream name that matches none of the firm's names or aliases.
     renamed = [(i, local[i]["name"], up[i]["name"]) for i in sorted(up)
-               if i in local and norm(local[i]["name"]) != norm(up[i]["name"])]
+               if i in local and norm(up[i]["name"]) not in names_of(local[i])]
 
     if not (added or dropped or renamed):
         if doc.get("checked") != args.today:
@@ -82,9 +95,18 @@ def main() -> None:
     lines = [f"FedRAMP's directory of recognized assessors no longer matches `data/fedramp/assessors.json`. "
              f"The 20x page still matches assessors against the old list, and its \"last confirmed\" date "
              f"stays at {doc.get('checked') or doc.get('updated')} until the file is fixed.", ""]
+    # An "added" ID whose name matches a firm already on the list is usually FedRAMP re-issuing
+    # that firm's record under its A2LA certificate number, not a new firm.
+    by_name = {n: a for a in doc["assessors"] for n in names_of(a)}
+    new_id = [(i, u, by_name[norm(u["name"])]) for i, u in added if norm(u["name"]) in by_name]
+    added = [(i, u) for i, u in added if norm(u["name"]) not in by_name]
     if added:
         lines += ["**Newly recognized** (listings naming these firms are currently shown as *not* recognized):", ""]
         lines += [f"- {a['name']} — A2LA {i}" + (f", recognized {a['recognized']}" if a["recognized"] else "") for i, a in added]
+        lines.append("")
+    if new_id:
+        lines += ["**New A2LA ID for a firm already listed** (add it to that firm's `a2la_other`, don't add a new firm):", ""]
+        lines += [f"- {u['name']} — A2LA {i} (listed as {a['name']}, A2LA {a['a2la']})" for i, u, a in new_id]
         lines.append("")
     if dropped:
         lines += ["**No longer in the directory** (still shown as recognized):", ""]
@@ -100,7 +122,7 @@ def main() -> None:
               "will close the gap and move `checked` forward.", "",
               f"Source: [{UPSTREAM}]({UPSTREAM})"]
     args.body.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"check_assessors: {len(added)} added, {len(dropped)} dropped, {len(renamed)} renamed; report at {args.body}")
+    print(f"check_assessors: {len(added)} added, {len(new_id)} new IDs for listed firms, {len(dropped)} dropped, {len(renamed)} renamed; report at {args.body}")
     output("found", "true")
 
 
